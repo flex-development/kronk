@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "allowJs": true,
+    "alwaysStrict": true,
+    "customConditions": ["kronk", "development", "node"],
+    "declaration": true,
+    "declarationMap": true,
+    "lib": ["es2024"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "newLine": "lf",
+    "noEmit": true,
+    "noErrorTruncation": true,
+    "noUncheckedSideEffectImports": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "target": "esnext",
+    "verbatimModuleSyntax": true
+  },
+  "exclude": ["coverage", "dist", "node_modules"],
+  "extends": "@tsconfig/strictest/tsconfig",
+  "include": ["**/**.json", "**/**.mjs", "**/**.mts", "**/**.ts"],
+  "mdx": {
+    "plugins": [
+      "remark-directive",
+      "remark-frontmatter",
+      "remark-gfm"
+    ]
+  }
+}

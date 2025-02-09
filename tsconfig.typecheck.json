@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "checkJs": false,
+    "customConditions": ["types", "kronk"]
+  },
+  "exclude": [],
+  "extends": "./tsconfig.json",
+  "files": ["typings/typescript/lib.es5.d.ts", "vitest-env.d.mts"],
+  "include": [
+    "__fixtures__/**/*",
+    "__tests__/**/*",
+    "src/**/**.mts",
+    "typings/**/*",
+    "vitest-env.d.mts"
+  ]
+}

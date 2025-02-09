@@ -1,0 +1,41 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "allowCompoundWords": true,
+  "caseSensitive": false,
+  "dictionaries": ["@flex-development/kronk"],
+  "dictionaryDefinitions": [
+    {
+      "name": "@flex-development/kronk",
+      "path": "./.dictionary.txt"
+    }
+  ],
+  "enableGlobDot": true,
+  "failFast": false,
+  "flagWords": [],
+  "ignorePaths": [
+    "**/*.patch",
+    "**/*.snap",
+    "**/*.wasm",
+    "**/.*ignore",
+    "**/.gitconfig",
+    "**/CHANGELOG.md",
+    "**/LICENSE.md",
+    "**/RELEASE_NOTES.md",
+    ".cspell.json",
+    ".dictionary.txt",
+    ".git/",
+    ".husky/_/",
+    ".vscode/settings.json",
+    ".yarn/",
+    "patches/",
+    "yarn.lock"
+  ],
+  "ignoreRegExpList": [],
+  "ignoreWords": [],
+  "language": "en-US",
+  "patterns": [],
+  "readonly": true,
+  "useGitignore": true,
+  "usePnP": false,
+  "version": "0.2"
+}

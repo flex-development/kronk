@@ -1,0 +1,6 @@
+{
+  "compilerOptions": {
+    "customConditions": ["kronk", "development", "node"]
+  },
+  "extends": "./tsconfig.json"
+}
