@@ -33,7 +33,7 @@ branches:
           - context: lint
           - context: spelling
           - context: test (23)
-          - context: typescript (5.7.3)
+          - context: typescript
         strict: true
       restrictions: null
 environments:
