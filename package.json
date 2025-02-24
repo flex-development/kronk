@@ -89,7 +89,7 @@
     "typecheck:ui": "yarn test:ui --typecheck --mode=typecheck"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "0.17.3",
+    "@arethetypeswrong/cli": "0.17.4",
     "@commitlint/cli": "19.7.1",
     "@commitlint/types": "19.5.0",
     "@eslint/js": "9.20.0",
