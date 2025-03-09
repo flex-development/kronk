@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`unit:lib/Argument > should throw if argument syntax is invalid ("") 1`] = `"Argument() failed due to ''"`;
+
+exports[`unit:lib/Argument > should throw if argument syntax is invalid ("...") 1`] = `"Argument(...) failed due to '...'"`;
+
+exports[`unit:lib/Argument > should throw if argument syntax is invalid ("< >") 1`] = `"Argument(< >) failed due to '<'"`;
+
+exports[`unit:lib/Argument > should throw if argument syntax is invalid ("<>\\t[]") 1`] = `"Argument(<>\\t[]) failed due to '[]'"`;
+
+exports[`unit:lib/Argument > should throw if argument syntax is invalid ("<n]") 1`] = `"Argument(<n]) failed due to '<n]'"`;
+
+exports[`unit:lib/Argument > should throw if argument syntax is invalid ("[\\r\\n]") 1`] = `"Argument([\\r\\n]) failed due to '[\\r\\n]'"`;
