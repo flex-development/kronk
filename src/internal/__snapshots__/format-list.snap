@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`unit:internal/formatList > should return list string (0) 1`] = `""`;
+
+exports[`unit:internal/formatList > should return list string (1) 1`] = `"debug"`;
+
+exports[`unit:internal/formatList > should return list string (2) 1`] = `"commonjs and module"`;
+
+exports[`unit:internal/formatList > should return list string (3) 1`] = `"cjs, esm, and iife"`;
+
+exports[`unit:internal/formatList > should return list string (4) 1`] = `"0, 1, 2, and 3"`;
+
+exports[`unit:internal/formatList > should return list string (5) 1`] = `"0, 1, 'dts', false, and true"`;
