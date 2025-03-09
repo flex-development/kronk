@@ -1,0 +1,82 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`unit:internal/toChunks > kOption context > should return list of flags \`string\` chunks ("--cwd <>") 1`] = `
+[
+  "--cwd",
+  "<>",
+]
+`;
+
+exports[`unit:internal/toChunks > kOption context > should return list of flags \`string\` chunks ("--debug") 1`] = `
+[
+  "--debug",
+]
+`;
+
+exports[`unit:internal/toChunks > kOption context > should return list of flags \`string\` chunks ("--gmt   []") 1`] = `
+[
+  "--gmt",
+  "[]",
+]
+`;
+
+exports[`unit:internal/toChunks > kOption context > should return list of flags \`string\` chunks ("--ps   --preserve-symlinks") 1`] = `
+[
+  "--ps",
+  "--preserve-symlinks",
+]
+`;
+
+exports[`unit:internal/toChunks > kOption context > should return list of flags \`string\` chunks ("--ws,--workspace []") 1`] = `
+[
+  "--ws",
+  "--workspace",
+  "[]",
+]
+`;
+
+exports[`unit:internal/toChunks > kOption context > should return list of flags \`string\` chunks ("-m|--mask <mask>") 1`] = `
+[
+  "-m",
+  "--mask",
+  "<mask>",
+]
+`;
+
+exports[`unit:internal/toChunks > kOption context > should return list of flags \`string\` chunks ("-p\\t|\\t--parent <!>") 1`] = `
+[
+  "-p",
+  "--parent",
+  "<!>",
+]
+`;
+
+exports[`unit:internal/toChunks > kOption context > should return list of flags \`string\` chunks ("-s   ,   --separator <char>") 1`] = `
+[
+  "-s",
+  "--separator",
+  "<char>",
+]
+`;
+
+exports[`unit:internal/toChunks > should return list of chunks ("<>") 1`] = `
+[
+  "<>",
+]
+`;
+
+exports[`unit:internal/toChunks > should return list of chunks ("<a>\\t<b>\\t[c]") 1`] = `
+[
+  "<a>",
+  "<b>",
+  "[c]",
+]
+`;
+
+exports[`unit:internal/toChunks > should return list of chunks ("clone <source> [destination]") 1`] = `
+[
+  "clone",
+  "<source>",
+  "[destination]",
+]
+`;

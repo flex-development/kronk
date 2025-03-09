@@ -22,7 +22,7 @@ a command line builder
 
 ## What is this?
 
-**TODO**: what is this?
+`kronk` is a utility for building command-line applications.
 
 ## Install
 

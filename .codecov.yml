@@ -18,7 +18,32 @@ comment:
   show_carryforward_flags: true
   show_critical_paths: true
 
-component_management: []
+component_management:
+  default_rules:
+    statuses:
+      - type: project
+        target: 100%
+  individual_components:
+    - component_id: constructs
+      name: constructs
+      paths:
+        - src/constructs/*.mts
+    - component_id: errors
+      name: errors
+      paths:
+        - src/errors/*.mts
+    - component_id: internal
+      name: internal
+      paths:
+        - src/internal/*.mts
+    - component_id: lib
+      name: lib
+      paths:
+        - src/lib/*.mts
+    - component_id: utils
+      name: utils
+      paths:
+        - src/utils/*.mts
 
 coverage:
   precision: 2
@@ -79,10 +104,15 @@ ignore:
   - '**/*.d.mts'
   - '**/__mocks__/'
   - '**/__tests__/'
-  - '**/index.mts'
   - '**/interfaces/'
   - '**/types/'
-  - '!src/index.mts'
 
 profiling:
-  critical_files_paths: []
+  critical_files_paths:
+    - src/constructs/delimiter.mts
+    - src/constructs/flag-long.mts
+    - src/constructs/flag-short.mts
+    - src/constructs/operand.mts
+    - src/lib/argument.mts
+    - src/lib/command.mts
+    - src/lib/option.mts
