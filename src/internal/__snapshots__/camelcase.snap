@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`unit:internal/camelcase > should return camelCased string ("debug") 1`] = `"debug"`;
+
+exports[`unit:internal/camelcase > should return camelCased string ("esbuild.log-level") 1`] = `"esbuild.logLevel"`;
+
+exports[`unit:internal/camelcase > should return camelCased string ("logLevel") 1`] = `"logLevel"`;
+
+exports[`unit:internal/camelcase > should return camelCased string ("pizza-type") 1`] = `"pizzaType"`;
+
+exports[`unit:internal/camelcase > should return camelCased string ("resolve.conditions") 1`] = `"resolve.conditions"`;

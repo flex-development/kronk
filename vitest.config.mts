@@ -45,9 +45,7 @@ function config(env: ConfigEnv): ViteUserConfig {
           '**/__mocks__/',
           '**/__tests__/',
           '**/interfaces/',
-          '**/types/',
-          '**/index.mts',
-          '!src/index.mts'
+          '**/types/'
         ],
         extension: ['.mts'],
         include: ['src'],
@@ -130,14 +128,14 @@ function config(env: ConfigEnv): ViteUserConfig {
           }
         }
       },
-      setupFiles: [],
+      setupFiles: ['./__tests__/setup/chai.mts'],
       snapshotFormat: {
         callToJSON: true,
         min: false,
         printBasicPrototype: false,
         printFunctionName: true
       },
-      snapshotSerializers: [],
+      snapshotSerializers: ['./__tests__/serializers/cwd.mts'],
       typecheck: {
         allowJs: false,
         checker: 'tsc',

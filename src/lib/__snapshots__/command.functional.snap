@@ -1,0 +1,324 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`functional:lib/Command > #checkChoices > should error on invalid command-argument choice 1`] = `
+{
+  "icon": "😵",
+  "message": {
+    "additional": [
+      "Choices: '0', '1', '2', '3', '4', '5', '6', '7', '8', and '9'",
+    ],
+    "cause": {
+      "choice": "13",
+      "choices": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+      ],
+    },
+    "code": 1,
+    "id": "kronk/invalid-argument",
+    "message": "Argument(<c>) does not allow '13'",
+  },
+  "tag": null,
+}
+`;
+
+exports[`functional:lib/Command > #checkChoices > should error on invalid option-argument choice 1`] = `
+{
+  "icon": "😵",
+  "message": {
+    "additional": [
+      "Choices: '1', '2', '3', '4', '5', '6', '7', '8', and '9'",
+    ],
+    "cause": {
+      "choice": "13",
+      "choices": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+      ],
+    },
+    "code": 1,
+    "id": "kronk/invalid-argument",
+    "message": "Option(-n\\t<!>) does not allow '13'",
+  },
+  "tag": null,
+}
+`;
+
+exports[`functional:lib/Command > #checkCommandArguments > should error on excess arguments (0) 1`] = `
+{
+  "icon": "😵",
+  "message": {
+    "additional": [],
+    "code": 1,
+    "id": "kronk/excess-arguments",
+    "message": "Expected \`1\` argument, but got \`2\`",
+  },
+  "tag": "clamp",
+}
+`;
+
+exports[`functional:lib/Command > #checkCommandArguments > should error on excess arguments (1) 1`] = `
+{
+  "icon": "😵",
+  "message": {
+    "additional": [],
+    "code": 1,
+    "id": "kronk/excess-arguments",
+    "message": "Expected \`1\` argument, but got \`3\`",
+  },
+  "tag": "split",
+}
+`;
+
+exports[`functional:lib/Command > #checkCommandArguments > should error on missing required argument 1`] = `
+{
+  "icon": "😵",
+  "message": {
+    "additional": [],
+    "code": 1,
+    "id": "kronk/missing-required-argument",
+    "message": "Missing required argument '<n>'",
+  },
+  "tag": "clamp",
+}
+`;
+
+exports[`functional:lib/Command > #checkCommandArguments > should error on missing required argument 2`] = `
+{
+  "icon": "😵",
+  "message": {
+    "additional": [],
+    "code": 1,
+    "id": "kronk/missing-required-argument",
+    "message": "Missing required argument '<c>'",
+  },
+  "tag": null,
+}
+`;
+
+exports[`functional:lib/Command > #checkForMissingMandatoryOptions > should error on missing mandatory option (0) 1`] = `
+{
+  "icon": "😵",
+  "message": {
+    "additional": [],
+    "code": 1,
+    "id": "kronk/missing-mandatory-option",
+    "message": "Option(-p | --parent <!>) is required",
+  },
+  "tag": "resolve",
+}
+`;
+
+exports[`functional:lib/Command > #checkForMissingMandatoryOptions > should error on missing mandatory option (1) 1`] = `
+{
+  "icon": "😵",
+  "message": {
+    "additional": [],
+    "code": 1,
+    "id": "kronk/missing-mandatory-option",
+    "message": "Option(-n\\t<!>) is required",
+  },
+  "tag": null,
+}
+`;
+
+exports[`functional:lib/Command > #checkForUnknownOptions > should error on unknown option (0) 1`] = `
+{
+  "icon": "😵",
+  "message": {
+    "additional": [],
+    "cause": {
+      "flag": "-c",
+    },
+    "code": 1,
+    "id": "kronk/unknown-option",
+    "message": "Unknown option '-c'",
+  },
+  "tag": "mlly",
+}
+`;
+
+exports[`functional:lib/Command > #checkForUnknownOptions > should error on unknown option (1) 1`] = `
+{
+  "icon": "😵",
+  "message": {
+    "additional": [],
+    "cause": {
+      "flag": "--verbose",
+    },
+    "code": 1,
+    "id": "kronk/unknown-option",
+    "message": "Unknown option '--verbose'",
+  },
+  "tag": "resolve",
+}
+`;
+
+exports[`functional:lib/Command > #prepareCommand > should error on extra option-argument (0) 1`] = `
+{
+  "icon": "😵",
+  "message": {
+    "additional": [],
+    "cause": {
+      "argument": "1",
+    },
+    "code": 1,
+    "id": "kronk/invalid-argument",
+    "message": "Option(-d | --debug) does not allow an argument",
+  },
+  "tag": "mlly",
+}
+`;
+
+exports[`functional:lib/Command > #prepareCommand > should error on extra option-argument (0) 2`] = `
+{
+  "icon": "😵",
+  "message": {
+    "additional": [],
+    "cause": {
+      "argument": "1",
+    },
+    "code": 1,
+    "id": "kronk/invalid-argument",
+    "message": "Option(-d | --debug) does not allow an argument",
+  },
+  "tag": "mlly",
+}
+`;
+
+exports[`functional:lib/Command > #prepareCommand > should error on extra option-argument (1) 1`] = `
+{
+  "icon": "😵",
+  "message": {
+    "additional": [],
+    "cause": {
+      "argument": "2",
+    },
+    "code": 1,
+    "id": "kronk/invalid-argument",
+    "message": "Option(-d | --debug) does not allow an argument",
+  },
+  "tag": "mlly",
+}
+`;
+
+exports[`functional:lib/Command > #prepareCommand > should error on extra option-argument (1) 2`] = `
+{
+  "icon": "😵",
+  "message": {
+    "additional": [],
+    "cause": {
+      "argument": "2",
+    },
+    "code": 1,
+    "id": "kronk/invalid-argument",
+    "message": "Option(-d | --debug) does not allow an argument",
+  },
+  "tag": "mlly",
+}
+`;
+
+exports[`functional:lib/Command > #prepareCommand > should error on extra option-argument (attached) (0) 1`] = `
+{
+  "icon": "😵",
+  "message": {
+    "additional": [],
+    "cause": {
+      "argument": "1",
+    },
+    "code": 1,
+    "id": "kronk/invalid-argument",
+    "message": "Option(-g | --gmt) does not allow an argument",
+  },
+  "tag": null,
+}
+`;
+
+exports[`functional:lib/Command > #prepareCommand > should error on extra option-argument (attached) (1) 1`] = `
+{
+  "icon": "😵",
+  "message": {
+    "additional": [],
+    "cause": {
+      "argument": "",
+    },
+    "code": 1,
+    "id": "kronk/invalid-argument",
+    "message": "Option(-u | --utc) does not allow an argument",
+  },
+  "tag": null,
+}
+`;
+
+exports[`functional:lib/Command > #prepareCommand > should error on extra option-argument (attached) (2) 1`] = `
+{
+  "icon": "😵",
+  "message": {
+    "additional": [],
+    "cause": {
+      "argument": "",
+    },
+    "code": 1,
+    "id": "kronk/invalid-argument",
+    "message": "Option(-d | --debug) does not allow an argument",
+  },
+  "tag": "mlly",
+}
+`;
+
+exports[`functional:lib/Command > #prepareCommand > should error on extra option-argument (attached) (3) 1`] = `
+{
+  "icon": "😵",
+  "message": {
+    "additional": [],
+    "cause": {
+      "argument": "1",
+    },
+    "code": 1,
+    "id": "kronk/invalid-argument",
+    "message": "Option(-d | --debug) does not allow an argument",
+  },
+  "tag": "mlly",
+}
+`;
+
+exports[`functional:lib/Command > #prepareCommand > should error on missing option-argument (0) 1`] = `
+{
+  "icon": "😵",
+  "message": {
+    "additional": [],
+    "code": 1,
+    "id": "kronk/invalid-argument",
+    "message": "Option(-m --mask <>) requires an argument",
+  },
+  "tag": null,
+}
+`;
+
+exports[`functional:lib/Command > #prepareCommand > should error on missing option-argument (1) 1`] = `
+{
+  "icon": "😵",
+  "message": {
+    "additional": [],
+    "code": 1,
+    "id": "kronk/invalid-argument",
+    "message": "Option(-c | --conditions <...>) requires an argument",
+  },
+  "tag": "resolve",
+}
+`;

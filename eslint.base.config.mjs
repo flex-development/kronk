@@ -988,7 +988,11 @@ export default [
       ],
       '@typescript-eslint/return-await': [2, 'in-try-catch'],
       '@typescript-eslint/strict-boolean-expressions': 0,
-      '@typescript-eslint/switch-exhaustiveness-check': 2,
+      '@typescript-eslint/switch-exhaustiveness-check': [2, {
+        allowDefaultCaseForExhaustiveSwitch: true,
+        considerDefaultExhaustiveForUnions: true,
+        requireDefaultForNonUnion: false
+      }],
       '@typescript-eslint/unbound-method': [2, { ignoreStatic: true }],
       '@typescript-eslint/use-unknown-in-catch-callback-variable': 2,
       'consistent-return': 0,
@@ -1047,9 +1051,10 @@ export default [
   },
   {
     files: [
+      '**/__fixtures__/**/*.mts',
       '**/__mocks__/**/*.+(mts|ts|tsx)',
-      '**/__tests__/*.spec.+(mts|ts|tsx)',
       '**/__tests__/*.spec-d.+(mts|ts)',
+      '**/__tests__/*.spec.+(mts|ts|tsx)',
       '**/__tests__/setup/*.+(mts|ts|tsx)',
       '**/__tests__/utils/*.+(mts|ts|tsx)'
     ],
@@ -1072,7 +1077,16 @@ export default [
         vi: true,
         vitest: true
       }
-    },
+    }
+  },
+  {
+    files: [
+      '**/__mocks__/**/*.+(mts|ts|tsx)',
+      '**/__tests__/*.spec.+(mts|ts|tsx)',
+      '**/__tests__/*.spec-d.+(mts|ts)',
+      '**/__tests__/setup/*.+(mts|ts|tsx)',
+      '**/__tests__/utils/*.+(mts|ts|tsx)'
+    ],
     plugins: {
       'chai-expect': await plugin('eslint-plugin-chai-expect'),
       'jest-formatting': await plugin('eslint-plugin-jest-formatting')
@@ -1080,6 +1094,7 @@ export default [
     rules: {
       '@typescript-eslint/class-literal-property-style': 0,
       '@typescript-eslint/no-base-to-string': 0,
+      '@typescript-eslint/no-confusing-void-expression': 0,
       '@typescript-eslint/no-empty-function': 0,
       '@typescript-eslint/no-invalid-void-type': 0,
       '@typescript-eslint/no-unused-expressions': 0,

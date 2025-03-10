@@ -40,9 +40,6 @@ updates:
       flex-development:
         patterns:
           - '@flex-development/*'
-      nestjs:
-        patterns:
-          - '@nestjs/*'
       remark:
         patterns:
           - 'remark-*'

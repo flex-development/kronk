@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`unit:internal/snakecase > should return snake_case string ("debug") 1`] = `"debug"`;
+
+exports[`unit:internal/snakecase > should return snake_case string ("esbuild.log-level") 1`] = `"esbuild.log_level"`;
+
+exports[`unit:internal/snakecase > should return snake_case string ("logLevel") 1`] = `"logLevel"`;
+
+exports[`unit:internal/snakecase > should return snake_case string ("pizza-type") 1`] = `"pizza_type"`;
+
+exports[`unit:internal/snakecase > should return snake_case string ("resolve.conditions") 1`] = `"resolve.conditions"`;

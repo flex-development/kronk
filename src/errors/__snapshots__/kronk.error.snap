@@ -1,0 +1,44 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`unit:errors/KronkError > #toJSON > should return error as json object 1`] = `
+{
+  "additional": [
+    "Choices: 'default', 'expiresHeaderFormat', 'fullDate', 'isoDate', 'isoDateTime', 'isoTime', 'isoUtcDateTime', 'longDate', 'longTime', 'mediumDate', 'mediumTime', 'paddedShortDate', 'shortDate', and 'shortTime'",
+  ],
+  "cause": {
+    "choice": "h",
+    "choices": [
+      "default",
+      "expiresHeaderFormat",
+      "fullDate",
+      "isoDate",
+      "isoDateTime",
+      "isoTime",
+      "isoUtcDateTime",
+      "longDate",
+      "longTime",
+      "mediumDate",
+      "mediumTime",
+      "paddedShortDate",
+      "shortDate",
+      "shortTime",
+    ],
+  },
+  "code": 1,
+  "id": "kronk/invalid-argument",
+  "message": "\`Option(-m --mask <mask>)\` does not allow \`h\`",
+  "stack": KronkError: \`Option(-m --mask <mask>)\` does not allow \`h\`
+    at \${process.cwd()}/src/errors/__tests__/kronk.error.spec.mts:120:14
+    at file://\${process.cwd()}/node_modules/@vitest/runner/dist/index.js:174:14
+    at file://\${process.cwd()}/node_modules/@vitest/runner/dist/index.js:558:28
+    at file://\${process.cwd()}/node_modules/@vitest/runner/dist/index.js:61:24
+    at new Promise (<anonymous>)
+    at runWithTimeout (file://\${process.cwd()}/node_modules/@vitest/runner/dist/index.js:41:12)
+    at runTest (file://\${process.cwd()}/node_modules/@vitest/runner/dist/index.js:1137:17)
+    at runSuite (file://\${process.cwd()}/node_modules/@vitest/runner/dist/index.js:1291:15)
+    at runSuite (file://\${process.cwd()}/node_modules/@vitest/runner/dist/index.js:1291:15)
+    at runSuite (file://\${process.cwd()}/node_modules/@vitest/runner/dist/index.js:1291:15),
+}
+`;
+
+exports[`unit:errors/KronkError > #toString > should return error as human-readable string 1`] = `"[kronk/invalid-flag] Option(-ws, --workspace) failed due to '-ws'"`;

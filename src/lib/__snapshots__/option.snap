@@ -1,0 +1,23 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`unit:lib/Option > #id > should be option id ("--parent <!>") 1`] = `"parent"`;
+
+exports[`unit:lib/Option > #id > should be option id ("-s") 1`] = `"s"`;
+
+exports[`unit:lib/Option > #id > should be option id ("-w | --watch") 1`] = `"watch"`;
+
+exports[`unit:lib/Option > #long > should be non-empty string if option has long flag ("--workspace, --ws") 1`] = `"--workspace"`;
+
+exports[`unit:lib/Option > #long > should be non-empty string if option has long flag ("--ws, --workspace") 1`] = `"--workspace"`;
+
+exports[`unit:lib/Option > #long > should be non-empty string if option has long flag ("-T | --token <>") 1`] = `"--token"`;
+
+exports[`unit:lib/Option > #short > should be non-empty string if option has short flag ("--workspace, --ws") 1`] = `"--ws"`;
+
+exports[`unit:lib/Option > #short > should be non-empty string if option has short flag ("--ws, --workspace") 1`] = `"--ws"`;
+
+exports[`unit:lib/Option > #short > should be non-empty string if option has short flag ("-t | --token <>") 1`] = `"-t"`;
+
+exports[`unit:lib/Option > should throw if no flags are found 1`] = `"No flags found in Option()"`;
+
+exports[`unit:lib/Option > should throw on invalid flags string part 1`] = `"Option(-ws, --workspace) failed due to '-ws'"`;
