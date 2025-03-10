@@ -27,5 +27,35 @@ export default [
       '**/dist/',
       '**/tsconfig*temp.json'
     ]
+  },
+  {
+    files: ['__fixtures__/commands/*.mts'],
+    rules: {
+      '@typescript-eslint/no-unused-expressions': 0
+    }
+  },
+  {
+    files: ['__fixtures__/process.mts'],
+    rules: {
+      'jsdoc/require-returns-check': 0
+    }
+  },
+  {
+    files: ['src/constructs/*.mts'],
+    rules: {
+      'unicorn/no-this-assignment': 0
+    }
+  },
+  {
+    files: ['src/enums/codes.mts'],
+    rules: {
+      'sort-keys': 0
+    }
+  },
+  {
+    files: ['src/interfaces/info-argument.mts'],
+    rules: {
+      '@typescript-eslint/no-redundant-type-constituents': 0
+    }
   }
 ]

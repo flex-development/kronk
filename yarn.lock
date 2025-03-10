@@ -1396,6 +1396,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@flex-development/builtin-modules@npm:2.1.2":
+  version: 2.1.2
+  resolution: "@flex-development/builtin-modules@npm:2.1.2::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40flex-development%2Fbuiltin-modules%2F2.1.2%2Ff4d6b61c135889cf80f743e370b1576ee25dfac2"
+  checksum: 10/62ce59ebf6710e750fc306cf641674ea29c5c4a0d33e3360d99120248fbb7643a944301f438e59e8207ba79319bff566e5a1adb0dc6ac92433097b1fc36e57a8
+  languageName: node
+  linkType: hard
+
 "@flex-development/colors@npm:1.0.1":
   version: 1.0.1
   resolution: "@flex-development/colors@npm:1.0.1::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40flex-development%2Fcolors%2F1.0.1%2F4a1f3a213c775f6b655ab29a7d92998efb13306b"
@@ -1567,6 +1574,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@flex-development/is-builtin@npm:3.2.0":
+  version: 3.2.0
+  resolution: "@flex-development/is-builtin@npm:3.2.0::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40flex-development%2Fis-builtin%2F3.2.0%2F555baad0f0c1a9b329b3b6e5aaa763490d2394ae"
+  dependencies:
+    "@flex-development/builtin-modules": "npm:2.1.2"
+  checksum: 10/3f52c5bd289b9518720b31d50458f1f9416523e502969f659174d8054b208b17a38d88e5d2e51402f56ca07c4f7d63e786745f6ced558a8f478a55ca0e97d67a
+  languageName: node
+  linkType: hard
+
 "@flex-development/kronk@workspace:.":
   version: 0.0.0-use.local
   resolution: "@flex-development/kronk@workspace:."
@@ -1578,15 +1594,19 @@ __metadata:
     "@flex-development/colors": "npm:1.0.1"
     "@flex-development/commitlint-config": "npm:1.0.1"
     "@flex-development/grease": "npm:3.0.0-alpha.9"
+    "@flex-development/log": "flex-development/log#commit=194e98812fbbffceb6e2158b849706c597175207"
+    "@flex-development/mlly": "npm:1.0.0-alpha.20"
     "@flex-development/pathe": "npm:4.0.1"
     "@flex-development/tutils": "npm:6.0.0-alpha.25"
+    "@flex-development/vfile-tokenizer": "flex-development/vfile-tokenizer#commit=d1f4367bd2b2378fdb87cdd641ccb78cc2f87b98"
     "@stylistic/eslint-plugin": "npm:4.1.0"
     "@tsconfig/strictest": "npm:2.0.5"
     "@types/chai": "npm:5.0.1"
+    "@types/dateformat": "npm:5.0.3"
     "@types/eslint": "npm:9.6.1"
     "@types/eslint__js": "npm:8.42.3"
     "@types/is-ci": "npm:3.0.4"
-    "@types/node": "npm:22.13.1"
+    "@types/node": "npm:22.13.4"
     "@types/node-notifier": "npm:8.0.5"
     "@typescript-eslint/eslint-plugin": "npm:8.25.0"
     "@typescript-eslint/parser": "npm:8.25.0"
@@ -1594,8 +1614,10 @@ __metadata:
     "@vitest/coverage-v8": "npm:3.0.7"
     "@vitest/ui": "npm:3.0.7"
     chai: "npm:5.2.0"
+    commander: "npm:13.1.0"
     cross-env: "npm:7.0.3"
     cspell: "npm:8.17.5"
+    dateformat: "npm:5.0.3"
     devlop: "npm:1.1.0"
     dprint: "npm:0.49.0"
     editorconfig: "npm:2.0.1"
@@ -1617,7 +1639,9 @@ __metadata:
     husky: "npm:9.1.7"
     is-ci: "npm:4.1.0"
     jsonc-eslint-parser: "npm:2.4.0"
+    micromark-util-character: "npm:2.1.1"
     node-notifier: "npm:10.0.1"
+    plur: "npm:5.1.0"
     prettier: "npm:3.5.2"
     remark: "npm:15.0.1"
     remark-cli: "npm:12.0.1"
@@ -1690,9 +1714,10 @@ __metadata:
     remark-lint-unordered-list-marker-style: "npm:4.0.1"
     remark-validate-links: "npm:13.1.0"
     sh-syntax: "npm:0.4.2"
+    to-vfile: "npm:8.0.0"
     trash-cli: "npm:6.0.0"
     ts-dedent: "npm:2.2.0"
-    typescript: "npm:5.7.3"
+    typescript: "npm:5.8.2"
     typescript-eslint: "npm:8.25.0"
     unified: "npm:11.0.5"
     vfile: "npm:6.0.3"
@@ -1700,6 +1725,21 @@ __metadata:
     yaml-eslint-parser: "npm:1.2.3"
   languageName: unknown
   linkType: soft
+
+"@flex-development/log@flex-development/log#commit=194e98812fbbffceb6e2158b849706c597175207":
+  version: 4.0.1-dev.3
+  resolution: "@flex-development/log@https://github.com/flex-development/log.git#commit=194e98812fbbffceb6e2158b849706c597175207"
+  dependencies:
+    "@flex-development/colors": "npm:1.0.1"
+    "@flex-development/pathe": "npm:4.0.1"
+    "@flex-development/tutils": "npm:6.0.0-alpha.25"
+    devlop: "npm:1.1.0"
+    is-unicode-supported: "npm:2.1.0"
+    node-inspect-extracted: "npm:3.0.2"
+    string-width: "npm:7.2.0"
+  checksum: 10/2ba55085ed0e8d9868ee67268d59327f5f5206e7980c5bc39cd9ae3b2abaa94a092bd3d5026ff0dedbc3c9a4591ed56955007013b26fde27d807ea53b637b960
+  languageName: node
+  linkType: hard
 
 "@flex-development/mkbuild@npm:1.0.0-alpha.23":
   version: 1.0.0-alpha.23
@@ -1766,6 +1806,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@flex-development/mlly@npm:1.0.0-alpha.20":
+  version: 1.0.0-alpha.20
+  resolution: "@flex-development/mlly@npm:1.0.0-alpha.20::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40flex-development%2Fmlly%2F1.0.0-alpha.20%2F15fca71d9818a3c28b519a77f5209307b64d02d6"
+  dependencies:
+    "@flex-development/errnode": "npm:3.1.1"
+    "@flex-development/is-builtin": "npm:3.2.0"
+    "@flex-development/pathe": "npm:4.0.1"
+    "@flex-development/pkg-types": "npm:4.1.0"
+    devlop: "npm:1.1.0"
+  checksum: 10/5593d2e89c049218b68c5b0c29e0f3f33120cafd1641f9a71f4206a01bf18d67e33819745b8a1fa6d36166397cea6e1655c6f032f8cbb679976aa776eff2b6e1
+  languageName: node
+  linkType: hard
+
 "@flex-development/pathe@npm:1.0.3":
   version: 1.0.3
   resolution: "@flex-development/pathe@npm:1.0.3::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40flex-development%2Fpathe%2F1.0.3%2F097d5bd49df40304b86645ee9fd50be7711eac56"
@@ -1813,6 +1866,13 @@ __metadata:
   peerDependencies:
     "@flex-development/tutils": ">=6.0.0-alpha.7"
   checksum: 10/062f48ff66312b63d55f175f766fab81a56dd394b11631ef516c24a3faf4da2ec62b0aeb1bb686044d072a1a7c0158766b4ff4fceae4d1a02286bf0ce4c4731c
+  languageName: node
+  linkType: hard
+
+"@flex-development/pkg-types@npm:4.1.0":
+  version: 4.1.0
+  resolution: "@flex-development/pkg-types@npm:4.1.0::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40flex-development%2Fpkg-types%2F4.1.0%2F2e1d878d4dc0e935d3ed08eaf3132e925ea5b721"
+  checksum: 10/9188a373fab25821a56c07d492520a40b72da2e9c90d878514616e619f7ed8ea6c461b85e41b15660d6e625eb7d68668566483c9c94dc49263a0deea9c7a481e
   languageName: node
   linkType: hard
 
@@ -1921,6 +1981,51 @@ __metadata:
   peerDependencies:
     typescript: ">=4.7"
   checksum: 10/161901c611f0049464cc53e128b8285f12a9dc6ef551a8c8a4bd47d9e2d73afcc53c25fbcd18189dcda28a460ea64e8801398159b6daaaff63d0552d140f1f02
+  languageName: node
+  linkType: hard
+
+"@flex-development/unist-util-builder@npm:2.0.0":
+  version: 2.0.0
+  resolution: "@flex-development/unist-util-builder@npm:2.0.0::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40flex-development%2Funist-util-builder%2F2.0.0%2F2589c6774a811c50c2d08501dfcd1a5ed551c883"
+  dependencies:
+    "@flex-development/unist-util-types": "npm:1.6.1"
+    "@types/unist": "npm:3.0.2"
+  checksum: 10/58e6dc90395b636d7c02d5ab5966a8fbdaf0e9a01c8ff99398e98f8570b422b9c08492365968a85517d6d7991f095a11732a37f775a5af8773c2dda2f673de6d
+  languageName: node
+  linkType: hard
+
+"@flex-development/unist-util-types@npm:1.6.1":
+  version: 1.6.1
+  resolution: "@flex-development/unist-util-types@npm:1.6.1::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40flex-development%2Funist-util-types%2F1.6.1%2F0deabf0a30d32dc9ae23aea394ef67b8f0b806b9"
+  dependencies:
+    "@types/unist": "npm:3.0.2"
+  checksum: 10/fd308bb9673987b588d54afc56821fefaad9233fecf8d76f352a055c339716979f3c2e1b2d145628ffa0d9ac033fbe28d942294a029d98b52334dd9703471f99
+  languageName: node
+  linkType: hard
+
+"@flex-development/vfile-location@npm:1.1.0":
+  version: 1.1.0
+  resolution: "@flex-development/vfile-location@npm:1.1.0::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40flex-development%2Fvfile-location%2F1.1.0%2F3cb3d9ff81e6a56c0e5e50048701f90db0eb80e0"
+  dependencies:
+    "@flex-development/unist-util-types": "npm:1.6.1"
+    "@types/unist": "npm:3.0.2"
+    vfile: "npm:6.0.2"
+  checksum: 10/3f217ede58e7f8855b412e7f25f78983a4c5e4256c1c3ab330efc7f8dbe0e30ca6983944950c1ac3b74081afba2d23688efef264c9e11bae796593ec85921c52
+  languageName: node
+  linkType: hard
+
+"@flex-development/vfile-tokenizer@flex-development/vfile-tokenizer#commit=d1f4367bd2b2378fdb87cdd641ccb78cc2f87b98":
+  version: 0.0.0
+  resolution: "@flex-development/vfile-tokenizer@https://github.com/flex-development/vfile-tokenizer.git#commit=d1f4367bd2b2378fdb87cdd641ccb78cc2f87b98"
+  dependencies:
+    "@flex-development/unist-util-builder": "npm:2.0.0"
+    "@flex-development/unist-util-types": "npm:1.6.1"
+    "@flex-development/vfile-location": "npm:1.1.0"
+    "@types/debug": "npm:4.1.12"
+    debug: "npm:4.3.5"
+    devlop: "npm:1.1.0"
+    micromark-util-chunked: "npm:2.0.0"
+  checksum: 10/0ae7d907f9f9bed2ecbc83b0e47aae6ea286d5c0da82c3640400c6020dd2cc67b9afea5369523731cf15b5a15877f8ed92a27147d2ab8ac1d002348672fa2796
   languageName: node
   linkType: hard
 
@@ -2488,7 +2593,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/debug@npm:^4.0.0":
+"@types/dateformat@npm:5.0.3":
+  version: 5.0.3
+  resolution: "@types/dateformat@npm:5.0.3"
+  checksum: 10/7ec385f4914a476efe2670f7c56c342516f53d3288c7c3b5c426ed5f85c98eb08d361a8ecafb179fb323e15bd357106e83b8a27417eb192f18b6d6bbf9863f92
+  languageName: node
+  linkType: hard
+
+"@types/debug@npm:4.1.12, @types/debug@npm:^4.0.0":
   version: 4.1.12
   resolution: "@types/debug@npm:4.1.12"
   dependencies:
@@ -2644,12 +2756,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:22.13.1":
-  version: 22.13.1
-  resolution: "@types/node@npm:22.13.1"
+"@types/node@npm:*, @types/node@npm:22.13.4":
+  version: 22.13.4
+  resolution: "@types/node@npm:22.13.4"
   dependencies:
     undici-types: "npm:~6.20.0"
-  checksum: 10/d8ba7068b0445643c0fa6e4917cdb7a90e8756a9daff8c8a332689cd5b2eaa01e4cd07de42e3cd7e6a6f465eeda803d5a1363d00b5ab3f6cea7950350a159497
+  checksum: 10/716e05b1b84d9da3b2cbba9f642d7294549a89c85d27148b48815f321e0081d0546366e97d11c7710a3280160828512eb945f4e9361dda980f708473758ac0a7
   languageName: node
   linkType: hard
 
@@ -2703,6 +2815,13 @@ __metadata:
   version: 3.0.3
   resolution: "@types/unist@npm:3.0.3"
   checksum: 10/96e6453da9e075aaef1dc22482463898198acdc1eeb99b465e65e34303e2ec1e3b1ed4469a9118275ec284dc98019f63c3f5d49422f0e4ac707e5ab90fb3b71a
+  languageName: node
+  linkType: hard
+
+"@types/unist@npm:3.0.2":
+  version: 3.0.2
+  resolution: "@types/unist@npm:3.0.2"
+  checksum: 10/3d04d0be69316e5f14599a0d993a208606c12818cf631fd399243d1dc7a9bd8a3917d6066baa6abc290814afbd744621484756803c80cba892c39cd4b4a85616
   languageName: node
   linkType: hard
 
@@ -3745,17 +3864,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"commander@npm:13.1.0, commander@npm:^13.1.0":
+  version: 13.1.0
+  resolution: "commander@npm:13.1.0"
+  checksum: 10/d3b4b79e6be8471ddadacbb8cd441fe82154d7da7393b50e76165a9e29ccdb74fa911a186437b9a211d0fc071db6051915c94fb8ef16d77511d898e9dbabc6af
+  languageName: node
+  linkType: hard
+
 "commander@npm:^10.0.1":
   version: 10.0.1
   resolution: "commander@npm:10.0.1"
   checksum: 10/8799faa84a30da985802e661cc9856adfaee324d4b138413013ef7f087e8d7924b144c30a1f1405475f0909f467665cd9e1ce13270a2f41b141dab0b7a58f3fb
-  languageName: node
-  linkType: hard
-
-"commander@npm:^13.1.0":
-  version: 13.1.0
-  resolution: "commander@npm:13.1.0"
-  checksum: 10/d3b4b79e6be8471ddadacbb8cd441fe82154d7da7393b50e76165a9e29ccdb74fa911a186437b9a211d0fc071db6051915c94fb8ef16d77511d898e9dbabc6af
   languageName: node
   linkType: hard
 
@@ -4125,6 +4244,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dateformat@npm:5.0.3":
+  version: 5.0.3
+  resolution: "dateformat@npm:5.0.3"
+  checksum: 10/e7ef2f48faa8edd8a64c94b4ec1fe700777cd2f9db6411e76115eac7773255eef3cf12142568a90a665dfe90a7832a2af06e3d4ea3a0fac3727c3a7a4eac2568
+  languageName: node
+  linkType: hard
+
 "debug@npm:4, debug@npm:^4.0.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.3, debug@npm:^4.3.4, debug@npm:^4.3.6, debug@npm:^4.3.7, debug@npm:^4.4.0":
   version: 4.4.0
   resolution: "debug@npm:4.4.0"
@@ -4134,6 +4260,18 @@ __metadata:
     supports-color:
       optional: true
   checksum: 10/1847944c2e3c2c732514b93d11886575625686056cd765336212dc15de2d2b29612b6cd80e1afba767bb8e1803b778caf9973e98169ef1a24a7a7009e1820367
+  languageName: node
+  linkType: hard
+
+"debug@npm:4.3.5":
+  version: 4.3.5
+  resolution: "debug@npm:4.3.5"
+  dependencies:
+    ms: "npm:2.1.2"
+  peerDependenciesMeta:
+    supports-color:
+      optional: true
+  checksum: 10/cb6eab424c410e07813ca1392888589972ce9a32b8829c6508f5e1f25f3c3e70a76731610ae55b4bbe58d1a2fffa1424b30e97fa8d394e49cd2656a9643aedd2
   languageName: node
   linkType: hard
 
@@ -6057,6 +6195,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"irregular-plurals@npm:^3.3.0":
+  version: 3.5.0
+  resolution: "irregular-plurals@npm:3.5.0"
+  checksum: 10/27f04e66402264b78251c03973dd4866aba58b851579b2f1870f3610494a163c20c5161a3eae8fdd49a61a5379ee611460a1781aadc891ce0203bcd7a52e4850
+  languageName: node
+  linkType: hard
+
 "is-alphabetical@npm:^1.0.0":
   version: 1.0.4
   resolution: "is-alphabetical@npm:1.0.4"
@@ -6383,6 +6528,13 @@ __metadata:
   version: 2.0.0
   resolution: "is-unicode-supported@npm:2.0.0"
   checksum: 10/000b80639dedaf59a385f1c0a57f97a4d1435e0723716f24cc19ad94253a7a0a9f838bdc9ac49b10a29ac93b01f52ae9b2ed358a8876caf1eb74d73b4ede92b2
+  languageName: node
+  linkType: hard
+
+"is-unicode-supported@npm:2.1.0":
+  version: 2.1.0
+  resolution: "is-unicode-supported@npm:2.1.0"
+  checksum: 10/f254e3da6b0ab1a57a94f7273a7798dd35d1d45b227759f600d0fa9d5649f9c07fa8d3c8a6360b0e376adf916d151ec24fc9a50c5295c58bae7ca54a76a063f9
   languageName: node
   linkType: hard
 
@@ -7536,17 +7688,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"micromark-util-character@npm:^2.0.0":
-  version: 2.1.0
-  resolution: "micromark-util-character@npm:2.1.0"
+"micromark-util-character@npm:2.1.1, micromark-util-character@npm:^2.0.0":
+  version: 2.1.1
+  resolution: "micromark-util-character@npm:2.1.1"
   dependencies:
     micromark-util-symbol: "npm:^2.0.0"
     micromark-util-types: "npm:^2.0.0"
-  checksum: 10/089fe853c2bede2a48fd73d977910fa657c3cf6649eddcd300557a975c6c7f1c73030d01724a483ff1dc69a0d3ac28b43b2ba4210f5ea6414807cdcd0c2fa63c
+  checksum: 10/85da8f8e5f7ed16046575bef5b0964ca3fca3162b87b74ae279f1e48eb7160891313eb64f04606baed81c58b514dbdb64f1a9d110a51baaaa79225d72a7b1852
   languageName: node
   linkType: hard
 
-"micromark-util-chunked@npm:^2.0.0":
+"micromark-util-chunked@npm:2.0.0, micromark-util-chunked@npm:^2.0.0":
   version: 2.0.0
   resolution: "micromark-util-chunked@npm:2.0.0"
   dependencies:
@@ -7899,6 +8051,13 @@ __metadata:
   version: 2.0.0
   resolution: "mrmime@npm:2.0.0"
   checksum: 10/8d95f714ea200c6cf3e3777cbc6168be04b05ac510090a9b41eef5ec081efeb1d1de3e535ffb9c9689fffcc42f59864fd52a500e84a677274f070adeea615c45
+  languageName: node
+  linkType: hard
+
+"ms@npm:2.1.2":
+  version: 2.1.2
+  resolution: "ms@npm:2.1.2"
+  checksum: 10/673cdb2c3133eb050c745908d8ce632ed2c02d85640e2edb3ace856a2266a813b30c613569bf3354fdf4ea7d1a1494add3bfa95e2713baa27d0c2c71fc44f58f
   languageName: node
   linkType: hard
 
@@ -8569,6 +8728,15 @@ __metadata:
   version: 2.0.4
   resolution: "pinkie@npm:2.0.4"
   checksum: 10/11d207257a044d1047c3755374d36d84dda883a44d030fe98216bf0ea97da05a5c9d64e82495387edeb9ee4f52c455bca97cdb97629932be65e6f54b29f5aec8
+  languageName: node
+  linkType: hard
+
+"plur@npm:5.1.0":
+  version: 5.1.0
+  resolution: "plur@npm:5.1.0"
+  dependencies:
+    irregular-plurals: "npm:^3.3.0"
+  checksum: 10/57e400dc4b926768fb0abab7f8688fe17e85673712134546e7beaaee188bae7e0504976e847d7e41d0d6103ff2fd61204095f03c2a45de19a8bad15aecb45cc1
   languageName: node
   linkType: hard
 
@@ -10326,6 +10494,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"string-width@npm:7.2.0":
+  version: 7.2.0
+  resolution: "string-width@npm:7.2.0"
+  dependencies:
+    emoji-regex: "npm:^10.3.0"
+    get-east-asian-width: "npm:^1.0.0"
+    strip-ansi: "npm:^7.1.0"
+  checksum: 10/42f9e82f61314904a81393f6ef75b832c39f39761797250de68c041d8ba4df2ef80db49ab6cd3a292923a6f0f409b8c9980d120f7d32c820b4a8a84a2598a295
+  languageName: node
+  linkType: hard
+
 "string-width@npm:^5.0.1, string-width@npm:^5.1.2":
   version: 5.1.2
   resolution: "string-width@npm:5.1.2"
@@ -10656,6 +10835,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"to-vfile@npm:8.0.0":
+  version: 8.0.0
+  resolution: "to-vfile@npm:8.0.0"
+  dependencies:
+    vfile: "npm:^6.0.0"
+  checksum: 10/95552e5c9158e65762cc1ce341f55e9b1ae3267e5a8fb3fa18f5710b588c51b03088c5011aef0a60ac334392cfee142ff4da132234bdfc9da822f3db5cbc8d81
+  languageName: node
+  linkType: hard
+
 "totalist@npm:^3.0.0":
   version: 3.0.1
   resolution: "totalist@npm:3.0.1"
@@ -10859,13 +11047,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.7.3":
-  version: 5.7.3
-  resolution: "typescript@npm:5.7.3"
+"typescript@npm:5.8.2":
+  version: 5.8.2
+  resolution: "typescript@npm:5.8.2"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10/6a7e556de91db3d34dc51cd2600e8e91f4c312acd8e52792f243c7818dfadb27bae677175fad6947f9c81efb6c57eb6b2d0c736f196a6ee2f1f7d57b74fc92fa
+  checksum: 10/dbc2168a55d56771f4d581997be52bab5cbc09734fec976cfbaabd787e61fb4c6cf9125fd48c6f98054ce549c77ecedefc7f64252a830dd8e9c3381f61fbeb78
   languageName: node
   linkType: hard
 
@@ -10879,13 +11067,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A5.7.3#optional!builtin<compat/typescript>":
-  version: 5.7.3
-  resolution: "typescript@patch:typescript@npm%3A5.7.3#optional!builtin<compat/typescript>::version=5.7.3&hash=5786d5"
+"typescript@patch:typescript@npm%3A5.8.2#optional!builtin<compat/typescript>":
+  version: 5.8.2
+  resolution: "typescript@patch:typescript@npm%3A5.8.2#optional!builtin<compat/typescript>::version=5.8.2&hash=5786d5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10/dc58d777eb4c01973f7fbf1fd808aad49a0efdf545528dab9b07d94fdcb65b8751742804c3057e9619a4627f2d9cc85547fdd49d9f4326992ad0181b49e61d81
+  checksum: 10/97920a082ffc57583b1cb6bc4faa502acc156358e03f54c7fc7fdf0b61c439a717f4c9070c449ee9ee683d4cfc3bb203127c2b9794b2950f66d9d307a4ff262c
   languageName: node
   linkType: hard
 
@@ -11321,6 +11509,17 @@ __metadata:
     vfile: "npm:^6.0.0"
     vfile-message: "npm:^4.0.0"
   checksum: 10/0dbbc8adeb73bb24b5f723e947122e1ae7b6bd0c5ff3fd1ae0ef4a3066f74be00425102c95aa4eaa0f529ba05237255fe8342af76661b0ba6aee3f4c16ca135f
+  languageName: node
+  linkType: hard
+
+"vfile@npm:6.0.2":
+  version: 6.0.2
+  resolution: "vfile@npm:6.0.2"
+  dependencies:
+    "@types/unist": "npm:^3.0.0"
+    unist-util-stringify-position: "npm:^4.0.0"
+    vfile-message: "npm:^4.0.0"
+  checksum: 10/8c36b4887b071aa9215a16c96916e96e75f3f3516cb87fa7ba1ec79fda3a1d87b66068e56b73f01c249b8fefa897dc52e3a6c736fd1053133ad3920f33482756
   languageName: node
   linkType: hard
 

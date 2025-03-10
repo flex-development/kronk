@@ -8,6 +8,7 @@ docast
 dohm
 dprint
 esbuild
+exiter
 fbca
 ggshield
 gpgsign
@@ -15,13 +16,17 @@ hmarr
 jchen
 kaisugi
 kronk
+ksort
 nvmrc
 pkgs
 remarkrc
 rollup
 sarif
+sfmt
 shfmt
+tribonacci
 unstub
+variadics
 vates
 vitest
 yarnrc

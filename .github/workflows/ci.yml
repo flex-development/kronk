@@ -250,13 +250,8 @@ jobs:
       - gitguardian
       - preflight
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        typescript-version:
-          - ${{ needs.preflight.outputs.version-typescript }}
     env:
-      TYPESCRIPT_VERSION: ${{ matrix.typescript-version }}
+      TYPESCRIPT_VERSION: ${{ needs.preflight.outputs.version-typescript }}
       VITEST_REPORT: ./.vitest-reports/typecheck.blob.json
     if: ${{ fromJson(needs.preflight.outputs.typecheck-files) }}
     steps:
@@ -336,6 +331,8 @@ jobs:
           path: ${{ env.CACHE_PATH }}
       - id: test
         name: Run tests
+        env:
+          TZ: ${{ vars.TZ }}
         run: |
           yarn test:cov --coverage.thresholds.100=false \
           && echo "coverage=$(jq '${{ env.PCT }}' ${{ env.COVERAGE_SUMMARY }} -r)" >>$GITHUB_OUTPUT
