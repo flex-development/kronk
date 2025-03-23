@@ -31,7 +31,7 @@ export default {
    *  Required argument syntax string
    */
   required(this: void, options?: Options | null | undefined): ArgumentSyntax {
-    return `${chars.lt}${id(options)}${chars.gt}`
+    return `${chars.leftAngleBracket}${id(options)}${chars.rightAngleBracket}`
   }
 }
 

@@ -8,10 +8,6 @@ import type { Command, CommandName, List } from '@flex-development/kronk'
 /**
  * Find a command with a name or alias matching `x`.
  *
- * @see {@linkcode CommandName}
- * @see {@linkcode Command}
- * @see {@linkcode List}
- *
  * @this {void}
  *
  * @param {Command} command

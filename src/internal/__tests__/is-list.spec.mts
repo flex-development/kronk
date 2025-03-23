@@ -3,8 +3,8 @@
  * @module kronk/internal/tests/unit/isList
  */
 
-import codes from '#enums/codes'
 import testSubject from '#internal/is-list'
+import { codes } from '@flex-development/vfile-tokenizer'
 
 describe('unit:internal/isList', () => {
   it.each<Parameters<typeof testSubject>>([

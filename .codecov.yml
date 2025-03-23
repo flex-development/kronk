@@ -109,10 +109,7 @@ ignore:
 
 profiling:
   critical_files_paths:
-    - src/constructs/delimiter.mts
-    - src/constructs/flag-long.mts
-    - src/constructs/flag-short.mts
-    - src/constructs/operand.mts
+    - src/constructs/*.mts
     - src/lib/argument.mts
     - src/lib/command.mts
     - src/lib/option.mts

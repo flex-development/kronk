@@ -3,7 +3,6 @@
  * @module fixtures/commands/smallestNum
  */
 
-import process from '#fixtures/process'
 import sfmt from '#tests/utils/sfmt'
 import type { CommandInfo } from '@flex-development/kronk'
 
@@ -19,8 +18,7 @@ export default {
     syntax: sfmt.required({ id: 'num', variadic: true })
   },
   description: 'find the smallest number',
-  name: 'smallest-num',
-  process
+  name: 'smallest-num'
 } as CommandInfo
 
 /**

@@ -3,7 +3,6 @@
  * @module fixtures/commands/string-util
  */
 
-import process from '#fixtures/process'
 import sfmt from '#tests/utils/sfmt'
 import type { CommandInfo } from '@flex-development/kronk'
 
@@ -20,7 +19,6 @@ export default {
     description: 'separator character',
     flags: '-s, --separator <char>'
   },
-  process,
   subcommands: [
     {
       arguments: [

@@ -3,7 +3,6 @@
  * @module fixtures/commands/clamp
  */
 
-import process from '#fixtures/process'
 import sfmt from '#tests/utils/sfmt'
 import type { CommandInfo } from '@flex-development/kronk'
 
@@ -39,8 +38,7 @@ export default {
       flags: '-m | --min <n>',
       parser: int
     }
-  ],
-  process
+  ]
 } as CommandInfo
 
 /**

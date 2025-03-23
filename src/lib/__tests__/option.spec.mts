@@ -36,10 +36,11 @@ describe('unit:lib/Option', () => {
     expect(error.message).toMatchSnapshot()
   })
 
-  it('should throw on invalid flags string part', () => {
+  it.each<[Flags]>([
+    ['-p [] | --parent <>'],
+    ['-ws, --workspace']
+  ])('should throw on invalid flags string part (%#)', flags => {
     // Arrange
-    const part: string = '-ws'
-    const flags: Flags = `${part}, --workspace`
     let error!: Error
 
     // Act
@@ -51,7 +52,9 @@ describe('unit:lib/Option', () => {
 
     // Expect
     expect(error).to.be.instanceof(KronkError).and.satisfy(isKronkError)
-    expect(error).to.have.property('cause').eql({ flags, part })
+    expect(error).to.have.property('cause').with.keys(['flags', 'part'])
+    expect(error).to.have.nested.property('cause.flags', flags)
+    expect(error).to.have.nested.property('cause.part').be.a('string')
     expect(error).to.have.property('code', 1)
     expect(error).to.have.property('id', 'kronk/invalid-flags')
     expect(error).to.have.property('message').be.a('string')

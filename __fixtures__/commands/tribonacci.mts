@@ -5,7 +5,6 @@
 
 import chars from '#enums/chars'
 import digits from '#fixtures/digits'
-import process from '#fixtures/process'
 import sfmt from '#tests/utils/sfmt'
 import type { CommandInfo } from '@flex-development/kronk'
 
@@ -16,7 +15,6 @@ import type { CommandInfo } from '@flex-development/kronk'
  */
 export default {
   name: 'tribonacci',
-  process,
   subcommands: {
     arguments: [
       {

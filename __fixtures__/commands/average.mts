@@ -3,7 +3,6 @@
  * @module fixtures/commands/average
  */
 
-import process from '#fixtures/process'
 import sfmt from '#tests/utils/sfmt'
 import type { CommandInfo } from '@flex-development/kronk'
 
@@ -14,6 +13,5 @@ import type { CommandInfo } from '@flex-development/kronk'
  */
 export default {
   arguments: sfmt.optional({ id: 'num', variadic: true }),
-  name: 'average',
-  process
+  name: 'average'
 } as CommandInfo

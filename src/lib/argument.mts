@@ -3,15 +3,12 @@
  * @module kronk/lib/Argument
  */
 
-import argumentSyntax from '#constructs/argument-syntax'
+import initialArgument from '#constructs/initial-argument'
 import chars from '#enums/chars'
-import codes from '#enums/codes'
 import tt from '#enums/tt'
 import KronkError from '#errors/kronk.error'
 import identity from '#internal/identity'
 import kArgument from '#internal/k-argument'
-import toChunks from '#internal/to-chunks'
-import tokenize from '#internal/tokenize'
 import type {
   ArgumentData,
   ArgumentInfo,
@@ -21,11 +18,10 @@ import type {
   List,
   ParseArg
 } from '@flex-development/kronk'
-import { fallback, isNIL, isString } from '@flex-development/tutils'
+import { fallback, isNIL } from '@flex-development/tutils'
 import {
-  createTokenizer,
   ev,
-  initialize,
+  tokenize,
   type Event,
   type TokenizeContext
 } from '@flex-development/vfile-tokenizer'
@@ -376,6 +372,9 @@ class Argument {
   /**
    * Tokenize argument `syntax`.
    *
+   * > 👉 **Note**: Modifies `this.info.syntax` and expects its value to be a
+   * > trimmed string before modification.
+   *
    * @see {@linkcode KronkError}
    *
    * @protected
@@ -387,107 +386,51 @@ class Argument {
    */
   protected tokenizeSyntax(): undefined {
     /**
-     * Argument syntax.
+     * List of events.
      *
-     * @var {string} syntax
+     * @const {Event[]} events
      */
-    let syntax: string = this.info.syntax
-
-    /**
-     * Command-argument syntax chunks.
-     *
-     * @var {(string | null)[]} chunks
-     */
-    let chunks: (string | null)[] = toChunks(syntax, kArgument)
-
-    if (chunks.length) {
+    const events: Event[] = tokenize(this.info.syntax, {
+      debug: 'kronk/argument',
       /**
-       * List of events.
+       * @this {void}
        *
-       * @const {Event[]} events
+       * @param {TokenizeContext} context
+       *  Base tokenize context
+       * @return {undefined}
        */
-      const events: Event[] = tokenize(chunks as string[], createTokenizer({
-        debug: 'kronk/argument',
-        /**
-         * @this {void}
-         *
-         * @param {TokenizeContext} context
-         *  Base tokenize context
-         * @return {undefined}
-         */
-        finalizeContext(this: void, context: TokenizeContext): undefined {
-          return context[kArgument] = true, void context
-        },
-        initialize: initialize({
-          [codes.leftBracket]: argumentSyntax,
-          [codes.lt]: argumentSyntax
-        })
-      }))
+      finalizeContext(this: void, context: TokenizeContext): undefined {
+        return context[kArgument] = true, void context
+      },
+      initial: initialArgument
+    })
 
-      /**
-       * Index of current event.
-       *
-       * @var {number} index
-       */
-      let index: number = -1
+    if (events.length) {
+      ok(events.length === 2, 'expected `2` events')
+      ok(events[0]![0] === ev.enter, 'expected enter event')
+      ok(events[1]![0] === ev.exit, 'expected exit event')
+      const [, token] = events[0]!
 
-      // compile events to capture argument metadata.
-      while (++index < events.length) {
-        ok(events[index], 'expected `events[index]`')
-        const [event, token] = events[index]!
+      ok(token.type === tt.argtax, 'expected argument syntax token')
+      ok(typeof token.id === 'string', 'expected `token.id`')
+      ok(typeof token.required === 'boolean', 'expected `token.required`')
+      ok(typeof token.value === 'string', 'expected string token value')
+      ok(typeof token.variadic === 'boolean', 'expected `token.variadic`')
 
-        // process command-argument syntax.
-        if (token.type === tt.argtax && token.chunk === +chars.digit0) {
-          ok(event === ev.enter, 'expected argument syntax enter event')
-          ok(typeof token.id === 'string', 'expected `token.id`')
-          ok(typeof token.required === 'boolean', 'expected `token.required`')
-          ok(typeof token.value === 'string', 'expected string token value')
-          ok(typeof token.variadic === 'boolean', 'expected `token.variadic`')
-
-          // capture argument metadata.
-          this.info.id = token.id
-          this.info.required = token.required
-          this.info.variadic = token.variadic
-          syntax = token.value
-
-          // mark command-argument syntax as processed.
-          chunks[token.chunk] = null
-
-          // skip argument syntax exit event.
-          index++
-        }
-      }
-    }
-
-    // check for unprocessed argument syntax.
-    if ((chunks = chunks.filter(isString)).length) {
-      /**
-       * First invalid argument syntax part.
-       *
-       * @const {string} part
-       */
-      const part: string = chunks[0]!
-
-      /**
-       * Reason for error.
-       *
-       * @var {string} reason
-       */
-      let reason: string = `${String(this)} failed due to`
-
-      reason += chars.space
-      reason += chars.apostrophe
-      reason += JSON.stringify(part).slice(1, -1)
-      reason += chars.apostrophe
-
+      // capture metadata.
+      this.info.id = token.id
+      this.info.required = token.required
+      this.info.variadic = token.variadic
+      this.info.syntax = token.value
+    } else {
       throw new KronkError({
-        cause: { part, syntax: this.info.syntax },
+        cause: { syntax: this.info.syntax },
         id: 'kronk/invalid-argument-syntax',
-        reason
+        reason: `Invalid command-argument syntax for ${String(this)}`
       })
     }
 
-    return this.info.syntax = syntax, void this
+    return void this
   }
 }
 

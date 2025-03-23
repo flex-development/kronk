@@ -3,17 +3,18 @@
  * @module kronk/constructs/delimiter
  */
 
-import codes from '#enums/codes'
 import tt from '#enums/tt'
-import isBreak from '#internal/is-break'
+import atBreak from '#internal/at-break'
+import kArgument from '#internal/k-argument'
 import kOption from '#internal/k-option'
-import type {
-  Code,
-  Construct,
-  Effects,
-  Event,
-  State,
-  TokenizeContext
+import {
+  codes,
+  type Code,
+  type Construct,
+  type Effects,
+  type Event,
+  type State,
+  type TokenizeContext
 } from '@flex-development/vfile-tokenizer'
 import { ok as assert } from 'devlop'
 
@@ -29,7 +30,7 @@ import { ok as assert } from 'devlop'
  */
 const delimiter: Construct = {
   name: tt.delimiter,
-  previous: isBreak,
+  previous: atBreak,
   resolve: resolveDelimiter,
   tokenize: tokenizeDelimiter
 }
@@ -56,6 +57,7 @@ function resolveDelimiter(
   events: Event[],
   context: TokenizeContext
 ): Event[] {
+  assert(!context[kArgument], 'expected to not to be in `Argument` context')
   assert(!context[kOption], 'expected to not to be in `Option` context')
 
   // mark the presence of a delimiter.
@@ -91,13 +93,6 @@ function tokenizeDelimiter(
   ok: State,
   nok: State
 ): State {
-  /**
-   * Tokenize context.
-   *
-   * @const {TokenizeContext} self
-   */
-  const self: TokenizeContext = this
-
   return delimiter
 
   /**
@@ -118,9 +113,7 @@ function tokenizeDelimiter(
    */
   function delimiter(this: void, code: Code): State | undefined {
     assert(code === codes.hyphen, 'expected `-`')
-    effects.enter(tt.delimiter, { chunk: self.chunk })
-    effects.consume(code)
-    return after
+    return effects.enter(tt.delimiter), effects.consume(code), after
   }
 
   /**
@@ -141,7 +134,7 @@ function tokenizeDelimiter(
    */
   function after(this: void, code: Code): State | undefined {
     if (code !== codes.hyphen) return nok(code)
-    return effects.consume(code), end
+    return effects.consume(code), effects.exit(tt.delimiter), end
   }
 
   /**
@@ -161,7 +154,6 @@ function tokenizeDelimiter(
    *  Next state
    */
   function end(this: void, code: Code): State | undefined {
-    if (!isBreak(code)) return nok(code)
-    return effects.exit(tt.delimiter), ok(code)
+    return (atBreak(code) ? ok : nok)(code)
   }
 }

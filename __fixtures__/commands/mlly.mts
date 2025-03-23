@@ -3,7 +3,6 @@
  * @module fixtures/commands/mlly
  */
 
-import process from '#fixtures/process'
 import sfmt from '#tests/utils/sfmt'
 import type { CommandInfo } from '@flex-development/kronk'
 import * as mlly from '@flex-development/mlly'
@@ -33,7 +32,6 @@ export default {
       parser: url
     }
   ],
-  process,
   subcommands: [
     {
       arguments: [

@@ -21,8 +21,6 @@ type ToList<T> = T extends List ? T : T[]
 /**
  * Convert `value` to a list.
  *
- * @see {@linkcode List}
- *
  * @internal
  *
  * @template {any} T

@@ -3,18 +3,14 @@
  * @module kronk/lib/Option
  */
 
-import argumentSyntax from '#constructs/argument-syntax'
-import longFlag from '#constructs/flag-long'
-import shortFlag from '#constructs/flag-short'
+import initialOption from '#constructs/initial-option'
 import chars from '#enums/chars'
-import codes from '#enums/codes'
 import tt from '#enums/tt'
 import KronkError from '#errors/kronk.error'
 import camelcase from '#internal/camelcase'
 import kOption from '#internal/k-option'
 import snakecase from '#internal/snakecase'
 import toChunks from '#internal/to-chunks'
-import tokenize from '#internal/tokenize'
 import type {
   DefaultInfo,
   Flags,
@@ -32,9 +28,8 @@ import {
   isString
 } from '@flex-development/tutils'
 import {
-  createTokenizer,
   ev,
-  initialize,
+  tokenize,
   type Event,
   type TokenizeContext
 } from '@flex-development/vfile-tokenizer'
@@ -620,7 +615,7 @@ class Option {
        *
        * @const {Event[]} events
        */
-      const events: Event[] = tokenize(chunks as string[], createTokenizer({
+      const events: Event[] = tokenize(chunks as string[], {
         debug: 'kronk/option',
         /**
          * @this {void}
@@ -632,12 +627,8 @@ class Option {
         finalizeContext(this: void, context: TokenizeContext): undefined {
           return context[kOption] = true, void context
         },
-        initialize: initialize({
-          [codes.hyphen]: [longFlag, shortFlag],
-          [codes.leftBracket]: argumentSyntax,
-          [codes.lt]: argumentSyntax
-        })
-      }))
+        initial: initialOption
+      })
 
       /**
        * Index of current event.
@@ -651,47 +642,54 @@ class Option {
         ok(events[index], 'expected `events[index]`')
         const [event, token] = events[index]!
 
-        // process flag, but skip if long and short flag were already processed.
-        // any unprocessed flags will be left in `parts`.
-        if (token.type === tt.flag && (!this.info.long || !this.info.short)) {
+        // process flag.
+        if (token.type === tt.flag) {
           ok(event === ev.enter, 'expected flag enter event')
-          ok(typeof token.chunk === 'number', 'expected `token.chunk`')
+          ok(token.long || token.short, 'expected long or short flag')
           ok(typeof token.value === 'string', 'expected string token value')
 
           // capture flag.
-          if (token.long && !this.info.long) {
-            this.info.long = token.value
-          } else if (!this.info.short) {
-            this.info.short = token.value
-          }
+          if (!this.info.long || !this.info.short) {
+            if (token.long && !this.info.long) {
+              this.info.long = token.value
+            } else if (!this.info.short) {
+              this.info.short = token.value
+            }
 
-          // mark flag as processed.
-          chunks[token.chunk] = null
+            // mark flag as processed.
+            chunks[token.start._index] = null
+          }
 
           // skip flag exit event.
           index++
         }
 
         // process option-argument syntax.
-        if (token.type === tt.argtax && token.chunk === chunks.length - 1) {
+        if (token.type === tt.argtax) {
           ok(event === ev.enter, 'expected option-argument syntax enter event')
+
           ok(typeof token.mandatory === 'boolean', 'expected `token.mandatory`')
           ok(typeof token.required === 'boolean', 'expected `token.required`')
           ok(typeof token.variadic === 'boolean', 'expected `token.variadic`')
+
+          ok(
+            token.start._index === chunks.length - 1,
+            'expected argument syntax to be from last chunk'
+          )
 
           // capture option metadata.
           this.info.optional = !token.required
           this.info.required = token.required
           this.info.variadic = token.variadic
 
-          // mandatory option-argument syntax overrides `info.mandatory` if both
-          // are defined as booleans.
+          // mandatory option-argument syntax overrides `info.mandatory` if
+          // both are defined as booleans.
           if (token.mandatory || typeof this.info.mandatory !== 'boolean') {
             this.info.mandatory = token.mandatory
           }
 
           // mark option-argument syntax as processed.
-          chunks[token.chunk] = null
+          chunks[token.start._index] = null
 
           // skip argument syntax exit event.
           index++
@@ -735,7 +733,7 @@ class Option {
         throw new KronkError({
           cause: { flags: this.info.flags, part },
           id: 'kronk/invalid-flags',
-          reason: reason
+          reason
         })
       }
     }

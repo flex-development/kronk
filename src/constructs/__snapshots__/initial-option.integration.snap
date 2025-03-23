@@ -1,0 +1,4449 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`integration:constructs/initialOption > should tokenize flags string ("--command [!...]") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 10,
+        "line": 1,
+        "offset": 9,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--command",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 10,
+        "line": 1,
+        "offset": 9,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--command",
+    },
+  ],
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 2,
+        "column": 16,
+        "line": 1,
+        "offset": 15,
+      },
+      "id": "",
+      "mandatory": true,
+      "required": false,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 10,
+        "line": 1,
+        "offset": 9,
+      },
+      "type": "argtax",
+      "value": "[!...]",
+      "variadic": true,
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 2,
+        "column": 16,
+        "line": 1,
+        "offset": 15,
+      },
+      "id": "",
+      "mandatory": true,
+      "required": false,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 10,
+        "line": 1,
+        "offset": 9,
+      },
+      "type": "argtax",
+      "value": "[!...]",
+      "variadic": true,
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize flags string ("--letter <...>") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 9,
+        "line": 1,
+        "offset": 8,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--letter",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 9,
+        "line": 1,
+        "offset": 8,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--letter",
+    },
+  ],
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 2,
+        "column": 14,
+        "line": 1,
+        "offset": 13,
+      },
+      "id": "",
+      "mandatory": false,
+      "required": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 9,
+        "line": 1,
+        "offset": 8,
+      },
+      "type": "argtax",
+      "value": "<...>",
+      "variadic": true,
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 2,
+        "column": 14,
+        "line": 1,
+        "offset": 13,
+      },
+      "id": "",
+      "mandatory": false,
+      "required": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 9,
+        "line": 1,
+        "offset": 8,
+      },
+      "type": "argtax",
+      "value": "<...>",
+      "variadic": true,
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize flags string ("--mode <mode>") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 7,
+        "line": 1,
+        "offset": 6,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--mode",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 7,
+        "line": 1,
+        "offset": 6,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--mode",
+    },
+  ],
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 2,
+        "column": 13,
+        "line": 1,
+        "offset": 12,
+      },
+      "id": "mode",
+      "mandatory": false,
+      "required": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 7,
+        "line": 1,
+        "offset": 6,
+      },
+      "type": "argtax",
+      "value": "<mode>",
+      "variadic": false,
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 2,
+        "column": 13,
+        "line": 1,
+        "offset": 12,
+      },
+      "id": "mode",
+      "mandatory": false,
+      "required": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 7,
+        "line": 1,
+        "offset": 6,
+      },
+      "type": "argtax",
+      "value": "<mode>",
+      "variadic": false,
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize flags string ("--number [value...]") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 9,
+        "line": 1,
+        "offset": 8,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--number",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 9,
+        "line": 1,
+        "offset": 8,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--number",
+    },
+  ],
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 2,
+        "column": 19,
+        "line": 1,
+        "offset": 18,
+      },
+      "id": "value",
+      "mandatory": false,
+      "required": false,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 9,
+        "line": 1,
+        "offset": 8,
+      },
+      "type": "argtax",
+      "value": "[value...]",
+      "variadic": true,
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 2,
+        "column": 19,
+        "line": 1,
+        "offset": 18,
+      },
+      "id": "value",
+      "mandatory": false,
+      "required": false,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 9,
+        "line": 1,
+        "offset": 8,
+      },
+      "type": "argtax",
+      "value": "[value...]",
+      "variadic": true,
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize flags string ("--parent <!>") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 9,
+        "line": 1,
+        "offset": 8,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--parent",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 9,
+        "line": 1,
+        "offset": 8,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--parent",
+    },
+  ],
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 2,
+        "column": 12,
+        "line": 1,
+        "offset": 11,
+      },
+      "id": "",
+      "mandatory": true,
+      "required": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 9,
+        "line": 1,
+        "offset": 8,
+      },
+      "type": "argtax",
+      "value": "<!>",
+      "variadic": false,
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 2,
+        "column": 12,
+        "line": 1,
+        "offset": 11,
+      },
+      "id": "",
+      "mandatory": true,
+      "required": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 9,
+        "line": 1,
+        "offset": 8,
+      },
+      "type": "argtax",
+      "value": "<!>",
+      "variadic": false,
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize flags string ("--ps --preserve-symlinks") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 5,
+        "line": 1,
+        "offset": 4,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--ps",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 5,
+        "line": 1,
+        "offset": 4,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--ps",
+    },
+  ],
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 2,
+        "column": 24,
+        "line": 1,
+        "offset": 23,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 5,
+        "line": 1,
+        "offset": 4,
+      },
+      "type": "flag",
+      "value": "--preserve-symlinks",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 2,
+        "column": 24,
+        "line": 1,
+        "offset": 23,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 5,
+        "line": 1,
+        "offset": 4,
+      },
+      "type": "flag",
+      "value": "--preserve-symlinks",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize flags string ("--resolve.conditions <condition!...>") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 21,
+        "line": 1,
+        "offset": 20,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--resolve.conditions",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 21,
+        "line": 1,
+        "offset": 20,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--resolve.conditions",
+    },
+  ],
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 2,
+        "column": 36,
+        "line": 1,
+        "offset": 35,
+      },
+      "id": "condition",
+      "mandatory": true,
+      "required": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 21,
+        "line": 1,
+        "offset": 20,
+      },
+      "type": "argtax",
+      "value": "<condition!...>",
+      "variadic": true,
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 2,
+        "column": 36,
+        "line": 1,
+        "offset": 35,
+      },
+      "id": "condition",
+      "mandatory": true,
+      "required": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 21,
+        "line": 1,
+        "offset": 20,
+      },
+      "type": "argtax",
+      "value": "<condition!...>",
+      "variadic": true,
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize flags string ("--sr, --sourceRoot <>") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 5,
+        "line": 1,
+        "offset": 4,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--sr",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 5,
+        "line": 1,
+        "offset": 4,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--sr",
+    },
+  ],
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 2,
+        "column": 17,
+        "line": 1,
+        "offset": 16,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 5,
+        "line": 1,
+        "offset": 4,
+      },
+      "type": "flag",
+      "value": "--sourceRoot",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 2,
+        "column": 17,
+        "line": 1,
+        "offset": 16,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 5,
+        "line": 1,
+        "offset": 4,
+      },
+      "type": "flag",
+      "value": "--sourceRoot",
+    },
+  ],
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 3,
+        "column": 19,
+        "line": 1,
+        "offset": 18,
+      },
+      "id": "",
+      "mandatory": false,
+      "required": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 2,
+        "column": 17,
+        "line": 1,
+        "offset": 16,
+      },
+      "type": "argtax",
+      "value": "<>",
+      "variadic": false,
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 3,
+        "column": 19,
+        "line": 1,
+        "offset": 18,
+      },
+      "id": "",
+      "mandatory": false,
+      "required": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 2,
+        "column": 17,
+        "line": 1,
+        "offset": 16,
+      },
+      "type": "argtax",
+      "value": "<>",
+      "variadic": false,
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize flags string ("--ws, --workspace []") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 5,
+        "line": 1,
+        "offset": 4,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--ws",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 5,
+        "line": 1,
+        "offset": 4,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--ws",
+    },
+  ],
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 2,
+        "column": 16,
+        "line": 1,
+        "offset": 15,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 5,
+        "line": 1,
+        "offset": 4,
+      },
+      "type": "flag",
+      "value": "--workspace",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 2,
+        "column": 16,
+        "line": 1,
+        "offset": 15,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 5,
+        "line": 1,
+        "offset": 4,
+      },
+      "type": "flag",
+      "value": "--workspace",
+    },
+  ],
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 3,
+        "column": 18,
+        "line": 1,
+        "offset": 17,
+      },
+      "id": "",
+      "mandatory": false,
+      "required": false,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 2,
+        "column": 16,
+        "line": 1,
+        "offset": 15,
+      },
+      "type": "argtax",
+      "value": "[]",
+      "variadic": false,
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 3,
+        "column": 18,
+        "line": 1,
+        "offset": 17,
+      },
+      "id": "",
+      "mandatory": false,
+      "required": false,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 2,
+        "column": 16,
+        "line": 1,
+        "offset": 15,
+      },
+      "type": "argtax",
+      "value": "[]",
+      "variadic": false,
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize flags string ("-T | --token <token>") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-T",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-T",
+    },
+  ],
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 2,
+        "column": 10,
+        "line": 1,
+        "offset": 9,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "type": "flag",
+      "value": "--token",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": 0,
+        "_index": 2,
+        "column": 10,
+        "line": 1,
+        "offset": 9,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "type": "flag",
+      "value": "--token",
+    },
+  ],
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 3,
+        "column": 17,
+        "line": 1,
+        "offset": 16,
+      },
+      "id": "token",
+      "mandatory": false,
+      "required": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 2,
+        "column": 10,
+        "line": 1,
+        "offset": 9,
+      },
+      "type": "argtax",
+      "value": "<token>",
+      "variadic": false,
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 3,
+        "column": 17,
+        "line": 1,
+        "offset": 16,
+      },
+      "id": "token",
+      "mandatory": false,
+      "required": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 2,
+        "column": 10,
+        "line": 1,
+        "offset": 9,
+      },
+      "type": "argtax",
+      "value": "<token>",
+      "variadic": false,
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize long flag ("---gnu-style-hidden-option") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 27,
+        "line": 1,
+        "offset": 26,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "---gnu-style-hidden-option",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 27,
+        "line": 1,
+        "offset": 26,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "---gnu-style-hidden-option",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize long flag ("--13") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 5,
+        "line": 1,
+        "offset": 4,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--13",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 5,
+        "line": 1,
+        "offset": 4,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--13",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize long flag ("--TZ") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 5,
+        "line": 1,
+        "offset": 4,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--TZ",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 5,
+        "line": 1,
+        "offset": 4,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--TZ",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize long flag ("--esbuild.jsxDev") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 17,
+        "line": 1,
+        "offset": 16,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--esbuild.jsxDev",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 17,
+        "line": 1,
+        "offset": 16,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--esbuild.jsxDev",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize long flag ("--force") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 8,
+        "line": 1,
+        "offset": 7,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--force",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 8,
+        "line": 1,
+        "offset": 7,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--force",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize long flag ("--ps") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 5,
+        "line": 1,
+        "offset": 4,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--ps",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 5,
+        "line": 1,
+        "offset": 4,
+      },
+      "long": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "--ps",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-0") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-0",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-0",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-1") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-1",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-1",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-2") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-2",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-2",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-3") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-3",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-3",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-4") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-4",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-4",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-5") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-5",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-5",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-6") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-6",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-6",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-7") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-7",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-7",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-8") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-8",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-8",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-9") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-9",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-9",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-A") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-A",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-A",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-B") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-B",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-B",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-C") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-C",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-C",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-D") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-D",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-D",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-E") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-E",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-E",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-F") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-F",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-F",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-G") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-G",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-G",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-H") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-H",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-H",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-I") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-I",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-I",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-J") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-J",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-J",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-K") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-K",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-K",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-L") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-L",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-L",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-M") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-M",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-M",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-N") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-N",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-N",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-O") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-O",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-O",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-P") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-P",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-P",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-Q") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-Q",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-Q",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-R") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-R",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-R",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-S") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-S",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-S",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-T") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-T",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-T",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-U") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-U",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-U",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-V") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-V",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-V",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-W") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-W",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-W",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-X") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-X",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-X",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-Y") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-Y",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-Y",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-Z") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-Z",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-Z",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-a") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-a",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-a",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-b") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-b",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-b",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-c") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-c",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-c",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-d") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-d",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-d",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-e") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-e",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-e",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-f") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-f",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-f",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-g") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-g",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-g",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-h") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-h",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-h",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-i") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-i",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-i",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-j") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-j",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-j",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-k") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-k",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-k",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-l") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-l",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-l",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-m") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-m",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-m",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-n") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-n",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-n",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-o") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-o",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-o",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-p") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-p",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-p",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-q") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-q",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-q",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-r") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-r",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-r",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-s") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-s",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-s",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-t") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-t",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-t",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-u") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-u",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-u",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-v") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-v",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-v",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-w") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-w",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-w",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-x") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-x",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-x",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-y") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-y",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-y",
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialOption > should tokenize short flag ("-z") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-z",
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 1,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "short": true,
+      "start": {
+        "_bufferIndex": 0,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "flag",
+      "value": "-z",
+    },
+  ],
+]
+`;

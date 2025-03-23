@@ -16,15 +16,9 @@ import type {
 } from '@flex-development/kronk'
 
 describe('unit:lib/Argument', () => {
-  it.each<[string]>([
-    [chars.empty],
-    [chars.ellipsis],
-    [chars.lt + chars.space + chars.gt],
-    [chars.lt + chars.gt + chars.ht + chars.leftBracket + chars.rightBracket],
-    [chars.lt + chars.lowercaseN + chars.rightBracket],
-    [chars.leftBracket + chars.crlf + chars.rightBracket]
-  ])('should throw if argument syntax is invalid (%j)', syntax => {
+  it('should throw if argument syntax is invalid', () => {
     // Arrange
+    const syntax: string = sfmt.optional() + chars.space + sfmt.required()
     let error!: Error
 
     // Act
@@ -36,9 +30,8 @@ describe('unit:lib/Argument', () => {
 
     // Expect
     expect(error).to.be.instanceof(KronkError).and.satisfy(isKronkError)
-    expect(error).to.have.property('cause').with.keys(['part', 'syntax'])
-    expect(error).to.have.nested.property('cause.part').be.a('string')
-    expect(error).to.have.nested.property('cause.syntax', syntax.trim())
+    expect(error).to.have.property('cause').with.keys(['syntax'])
+    expect(error).to.have.nested.property('cause.syntax', syntax)
     expect(error).to.have.property('code', 1)
     expect(error).to.have.property('id', 'kronk/invalid-argument-syntax')
     expect(error).to.have.property('message').be.a('string')

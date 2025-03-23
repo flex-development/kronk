@@ -3,11 +3,8 @@
  * @module kronk/lib/Command
  */
 
-import delimiter from '#constructs/delimiter'
-import longFlag from '#constructs/flag-long'
-import shortFlag from '#constructs/flag-short'
-import operand from '#constructs/operand'
-import codes from '#enums/codes'
+import initialCommand from '#constructs/initial-command'
+import chars from '#enums/chars'
 import tt from '#enums/tt'
 import CommandError from '#errors/command.error'
 import KronkError from '#errors/kronk.error'
@@ -17,7 +14,6 @@ import kCommand from '#internal/k-command'
 import noop from '#internal/noop'
 import toChunks from '#internal/to-chunks'
 import toList from '#internal/to-list'
-import tokenize from '#internal/tokenize'
 import Argument from '#lib/argument'
 import Option from '#lib/option'
 import isArgument from '#utils/is-argument'
@@ -61,10 +57,8 @@ import {
   reduceRight
 } from '@flex-development/tutils'
 import {
-  chars,
-  createTokenizer,
   ev,
-  initialize,
+  tokenize,
   type Event,
   type TokenizeContext
 } from '@flex-development/vfile-tokenizer'
@@ -2177,7 +2171,8 @@ class Command {
      *
      * @const {Event[]} events
      */
-    const events: Event[] = tokenize(unknown, createTokenizer({
+    const events: Event[] = tokenize(unknown, {
+      breaks: true,
       debug: 'kronk/command',
       /**
        * @this {void}
@@ -2192,11 +2187,9 @@ class Command {
         context.findSubOption = this.findSubOption.bind(this)
         return context[kCommand] = true, void context
       },
-      initialize: initialize({
-        [codes.hyphen]: [longFlag, shortFlag, delimiter],
-        null: operand
-      })
-    }))
+      initial: initialCommand,
+      moveOnBreak: true
+    })
 
     /**
      * Parse result.
@@ -2232,14 +2225,16 @@ class Command {
       // delimiters (`--`) can be used to demarcate options from non-options.
       if (token.type === tt.delimiter) {
         ok(event === ev.enter, 'expected delimiter enter event')
-        ok(typeof token.chunk === 'number', 'expected `token.chunk`')
 
         /**
          * Index of command-line argument chunk the token was created from.
          *
          * @var {number} chunkIndex
          */
-        let chunkIndex: number = token.chunk
+        let chunkIndex: number = token.start._index
+
+        // offset by `2` to account for stream break chunks.
+        if (chunkIndex) chunkIndex -= 2
 
         // add command-line arguments after delimiter only.
         if (dest !== result.unknown) chunkIndex++

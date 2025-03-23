@@ -1,0 +1,425 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`integration:constructs/initialArgument > should tokenize optional command-argument syntax ("[...]") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 5,
+        "column": 6,
+        "line": 1,
+        "offset": 5,
+      },
+      "id": "",
+      "required": false,
+      "start": {
+        "_bufferIndex": -1,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "argtax",
+      "value": "[...]",
+      "variadic": true,
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 5,
+        "column": 6,
+        "line": 1,
+        "offset": 5,
+      },
+      "id": "",
+      "required": false,
+      "start": {
+        "_bufferIndex": -1,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "argtax",
+      "value": "[...]",
+      "variadic": true,
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialArgument > should tokenize optional command-argument syntax ("[]") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 2,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "id": "",
+      "required": false,
+      "start": {
+        "_bufferIndex": -1,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "argtax",
+      "value": "[]",
+      "variadic": false,
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 2,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "id": "",
+      "required": false,
+      "start": {
+        "_bufferIndex": -1,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "argtax",
+      "value": "[]",
+      "variadic": false,
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialArgument > should tokenize optional command-argument syntax ("[n]") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 3,
+        "column": 4,
+        "line": 1,
+        "offset": 3,
+      },
+      "id": "n",
+      "required": false,
+      "start": {
+        "_bufferIndex": -1,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "argtax",
+      "value": "[n]",
+      "variadic": false,
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 3,
+        "column": 4,
+        "line": 1,
+        "offset": 3,
+      },
+      "id": "n",
+      "required": false,
+      "start": {
+        "_bufferIndex": -1,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "argtax",
+      "value": "[n]",
+      "variadic": false,
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialArgument > should tokenize optional command-argument syntax ("[value...]") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 10,
+        "column": 11,
+        "line": 1,
+        "offset": 10,
+      },
+      "id": "value",
+      "required": false,
+      "start": {
+        "_bufferIndex": -1,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "argtax",
+      "value": "[value...]",
+      "variadic": true,
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 10,
+        "column": 11,
+        "line": 1,
+        "offset": 10,
+      },
+      "id": "value",
+      "required": false,
+      "start": {
+        "_bufferIndex": -1,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "argtax",
+      "value": "[value...]",
+      "variadic": true,
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialArgument > should tokenize required command-argument syntax ("<...>") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 5,
+        "column": 6,
+        "line": 1,
+        "offset": 5,
+      },
+      "id": "",
+      "required": true,
+      "start": {
+        "_bufferIndex": -1,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "argtax",
+      "value": "<...>",
+      "variadic": true,
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 5,
+        "column": 6,
+        "line": 1,
+        "offset": 5,
+      },
+      "id": "",
+      "required": true,
+      "start": {
+        "_bufferIndex": -1,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "argtax",
+      "value": "<...>",
+      "variadic": true,
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialArgument > should tokenize required command-argument syntax ("<>") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 2,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "id": "",
+      "required": true,
+      "start": {
+        "_bufferIndex": -1,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "argtax",
+      "value": "<>",
+      "variadic": false,
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 2,
+        "column": 3,
+        "line": 1,
+        "offset": 2,
+      },
+      "id": "",
+      "required": true,
+      "start": {
+        "_bufferIndex": -1,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "argtax",
+      "value": "<>",
+      "variadic": false,
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialArgument > should tokenize required command-argument syntax ("<value...>") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 10,
+        "column": 11,
+        "line": 1,
+        "offset": 10,
+      },
+      "id": "value",
+      "required": true,
+      "start": {
+        "_bufferIndex": -1,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "argtax",
+      "value": "<value...>",
+      "variadic": true,
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 10,
+        "column": 11,
+        "line": 1,
+        "offset": 10,
+      },
+      "id": "value",
+      "required": true,
+      "start": {
+        "_bufferIndex": -1,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "argtax",
+      "value": "<value...>",
+      "variadic": true,
+    },
+  ],
+]
+`;
+
+exports[`integration:constructs/initialArgument > should tokenize required command-argument syntax ("<x!>") 1`] = `
+[
+  [
+    "enter",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 4,
+        "column": 5,
+        "line": 1,
+        "offset": 4,
+      },
+      "id": "x!",
+      "required": true,
+      "start": {
+        "_bufferIndex": -1,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "argtax",
+      "value": "<x!>",
+      "variadic": false,
+    },
+  ],
+  [
+    "exit",
+    {
+      "end": {
+        "_bufferIndex": -1,
+        "_index": 4,
+        "column": 5,
+        "line": 1,
+        "offset": 4,
+      },
+      "id": "x!",
+      "required": true,
+      "start": {
+        "_bufferIndex": -1,
+        "_index": 0,
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+      "type": "argtax",
+      "value": "<x!>",
+      "variadic": false,
+    },
+  ],
+]
+`;

@@ -3,18 +3,19 @@
  * @module kronk/constructs/shortFlag
  */
 
-import codes from '#enums/codes'
+import operand from '#constructs/operand'
 import tt from '#enums/tt'
+import atBreak from '#internal/at-break'
 import resolveFlag from '#internal/flag-resolve'
-import testFlag from '#internal/flag-test'
-import isBreak from '#internal/is-break'
+import kCommand from '#internal/k-command'
 import kOption from '#internal/k-option'
-import type {
-  Code,
-  Construct,
-  Effects,
-  State,
-  TokenizeContext
+import {
+  codes,
+  type Code,
+  type Construct,
+  type Effects,
+  type State,
+  type TokenizeContext
 } from '@flex-development/vfile-tokenizer'
 import { ok as assert } from 'devlop'
 import { asciiAlphanumeric } from 'micromark-util-character'
@@ -33,9 +34,7 @@ import { asciiAlphanumeric } from 'micromark-util-character'
  */
 const shortFlag: Construct = {
   name: 'shortFlag',
-  previous: isBreak,
   resolve: resolveFlag,
-  test: testFlag,
   tokenize: tokenizeShortFlag
 }
 
@@ -43,10 +42,6 @@ export default shortFlag
 
 /**
  * Tokenize a short flag.
- *
- * @see {@linkcode Effects}
- * @see {@linkcode State}
- * @see {@linkcode TokenizeContext}
  *
  * @example
  *  ```markdown
@@ -102,13 +97,6 @@ function tokenizeShortFlag(
    */
   const self: TokenizeContext = this
 
-  /**
-   * Whether an operand was attached to a flag (e.g. `-s=value`, `-ds=value`).
-   *
-   * @var {boolean} attached
-   */
-  let attached: boolean = false
-
   return shortFlag
 
   /**
@@ -129,9 +117,14 @@ function tokenizeShortFlag(
    */
   function shortFlag(this: void, code: Code): State | undefined {
     assert(code === codes.hyphen, 'expected `-`')
-    effects.enter(tt.flag, { chunk: self.chunk, short: true })
-    effects.consume(code)
-    return beforeId
+
+    if (!self.delimiter && (!self.now()._index || self.code === codes.break)) {
+      effects.enter(tt.flag, { short: true })
+      effects.consume(code)
+      return beforeId
+    }
+
+    return nok(code)
   }
 
   /**
@@ -152,7 +145,7 @@ function tokenizeShortFlag(
    */
   function beforeId(this: void, code: Code): State | undefined {
     if (!asciiAlphanumeric(code)) return nok(code)
-    return effects.enter(tt.id, { chunk: self.chunk }), id(code)
+    return effects.enter(tt.id), id(code)
   }
 
   /**
@@ -194,17 +187,13 @@ function tokenizeShortFlag(
       case asciiAlphanumeric(code):
         effects.consume(code)
         if (!self[kOption]) return id
-        if (self.code !== codes.eof) return nok
+        if (!atBreak(self.code)) return nok
         return effects.exit(tt.id), effects.exit(tt.flag), ok
-      case code === codes.equal:
+      case code === codes.equal && self[kCommand]:
         effects.exit(tt.id)
         effects.exit(tt.flag)
         effects.consume(code)
-        return attached = true, beforeAttached
-      case isBreak(code):
-        effects.exit(tt.id)
-        effects.exit(tt.flag)
-        return ok(code)
+        return effects.attempt(operand, ok, nok)
       default:
         break
     }
@@ -229,49 +218,7 @@ function tokenizeShortFlag(
    *  Next state
    */
   function combined(this: void, code: Code): State | undefined {
-    if (!isBreak(code)) return effects.consume(code), combined
+    if (!atBreak(code)) return effects.consume(code), combined
     return effects.exit(tt.id), effects.exit(tt.flag), ok(code)
-  }
-
-  /**
-   * Before attached short flag value.
-   *
-   * @example
-   *  ```markdown
-   *  > | -dn=value
-   *          ^
-   *  ```
-   *
-   * @this {void}
-   *
-   * @param {Code} code
-   *  Current character code
-   * @return {State | undefined}
-   *  Next state
-   */
-  function beforeAttached(this: void, code: Code): State | undefined {
-    effects.enter(tt.operand, { attached, chunk: self.chunk })
-    return av(code)
-  }
-
-  /**
-   * Inside attached short flag value.
-   *
-   * @example
-   *  ```markdown
-   *  > | -dn=value
-   *          ^^^^^
-   *  ```
-   *
-   * @this {void}
-   *
-   * @param {Code} code
-   *  Current character code
-   * @return {State | undefined}
-   *  Next state
-   */
-  function av(this: void, code: Code): State | undefined {
-    if (!isBreak(code)) return effects.consume(code), av
-    return effects.exit(tt.operand), ok(code)
   }
 }

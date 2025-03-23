@@ -9,8 +9,6 @@ import type { List } from '@flex-development/kronk'
 /**
  * Create a list string in the form `'A and B'` or `'A, B, ..., and Z`.
  *
- * @see {@linkcode List}
- *
  * @internal
  *
  * @param {List<string>} list

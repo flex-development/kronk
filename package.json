@@ -124,7 +124,7 @@
   "dependencies": {
     "@flex-development/log": "flex-development/log#commit=194e98812fbbffceb6e2158b849706c597175207",
     "@flex-development/tutils": "6.0.0-alpha.25",
-    "@flex-development/vfile-tokenizer": "flex-development/vfile-tokenizer#commit=d1f4367bd2b2378fdb87cdd641ccb78cc2f87b98",
+    "@flex-development/vfile-tokenizer": "flex-development/vfile-tokenizer#commit=85f91f22fbf2dcb23c07fae8eaf5b552841d15d5",
     "micromark-util-character": "2.1.1",
     "plur": "5.1.0"
   },

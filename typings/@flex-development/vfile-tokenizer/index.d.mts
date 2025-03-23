@@ -54,13 +54,6 @@ declare module '@flex-development/vfile-tokenizer' {
     attached?: boolean | null | undefined
 
     /**
-     * Index of chunk the token was created from.
-     *
-     * @internal
-     */
-    chunk?: number | null | undefined
-
-    /**
      * Argument syntax id.
      *
      * @internal
@@ -141,13 +134,6 @@ declare module '@flex-development/vfile-tokenizer' {
      * @internal
      */
     [kOption]?: boolean | null | undefined
-
-    /**
-     * Index of command-line argument chunk being tokenized.
-     *
-     * @internal
-     */
-    chunk?: number | null | undefined
 
     /**
      * Whether a delimiter was tokenized.

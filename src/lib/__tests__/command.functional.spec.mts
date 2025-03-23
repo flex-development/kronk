@@ -12,6 +12,7 @@ import smallest from '#fixtures/commands/smallest-num'
 import stringUtil from '#fixtures/commands/string-util'
 import tribonacci from '#fixtures/commands/tribonacci'
 import date from '#fixtures/date'
+import process from '#fixtures/process'
 import isList from '#internal/is-list'
 import TestSubject from '#lib/command'
 import findCommand from '#tests/utils/find-command'
@@ -143,7 +144,7 @@ describe('functional:lib/Command', () => {
     })
 
     beforeAll(() => {
-      subject = new TestSubject(tribonacci)
+      subject = new TestSubject({ ...tribonacci, process })
 
       choice = chars.digit1 + chars.digit3
       id = 'kronk/invalid-argument'
@@ -203,7 +204,7 @@ describe('functional:lib/Command', () => {
       [stringUtil, ['split', chars.lowercaseA, chars.comma, chars.lowercaseB]]
     ])('should error on excess arguments (%#)', async (info, argv) => {
       // Arrange
-      subject = new TestSubject(info)
+      subject = new TestSubject({ ...info, process })
       fatal = vi.spyOn(subject.logger, 'fatal')
 
       // Act
@@ -226,7 +227,7 @@ describe('functional:lib/Command', () => {
       [tribonacci, ['-n', chars.digit3, chars.digit0, chars.digit0]]
     ])('should error on missing required argument', async (info, argv) => {
       // Arrange
-      subject = new TestSubject(info)
+      subject = new TestSubject({ ...info, process })
       fatal = vi.spyOn(subject.logger, 'fatal')
 
       // Act
@@ -259,7 +260,7 @@ describe('functional:lib/Command', () => {
       [tribonacci, [chars.digit1, chars.digit3, chars.digit9]]
     ])('should error on missing mandatory option (%#)', async (info, argv) => {
       // Arrange
-      subject = new TestSubject(info)
+      subject = new TestSubject({ ...info, process })
       fatal = vi.spyOn(subject.logger, 'fatal')
 
       // Act
@@ -292,7 +293,7 @@ describe('functional:lib/Command', () => {
       [mlly, ['-p' + import.meta.url, 'resolve', chars.dot, '--verbose']]
     ])('should error on unknown option (%#)', async (info, argv) => {
       // Arrange
-      subject = new TestSubject(info)
+      subject = new TestSubject({ ...info, process })
       fatal = vi.spyOn(subject.logger, 'fatal')
 
       // Act
@@ -672,7 +673,7 @@ describe('functional:lib/Command', () => {
       ],
       [
         clamp,
-        ['-M3', '-m-1', chars.hyphen.repeat(2), '-13'],
+        ['-M3', '-m-1', chars.delimiter, '-13'],
         /**
          * @this {void}
          *
@@ -1079,7 +1080,7 @@ describe('functional:lib/Command', () => {
       const { after, before } = hooks(argv)
 
       // Arrange
-      const subject: TestSubject = new TestSubject(info)
+      const subject: TestSubject = new TestSubject({ ...info, process })
       let opts: OptionValues
       let optsWithGlobals: OptionValues
       let result: TestSubject
@@ -2021,7 +2022,7 @@ describe('functional:lib/Command', () => {
       const { after, before } = hooks(argv)
 
       // Arrange
-      const subject: TestSubject = new TestSubject(info)
+      const subject: TestSubject = new TestSubject({ ...info, process })
       let opts: OptionValues
       let optsWithGlobals: OptionValues
       let result: TestSubject
@@ -2063,7 +2064,7 @@ describe('functional:lib/Command', () => {
       [mlly, ['--parent', import.meta.url, '-d', chars.digit2]]
     ])('should error on extra option-argument (%#)', async (info, argv) => {
       // Arrange
-      subject = new TestSubject(info)
+      subject = new TestSubject({ ...info, process })
       fatal = vi.spyOn(subject.logger, 'fatal')
 
       // Act
@@ -2086,7 +2087,7 @@ describe('functional:lib/Command', () => {
       [mlly, ['-p', import.meta.url, '-d', chars.digit2]]
     ])('should error on extra option-argument (%#)', async (info, argv) => {
       // Arrange
-      subject = new TestSubject(info)
+      subject = new TestSubject({ ...info, process })
       fatal = vi.spyOn(subject.logger, 'fatal')
 
       // Act
@@ -2114,7 +2115,7 @@ describe('functional:lib/Command', () => {
       argv
     ) => {
       // Arrange
-      subject = new TestSubject(info)
+      subject = new TestSubject({ ...info, process })
       fatal = vi.spyOn(subject.logger, 'fatal')
 
       // Act
@@ -2137,7 +2138,7 @@ describe('functional:lib/Command', () => {
       [mlly, ['resolve', '-p' + import.meta.url, '-c']]
     ])('should error on missing option-argument (%#)', async (info, argv) => {
       // Arrange
-      subject = new TestSubject(info)
+      subject = new TestSubject({ ...info, process })
       fatal = vi.spyOn(subject.logger, 'fatal')
 
       // Act

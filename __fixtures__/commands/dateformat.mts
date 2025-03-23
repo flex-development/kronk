@@ -4,7 +4,6 @@
  */
 
 import chars from '#enums/chars'
-import process from '#fixtures/process'
 import sfmt from '#tests/utils/sfmt'
 import type { CommandInfo } from '@flex-development/kronk'
 import { masks } from 'dateformat'
@@ -43,7 +42,6 @@ export default {
       flags: '-u | --utc'
     }
   ],
-  process,
   subcommands: {
     aliases: 'tz',
     arguments: {

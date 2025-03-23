@@ -4,10 +4,13 @@
  */
 
 import tt from '#enums/tt'
-import isBreak from '#internal/is-break'
+import atBreak from '#internal/at-break'
+import kArgument from '#internal/k-argument'
+import kCommand from '#internal/k-command'
 import kOption from '#internal/k-option'
 import type { Option } from '@flex-development/kronk'
 import {
+  codes,
   ev,
   type Code,
   type Construct,
@@ -31,13 +34,36 @@ import { ok as assert } from 'devlop'
  */
 const operand: Construct = {
   name: tt.operand,
-  previous: isBreak,
+  previous: previousOperand,
   resolve: resolveOperand,
   resolveAll: resolveAllOperand,
   tokenize: tokenizeOperand
 }
 
 export default operand
+
+/**
+ * Check if the previous character `code` can come before an operand.
+ *
+ * @this {TokenizeContext}
+ *
+ * @param {Code} code
+ *  The previous character code
+ * @return {boolean}
+ *  `true` if `code` can come before operand construct
+ */
+function previousOperand(this: TokenizeContext, code: Code): boolean {
+  if (atBreak(code)) return true
+
+  /**
+   * Possible flag exit event.
+   *
+   * @const {Event | undefined} event
+   */
+  const event: Event | undefined = this.events.at(-1)
+
+  return !!event && event[0] === ev.exit && event[1].type === tt.flag
+}
 
 /**
  * Resolve the events parsed by {@linkcode tokenizeOperand}.
@@ -247,8 +273,15 @@ function tokenizeOperand(
    *  Next state
    */
   function operand(this: void, code: Code): State | undefined {
-    if (self[kOption] || isBreak(code)) return nok(code)
-    return effects.enter(tt.operand, { chunk: self.chunk }), inside(code)
+    assert(!self[kArgument], 'expected to not be in `Argument` context')
+    assert(!self[kOption], 'expected to not be in `Option` context')
+    assert(self[kCommand], 'expected to be in `Command` context')
+
+    // empty operands are preceded by equal signs (`=`).
+    if (atBreak(code) && self.previous !== codes.equal) return nok(code)
+
+    effects.enter(tt.operand, { attached: self.previous === codes.equal })
+    return inside(code)
   }
 
   /**
@@ -268,7 +301,7 @@ function tokenizeOperand(
    *  Next state
    */
   function inside(this: void, code: Code): State | undefined {
-    if (!isBreak(code)) return effects.consume(code), inside
+    if (!atBreak(code)) return effects.consume(code), inside
     return effects.exit(tt.operand), ok(code)
   }
 }

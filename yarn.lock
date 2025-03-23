@@ -1598,7 +1598,7 @@ __metadata:
     "@flex-development/mlly": "npm:1.0.0-alpha.20"
     "@flex-development/pathe": "npm:4.0.1"
     "@flex-development/tutils": "npm:6.0.0-alpha.25"
-    "@flex-development/vfile-tokenizer": "flex-development/vfile-tokenizer#commit=d1f4367bd2b2378fdb87cdd641ccb78cc2f87b98"
+    "@flex-development/vfile-tokenizer": "flex-development/vfile-tokenizer#commit=85f91f22fbf2dcb23c07fae8eaf5b552841d15d5"
     "@stylistic/eslint-plugin": "npm:4.1.0"
     "@tsconfig/strictest": "npm:2.0.5"
     "@types/chai": "npm:5.0.1"
@@ -2014,18 +2014,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@flex-development/vfile-tokenizer@flex-development/vfile-tokenizer#commit=d1f4367bd2b2378fdb87cdd641ccb78cc2f87b98":
+"@flex-development/vfile-tokenizer@flex-development/vfile-tokenizer#commit=85f91f22fbf2dcb23c07fae8eaf5b552841d15d5":
   version: 0.0.0
-  resolution: "@flex-development/vfile-tokenizer@https://github.com/flex-development/vfile-tokenizer.git#commit=d1f4367bd2b2378fdb87cdd641ccb78cc2f87b98"
+  resolution: "@flex-development/vfile-tokenizer@https://github.com/flex-development/vfile-tokenizer.git#commit=85f91f22fbf2dcb23c07fae8eaf5b552841d15d5"
   dependencies:
     "@flex-development/unist-util-builder": "npm:2.0.0"
     "@flex-development/unist-util-types": "npm:1.6.1"
     "@flex-development/vfile-location": "npm:1.1.0"
     "@types/debug": "npm:4.1.12"
-    debug: "npm:4.3.5"
+    debug: "npm:4.4.0"
     devlop: "npm:1.1.0"
-    micromark-util-chunked: "npm:2.0.0"
-  checksum: 10/0ae7d907f9f9bed2ecbc83b0e47aae6ea286d5c0da82c3640400c6020dd2cc67b9afea5369523731cf15b5a15877f8ed92a27147d2ab8ac1d002348672fa2796
+  checksum: 10/abe88e18ea8bebe91386fd96b10061b85adc096ab5eaa0c25f9db2712770a07f30065d994efd30557e3b0f61135486e954c0dc0d55e1b0afff7596b0ac857eb1
   languageName: node
   linkType: hard
 
@@ -4251,7 +4250,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:^4.0.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.3, debug@npm:^4.3.4, debug@npm:^4.3.6, debug@npm:^4.3.7, debug@npm:^4.4.0":
+"debug@npm:4, debug@npm:4.4.0, debug@npm:^4.0.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.3, debug@npm:^4.3.4, debug@npm:^4.3.6, debug@npm:^4.3.7, debug@npm:^4.4.0":
   version: 4.4.0
   resolution: "debug@npm:4.4.0"
   dependencies:
@@ -4260,18 +4259,6 @@ __metadata:
     supports-color:
       optional: true
   checksum: 10/1847944c2e3c2c732514b93d11886575625686056cd765336212dc15de2d2b29612b6cd80e1afba767bb8e1803b778caf9973e98169ef1a24a7a7009e1820367
-  languageName: node
-  linkType: hard
-
-"debug@npm:4.3.5":
-  version: 4.3.5
-  resolution: "debug@npm:4.3.5"
-  dependencies:
-    ms: "npm:2.1.2"
-  peerDependenciesMeta:
-    supports-color:
-      optional: true
-  checksum: 10/cb6eab424c410e07813ca1392888589972ce9a32b8829c6508f5e1f25f3c3e70a76731610ae55b4bbe58d1a2fffa1424b30e97fa8d394e49cd2656a9643aedd2
   languageName: node
   linkType: hard
 
@@ -7698,7 +7685,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"micromark-util-chunked@npm:2.0.0, micromark-util-chunked@npm:^2.0.0":
+"micromark-util-chunked@npm:^2.0.0":
   version: 2.0.0
   resolution: "micromark-util-chunked@npm:2.0.0"
   dependencies:
@@ -8051,13 +8038,6 @@ __metadata:
   version: 2.0.0
   resolution: "mrmime@npm:2.0.0"
   checksum: 10/8d95f714ea200c6cf3e3777cbc6168be04b05ac510090a9b41eef5ec081efeb1d1de3e535ffb9c9689fffcc42f59864fd52a500e84a677274f070adeea615c45
-  languageName: node
-  linkType: hard
-
-"ms@npm:2.1.2":
-  version: 2.1.2
-  resolution: "ms@npm:2.1.2"
-  checksum: 10/673cdb2c3133eb050c745908d8ce632ed2c02d85640e2edb3ace856a2266a813b30c613569bf3354fdf4ea7d1a1494add3bfa95e2713baa27d0c2c71fc44f58f
   languageName: node
   linkType: hard
 

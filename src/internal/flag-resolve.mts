@@ -17,9 +17,6 @@ import { ok } from 'devlop'
 /**
  * Resolve long and short flag events.
  *
- * @see {@linkcode Event}
- * @see {@linkcode TokenizeContext}
- *
  * @internal
  *
  * @this {void}
@@ -50,7 +47,7 @@ function resolveFlag(
     if (event === ev.enter) {
       if (token.type !== tt.flag) {
         ok(token.type !== tt.id, 'expected no flag id token')
-        token.value = token.value ?? context.sliceSerialize(token)
+        ok(token.value !== undefined, 'expected token value')
         continue
       }
 
@@ -91,7 +88,7 @@ function resolveFlag(
 
         // split combined short flag.
         if (token.option && token.short && id.value.length > 1) {
-          id.start._index++
+          id.start._bufferIndex++
           id.start.column++
           id.start.offset++
           id.value = id.value.slice(1)

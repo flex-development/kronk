@@ -8,8 +8,6 @@ import type { List } from '@flex-development/kronk'
 /**
  * Check if `value` is a list.
  *
- * @see {@linkcode List}
- *
  * @internal
  *
  * @template {any} [T=unknown]

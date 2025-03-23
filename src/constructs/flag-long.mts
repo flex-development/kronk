@@ -3,18 +3,19 @@
  * @module kronk/constructs/longFlag
  */
 
-import codes from '#enums/codes'
+import operand from '#constructs/operand'
+import chars from '#enums/chars'
 import tt from '#enums/tt'
+import atBreak from '#internal/at-break'
 import resolveFlag from '#internal/flag-resolve'
-import testFlag from '#internal/flag-test'
-import isBreak from '#internal/is-break'
-import kOption from '#internal/k-option'
-import type {
-  Code,
-  Construct,
-  Effects,
-  State,
-  TokenizeContext
+import kCommand from '#internal/k-command'
+import {
+  codes,
+  type Code,
+  type Construct,
+  type Effects,
+  type State,
+  type TokenizeContext
 } from '@flex-development/vfile-tokenizer'
 import { ok as assert } from 'devlop'
 import { asciiAlphanumeric } from 'micromark-util-character'
@@ -38,9 +39,7 @@ import { asciiAlphanumeric } from 'micromark-util-character'
  */
 const longFlag: Construct = {
   name: 'longFlag',
-  previous: isBreak,
   resolve: resolveFlag,
-  test: testFlag,
   tokenize: tokenizeLongFlag
 }
 
@@ -48,10 +47,6 @@ export default longFlag
 
 /**
  * Tokenize a long flag.
- *
- * @see {@linkcode Effects}
- * @see {@linkcode State}
- * @see {@linkcode TokenizeContext}
  *
  * @example
  *  ```markdown
@@ -107,13 +102,6 @@ function tokenizeLongFlag(
    */
   const self: TokenizeContext = this
 
-  /**
-   * Whether an operand was attached to a flag (e.g. `--long-flag=value`).
-   *
-   * @var {boolean} attached
-   */
-  let attached: boolean = false
-
   return longFlag
 
   /**
@@ -134,9 +122,14 @@ function tokenizeLongFlag(
    */
   function longFlag(this: void, code: Code): State | undefined {
     assert(code === codes.hyphen, 'expected `-`')
-    effects.enter(tt.flag, { chunk: self.chunk, long: true })
-    effects.consume(code)
-    return after
+
+    if (!self.delimiter && (!self.now()._index || self.code === codes.break)) {
+      effects.enter(tt.flag, { long: true })
+      effects.consume(code)
+      return after
+    }
+
+    return nok(code)
   }
 
   /**
@@ -178,7 +171,7 @@ function tokenizeLongFlag(
    */
   function beforeId(this: void, code: Code): State | undefined {
     if (!asciiAlphanumeric(code) && code !== codes.hyphen) return nok(code)
-    return effects.enter(tt.id, { chunk: self.chunk }), id(code)
+    return effects.enter(tt.id), id(code)
   }
 
   /**
@@ -197,9 +190,16 @@ function tokenizeLongFlag(
    *
    * @example
    *  ```markdown
+   *  > | --long-flag=
+   *        ^^^^^^^^^
+   *  ```
+   *
+   * @example
+   *  ```markdown
    *  > | --long-flag=value
    *        ^^^^^^^^^
    *  ```
+   *
    * @example
    *  ```markdown
    *  > | --long.flag=value
@@ -215,97 +215,24 @@ function tokenizeLongFlag(
    */
   function id(this: void, code: Code): State | undefined {
     switch (true) {
+      case atBreak(code):
+      case self.code === codes.break:
+        // actually a delimiter.
+        if (self.sliceSerialize(effects.exit(tt.id)) === chars.hyphen) break
+        return effects.exit(tt.flag), ok(code)
+      case code === codes.equal && self[kCommand]:
+        effects.exit(tt.id)
+        effects.exit(tt.flag)
+        effects.consume(code)
+        return effects.attempt(operand, ok, nok)
       case asciiAlphanumeric(code):
       case code === codes.dot:
       case code === codes.hyphen:
         return effects.consume(code), id
-      case code === codes.equal && !self[kOption]:
-        effects.exit(tt.id)
-        effects.exit(tt.flag)
-        effects.consume(code)
-        return attached = true, beforeValue
-      case isBreak(code):
-        /**
-         * Flag id codes.
-         *
-         * @const {Code[]} flagId
-         */
-        const flagId: Code[] = self.sliceStream(effects.exit(tt.id))
-
-        // ensure flag is not actually a delimiter.
-        if (flagId.length === 1 && flagId[0] === codes.hyphen) break
-        return effects.exit(tt.flag), ok(code)
       default:
         break
     }
 
     return nok(code)
-  }
-
-  /**
-   * Before long flag value.
-   *
-   * @example
-   *  ```markdown
-   *  > | --long=value
-   *             ^
-   *  ```
-   *
-   * @example
-   *  ```markdown
-   *  > | --long.flag=value
-   *                  ^
-   *  ```
-   *
-   * @example
-   *  ```markdown
-   *  > | --long-flag=value
-   *                  ^
-   *  ```
-   *
-   * @this {void}
-   *
-   * @param {Code} code
-   *  Current character code
-   * @return {State | undefined}
-   *  Next state
-   */
-  function beforeValue(this: void, code: Code): State | undefined {
-    assert(!self[kOption], 'expected to not be in `Option` context')
-    effects.enter(tt.operand, { attached, chunk: self.chunk })
-    return value(code)
-  }
-
-  /**
-   * Inside long flag value.
-   *
-   * @example
-   *  ```markdown
-   *  > | --long=value
-   *             ^^^^^
-   *  ```
-   *
-   * @example
-   *  ```markdown
-   *  > | --long.flag=value
-   *                  ^^^^^
-   *  ```
-   *
-   * @example
-   *  ```markdown
-   *  > | --long-flag=value
-   *                  ^^^^^
-   *  ```
-   *
-   * @this {void}
-   *
-   * @param {Code} code
-   *  Current character code
-   * @return {State | undefined}
-   *  Next state
-   */
-  function value(this: void, code: Code): State | undefined {
-    if (!isBreak(code)) return effects.consume(code), value
-    return effects.exit(tt.operand), ok(code)
   }
 }
