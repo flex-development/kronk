@@ -27,7 +27,17 @@ import pkg from './package.json' with { type: 'json' }
  * @return {Promise<Plugin>}
  *  Eslint plugin
  */
-const plugin = async name => (await import(name)).default
+const plugin = async name => {
+  /**
+   * Plugin module.
+   *
+   * @type {{ default: Plugin } | Plugin}
+   * @const m
+   */
+  const m = await import(name)
+
+  return 'default' in m ? m.default : m
+}
 
 /**
  * Eslint configuration objects.
@@ -729,7 +739,6 @@ export default [
           ignore: []
         }
       ],
-      'unicorn/import-index': 2,
       'unicorn/import-style': [2, { styles: {} }],
       'unicorn/new-for-builtins': 2,
       'unicorn/no-abusive-eslint-disable': 2,
