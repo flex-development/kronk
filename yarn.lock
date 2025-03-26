@@ -1502,6 +1502,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@flex-development/fsm-tokenizer@npm:1.0.0-alpha.1":
+  version: 1.0.0-alpha.1
+  resolution: "@flex-development/fsm-tokenizer@npm:1.0.0-alpha.1::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40flex-development%2Ffsm-tokenizer%2F1.0.0-alpha.1%2Fc384b17658028382eb4a56d0f8f58211d0027946"
+  dependencies:
+    "@flex-development/unist-util-builder": "npm:2.0.0"
+    "@flex-development/unist-util-types": "npm:1.6.1"
+    "@flex-development/vfile-location": "npm:1.1.0"
+    "@types/debug": "npm:4.1.12"
+    debug: "npm:4.4.0"
+    devlop: "npm:1.1.0"
+  checksum: 10/5ddae87a9133e115a4f5b012efbd7ad8002ecb26697b499b62913973bd7d8cedcaa605b7b3cd397e5f22558e75404c1705c1f7494f88acc37994ae40914f1292
+  languageName: node
+  linkType: hard
+
 "@flex-development/grease@npm:3.0.0-alpha.9":
   version: 3.0.0-alpha.9
   resolution: "@flex-development/grease@npm:3.0.0-alpha.9::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40flex-development%2Fgrease%2F3.0.0-alpha.9%2Fc51045c420be8ba7eae41952bf9f721cfd6429cb"
@@ -1593,12 +1607,12 @@ __metadata:
     "@eslint/js": "npm:9.20.0"
     "@flex-development/colors": "npm:1.0.1"
     "@flex-development/commitlint-config": "npm:1.0.1"
+    "@flex-development/fsm-tokenizer": "npm:1.0.0-alpha.1"
     "@flex-development/grease": "npm:3.0.0-alpha.9"
     "@flex-development/log": "flex-development/log#commit=194e98812fbbffceb6e2158b849706c597175207"
     "@flex-development/mlly": "npm:1.0.0-alpha.20"
     "@flex-development/pathe": "npm:4.0.1"
     "@flex-development/tutils": "npm:6.0.0-alpha.25"
-    "@flex-development/vfile-tokenizer": "flex-development/vfile-tokenizer#commit=85f91f22fbf2dcb23c07fae8eaf5b552841d15d5"
     "@stylistic/eslint-plugin": "npm:4.1.0"
     "@tsconfig/strictest": "npm:2.0.5"
     "@types/chai": "npm:5.0.1"
@@ -2011,20 +2025,6 @@ __metadata:
     "@types/unist": "npm:3.0.2"
     vfile: "npm:6.0.2"
   checksum: 10/3f217ede58e7f8855b412e7f25f78983a4c5e4256c1c3ab330efc7f8dbe0e30ca6983944950c1ac3b74081afba2d23688efef264c9e11bae796593ec85921c52
-  languageName: node
-  linkType: hard
-
-"@flex-development/vfile-tokenizer@flex-development/vfile-tokenizer#commit=85f91f22fbf2dcb23c07fae8eaf5b552841d15d5":
-  version: 0.0.0
-  resolution: "@flex-development/vfile-tokenizer@https://github.com/flex-development/vfile-tokenizer.git#commit=85f91f22fbf2dcb23c07fae8eaf5b552841d15d5"
-  dependencies:
-    "@flex-development/unist-util-builder": "npm:2.0.0"
-    "@flex-development/unist-util-types": "npm:1.6.1"
-    "@flex-development/vfile-location": "npm:1.1.0"
-    "@types/debug": "npm:4.1.12"
-    debug: "npm:4.4.0"
-    devlop: "npm:1.1.0"
-  checksum: 10/abe88e18ea8bebe91386fd96b10061b85adc096ab5eaa0c25f9db2712770a07f30065d994efd30557e3b0f61135486e954c0dc0d55e1b0afff7596b0ac857eb1
   languageName: node
   linkType: hard
 

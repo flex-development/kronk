@@ -3,7 +3,7 @@
  * @module kronk/internal/atBreak
  */
 
-import { codes, type Code } from '@flex-development/vfile-tokenizer'
+import { codes, type Code } from '@flex-development/fsm-tokenizer'
 
 /**
  * Check if `code` represents a break or an end to the stream.

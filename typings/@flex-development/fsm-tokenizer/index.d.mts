@@ -2,15 +2,15 @@ import tt from '#enums/tt'
 import type kArgument from '#internal/k-argument'
 import type kCommand from '#internal/k-command'
 import type kOption from '#internal/k-option'
+import type {} from '@flex-development/fsm-tokenizer'
 import type {
   Command,
   CommandName,
   List,
   Option
 } from '@flex-development/kronk'
-import type {} from '@flex-development/vfile-tokenizer'
 
-declare module '@flex-development/vfile-tokenizer' {
+declare module '@flex-development/fsm-tokenizer' {
   interface TokenInfo {
     /**
      * Whether the flag or operand was combined with a short flag.

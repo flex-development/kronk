@@ -11,7 +11,7 @@ import {
   type Event,
   type Token,
   type TokenizeContext
-} from '@flex-development/vfile-tokenizer'
+} from '@flex-development/fsm-tokenizer'
 import { ok } from 'devlop'
 
 /**

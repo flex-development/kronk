@@ -7,7 +7,6 @@ import testSubject from '#constructs/delimiter'
 import chars from '#enums/chars'
 import tt from '#enums/tt'
 import snapshot from '#tests/utils/snapshot-events'
-import pathe from '@flex-development/pathe'
 import {
   codes,
   createTokenizer,
@@ -16,7 +15,8 @@ import {
   type FinalizeContext,
   type List,
   type TokenizeContext
-} from '@flex-development/vfile-tokenizer'
+} from '@flex-development/fsm-tokenizer'
+import pathe from '@flex-development/pathe'
 
 describe('integration:constructs/delimiter', () => {
   let context: TokenizeContext

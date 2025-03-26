@@ -4,7 +4,7 @@
  */
 
 import testSubject from '#internal/is-list'
-import { codes } from '@flex-development/vfile-tokenizer'
+import { codes } from '@flex-development/fsm-tokenizer'
 
 describe('unit:internal/isList', () => {
   it.each<Parameters<typeof testSubject>>([

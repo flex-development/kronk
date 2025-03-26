@@ -20,6 +20,12 @@ import isArgument from '#utils/is-argument'
 import isCommand from '#utils/is-command'
 import isKronkError from '#utils/is-kronk-error'
 import isOption from '#utils/is-option'
+import {
+  ev,
+  tokenize,
+  type Event,
+  type TokenizeContext
+} from '@flex-development/fsm-tokenizer'
 import type {
   Action,
   ArgumentData,
@@ -56,12 +62,6 @@ import {
   reduce,
   reduceRight
 } from '@flex-development/tutils'
-import {
-  ev,
-  tokenize,
-  type Event,
-  type TokenizeContext
-} from '@flex-development/vfile-tokenizer'
 import { ok } from 'devlop'
 import plur from 'plur'
 

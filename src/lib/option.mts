@@ -11,6 +11,12 @@ import camelcase from '#internal/camelcase'
 import kOption from '#internal/k-option'
 import snakecase from '#internal/snakecase'
 import toChunks from '#internal/to-chunks'
+import {
+  ev,
+  tokenize,
+  type Event,
+  type TokenizeContext
+} from '@flex-development/fsm-tokenizer'
 import type {
   DefaultInfo,
   Flags,
@@ -27,12 +33,6 @@ import {
   isNIL,
   isString
 } from '@flex-development/tutils'
-import {
-  ev,
-  tokenize,
-  type Event,
-  type TokenizeContext
-} from '@flex-development/vfile-tokenizer'
 import { ok } from 'devlop'
 
 /**

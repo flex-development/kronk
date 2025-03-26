@@ -3,7 +3,7 @@
  * @module kronk/enums/tt
  */
 
-import type { TokenType } from '@flex-development/vfile-tokenizer'
+import type { TokenType } from '@flex-development/fsm-tokenizer'
 
 /**
  * Token types.

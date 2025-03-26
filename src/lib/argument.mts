@@ -9,6 +9,12 @@ import tt from '#enums/tt'
 import KronkError from '#errors/kronk.error'
 import identity from '#internal/identity'
 import kArgument from '#internal/k-argument'
+import {
+  ev,
+  tokenize,
+  type Event,
+  type TokenizeContext
+} from '@flex-development/fsm-tokenizer'
 import type {
   ArgumentData,
   ArgumentInfo,
@@ -19,12 +25,6 @@ import type {
   ParseArg
 } from '@flex-development/kronk'
 import { fallback, isNIL } from '@flex-development/tutils'
-import {
-  ev,
-  tokenize,
-  type Event,
-  type TokenizeContext
-} from '@flex-development/vfile-tokenizer'
 import { ok } from 'devlop'
 
 /**

@@ -16,7 +16,7 @@ import {
   type Effects,
   type State,
   type TokenizeContext
-} from '@flex-development/vfile-tokenizer'
+} from '@flex-development/fsm-tokenizer'
 import { ok as assert } from 'devlop'
 import { asciiAlphanumeric } from 'micromark-util-character'
 

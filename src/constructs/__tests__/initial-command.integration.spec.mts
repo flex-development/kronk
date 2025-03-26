@@ -16,14 +16,14 @@ import process from '#fixtures/process'
 import kCommand from '#internal/k-command'
 import Command from '#lib/command'
 import snapshot from '#tests/utils/snapshot-events'
-import type { CommandInfo } from '@flex-development/kronk'
-import pathe from '@flex-development/pathe'
 import {
   createTokenizer,
   tokenize,
   type List,
   type TokenizeContext
-} from '@flex-development/vfile-tokenizer'
+} from '@flex-development/fsm-tokenizer'
+import type { CommandInfo } from '@flex-development/kronk'
+import pathe from '@flex-development/pathe'
 import { ok } from 'devlop'
 
 describe('integration:constructs/initialCommand', () => {

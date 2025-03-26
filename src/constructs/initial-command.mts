@@ -11,7 +11,7 @@ import {
   codes,
   initialize,
   type InitialConstruct
-} from '@flex-development/vfile-tokenizer'
+} from '@flex-development/fsm-tokenizer'
 
 /**
  * Initial construct for `Command` instances.

@@ -4,7 +4,7 @@
  */
 
 import testSubject from '#internal/identity'
-import type { TokenFields } from '@flex-development/vfile-tokenizer'
+import type { TokenFields } from '@flex-development/fsm-tokenizer'
 
 describe('unit:internal/identity', () => {
   let value: TokenFields

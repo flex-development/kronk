@@ -10,14 +10,14 @@ import kOption from '#internal/k-option'
 import toChunks from '#internal/to-chunks'
 import sfmt from '#tests/utils/sfmt'
 import snapshot from '#tests/utils/snapshot-events'
-import type { Flags } from '@flex-development/kronk'
-import pathe from '@flex-development/pathe'
 import {
   createTokenizer,
   tokenize,
   type FinalizeContext,
   type TokenizeContext
-} from '@flex-development/vfile-tokenizer'
+} from '@flex-development/fsm-tokenizer'
+import type { Flags } from '@flex-development/kronk'
+import pathe from '@flex-development/pathe'
 
 describe('integration:constructs/initialOption', () => {
   let context: TokenizeContext

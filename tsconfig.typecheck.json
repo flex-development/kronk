@@ -8,7 +8,7 @@
   "extends": "./tsconfig.json",
   "files": [
     "typings/@flex-development/kronk/index.d.mts",
-    "typings/@flex-development/vfile-tokenizer/index.d.mts",
+    "typings/@flex-development/fsm-tokenizer/index.d.mts",
     "typings/@types/node/process.d.ts",
     "typings/chai/index.d.ts",
     "typings/typescript/lib.es5.d.ts",

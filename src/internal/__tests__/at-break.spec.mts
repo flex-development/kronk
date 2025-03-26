@@ -4,7 +4,7 @@
  */
 
 import testSubject from '#internal/at-break'
-import { codes } from '@flex-development/vfile-tokenizer'
+import { codes } from '@flex-development/fsm-tokenizer'
 
 describe('unit:internal/atBreak', () => {
   it.each<[keyof typeof codes]>([

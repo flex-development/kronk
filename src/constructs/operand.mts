@@ -8,7 +8,6 @@ import atBreak from '#internal/at-break'
 import kArgument from '#internal/k-argument'
 import kCommand from '#internal/k-command'
 import kOption from '#internal/k-option'
-import type { Option } from '@flex-development/kronk'
 import {
   codes,
   ev,
@@ -19,7 +18,8 @@ import {
   type State,
   type Token,
   type TokenizeContext
-} from '@flex-development/vfile-tokenizer'
+} from '@flex-development/fsm-tokenizer'
+import type { Option } from '@flex-development/kronk'
 import { ok as assert } from 'devlop'
 
 /**

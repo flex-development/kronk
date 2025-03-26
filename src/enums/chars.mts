@@ -3,7 +3,7 @@
  * @module kronk/enums/chars
  */
 
-import * as vt from '@flex-development/vfile-tokenizer'
+import * as vt from '@flex-development/fsm-tokenizer'
 
 /**
  * Character dictionary.

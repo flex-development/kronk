@@ -9,14 +9,14 @@ import tt from '#enums/tt'
 import kArgument from '#internal/k-argument'
 import sfmt from '#tests/utils/sfmt'
 import snapshot from '#tests/utils/snapshot-events'
-import type { ArgumentSyntax } from '@flex-development/kronk'
-import pathe from '@flex-development/pathe'
 import {
   createTokenizer,
   tokenize,
   type FinalizeContext,
   type TokenizeContext
-} from '@flex-development/vfile-tokenizer'
+} from '@flex-development/fsm-tokenizer'
+import type { ArgumentSyntax } from '@flex-development/kronk'
+import pathe from '@flex-development/pathe'
 
 describe('integration:constructs/initialArgument', () => {
   let context: TokenizeContext

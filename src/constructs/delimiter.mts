@@ -15,7 +15,7 @@ import {
   type Event,
   type State,
   type TokenizeContext
-} from '@flex-development/vfile-tokenizer'
+} from '@flex-development/fsm-tokenizer'
 import { ok as assert } from 'devlop'
 
 /**
