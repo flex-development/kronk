@@ -1598,7 +1598,7 @@ __metadata:
     "@flex-development/commitlint-config": "npm:1.0.1"
     "@flex-development/fsm-tokenizer": "npm:1.0.0-alpha.1"
     "@flex-development/grease": "npm:3.0.0-alpha.9"
-    "@flex-development/log": "flex-development/log#commit=194e98812fbbffceb6e2158b849706c597175207"
+    "@flex-development/log": "npm:5.0.0-alpha.1"
     "@flex-development/mlly": "npm:1.0.0-alpha.20"
     "@flex-development/pathe": "npm:4.0.1"
     "@flex-development/tutils": "npm:6.0.0-alpha.25"
@@ -1729,9 +1729,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@flex-development/log@flex-development/log#commit=194e98812fbbffceb6e2158b849706c597175207":
-  version: 4.0.1-dev.3
-  resolution: "@flex-development/log@https://github.com/flex-development/log.git#commit=194e98812fbbffceb6e2158b849706c597175207"
+"@flex-development/log@npm:5.0.0-alpha.1":
+  version: 5.0.0-alpha.1
+  resolution: "@flex-development/log@npm:5.0.0-alpha.1::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40flex-development%2Flog%2F5.0.0-alpha.1%2F38a7f2abcdf00ae768e221d8a61b11a80916c50d"
   dependencies:
     "@flex-development/colors": "npm:1.0.1"
     "@flex-development/pathe": "npm:4.0.1"
@@ -1740,7 +1740,7 @@ __metadata:
     is-unicode-supported: "npm:2.1.0"
     node-inspect-extracted: "npm:3.0.2"
     string-width: "npm:7.2.0"
-  checksum: 10/2ba55085ed0e8d9868ee67268d59327f5f5206e7980c5bc39cd9ae3b2abaa94a092bd3d5026ff0dedbc3c9a4591ed56955007013b26fde27d807ea53b637b960
+  checksum: 10/7cfb65dad751031ae9d2fdcac98d5fd4dea553bb3dfd16a8a321d0a1b64aeb4e1176f38b0c6af2b3b129bb2bf9ca8af040432dfb48e90b86654b63c0e6e17c9c
   languageName: node
   linkType: hard
 
