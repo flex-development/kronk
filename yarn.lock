@@ -1725,7 +1725,7 @@ __metadata:
     unified: "npm:11.0.5"
     vfile: "npm:6.0.3"
     vitest: "npm:3.0.7"
-    yaml-eslint-parser: "npm:1.2.3"
+    yaml-eslint-parser: "npm:1.3.0"
   languageName: unknown
   linkType: soft
 
@@ -6847,7 +6847,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.17.15, lodash@npm:^4.17.21":
+"lodash@npm:^4.17.15":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: 10/c08619c038846ea6ac754abd6dd29d2568aa705feb69339e836dfa8d8b09abbb2f859371e86863eda41848221f9af43714491467b5b0299122431e202bb0c532
@@ -11694,14 +11694,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml-eslint-parser@npm:1.2.3, yaml-eslint-parser@npm:^1.2.1":
-  version: 1.2.3
-  resolution: "yaml-eslint-parser@npm:1.2.3"
+"yaml-eslint-parser@npm:1.3.0, yaml-eslint-parser@npm:^1.2.1":
+  version: 1.3.0
+  resolution: "yaml-eslint-parser@npm:1.3.0"
   dependencies:
     eslint-visitor-keys: "npm:^3.0.0"
-    lodash: "npm:^4.17.21"
     yaml: "npm:^2.0.0"
-  checksum: 10/b936470882a38457333591cbecae5ace8e3cdb92cf0754a51429230e5a1fc56f90a8433341474ed8961125fd81047ee57fa3eb053dcd94cde76c8ae35cb58add
+  checksum: 10/ef2cecd5b97e14e8022fccddbd56f624033e1a101723f0acf2bfd78be7bc6f68b654be2acbed803b13692ec8ab650261c067051a7411978778f8af1d44cd8b4f
   languageName: node
   linkType: hard
 
