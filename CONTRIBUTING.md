@@ -105,14 +105,13 @@ Follow the steps below to setup your local development environment:
 | name                |
 | ------------------- |
 | `CODECOV_TOKEN`     |
-| `GITHUB_TOKEN`      |
 | `HOMEBREW_BREWFILE` |
 | `NODE_NO_WARNINGS`  |
 | `ZSH_DOTENV_FILE`   |
 
 #### GitHub Actions
 
-Variables are prefixed by `secrets.` in [workflow](.github/workflows/) files.
+Variables are prefixed by `secrets.` and `vars.` in [workflow](.github/workflows/) files.
 
 ### Git Config
 
@@ -208,7 +207,6 @@ See [`.commitlintrc.ts`](.commitlintrc.ts) to view all commit guidelines.
 [dprint][] is used to format code and [ESLint][] to lint files.
 
 - [`.dprint.jsonc`](.dprint.jsonc)
-- [`eslint.base.config.mjs`](eslint.base.config.mjs)
 - [`eslint.config.mjs`](eslint.config.mjs)
 
 ### Making Changes
@@ -232,8 +230,13 @@ Be sure to use [`it.skip`][vitest-test-skip] or [`it.todo`][vitest-test-todo] wh
 #### Running Tests
 
 - `yarn test`
+- `yarn test:reports`
+- `yarn test:ui`
 - `yarn test:cov`
+- `yarn test:cov:reports`
+- `yarn test:cov:ui`
 - `yarn typecheck`
+- `yarn typecheck:ui`
 
 #### Code Coverage
 

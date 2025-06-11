@@ -4,7 +4,6 @@
  */
 
 import type { List } from '@flex-development/kronk'
-import type Chai from 'chai'
 
 export default plugin
 

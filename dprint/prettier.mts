@@ -17,7 +17,7 @@ declare module 'editorconfig' {
 
 process.stdin.pipe(new Transform({
   /**
-   * Formats a file using `prettier`.
+   * Format a file using `prettier`.
    *
    * @see https://prettier.io
    *

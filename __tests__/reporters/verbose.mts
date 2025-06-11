@@ -4,18 +4,15 @@
  * @see https://vitest.dev/advanced/reporters#exported-reporters
  */
 
-import colors, { type Colors } from '@flex-development/colors'
-import type { Task, TaskResultPack } from '@vitest/runner'
-import { getNames, getTests } from '@vitest/runner/utils'
-import type { RunnerTask, RunnerTestFile } from 'vitest'
-import type { ConfigEnv } from 'vitest/config'
+import { colors, type Colors } from '@flex-development/colors'
+import { getNames } from '@vitest/runner/utils'
+import { ok } from 'devlop'
+import type { RunnerTask } from 'vitest'
+import type { TestCase, TestModule, TestSuite, Vitest } from 'vitest/node'
 import { DefaultReporter, type Reporter } from 'vitest/reporters'
 
 /**
  * Verbose reporter.
- *
- * @see {@linkcode DefaultReporter}
- * @see {@linkcode Reporter}
  *
  * @extends {DefaultReporter}
  * @implements {Reporter}
@@ -24,24 +21,17 @@ class VerboseReporter extends DefaultReporter implements Reporter {
   /**
    * Color functions map.
    *
-   * @public
+   * @protected
    * @instance
    * @member {Colors} colors
    */
-  public colors: Colors
+  protected colors!: Colors
 
   /**
    * Create a new verbose reporter.
-   *
-   * @see {@linkcode ConfigEnv}
-   *
-   * @param {ConfigEnv} [env]
-   *  Vitest configuration environment
    */
-  constructor(env: ConfigEnv) {
-    super({ summary: env.mode !== 'typecheck' })
-
-    this.colors = colors
+  constructor() {
+    super({ summary: false })
     this.renderSucceed = true
     this.verbose = true
   }
@@ -63,25 +53,37 @@ class VerboseReporter extends DefaultReporter implements Reporter {
     name: string | null | undefined,
     dim?: boolean | null | undefined
   ): string {
-    if (name) {
-      name = this.colors.magenta(`[${name}]`)
-      if (dim) name = this.colors.dim(name)
-      return name
-    }
+    if (!name) return ''
 
-    return ''
+    name = this.colors.magenta(`[${name}]`)
+    if (dim) name = this.colors.dim(name)
+
+    return name
   }
 
   /**
-   * Get a symbol representing `task`.
-   *
-   * @see {@linkcode RunnerTask}
+   * Get an indent string for `task`.
    *
    * @protected
    * @instance
    *
    * @param {RunnerTask} task
-   *  The runner task to handle
+   *  The current runner task
+   * @return {string}
+   *  Indentation string
+   */
+  protected getIndentation(task: RunnerTask): string {
+    return ' '.repeat(getNames(task).length * 2)
+  }
+
+  /**
+   * Get a symbol representing `task`.
+   *
+   * @protected
+   * @instance
+   *
+   * @param {RunnerTask} task
+   *  The current runner task
    * @return {string}
    *  Task state symbol
    */
@@ -92,131 +94,137 @@ class VerboseReporter extends DefaultReporter implements Reporter {
 
     if (!task.result) return this.colors.gray('.')
 
-    if (task.result.state === 'pass') {
-      return this.colors.green(task.meta.benchmark ? '·' : '✓')
-    }
-
     if (task.result.state === 'fail') {
       return this.colors.red(task.type === 'suite' ? '❯' : '✖')
+    }
+
+    if (task.result.state === 'pass') {
+      return this.colors.green(task.meta.benchmark ? '·' : '✓')
     }
 
     return ''
   }
 
   /**
-   * Print tasks.
+   * Initialize the reporter.
    *
-   * @see {@linkcode RunnerTestFile}
+   * @see {@linkcode Vitest}
    *
    * @public
-   * @override
    * @instance
+   * @override
    *
-   * @param {RunnerTestFile[] | undefined} [files]
-   *  List of test files
-   * @param {unknown[] | undefined} [errors]
-   *  List of unhandled errors
+   * @param {Vitest} ctx
+   *  The reporter context
    * @return {undefined}
    */
-  public override onFinished(
-    files?: RunnerTestFile[] | undefined,
-    errors?: unknown[] | undefined
-  ): undefined {
-    if (files) { for (const task of files) this.printTask(task, true) }
-    return void super.onFinished(files, errors)
+  public override onInit(ctx: Vitest): undefined {
+    return this.colors = colors, this.ctx = ctx, void this
   }
 
   /**
-   * Handle task updates.
-   *
-   * @see {@linkcode TaskResultPack}
+   * Print test `modules` after a test run.
    *
    * @public
-   * @override
    * @instance
+   * @override
    *
-   * @param {TaskResultPack[]} packs
-   *  List of task result packs
+   * @param {ReadonlyArray<TestModule>} modules
+   *  List of test modules
    * @return {undefined}
    */
-  public override onTaskUpdate(packs: TaskResultPack[]): undefined {
-    return void packs
+  // @ts-expect-error incorrectly typed 🙄.
+  public override onTestRunEnd(modules: readonly TestModule[]): undefined {
+    for (const module of modules) this.print(module)
+    return void this
   }
 
   /**
-   * Print `task`.
-   *
-   * @see {@linkcode Task}
+   * Print a test case, module, or suite.
    *
    * @protected
-   * @override
    * @instance
    *
-   * @param {Task | null | undefined} task
-   *  The task to handle
-   * @param {boolean | null | undefined} [force]
-   *  Print `task` even when {@linkcode isTTY} is `false`?
+   * @param {TestCase | TestModule | TestSuite} reported
+   *  The reported task
    * @return {undefined}
    */
-  protected override printTask(
-    task: Task | null | undefined,
-    force?: boolean | null | undefined
-  ): undefined {
-    if (
-      (!this.isTTY || force) &&
-      task?.result?.state &&
-      task.result.state !== 'queued' &&
-      task.result.state !== 'run'
-    ) {
-      /**
-       * Task skipped?
-       *
-       * @const {boolean} skip
-       */
-      const skip: boolean = task.mode === 'skip'
+  protected print(reported: TestCase | TestModule | TestSuite): undefined {
+    ok('task' in reported, 'expected `reported.task`')
 
-      /**
-       * Printed task.
-       *
-       * @var {string} state
-       */
-      let state: string = ''
+    /**
+     * Whether the task was skipped.
+     *
+     * @const {boolean} skipped
+     */
+    const skipped: boolean = (
+      reported.type === 'test'
+        ? reported.result().state
+        : reported.state()
+    ) === 'skipped'
 
-      state = ' '.repeat(getNames(task).length * 2)
-      state += this.getTaskSymbol(task) + ' '
+    /**
+     * The current runner task.
+     *
+     * @const {RunnerTask} task
+     */
+    const task: RunnerTask = reported.task as RunnerTask
 
-      if (task.type !== 'suite') {
-        this.log(state += skip ? this.colors.blackBright(task.name) : task.name)
-      } else {
-        /**
-         * Suite title.
-         *
-         * @var {string} suite
-         */
-        let suite: string = ''
+    /**
+     * The formatted task string.
+     *
+     * @var {string} string
+     */
+    let string: string = this.getIndentation(task)
 
-        if ('filepath' in task) {
-          suite = task.file.name
+    // add task symbol.
+    string += this.getTaskSymbol(task) + ' '
 
-          if (task.file.projectName) {
-            state += this.formatProjectName(task.file.projectName, skip) + ' '
-          }
-        } else {
-          suite = task.name
-        }
+    // add project name, if any.
+    if (reported.type === 'module' && reported.project.name) {
+      string += this.formatProjectName(reported.project.name, skipped) + ' '
+    }
 
-        suite += ` (${getTests(task).length})`
-        state += skip ? this.colors.blackBright(suite) : suite
+    if (reported.type === 'test') {
+      string += skipped ? this.colors.blackBright(reported.name) : reported.name
+      this.log(string)
+    } else {
+      // add relative path to test module or suite name.
+      string += skipped ? this.colors.blackBright(task.name) : task.name
 
-        this.log(state)
+      // add total number of tests.
+      string += ` (${[...reported.children.allTests()].length})`
 
-        if (!skip) {
-          for (const subtask of task.tasks) void this.printTask(subtask, force)
+      // print task string.
+      this.log(string)
+
+      // print suites and/or tests.
+      if (!skipped) {
+        for (const subtask of reported.children.array()) {
+          this.print(subtask)
         }
       }
     }
 
-    return void task
+    return void this
+  }
+
+  /**
+   * Print a test module.
+   *
+   * > 👉 **Note**: Does nothing.
+   * > {@linkcode print} is called via {@linkcode onTestRunEnd} instead.
+   *
+   * @protected
+   * @instance
+   * @override
+   *
+   * @param {TestModule} module
+   *  The test module to print
+   * @return {undefined}
+   */
+  protected override printTestModule(module: TestModule): undefined {
+    return void module
   }
 }
 

@@ -81,7 +81,7 @@ jobs:
     environment:
       name: release
       url: |
-        ${{ format('{0}/{1}/releases/tag/{2}', github.server_url, github.repository, needs.preflight.outputs.tag) }}
+        "${{ format('{0}/{1}/releases/tag/{2}', github.server_url, github.repository, needs.preflight.outputs.tag) }}"
     env:
       GITHUB_TOKEN: ${{ secrets.GH_REPO_TOKEN }}
       HUSKY: 0
@@ -115,7 +115,7 @@ jobs:
           node-version-file: .nvmrc
       - id: yarn
         name: Install dependencies
-        run: yarn && echo "$GITHUB_WORKSPACE/node_modules/.bin" >>$GITHUB_PATH
+        run: yarn --no-immutable && echo "$GITHUB_WORKSPACE/node_modules/.bin" >>$GITHUB_PATH
       - id: pack
         name: Pack project
         run: yarn pack -o %s-%v.tgz

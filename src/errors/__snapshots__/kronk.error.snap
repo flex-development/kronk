@@ -29,15 +29,15 @@ exports[`unit:errors/KronkError > #toJSON > should return error as json object 1
   "message": "\`Option(-m --mask <mask>)\` does not allow \`h\`",
   "stack": KronkError: \`Option(-m --mask <mask>)\` does not allow \`h\`
     at \${process.cwd()}/src/errors/__tests__/kronk.error.spec.mts:120:14
-    at file://\${process.cwd()}/node_modules/@vitest/runner/dist/index.js:174:14
-    at file://\${process.cwd()}/node_modules/@vitest/runner/dist/index.js:558:28
-    at file://\${process.cwd()}/node_modules/@vitest/runner/dist/index.js:61:24
+    at file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:1894:20
     at new Promise (<anonymous>)
-    at runWithTimeout (file://\${process.cwd()}/node_modules/@vitest/runner/dist/index.js:41:12)
-    at runTest (file://\${process.cwd()}/node_modules/@vitest/runner/dist/index.js:1137:17)
-    at runSuite (file://\${process.cwd()}/node_modules/@vitest/runner/dist/index.js:1291:15)
-    at runSuite (file://\${process.cwd()}/node_modules/@vitest/runner/dist/index.js:1291:15)
-    at runSuite (file://\${process.cwd()}/node_modules/@vitest/runner/dist/index.js:1291:15),
+    at runWithTimeout (file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:1860:10)
+    at runTest (file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:1571:12)
+    at runSuite (file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:1726:8)
+    at runSuite (file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:1726:8)
+    at runSuite (file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:1726:8),
 }
 `;
 

@@ -22,7 +22,7 @@ declare module 'editorconfig' {
 
 process.stdin.pipe(new Transform({
   /**
-   * Formats a file using `sh-syntax`.
+   * Format a file using `sh-syntax`.
    *
    * @see https://github.com/un-ts/sh-syntax
    * @see https://github.com/mvdan/sh/blob/master/cmd/shfmt/shfmt.1.scd

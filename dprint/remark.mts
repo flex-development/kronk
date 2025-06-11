@@ -3,17 +3,17 @@
  * @module dprint/remark
  */
 
+import remarkPreset from '@flex-development/remark-preset'
 import { ok } from 'devlop'
 import { Transform } from 'node:stream'
 import remarkParse from 'remark-parse'
 import remarkStringify from 'remark-stringify'
 import { unified } from 'unified'
 import { VFile } from 'vfile'
-import remarkPreset from '../.remarkrc.mjs'
 
 process.stdin.pipe(new Transform({
   /**
-   * Formats a file using `remark`.
+   * Format a file using `remark`.
    *
    * @see https://github.com/remarkjs/remark
    *

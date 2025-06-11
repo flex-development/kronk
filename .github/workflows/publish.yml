@@ -79,7 +79,7 @@ jobs:
     environment:
       name: gpr
       url: |
-        ${{ format('{0}/{1}/pkgs/npm/{2}', github.server_url, github.repository, github.event.repository.name) }}
+        "${{ format('{0}/{1}/pkgs/npm/{2}', github.server_url, github.repository, github.event.repository.name) }}"
     steps:
       - id: checkout
         name: Checkout ${{ github.ref_name }}
@@ -87,9 +87,6 @@ jobs:
         with:
           persist-credentials: false
           ref: ${{ github.ref }}
-      - id: npmrc-cleanup
-        name: Remove stale .npmrc file
-        run: rm .npmrc
       - id: npmrc
         name: Setup .npmrc file
         uses: actions/setup-node@v4.3.0
@@ -118,7 +115,7 @@ jobs:
     environment:
       name: npm
       url: |
-        ${{ format('https://npmjs.com/package/@{0}/v/{1}', github.repository, needs.preflight.outputs.version) }}
+        "${{ format('https://npmjs.com/package/@{0}/v/{1}', github.repository, needs.preflight.outputs.version) }}"
     steps:
       - id: checkout
         name: Checkout ${{ github.ref_name }}
@@ -126,9 +123,6 @@ jobs:
         with:
           persist-credentials: false
           ref: ${{ github.ref }}
-      - id: npmrc-cleanup
-        name: Remove stale .npmrc file
-        run: rm .npmrc
       - id: npmrc
         name: Setup .npmrc file
         uses: actions/setup-node@v4.3.0

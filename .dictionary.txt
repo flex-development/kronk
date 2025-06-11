@@ -2,12 +2,7 @@ attw
 cefc
 commitlintrc
 dedupe
-dessant
 devlop
-docast
-dohm
-dprint
-esbuild
 exiter
 fbca
 ggshield
@@ -19,8 +14,6 @@ kronk
 ksort
 nvmrc
 pkgs
-remarkrc
-rollup
 sarif
 sfmt
 shfmt

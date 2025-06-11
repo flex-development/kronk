@@ -18,7 +18,13 @@
 
 ---
 name: auto-merge
-on: pull_request
+on:
+  pull_request:
+    types:
+      - opened
+      - ready_for_review
+      - reopened
+      - synchronize
 jobs:
   auto-merge:
     if: github.event.pull_request.auto_merge == null && !github.event.pull_request.draft

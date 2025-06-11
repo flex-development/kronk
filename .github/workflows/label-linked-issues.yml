@@ -21,11 +21,6 @@
 ---
 name: label-linked-issues
 on:
-  pull_request:
-    branches:
-      - main
-    types:
-      - closed
   workflow_dispatch:
     inputs:
       pr:
@@ -36,7 +31,6 @@ permissions:
   issues: write
 jobs:
   label-linked-issues:
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged
     runs-on: ubuntu-latest
     steps:
       - id: debug
@@ -75,7 +69,7 @@ jobs:
               }
             }
           owner: ${{ github.repository_owner }}
-          pr: ${{ inputs.pr || github.event.number }}
+          pr: ${{ inputs.pr }}
           repo: ${{ github.event.repository.name }}
       - id: label
         name: Label linked issues
