@@ -30,8 +30,15 @@ import type {
   OptionInfo
 } from '@flex-development/kronk'
 import { omit } from '@flex-development/tutils'
+import EventEmitter from 'eventemitter2'
 
 describe('unit:lib/Command', () => {
+  describe('constructor', () => {
+    it('should be an `EventEmitter`', () => {
+      expect(new TestSubject('command')).to.be.instanceof(EventEmitter)
+    })
+  })
+
   describe('#action', () => {
     let subject: TestSubject
 

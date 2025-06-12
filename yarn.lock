@@ -1717,6 +1717,7 @@ __metadata:
     dprint: "npm:0.50.0"
     editorconfig: "npm:2.0.1"
     eslint: "npm:9.28.0"
+    eventemitter2: "npm:6.4.9"
     growl: "npm:1.10.5"
     husky: "npm:9.1.7"
     is-ci: "npm:4.1.0"
@@ -5638,6 +5639,13 @@ __metadata:
   version: 2.0.3
   resolution: "esutils@npm:2.0.3"
   checksum: 10/b23acd24791db11d8f65be5ea58fd9a6ce2df5120ae2da65c16cfc5331ff59d5ac4ef50af66cd4bde238881503ec839928a0135b99a036a9cdfa22d17fd56cdb
+  languageName: node
+  linkType: hard
+
+"eventemitter2@npm:6.4.9":
+  version: 6.4.9
+  resolution: "eventemitter2@npm:6.4.9"
+  checksum: 10/b829b1c6b11e15926b635092b5ad62b4463d1c928859831dcae606e988cf41893059e3541f5a8209d21d2f15314422ddd4d84d20830b4bf44978608d15b06b08
   languageName: node
   linkType: hard
 

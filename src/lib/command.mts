@@ -63,14 +63,18 @@ import {
   reduceRight
 } from '@flex-development/tutils'
 import { ok } from 'devlop'
+import EventEmitter from 'eventemitter2'
 import plur from 'plur'
 
 /**
  * Data model representing a command.
  *
+ * @see {@linkcode EventEmitter}
+ *
  * @class
+ * @extends {EventEmitter}
  */
-class Command {
+class Command extends EventEmitter {
   /**
    * Parsed arguments.
    *
@@ -205,6 +209,8 @@ class Command {
     info?: CommandInfo | string | null | undefined,
     data?: CommandData | null | undefined
   ) {
+    super({ delimiter: chars.colon })
+
     if (typeof info === 'object' && info !== null) {
       data = { ...info }
     } else {
@@ -2540,11 +2546,12 @@ class Command {
    *
    * @public
    * @instance
+   * @override
    *
    * @return {string}
    *  String representation of `this` command
    */
-  public toString(): string {
+  public override toString(): string {
     return `Command(${this.id() ?? ''})`
   }
 
