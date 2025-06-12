@@ -8,7 +8,7 @@ import type { KronkErrorInfo } from '@flex-development/kronk'
 
 describe('unit-d:interfaces/CommandErrorInfo', () => {
   it('should extend KronkErrorInfo', () => {
-    expectTypeOf<TestSubject>().toMatchTypeOf<KronkErrorInfo>()
+    expectTypeOf<TestSubject>().toExtend<KronkErrorInfo>()
   })
 
   it('should match [id: string]', () => {

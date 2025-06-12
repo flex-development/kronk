@@ -43,7 +43,19 @@
       "kronk": "./src/index.mts",
       "default": "./dist/index.mjs"
     },
-    "./package.json": "./package.json"
+    "./errors": {
+      "kronk": "./src/errors/index.mts",
+      "default": "./dist/errors/index.mjs"
+    },
+    "./events": {
+      "kronk": "./src/events/index.mts",
+      "default": "./dist/events/index.mjs"
+    },
+    "./package.json": "./package.json",
+    "./utils": {
+      "kronk": "./src/utils/index.mts",
+      "default": "./dist/utils/index.mjs"
+    }
   },
   "imports": {
     "#constructs/*": {
@@ -57,6 +69,10 @@
     "#errors/*": {
       "kronk": "./src/errors/*.mts",
       "default": "./dist/errors/*.mjs"
+    },
+    "#events/*": {
+      "kronk": "./src/events/*.mts",
+      "default": "./dist/events/*.mjs"
     },
     "#fixtures/*": "./__fixtures__/*.mts",
     "#interfaces/*": {

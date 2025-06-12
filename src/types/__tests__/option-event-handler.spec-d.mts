@@ -4,12 +4,7 @@
  */
 
 import type TestSubject from '#types/option-event-handler'
-import type {
-  Flags,
-  Option,
-  OptionValueSource,
-  RawOptionValue
-} from '@flex-development/kronk'
+import type { Option, OptionEvent } from '@flex-development/kronk'
 
 describe('unit-d:types/OptionEventHandler', () => {
   type T = Option & { version: string }
@@ -20,17 +15,8 @@ describe('unit-d:types/OptionEventHandler', () => {
   })
 
   describe('parameters', () => {
-    it('should be callable with [T, RawOptionValue, (OptionValueSource | null | undefined)?, (Flags | null | undefined)?]', () => {
-      // Arrange
-      type Expect = [
-        T,
-        RawOptionValue,
-        (OptionValueSource | null | undefined)?,
-        (Flags | null | undefined)?
-      ]
-
-      // Expect
-      expectTypeOf<Subject>().parameters.toEqualTypeOf<Expect>()
+    it('should be callable with [event: OptionEvent<T>]', () => {
+      expectTypeOf<Subject>().parameters.toEqualTypeOf<[OptionEvent<T>]>()
     })
   })
 

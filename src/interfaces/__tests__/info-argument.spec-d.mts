@@ -8,7 +8,7 @@ import type { ArgumentData } from '@flex-development/kronk'
 
 describe('unit-d:interfaces/ArgumentInfo', () => {
   it('should extend ArgumentData', () => {
-    expectTypeOf<TestSubject>().toMatchTypeOf<ArgumentData>()
+    expectTypeOf<TestSubject>().toExtend<ArgumentData>()
   })
 
   it('should match [syntax: ArgumentSyntax]', () => {

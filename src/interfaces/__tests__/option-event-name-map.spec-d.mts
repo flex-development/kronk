@@ -6,9 +6,9 @@
 import type TestSubject from '#interfaces/option-event-name-map'
 
 describe('unit-d:interfaces/OptionEventNameMap', () => {
-  it('should match [default: `option:${string}`]', () => {
+  it('should match [option: `option:${string}`]', () => {
     expectTypeOf<TestSubject>()
-      .toHaveProperty('default')
+      .toHaveProperty('option')
       .toEqualTypeOf<`option:${string}`>()
   })
 })

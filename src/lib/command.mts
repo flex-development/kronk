@@ -7,8 +7,6 @@ import initialCommand from '#constructs/initial-command'
 import chars from '#enums/chars'
 import optionValueSource from '#enums/option-value-source'
 import tt from '#enums/tt'
-import CommandError from '#errors/command.error'
-import KronkError from '#errors/kronk.error'
 import formatList from '#internal/format-list'
 import isList from '#internal/is-list'
 import kCommand from '#internal/k-command'
@@ -17,10 +15,6 @@ import toChunks from '#internal/to-chunks'
 import toList from '#internal/to-list'
 import Argument from '#lib/argument'
 import Option from '#lib/option'
-import isArgument from '#utils/is-argument'
-import isCommand from '#utils/is-command'
-import isKronkError from '#utils/is-kronk-error'
-import isOption from '#utils/is-option'
 import {
   ev,
   tokenize,
@@ -54,6 +48,13 @@ import type {
   RawOptionValue,
   UnknownStrategy
 } from '@flex-development/kronk'
+import { CommandError, KronkError } from '@flex-development/kronk/errors'
+import { KronkEvent, OptionEvent } from '@flex-development/kronk/events'
+import {
+  isArgument,
+  isKronkError,
+  isOption
+} from '@flex-development/kronk/utils'
 import { createLogger, type Logger } from '@flex-development/log'
 import { FancyReporter } from '@flex-development/log/reporters'
 import {
@@ -70,12 +71,9 @@ import plur from 'plur'
 /**
  * Data model representing a command.
  *
- * @see {@linkcode EventEmitter}
- *
  * @class
- * @extends {EventEmitter}
  */
-class Command extends EventEmitter {
+class Command {
   /**
    * Parsed arguments.
    *
@@ -102,6 +100,18 @@ class Command extends EventEmitter {
    * @member {Command | null | undefined} defaultCommand
    */
   protected defaultCommand: Command | null | undefined
+
+  /**
+   * Command event emitter.
+   *
+   * @see {@linkcode EventEmitter}
+   *
+   * @protected
+   * @readonly
+   * @instance
+   * @member {EventEmitter}
+   */
+  protected readonly events: EventEmitter
 
   /**
    * Command metadata.
@@ -210,8 +220,6 @@ class Command extends EventEmitter {
     info?: CommandInfo | string | null | undefined,
     data?: CommandData | null | undefined
   ) {
-    super({ delimiter: chars.colon })
-
     if (typeof info === 'object' && info !== null) {
       data = { ...info }
     } else {
@@ -228,6 +236,7 @@ class Command extends EventEmitter {
     this.args = []
     this.argv = []
     this.defaultCommand = null
+    this.events = new EventEmitter({ delimiter: chars.colon })
     this.optionValueSources = {}
     this.optionValues = {}
     this.parent = null
@@ -281,6 +290,31 @@ class Command extends EventEmitter {
       if (isList(data.subcommands)) this.commands(data.subcommands)
       else this.command(data.subcommands)
     }
+  }
+
+  /**
+   * Check if `value` looks like a command.
+   *
+   * @public
+   * @static
+   *
+   * @template {Command} T
+   *  Command instance type
+   *
+   * @param {unknown} value
+   *  The thing to check
+   * @return {value is T}
+   *  `true` if `value` is looks like a command, `false` otherwise
+   */
+  public static isCommand<T extends Command>(value: unknown): value is T {
+    return (
+      typeof value === 'object' &&
+      value !== null &&
+      (
+        value instanceof Command ||
+        kCommand in value && value[kCommand] === true
+      )
+    )
   }
 
   /**
@@ -529,7 +563,7 @@ class Command extends EventEmitter {
     )
 
     // add option event handler.
-    this.on(option.event, this.onOption.bind(this))
+    this.events.on(option.event, this.onOption.bind(this))
 
     return this
   }
@@ -1007,7 +1041,9 @@ class Command extends EventEmitter {
     let subcommand: Command = info as Command
 
     // create subcommand
-    if (!isCommand(info)) subcommand = this.createCommand(info as never, data)
+    if (!Command.isCommand(info)) {
+      subcommand = this.createCommand(info as never, data)
+    }
 
     // add new subcommand.
     this.addCommand(subcommand)
@@ -1387,7 +1423,24 @@ class Command extends EventEmitter {
   }
 
   /**
-   * Emit an `option` event.
+   * Emit an `event`.
+   *
+   * @see {@linkcode KronkEvent}
+   *
+   * @public
+   * @instance
+   *
+   * @param {KronkEvent} event
+   *  The event to emit
+   * @return {boolean}
+   *  `true` if event has listeners, `false` otherwise
+   */
+  public emit(event: KronkEvent): boolean {
+    return this.events.emit(event.id, event)
+  }
+
+  /**
+   * Emit a parsed `option` event.
    *
    * @see {@linkcode Flags}
    * @see {@linkcode Option}
@@ -1414,7 +1467,7 @@ class Command extends EventEmitter {
     source: OptionValueSource,
     flag?: Flags | null | undefined
   ): boolean {
-    return this.emit(option.event, option, value, source, flag)
+    return this.emit(new OptionEvent(option, value, source, flag))
   }
 
   /**
@@ -1776,35 +1829,30 @@ class Command extends EventEmitter {
   }
 
   /**
-   * Handle an `option` event.
+   * Handle a parsed option `event`.
    *
-   * The method will parse the raw option `value` using the specified
-   * option-argument parser, as well as store the raw value `source` and parsed
-   * option value.
+   * The method will parse the raw option-argument value using the specified
+   * parser, as well as store the raw value source and parsed option value.
    *
-   * @see {@linkcode Option}
-   * @see {@linkcode OptionValueSource}
-   * @see {@linkcode RawOptionValue}
+   * > 👉 **Note**: This event handler is registered each time a prepared option
+   * > is added (i.e. `command.addOption(option)`).
+   *
+   * @see {@linkcode OptionEvent}
    *
    * @protected
    * @instance
    *
-   * @param {Option} option
-   *  The command option instance
-   * @param {RawOptionValue} value
-   *  The raw `option` value
-   * @param {OptionValueSource | null | undefined} [source]
-   *  The source of the raw option `value`
+   * @template {Option} T
+   *  Parsed command option
+   *
+   * @param {OptionEvent} event
+   *  The emitted parsed option event
    * @return {undefined}
    */
-  protected onOption(
-    option: Option,
-    value: RawOptionValue,
-    source?: OptionValueSource | null | undefined
-  ): undefined {
-    if (typeof value === 'boolean') {
-      this.optionValue(option.key, value, source)
-    } else if (value !== null) {
+  protected onOption<T extends Option>(event: OptionEvent<T>): undefined {
+    if (typeof event.value === 'boolean') {
+      this.optionValue(event.option.key, event.value, event.source)
+    } else if (event.value !== null) {
       /**
        * Option-argument parser.
        *
@@ -1813,18 +1861,21 @@ class Command extends EventEmitter {
        *
        * @const {ParseArg}
        */
-      const parser: ParseArg = option.parser()
+      const parser: ParseArg = event.option.parser()
 
       /**
        * Default value configuration.
        *
        * @const {DefaultInfo} def
        */
-      const def: DefaultInfo = option.default()
+      const def: DefaultInfo = event.option.default()
 
-      if (source !== optionValueSource.env) this.checkChoices(value, option)
-      this.optionValue(option.key, parser(value, def.value))
-      this.optionValueSource(option.key, source)
+      if (event.source !== optionValueSource.env) {
+        this.checkChoices(event.value, event.option)
+      }
+
+      this.optionValue(event.option.key, parser(event.value, def.value))
+      this.optionValueSource(event.option.key, event.source)
     }
 
     return void this
@@ -2626,12 +2677,11 @@ class Command extends EventEmitter {
    *
    * @public
    * @instance
-   * @override
    *
    * @return {string}
    *  String representation of `this` command
    */
-  public override toString(): string {
+  public toString(): string {
     return `Command(${this.id() ?? ''})`
   }
 

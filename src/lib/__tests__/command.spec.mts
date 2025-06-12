@@ -6,13 +6,14 @@
 import chars from '#enums/chars'
 import average from '#fixtures/commands/average'
 import clamp from '#fixtures/commands/clamp'
+import date from '#fixtures/date'
+import kCommand from '#internal/k-command'
 import noop from '#internal/noop'
 import Argument from '#lib/argument'
 import TestSubject from '#lib/command'
 import Option from '#lib/option'
 import sfmt from '#tests/utils/sfmt'
 import isArgument from '#utils/is-argument'
-import isCommand from '#utils/is-command'
 import isKronkError from '#utils/is-kronk-error'
 import isOption from '#utils/is-option'
 import type {
@@ -30,12 +31,30 @@ import type {
   OptionInfo
 } from '@flex-development/kronk'
 import { omit } from '@flex-development/tutils'
-import EventEmitter from 'eventemitter2'
 
 describe('unit:lib/Command', () => {
-  describe('constructor', () => {
-    it('should be an `EventEmitter`', () => {
-      expect(new TestSubject('command')).to.be.instanceof(EventEmitter)
+  let isCommand: typeof TestSubject['isCommand']
+
+  beforeAll(() => {
+    isCommand = TestSubject.isCommand
+  })
+
+  describe('.isCommand', () => {
+    it.each<Parameters<typeof TestSubject['isCommand']>>([
+      [chars.digit3],
+      [date],
+      [new Argument('[]')],
+      [new Option('--command')],
+      [null]
+    ])('should return `false` if `value` is not `Command` (%#)', value => {
+      expect(isCommand(value)).to.be.false
+    })
+
+    it.each<Parameters<typeof TestSubject['isCommand']>>([
+      [{ [kCommand]: true }],
+      [new TestSubject()]
+    ])('should return `true` if `value` looks like `Command` (%#)', value => {
+      expect(isCommand(value)).to.be.true
     })
   })
 

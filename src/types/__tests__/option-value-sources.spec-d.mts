@@ -13,6 +13,6 @@ describe('unit-d:types/OptionValueSources', () => {
     type Expect = Record<Option['key'], Nilable<OptionValueSource>>
 
     // Expect
-    expectTypeOf<TestSubject>().toMatchTypeOf<Expect>()
+    expectTypeOf<TestSubject>().toMatchObjectType<Expect>()
   })
 })

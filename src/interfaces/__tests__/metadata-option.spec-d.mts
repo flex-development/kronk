@@ -9,7 +9,7 @@ import type { Nilable } from '@flex-development/tutils'
 
 describe('unit-d:interfaces/OptionMetadata', () => {
   it('should extend OptionInfo', () => {
-    expectTypeOf<TestSubject>().toMatchTypeOf<OptionInfo>()
+    expectTypeOf<TestSubject>().toExtend<OptionInfo>()
   })
 
   it('should match [long: string | null | undefined]', () => {

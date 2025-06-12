@@ -9,7 +9,7 @@ import type { Optional } from '@flex-development/tutils'
 
 describe('unit-d:interfaces/CommandInfo', () => {
   it('should extend CommandData', () => {
-    expectTypeOf<TestSubject>().toMatchTypeOf<CommandData>()
+    expectTypeOf<TestSubject>().toExtend<CommandData>()
   })
 
   it('should match [name?: CommandName | undefined]', () => {

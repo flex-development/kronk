@@ -4,10 +4,10 @@
  */
 
 import kOption from '#internal/k-option'
-import type { Option } from '@flex-development/kronk'
+import Option from '#lib/option'
 
 /**
- * Check if `value` is an {@linkcode Option}.
+ * Check if `value` looks like an {@linkcode Option}.
  *
  * @category
  *  utils
@@ -17,14 +17,16 @@ import type { Option } from '@flex-development/kronk'
  * @param {unknown} value
  *  The thing to check
  * @return {value is Option}
- *  `true` if `value` is an `Option` instance, `false` otherwise
+ *  `true` if `value` looks like an `Option` instance, `false` otherwise
  */
 function isOption(this: void, value: unknown): value is Option {
   return (
     typeof value === 'object' &&
     value !== null &&
-    kOption in value &&
-    value[kOption] === true
+    (
+      value instanceof Option ||
+      kOption in value && value[kOption] === true
+    )
   )
 }
 

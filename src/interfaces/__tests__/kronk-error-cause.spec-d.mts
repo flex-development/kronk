@@ -11,7 +11,7 @@ describe('unit-d:interfaces/KronkErrorCause', () => {
     type Expect = { [Symbol.hasInstance]?: never }
 
     // Expect
-    expectTypeOf<TestSubject>().toMatchTypeOf<Expect>()
+    expectTypeOf<TestSubject>().toMatchObjectType<Expect>()
   })
 
   it('should match [[Symbol.unscopables]?: never]', () => {
@@ -19,7 +19,7 @@ describe('unit-d:interfaces/KronkErrorCause', () => {
     type Expect = { [Symbol.unscopables]?: never }
 
     // Expect
-    expectTypeOf<TestSubject>().toMatchTypeOf<Expect>()
+    expectTypeOf<TestSubject>().toMatchObjectType<Expect>()
   })
 
   it('should match Record<string, any>', () => {

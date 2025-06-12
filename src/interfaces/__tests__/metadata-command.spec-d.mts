@@ -13,7 +13,7 @@ import type {
 
 describe('unit-d:interfaces/CommandMetadata', () => {
   it('should extend Omit<CommandInfo, Skip>', () => {
-    expectTypeOf<TestSubject>().toMatchTypeOf<Omit<CommandInfo, Skip>>()
+    expectTypeOf<TestSubject>().toExtend<Omit<CommandInfo, Skip>>()
   })
 
   it('should match [arguments: Argument[]]', () => {

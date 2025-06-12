@@ -123,12 +123,7 @@ interface CommandData {
     | undefined
 
   /**
-   * Strategy for handling unknown command-line arguments.
-   *
-   * - `'argument'`: allow unknown command-arguments only
-   * - `'option'`: allow unknown options only
-   * - `false`: disallow unknown command-arguments and options
-   * - `true`: allow unknown command-arguments and options
+   * The strategy to use for handling unknown command-line arguments.
    *
    * @see {@linkcode UnknownStrategy}
    *

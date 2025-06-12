@@ -13,6 +13,6 @@ describe('unit-d:types/OptionValues', () => {
     type T = Nilable<boolean | string | string[]>
 
     // Expect
-    expectTypeOf<TestSubject<T>>().toMatchTypeOf<Record<Option['key'], T>>()
+    expectTypeOf<TestSubject<T>>().toMatchObjectType<Record<Option['key'], T>>()
   })
 })

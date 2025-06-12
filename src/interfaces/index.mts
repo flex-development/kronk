@@ -20,6 +20,9 @@ export type { default as OptionInfo } from '#interfaces/info-option'
 export type { default as KronkErrorCause } from '#interfaces/kronk-error-cause'
 export type { default as KronkErrorInfo } from '#interfaces/kronk-error-info'
 export type { default as KronkErrorJson } from '#interfaces/kronk-error-json'
+export type {
+  default as KronkEventNameMap
+} from '#interfaces/kronk-event-name-map'
 export type { default as ArgumentMetadata } from '#interfaces/metadata-argument'
 export type { default as CommandMetadata } from '#interfaces/metadata-command'
 export type { default as OptionMetadata } from '#interfaces/metadata-option'

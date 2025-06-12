@@ -8,7 +8,7 @@ import type { Flags, OptionData } from '@flex-development/kronk'
 
 describe('unit-d:interfaces/OptionInfo', () => {
   it('should extend OptionData', () => {
-    expectTypeOf<TestSubject>().toMatchTypeOf<OptionData>()
+    expectTypeOf<TestSubject>().toExtend<OptionData>()
   })
 
   it('should match [flags: Flags]', () => {

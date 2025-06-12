@@ -4,10 +4,10 @@
  */
 
 import kArgument from '#internal/k-argument'
-import type { Argument } from '@flex-development/kronk'
+import Argument from '#lib/argument'
 
 /**
- * Check if `value` is an {@linkcode Argument}.
+ * Check if `value` looks like an {@linkcode Argument}.
  *
  * @category
  *  utils
@@ -17,14 +17,16 @@ import type { Argument } from '@flex-development/kronk'
  * @param {unknown} value
  *  The thing to check
  * @return {value is Argument}
- *  `true` if `value` is an `Argument` instance, `false` otherwise
+ *  `true` if `value` looks like an `Argument` instance, `false` otherwise
  */
 function isArgument(this: void, value: unknown): value is Argument {
   return (
     typeof value === 'object' &&
     value !== null &&
-    kArgument in value &&
-    value[kArgument] === true
+    (
+      value instanceof Argument ||
+      kArgument in value && value[kArgument] === true
+    )
   )
 }
 

@@ -8,7 +8,7 @@ import type { ArgumentInfo } from '@flex-development/kronk'
 
 describe('unit-d:interfaces/ArgumentMetadata', () => {
   it('should extend ArgumentInfo', () => {
-    expectTypeOf<TestSubject>().toMatchTypeOf<ArgumentInfo>()
+    expectTypeOf<TestSubject>().toExtend<ArgumentInfo>()
   })
 
   it('should match [id: string]', () => {

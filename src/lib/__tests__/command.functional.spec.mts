@@ -16,7 +16,6 @@ import process from '#fixtures/process'
 import isList from '#internal/is-list'
 import TestSubject from '#lib/command'
 import findCommand from '#tests/utils/find-command'
-import isCommand from '#utils/is-command'
 import isCommandError from '#utils/is-command-error'
 import type {
   Action,
@@ -1114,7 +1113,7 @@ describe('functional:lib/Command', () => {
 
     ok(!dateformat.name, 'expected no `dateformat.name`')
     ok(dateformat.subcommands, 'expected `dateformat.subcommands`')
-    ok(!isCommand(dateformat.subcommands))
+    ok(!TestSubject.isCommand(dateformat.subcommands))
     ok(!isList(dateformat.subcommands))
     ok(typeof dateformat.subcommands === 'object')
     ok(typeof dateformat.subcommands.aliases === 'string')
@@ -1397,7 +1396,7 @@ describe('functional:lib/Command', () => {
               optsWithGlobals: OptionValues
             ): undefined {
               ok(dateformat.subcommands, 'expected `dateformat.subcommands`')
-              ok(!isCommand(dateformat.subcommands))
+              ok(!TestSubject.isCommand(dateformat.subcommands))
               ok(!isList(dateformat.subcommands))
               ok(typeof dateformat.subcommands === 'object')
 

@@ -8,6 +8,7 @@ import date from '#fixtures/date'
 import kOption from '#internal/k-option'
 import Argument from '#lib/argument'
 import Command from '#lib/command'
+import Option from '#lib/option'
 import testSubject from '#utils/is-option'
 
 describe('unit:utils/isOption', () => {
@@ -17,11 +18,14 @@ describe('unit:utils/isOption', () => {
     [new Argument('<>')],
     [new Command()],
     [null]
-  ])('should return `false` if `value` is not `Option` (%#)', value => {
+  ])('should return `false` if `value` is not `Option`-like (%#)', value => {
     expect(testSubject(value)).to.be.false
   })
 
-  it('should return `true` if `value` looks like `Option`', () => {
-    expect(testSubject({ [kOption]: true })).to.be.true
+  it.each<Parameters<typeof testSubject>>([
+    [{ [kOption]: true }],
+    [new Option('--option')]
+  ])('should return `true` if `value` looks like `Option` (%#)', value => {
+    expect(testSubject(value)).to.be.true
   })
 })

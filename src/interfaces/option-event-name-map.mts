@@ -16,7 +16,7 @@
  *  }
  */
 interface OptionEventNameMap {
-  default: `option:${string}`
+  option: `option:${string}`
 }
 
 export type { OptionEventNameMap as default }

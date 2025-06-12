@@ -3,9 +3,9 @@
 exports[`e2e:utils > should expose public api 1`] = `
 [
   "isArgument",
-  "isCommand",
   "isCommandError",
   "isKronkError",
+  "isKronkEvent",
   "isOption",
 ]
 `;
