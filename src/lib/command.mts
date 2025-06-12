@@ -5,6 +5,7 @@
 
 import initialCommand from '#constructs/initial-command'
 import chars from '#enums/chars'
+import optionValueSource from '#enums/option-value-source'
 import tt from '#enums/tt'
 import CommandError from '#errors/command.error'
 import KronkError from '#errors/kronk.error'
@@ -521,7 +522,11 @@ class Command extends EventEmitter {
     if (option.short) this.info.options.set(option.short, option)
 
     // configure default option-argument value.
-    this.optionValue(option.key, option.default().value, 'default')
+    this.optionValue(
+      option.key,
+      option.default().value,
+      optionValueSource.default
+    )
 
     return this
   }
@@ -2363,11 +2368,11 @@ class Command extends EventEmitter {
           // parse option-arguments + set option value and source
           if (value !== null) {
             if (typeof value === 'boolean') {
-              this.optionValue(token.option.key, value, 'cli')
+              this.optionValue(token.option.key, value, optionValueSource.cli)
             } else {
               this.checkChoices(value, token.option)
               this.optionValue(token.option.key, parser(value, def.value))
-              this.optionValueSource(token.option.key, 'cli')
+              this.optionValueSource(token.option.key, optionValueSource.cli)
             }
           }
 
@@ -2402,10 +2407,19 @@ class Command extends EventEmitter {
          */
         const env: string | null = option.env()
 
+        /**
+         * The source of the raw option value.
+         *
+         * @var {OptionValueSource | null | undefined} source
+         */
+        let source: OptionValueSource | null | undefined
+
         if (env && env in cmd.process.env) {
+          source = cmd.optionValueSource(option.key)
+
           if (
             cmd.optionValue(option.key) === undefined ||
-            includes(['default', 'env'], cmd.optionValueSource(option.key))
+            includes([optionValueSource.default, optionValueSource.env], source)
           ) {
             /**
              * Default value configuration.
@@ -2422,7 +2436,7 @@ class Command extends EventEmitter {
             const value: string = cmd.process.env[env]!
 
             cmd.optionValue(option.key, option.parser()(value, def.value))
-            cmd.optionValueSource(option.key, 'env')
+            cmd.optionValueSource(option.key, optionValueSource.env)
           }
         }
       }

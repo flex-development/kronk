@@ -2,6 +2,7 @@
 
 exports[`e2e:kronk > should expose public api 1`] = `
 [
+  "optionValueSource",
   "CommandError",
   "KronkError",
   "Argument",
