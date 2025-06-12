@@ -22,6 +22,7 @@ import type {
   Flags,
   List,
   OptionData,
+  OptionEventName,
   OptionInfo,
   OptionMetadata,
   ParseArg
@@ -136,6 +137,21 @@ class Option {
    */
   public get boolean(): boolean {
     return !this.required && !this.optional
+  }
+
+  /**
+   * Get the event name for the option.
+   *
+   * @see {@linkcode OptionEventName}
+   *
+   * @public
+   * @instance
+   *
+   * @return {OptionEventName}
+   *  Option event name
+   */
+  public get event(): OptionEventName {
+    return `option:${this.id}`
   }
 
   /**

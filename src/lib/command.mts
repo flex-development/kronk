@@ -528,6 +528,9 @@ class Command extends EventEmitter {
       optionValueSource.default
     )
 
+    // add option event handler.
+    this.on(option.event, this.onOption.bind(this))
+
     return this
   }
 
@@ -1384,6 +1387,37 @@ class Command extends EventEmitter {
   }
 
   /**
+   * Emit an `option` event.
+   *
+   * @see {@linkcode Flags}
+   * @see {@linkcode Option}
+   * @see {@linkcode OptionValueSource}
+   * @see {@linkcode RawOptionValue}
+   *
+   * @public
+   * @instance
+   *
+   * @param {Option} option
+   *  The command option instance
+   * @param {RawOptionValue} value
+   *  The raw `option` value
+   * @param {OptionValueSource} source
+   *  The source of the raw option `value`
+   * @param {Flags | null | undefined} [flag]
+   *  The parsed `option` flag
+   * @return {boolean}
+   *  `true` if event has listeners, `false` otherwise
+   */
+  public emitOption(
+    option: Option,
+    value: RawOptionValue,
+    source: OptionValueSource,
+    flag?: Flags | null | undefined
+  ): boolean {
+    return this.emit(option.event, option, value, source, flag)
+  }
+
+  /**
    * Display an error message and exit.
    *
    * @see {@linkcode KronkError}
@@ -1739,6 +1773,61 @@ class Command extends EventEmitter {
   public id(name?: CommandName | undefined): CommandName | this {
     if (!arguments.length) return this.info.name?.trim() || null
     return this.info.name = name?.trim(), this
+  }
+
+  /**
+   * Handle an `option` event.
+   *
+   * The method will parse the raw option `value` using the specified
+   * option-argument parser, as well as store the raw value `source` and parsed
+   * option value.
+   *
+   * @see {@linkcode Option}
+   * @see {@linkcode OptionValueSource}
+   * @see {@linkcode RawOptionValue}
+   *
+   * @protected
+   * @instance
+   *
+   * @param {Option} option
+   *  The command option instance
+   * @param {RawOptionValue} value
+   *  The raw `option` value
+   * @param {OptionValueSource | null | undefined} [source]
+   *  The source of the raw option `value`
+   * @return {undefined}
+   */
+  protected onOption(
+    option: Option,
+    value: RawOptionValue,
+    source?: OptionValueSource | null | undefined
+  ): undefined {
+    if (typeof value === 'boolean') {
+      this.optionValue(option.key, value, source)
+    } else if (value !== null) {
+      /**
+       * Option-argument parser.
+       *
+       * The default parser is an identity function that returns the raw
+       * option-argument value.
+       *
+       * @const {ParseArg}
+       */
+      const parser: ParseArg = option.parser()
+
+      /**
+       * Default value configuration.
+       *
+       * @const {DefaultInfo} def
+       */
+      const def: DefaultInfo = option.default()
+
+      if (source !== optionValueSource.env) this.checkChoices(value, option)
+      this.optionValue(option.key, parser(value, def.value))
+      this.optionValueSource(option.key, source)
+    }
+
+    return void this
   }
 
   /**
@@ -2291,23 +2380,6 @@ class Command extends EventEmitter {
           this.findOption(token.option.long || token.option.short)
         ) {
           /**
-           * Option-argument parser.
-           *
-           * The default parser is an identity function that returns the raw
-           * option-argument value.
-           *
-           * @const {ParseArg}
-           */
-          const parser: ParseArg = token.option.parser()
-
-          /**
-           * Default value configuration.
-           *
-           * @const {DefaultInfo} def
-           */
-          const def: DefaultInfo = token.option.default()
-
-          /**
            * Index of event after flag exit event.
            *
            * @const {number} afterIndex
@@ -2337,7 +2409,7 @@ class Command extends EventEmitter {
               // check if the operand was attached to the flag or if the command
               // doesn't accept any arguments to allow boolean flags to be
               // specified before command-arguments. otherwise, consider the
-              // operand and option-argument and error accordingly.
+              // operand an option-argument and error accordingly.
               if (operand.attached || !this.info.arguments.length) {
                 /**
                  * Reason for error.
@@ -2365,16 +2437,15 @@ class Command extends EventEmitter {
           // set fallback option-argument for user if boolean flag was passed.
           if (token.option.boolean) value = value ??= true
 
-          // parse option-arguments + set option value and source
-          if (value !== null) {
-            if (typeof value === 'boolean') {
-              this.optionValue(token.option.key, value, optionValueSource.cli)
-            } else {
-              this.checkChoices(value, token.option)
-              this.optionValue(token.option.key, parser(value, def.value))
-              this.optionValueSource(token.option.key, optionValueSource.cli)
-            }
-          }
+          // emit option event.
+          // the option event handler will parse the option-argument, as well as
+          // store the option value and source.
+          this.emitOption(
+            token.option,
+            value,
+            optionValueSource.cli,
+            token.value
+          )
 
           // remove flag events.
           events.splice(index, 2)
@@ -2422,21 +2493,16 @@ class Command extends EventEmitter {
             includes([optionValueSource.default, optionValueSource.env], source)
           ) {
             /**
-             * Default value configuration.
-             *
-             * @const {DefaultInfo} def
-             */
-            const def: DefaultInfo = option.default()
-
-            /**
              * Environment variable value.
              *
              * @const {string} value
              */
             const value: string = cmd.process.env[env]!
 
-            cmd.optionValue(option.key, option.parser()(value, def.value))
-            cmd.optionValueSource(option.key, optionValueSource.env)
+            // emit option event.
+            // the option event handler will parse the environment variable
+            // value, as well as store the option value and source.
+            this.emitOption(option, value, optionValueSource.env)
           }
         }
       }

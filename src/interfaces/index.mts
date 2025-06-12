@@ -24,6 +24,9 @@ export type { default as ArgumentMetadata } from '#interfaces/metadata-argument'
 export type { default as CommandMetadata } from '#interfaces/metadata-command'
 export type { default as OptionMetadata } from '#interfaces/metadata-option'
 export type {
+  default as OptionEventNameMap
+} from '#interfaces/option-event-name-map'
+export type {
   default as OptionValueSourceMap
 } from '#interfaces/option-value-source-map'
 export type { default as ParseOptions } from '#interfaces/parse-options'

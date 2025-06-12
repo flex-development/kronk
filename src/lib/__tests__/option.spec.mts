@@ -180,6 +180,17 @@ describe('unit:lib/Option', () => {
     })
   })
 
+  describe('#event', () => {
+    it('should be option event name', () => {
+      // Arrange
+      const flags: Flags = '--resolve.conditions <condition...>'
+      const subject: TestSubject = new TestSubject(flags)
+
+      // Expect
+      expect(subject).have.property('event', 'option:' + subject.id)
+    })
+  })
+
   describe('#flags', () => {
     it('should be option flags string', () => {
       // Arrange
