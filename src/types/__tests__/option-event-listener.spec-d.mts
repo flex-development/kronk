@@ -1,21 +1,17 @@
 /**
- * @file Type Tests - OptionEventHandler
- * @module kronk/types/tests/unit-d/OptionEventHandler
+ * @file Type Tests - OptionEventListener
+ * @module kronk/types/tests/unit-d/OptionEventListener
  */
 
-import type TestSubject from '#types/option-event-handler'
+import type TestSubject from '#types/option-event-listener'
 import type { Option, OptionEvent } from '@flex-development/kronk'
 
-describe('unit-d:types/OptionEventHandler', () => {
+describe('unit-d:types/OptionEventListener', () => {
   type T = Option & { version: string }
   type Subject = TestSubject<T>
 
-  it('should match [this: void]', () => {
-    expectTypeOf<Subject>().thisParameter.toEqualTypeOf<void>()
-  })
-
   describe('parameters', () => {
-    it('should be callable with [event: OptionEvent<T>]', () => {
+    it('should be callable with [OptionEvent<T>]', () => {
       expectTypeOf<Subject>().parameters.toEqualTypeOf<[OptionEvent<T>]>()
     })
   })

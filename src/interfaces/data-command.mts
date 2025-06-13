@@ -16,7 +16,10 @@ import type {
   Option,
   OptionInfo,
   OptionPriority,
-  UnknownStrategy
+  UnknownStrategy,
+  Version,
+  VersionOption,
+  VersionOptionInfo
 } from '@flex-development/kronk'
 
 /**
@@ -130,6 +133,15 @@ interface CommandData {
    * @default false
    */
   unknown?: UnknownStrategy | null | undefined
+
+  /**
+   * The version of the command.
+   *
+   * @see {@linkcode Version}
+   * @see {@linkcode VersionOption}
+   * @see {@linkcode VersionOptionInfo}
+   */
+  version?: Version | VersionOption | VersionOptionInfo | null | undefined
 }
 
 export type { CommandData as default }

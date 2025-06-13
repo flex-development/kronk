@@ -23,7 +23,7 @@ import type {
   List,
   OptionValues
 } from '@flex-development/kronk'
-import type { InputLogObject } from '@flex-development/log'
+import type { InputLogObject, Logger } from '@flex-development/log'
 import { defaultConditions as mConditions } from '@flex-development/mlly'
 import pathe from '@flex-development/pathe'
 import { omit, shake, type Fn } from '@flex-development/tutils'
@@ -51,6 +51,7 @@ describe('functional:lib/Command', () => {
       optsWithGlobals: OptionValues
     ], undefined>
     before: Fn<[subject: TestSubject], undefined>
+    version?: boolean
   }
 
   let act: CreateActionSpy
@@ -432,6 +433,148 @@ describe('functional:lib/Command', () => {
       ],
       [
         clamp,
+        ['--version'],
+        /**
+         * @this {void}
+         *
+         * @return {ParseCaseHooks}
+         *  Parse test case hooks
+         */
+        function context(this: void): ParseCaseHooks {
+          ok(typeof clamp.version, 'expected `clamp.version` to be a string')
+
+          /**
+           * Command logger spy.
+           *
+           * @var {MockInstance<Logger['log']>}
+           */
+          let log!: MockInstance<Logger['log']>
+
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @param {TestSubject} result
+             *  The command that was run
+             * @param {OptionValues} opts
+             *  Parsed command options
+             * @param {OptionValues} optsWithGlobals
+             *  Parsed command options (with globals)
+             * @return {undefined}
+             */
+            after(
+              this: void,
+              subject: TestSubject,
+              result: TestSubject,
+              opts: OptionValues,
+              optsWithGlobals: OptionValues
+            ): undefined {
+              expect(result).to.eq(subject)
+              expect(result.args).to.be.of.length(0)
+              expect(result.argv).to.eql([])
+
+              expect(opts).to.have.keys(['debug', 'max', 'min', 'version'])
+              expect(opts).to.have.property('debug', false)
+              expect(opts).to.have.property('max', Number.MAX_SAFE_INTEGER)
+              expect(opts).to.have.property('min', +chars.digit0)
+              expect(opts).to.have.property('version', clamp.version)
+
+              expect(optsWithGlobals).to.eql(opts)
+
+              expect(log).toHaveBeenCalledExactlyOnceWith(clamp.version)
+
+              return void this
+            },
+
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              action = act(subject)
+              done = dn(subject)
+              log = vi.spyOn(subject.logger, 'log')
+              return void this
+            },
+
+            /**
+             * Version command option parsing test marker.
+             */
+            version: true
+          }
+        }
+      ],
+      [
+        clamp,
+        [clamp.name, '--version'],
+        /**
+         * @this {void}
+         *
+         * @return {ParseCaseHooks}
+         *  Parse test case hooks
+         */
+        function context(this: void): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @param {TestSubject} result
+             *  The command that was run
+             * @param {OptionValues} opts
+             *  Parsed command options
+             * @param {OptionValues} optsWithGlobals
+             *  Parsed command options (with globals)
+             * @return {undefined}
+             */
+            after(
+              this: void,
+              subject: TestSubject,
+              result: TestSubject,
+              opts: OptionValues,
+              optsWithGlobals: OptionValues
+            ): undefined {
+              expect(result).to.eq(subject)
+              expect(result.args).to.be.of.length(0)
+              expect(result.argv).to.eql([])
+
+              expect(opts).to.have.keys(['debug', 'max', 'min', 'version'])
+              expect(opts).to.have.property('debug', false)
+              expect(opts).to.have.property('max', Number.MAX_SAFE_INTEGER)
+              expect(opts).to.have.property('min', +chars.digit0)
+              expect(opts).to.have.property('version', clamp.version)
+
+              expect(optsWithGlobals).to.eql(opts)
+
+              return void this
+            },
+
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              return action = act(subject), done = dn(subject), void this
+            },
+
+            /**
+             * Version command option parsing test marker.
+             */
+            version: true
+          }
+        }
+      ],
+      [
+        clamp,
         [clamp.name, chars.digit3],
         /**
          * @this {void}
@@ -467,10 +610,11 @@ describe('functional:lib/Command', () => {
               expect(result.args).to.be.of.length(1).and.each.be.a('number')
               expect(result.argv).to.eql(argv.slice(-1))
 
-              expect(opts).to.have.keys(['debug', 'max', 'min'])
+              expect(opts).to.have.keys(['debug', 'max', 'min', 'version'])
               expect(opts).to.have.property('debug', false)
               expect(opts).to.have.property('max', Number.MAX_SAFE_INTEGER)
               expect(opts).to.have.property('min', +chars.digit0)
+              expect(opts).to.have.property('version', undefined)
 
               expect(optsWithGlobals).to.eql(opts)
 
@@ -527,10 +671,11 @@ describe('functional:lib/Command', () => {
               expect(result.args).to.be.of.length(1).and.each.be.a('number')
               expect(result.argv).to.eql(argv.slice(-1))
 
-              expect(opts).to.have.keys(['debug', 'max', 'min'])
+              expect(opts).to.have.keys(['debug', 'max', 'min', 'version'])
               expect(opts).to.have.property('debug', true)
               expect(opts).to.have.property('max', Number.MAX_SAFE_INTEGER)
               expect(opts).to.have.property('min', +chars.digit0)
+              expect(opts).to.have.property('version', undefined)
 
               expect(optsWithGlobals).to.eql(opts)
 
@@ -587,10 +732,11 @@ describe('functional:lib/Command', () => {
               expect(result.args).to.be.of.length(1).and.each.be.a('number')
               expect(result.argv).to.eql([argv[0]])
 
-              expect(opts).to.have.keys(['debug', 'max', 'min'])
+              expect(opts).to.have.keys(['debug', 'max', 'min', 'version'])
               expect(opts).to.have.property('debug', false)
               expect(opts).to.have.property('max', +chars.digit3)
               expect(opts).to.have.property('min', +chars.digit0)
+              expect(opts).to.have.property('version', undefined)
 
               expect(optsWithGlobals).to.eql(opts)
 
@@ -647,10 +793,11 @@ describe('functional:lib/Command', () => {
               expect(result.args).to.be.of.length(1).and.each.be.a('number')
               expect(result.argv).to.eql([argv[0]])
 
-              expect(opts).to.have.keys(['debug', 'max', 'min'])
+              expect(opts).to.have.keys(['debug', 'max', 'min', 'version'])
               expect(opts).to.have.property('debug', false)
               expect(opts).to.have.property('max', 26)
               expect(opts).to.have.property('min', +chars.digit0)
+              expect(opts).to.have.property('version', undefined)
 
               expect(optsWithGlobals).to.eql(opts)
 
@@ -707,10 +854,11 @@ describe('functional:lib/Command', () => {
               expect(result.args).to.be.of.length(1).and.each.be.a('number')
               expect(result.argv).to.eql(argv.slice(-1))
 
-              expect(opts).to.have.keys(['debug', 'max', 'min'])
+              expect(opts).to.have.keys(['debug', 'max', 'min', 'version'])
               expect(opts).to.have.property('debug', false)
               expect(opts).to.have.property('max', +chars.digit3)
               expect(opts).to.have.property('min', -1)
+              expect(opts).to.have.property('version', undefined)
 
               expect(optsWithGlobals).to.eql(opts)
 
@@ -1076,7 +1224,7 @@ describe('functional:lib/Command', () => {
         }
       ]
     ])('should run command (%#)', (info, argv, hooks) => {
-      const { after, before } = hooks(argv)
+      const { after, before, version } = hooks(argv)
 
       // Arrange
       const subject: TestSubject = new TestSubject({ ...info, process })
@@ -1090,11 +1238,17 @@ describe('functional:lib/Command', () => {
       opts = result.opts()
       optsWithGlobals = result.optsWithGlobals()
 
+      // Expect (conditional)
+      if (version) {
+        expect(action).toHaveBeenCalledTimes(0)
+      } else {
+        expect(action).toHaveBeenCalledOnce()
+        expect(action.mock.contexts[0]).to.eq(result)
+        expect(action.mock.lastCall).to.eql([opts, ...result.args])
+        expect(done).toHaveBeenCalledAfter(action)
+      }
+
       // Expect
-      expect(action).toHaveBeenCalledOnce()
-      expect(action.mock.contexts[0]).to.eq(result)
-      expect(action.mock.lastCall).to.eql([opts, ...result.args])
-      expect(done).toHaveBeenCalledAfter(action)
       expect(done).toHaveBeenCalledOnce()
       expect(done.mock.contexts[0]).to.eq(result)
       expect(done.mock.lastCall).to.eql([optsWithGlobals, ...result.args])
@@ -1497,6 +1651,131 @@ describe('functional:lib/Command', () => {
       ],
       [
         mlly,
+        [mlly.name, 'resolve', '--version'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  Command-line arguments
+         * @return {ParseCaseHooks}
+         *  Parse test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          const { subcommands } = mlly as { subcommands: [CommandInfo] }
+
+          ok(Array.isArray(subcommands), 'expected subcommands array')
+          ok(subcommands.length, 'expected at least one subcommand')
+
+          /**
+           * Expected option keys.
+           *
+           * @const {string[]} keys
+           */
+          const keys: string[] = ['conditions', 'preserveSymlinks', 'version']
+
+          /**
+           * Expected global option keys.
+           *
+           * @const {string[]} keysWithGlobals
+           */
+          const keysWithGlobals: string[] = [...keys, 'cwd', 'debug', 'parent']
+
+          /**
+           * Subcommand name.
+           *
+           * @const {string} subcmd
+           */
+          const subcmd: string = argv.at(-2)!
+
+          /**
+           * Subcommand version.
+           *
+           * @const {string} version
+           */
+          const version: string = String(subcommands[0].version)
+
+          /**
+           * Command logger spy.
+           *
+           * @var {MockInstance<Logger['log']>}
+           */
+          let log!: MockInstance<Logger['log']>
+
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @param {TestSubject} result
+             *  The command that was run
+             * @param {OptionValues} opts
+             *  Parsed command options
+             * @param {OptionValues} optsWithGlobals
+             *  Parsed command options (with globals)
+             * @return {undefined}
+             */
+            after(
+              this: void,
+              subject: TestSubject,
+              result: TestSubject,
+              opts: OptionValues,
+              optsWithGlobals: OptionValues
+            ): undefined {
+              expect(result).to.not.eq(subject)
+              expect(result.args).to.eql(result.argv).and.eql([])
+              expect(result.id()).to.eq(subcmd)
+
+              expect(opts).to.have.keys(keys)
+              expect(opts).to.have.property('conditions').eql(mConditions)
+              expect(opts).to.have.property('preserveSymlinks', false)
+              expect(opts).to.have.property('version').be.a('string')
+              expect(opts).to.have.property('version', version)
+
+              expect(optsWithGlobals).to.have.keys(keysWithGlobals)
+              expect(optsWithGlobals).to.have.property('cwd').eql(cwd)
+              expect(optsWithGlobals).to.have.property('debug', false)
+              expect(optsWithGlobals).to.have.property('parent', undefined)
+              expect(optsWithGlobals).to.have.property('version').be.a('string')
+              expect(optsWithGlobals).to.have.property('version', version)
+
+              expect(log).toHaveBeenCalledExactlyOnceWith(version)
+
+              return void this
+            },
+
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              /**
+               * The subcommand under test.
+               *
+               * @const {TestSubject} subcommand
+               */
+              const subcommand: TestSubject = findCommand(subject, subcmd)!
+
+              ok(subcommand, 'expected `subcommand`')
+              action = act(subcommand)
+              done = dn(subcommand)
+              log = vi.spyOn(subcommand.logger, 'log')
+
+              return void subcommand
+            },
+
+            /**
+             * Version command option parsing test marker.
+             */
+            version: true
+          }
+        }
+      ],
+      [
+        mlly,
         [mlly.name, '-p' + import.meta.url, 'resolve', chars.dot],
         /**
          * @this {void}
@@ -1512,7 +1791,7 @@ describe('functional:lib/Command', () => {
            *
            * @const {string[]} keys
            */
-          const keys: string[] = ['conditions', 'preserveSymlinks']
+          const keys: string[] = ['conditions', 'preserveSymlinks', 'version']
 
           /**
            * Expected global option keys.
@@ -1556,11 +1835,13 @@ describe('functional:lib/Command', () => {
               expect(opts).to.have.keys(keys)
               expect(opts).to.have.property('conditions').eql(mConditions)
               expect(opts).to.have.property('preserveSymlinks', false)
+              expect(opts).to.have.property('version', undefined)
 
               expect(optsWithGlobals).to.have.keys(keysWithGlobals)
               expect(optsWithGlobals).to.have.property('cwd').eql(cwd)
               expect(optsWithGlobals).to.have.property('debug', false)
               expect(optsWithGlobals).to.have.property('parent').eql(parent)
+              expect(optsWithGlobals).to.have.property('version', undefined)
 
               return void this
             },
@@ -1606,7 +1887,7 @@ describe('functional:lib/Command', () => {
            *
            * @const {string[]} keys
            */
-          const keys: string[] = ['conditions', 'preserveSymlinks']
+          const keys: string[] = ['conditions', 'preserveSymlinks', 'version']
 
           /**
            * Expected global option keys.
@@ -1650,11 +1931,13 @@ describe('functional:lib/Command', () => {
               expect(opts).to.have.keys(keys)
               expect(opts).to.have.property('conditions').eql(mConditions)
               expect(opts).to.have.property('preserveSymlinks', false)
+              expect(opts).to.have.property('version', undefined)
 
               expect(optsWithGlobals).to.have.keys(keysWithGlobals)
               expect(optsWithGlobals).to.have.property('cwd').eql(cwd)
               expect(optsWithGlobals).to.have.property('debug', false)
               expect(optsWithGlobals).to.have.property('parent').eql(parent)
+              expect(optsWithGlobals).to.have.property('version', undefined)
 
               return void this
             },
@@ -1714,7 +1997,7 @@ describe('functional:lib/Command', () => {
            *
            * @const {string[]} keys
            */
-          const keys: string[] = ['conditions', 'preserveSymlinks']
+          const keys: string[] = ['conditions', 'preserveSymlinks', 'version']
 
           /**
            * Expected global option keys.
@@ -1758,11 +2041,13 @@ describe('functional:lib/Command', () => {
               expect(opts).to.have.keys(keys)
               expect(opts).to.have.property('conditions').eql(conditions)
               expect(opts).to.have.property('preserveSymlinks', true)
+              expect(opts).to.have.property('version', undefined)
 
               expect(optsWithGlobals).to.have.keys(keysWithGlobals)
               expect(optsWithGlobals).to.have.property('cwd').eql(cwd)
               expect(optsWithGlobals).to.have.property('debug', false)
               expect(optsWithGlobals).to.have.property('parent').eql(parent)
+              expect(optsWithGlobals).to.have.property('version', undefined)
 
               return void this
             },
@@ -2018,7 +2303,7 @@ describe('functional:lib/Command', () => {
         }
       ]
     ])('should run command (%#)', async (info, argv, hooks) => {
-      const { after, before } = hooks(argv)
+      const { after, before, version } = hooks(argv)
 
       // Arrange
       const subject: TestSubject = new TestSubject({ ...info, process })
@@ -2032,11 +2317,17 @@ describe('functional:lib/Command', () => {
       opts = result.opts()
       optsWithGlobals = result.optsWithGlobals()
 
+      // Expect (conditional)
+      if (version) {
+        expect(action).toHaveBeenCalledTimes(0)
+      } else {
+        expect(action).toHaveBeenCalledOnce()
+        expect(action.mock.contexts[0]).to.eq(result)
+        expect(action.mock.lastCall).to.eql([opts, ...result.args])
+        expect(done).toHaveBeenCalledAfter(action)
+      }
+
       // Expect
-      expect(action).toHaveBeenCalledOnce()
-      expect(action.mock.contexts[0]).to.eq(result)
-      expect(action.mock.lastCall).to.eql([opts, ...result.args])
-      expect(done).toHaveBeenCalledAfter(action)
       expect(done).toHaveBeenCalledOnce()
       expect(done.mock.contexts[0]).to.eq(result)
       expect(done.mock.lastCall).to.eql([optsWithGlobals, ...result.args])

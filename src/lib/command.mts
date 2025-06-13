@@ -15,6 +15,7 @@ import toChunks from '#internal/to-chunks'
 import toList from '#internal/to-list'
 import Argument from '#lib/argument'
 import Option from '#lib/option'
+import VersionOption from '#lib/version.option'
 import {
   ev,
   tokenize,
@@ -36,6 +37,7 @@ import type {
   Flags,
   KronkErrorCause,
   KronkErrorInfo,
+  KronkEventListener,
   List,
   OptionData,
   OptionInfo,
@@ -46,7 +48,9 @@ import type {
   ParseOptions,
   Process,
   RawOptionValue,
-  UnknownStrategy
+  UnknownStrategy,
+  Version,
+  VersionOptionInfo
 } from '@flex-development/kronk'
 import { CommandError, KronkError } from '@flex-development/kronk/errors'
 import { KronkEvent, OptionEvent } from '@flex-development/kronk/events'
@@ -65,7 +69,7 @@ import {
   reduceRight
 } from '@flex-development/tutils'
 import { ok } from 'devlop'
-import EventEmitter from 'eventemitter2'
+import EventEmitter, { type OnOptions } from 'eventemitter2'
 import plur from 'plur'
 
 /**
@@ -180,6 +184,28 @@ class Command {
   public process: Process
 
   /**
+   * Command version event.
+   *
+   * @see {@linkcode OptionEvent}
+   *
+   * @protected
+   * @instance
+   * @member {OptionEvent | null} versionEvent
+   */
+  protected versionEvent: OptionEvent | null
+
+  /**
+   * Command version option.
+   *
+   * @see {@linkcode VersionOption}
+   *
+   * @public
+   * @instance
+   * @member {VersionOption | null} versionOption
+   */
+  public versionOption: VersionOption | null
+
+  /**
    * Create a new command.
    *
    * @see {@linkcode CommandInfo}
@@ -241,6 +267,8 @@ class Command {
     this.optionValues = {}
     this.parent = null
     this.process = this.info.process ?? process
+    this.versionEvent = null
+    this.versionOption = null
 
     this.logger = createLogger({
       format: { badge: false, columns: 0 },
@@ -272,6 +300,7 @@ class Command {
     this.hide(!!this.info.hidden)
     this.id(this.info.name)
     this.unknowns(this.info.unknown)
+    this.version(this.info.version)
 
     if (!isNIL(data.arguments)) {
       if (!isList(data.arguments) && typeof data.arguments !== 'string') {
@@ -563,7 +592,7 @@ class Command {
     )
 
     // add option event handler.
-    this.events.on(option.event, this.onOption.bind(this))
+    this.on<OptionEvent>(option.event, this.onOption.bind(this))
 
     return this
   }
@@ -1829,6 +1858,35 @@ class Command {
   }
 
   /**
+   * Register an `event` listener.
+   *
+   * @see {@linkcode KronkEvent}
+   * @see {@linkcode KronkEventListener}
+   * @see {@linkcode OnOptions}
+   *
+   * @public
+   * @instance
+   *
+   * @template {KronkEvent} T
+   *  The event being listened for
+   *
+   * @param {T['id']} event
+   *  The name of the event being listened for
+   * @param {KronkEventListener<T>} listener
+   *  The event listener
+   * @param {OnOptions | boolean | undefined} [options]
+   *  Event listening options
+   * @return {undefined}
+   */
+  public on<T extends KronkEvent>(
+    event: T['id'],
+    listener: KronkEventListener<T>,
+    options?: OnOptions | boolean | undefined
+  ): undefined {
+    return void this.events.on(event, listener, options)
+  }
+
+  /**
    * Handle a parsed option `event`.
    *
    * The method will parse the raw option-argument value using the specified
@@ -1837,6 +1895,7 @@ class Command {
    * > 👉 **Note**: This event handler is registered each time a prepared option
    * > is added (i.e. `command.addOption(option)`).
    *
+   * @see {@linkcode Option}
    * @see {@linkcode OptionEvent}
    *
    * @protected
@@ -1879,6 +1938,38 @@ class Command {
     }
 
     return void this
+  }
+
+  /**
+   * Handle a parsed version option `event`.
+   *
+   * > 👉 **Note**: This event handler is registered each time a command version
+   * > is set (i.e. `command.version(version, info)`).
+   *
+   * @see {@linkcode OptionEvent}
+   * @see {@linkcode VersionOption}
+   *
+   * @protected
+   * @instance
+   *
+   * @param {OptionEvent<VersionOption>} event
+   *  The emitted parsed option event
+   * @return {undefined}
+   */
+  protected onVersionOption(event: OptionEvent<VersionOption>): undefined {
+    this.optionValue(
+      event.option.key,
+      event.option.version,
+      optionValueSource.cli
+    )
+
+    // set version event and propagate event to command ancestors so command
+    // action callback is not called for `this` command or its ancestors.
+    for (const cmd of [this, ...this.ancestors()]) {
+      cmd.versionEvent = event
+    }
+
+    return void this.logger.log(event.option.version)
   }
 
   /**
@@ -2242,7 +2333,12 @@ class Command {
      */
     const cmd: Command | this = this.prepareCommand([], unknown)
 
-    void cmd.action().call(cmd, cmd.opts(), ...cmd.args as unknown[])
+    // run action callback if command version was not requested.
+    if (!this.versionEvent) {
+      void cmd.action().call(cmd, cmd.opts(), ...cmd.args as unknown[])
+    }
+
+    // run command done callback.
     void cmd.done().call(cmd, cmd.optsWithGlobals(), ...cmd.args as unknown[])
 
     return cmd
@@ -2291,7 +2387,12 @@ class Command {
      */
     const cmd: Command | this = this.prepareCommand([], unknown)
 
-    await cmd.action().call(cmd, cmd.opts(), ...cmd.args as unknown[])
+    // run action callback if command version was not requested.
+    if (!this.versionEvent) {
+      await cmd.action().call(cmd, cmd.opts(), ...cmd.args as unknown[])
+    }
+
+    // run command done callback.
     await cmd.done().call(cmd, cmd.optsWithGlobals(), ...cmd.args as unknown[])
 
     return cmd
@@ -2580,9 +2681,12 @@ class Command {
       return this.defaultCommand.prepareCommand(operands, unknown)
     }
 
-    this.checkForMissingMandatoryOptions()
-    this.checkForUnknownOptions(result.unknown)
-    this.checkCommandArguments()
+    // check for errors if command version was not requested.
+    if (!this.versionEvent) {
+      this.checkForMissingMandatoryOptions()
+      this.checkForUnknownOptions(result.unknown)
+      this.checkCommandArguments()
+    }
 
     // process arguments.
     this.args = []
@@ -2700,6 +2804,82 @@ class Command {
    */
   public unknowns(strategy: UnknownStrategy | null | undefined): this {
     return this.info.unknown = strategy ?? false, this
+  }
+
+  /**
+   * Set the command version.
+   *
+   * > 👉 **Note**: This method auto-registers the version command option with
+   * > the flags `-v | --version`. No cleanup is performed when this method is
+   * > called with different flags (i.e. `info` as a string or `info.flags`).
+   *
+   * @see {@linkcode Version}
+   * @see {@linkcode VersionOption}
+   * @see {@linkcode VersionOptionInfo}
+   *
+   * @public
+   * @instance
+   *
+   * @param {Version | VersionOption | VersionOptionInfo | null | undefined} v
+   *  Version, version option instance, or version option info
+   * @return {this}
+   *  `this` command
+   */
+  public version(
+    v: Version | VersionOption | VersionOptionInfo | null | undefined
+  ): this
+
+  /**
+   * Get the command version.
+   *
+   * @public
+   * @instance
+   *
+   * @return {string | null}
+   *  Command version
+   */
+  public version(): string | null
+
+  /**
+   * Get or set the command version.
+   *
+   * @see {@linkcode Version}
+   * @see {@linkcode VersionOption}
+   * @see {@linkcode VersionOptionInfo}
+   *
+   * @public
+   * @instance
+   *
+   * @param {Version | VersionOption | VersionOptionInfo | null | undefined} [v]
+   *  Version, version option instance, or version option info
+   * @return {string | this | null}
+   *  Command version or `this` command
+   */
+  public version(
+    v?: Version | VersionOption | VersionOptionInfo | null | undefined
+  ): string | this | null {
+    if (arguments.length) {
+      this.info.version = v
+
+      if (this.info.version !== null && this.info.version !== undefined) {
+        this.versionOption = this.info.version as VersionOption
+
+        // ensure version option is an `Option` instance.
+        if (!isOption(this.versionOption)) {
+          this.versionOption = new VersionOption(this.versionOption)
+        }
+
+        // add version option.
+        this.addOption(this.versionOption)
+
+        // register parsed version option handler.
+        this.on(this.versionOption.event, this.onVersionOption.bind(this))
+      }
+
+      return this
+    }
+
+    return this.versionOption ? this.versionOption.version : null
   }
 }
 

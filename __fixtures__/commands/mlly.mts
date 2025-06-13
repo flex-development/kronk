@@ -4,8 +4,10 @@
  */
 
 import sfmt from '#tests/utils/sfmt'
+import { faker } from '@faker-js/faker'
 import type { CommandInfo } from '@flex-development/kronk'
 import * as mlly from '@flex-development/mlly'
+import { SemVer } from 'semver'
 
 /**
  * `mlly` program info.
@@ -56,7 +58,8 @@ export default {
           description: 'keep symlinks instead of resolving them',
           flags: '--ps | --preserve-symlinks'
         }
-      ]
+      ],
+      version: new SemVer(faker.system.semver())
     }
   ]
 } as CommandInfo

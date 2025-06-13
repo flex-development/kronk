@@ -1,6 +1,6 @@
 /**
- * @file Type Aliases - OptionEventHandler
- * @module kronk/types/OptionEventHandler
+ * @file Type Aliases - OptionEventListener
+ * @module kronk/types/OptionEventListener
  */
 
 import type { Option, OptionEvent } from '@flex-development/kronk'
@@ -14,15 +14,12 @@ import type { Option, OptionEvent } from '@flex-development/kronk'
  * @template {Option} [T=Option]
  *  Parsed command option
  *
- * @this {void}
- *
  * @param {OptionEvent<T>} event
  *  The emitted parsed option event
  * @return {undefined}
  */
-type OptionEventHandler<T extends Option = Option> = (
-  this: void,
+type OptionEventListener<T extends Option = Option> = (
   event: OptionEvent<T>
 ) => undefined
 
-export type { OptionEventHandler as default }
+export type { OptionEventListener as default }

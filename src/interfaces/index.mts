@@ -17,6 +17,9 @@ export type { default as ArgumentInfo } from '#interfaces/info-argument'
 export type { default as CommandInfo } from '#interfaces/info-command'
 export type { default as DefaultInfo } from '#interfaces/info-default'
 export type { default as OptionInfo } from '#interfaces/info-option'
+export type {
+  default as VersionOptionInfo
+} from '#interfaces/info-option-version'
 export type { default as KronkErrorCause } from '#interfaces/kronk-error-cause'
 export type { default as KronkErrorInfo } from '#interfaces/kronk-error-info'
 export type { default as KronkErrorJson } from '#interfaces/kronk-error-json'

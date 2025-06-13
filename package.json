@@ -146,6 +146,7 @@
     "@flex-development/fsm-tokenizer": "1.0.0-alpha.1",
     "@flex-development/log": "5.0.0-alpha.3",
     "@flex-development/tutils": "6.0.0-alpha.25",
+    "@types/semver": "7.7.0",
     "eventemitter2": "6.4.9",
     "micromark-util-character": "2.1.1",
     "plur": "5.1.0"
@@ -154,6 +155,7 @@
     "@arethetypeswrong/cli": "0.18.2",
     "@commitlint/cli": "19.8.1",
     "@commitlint/types": "19.8.1",
+    "@faker-js/faker": "9.8.0",
     "@flex-development/colors": "1.0.2",
     "@flex-development/commitlint-config": "1.0.1",
     "@flex-development/eslint-config": "1.1.1",
@@ -186,6 +188,7 @@
     "prettier": "3.5.3",
     "remark": "15.0.1",
     "remark-cli": "12.0.1",
+    "semver": "7.7.2",
     "sh-syntax": "0.5.8",
     "to-vfile": "8.0.0",
     "trash-cli": "6.0.0",

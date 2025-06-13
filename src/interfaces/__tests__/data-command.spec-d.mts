@@ -17,7 +17,10 @@ import type {
   Option,
   OptionInfo,
   OptionPriority,
-  UnknownStrategy
+  UnknownStrategy,
+  Version,
+  VersionOption,
+  VersionOptionInfo
 } from '@flex-development/kronk'
 import type { Nilable } from '@flex-development/tutils'
 
@@ -122,5 +125,11 @@ describe('unit-d:interfaces/CommandData', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('unknown')
       .toEqualTypeOf<Nilable<UnknownStrategy>>()
+  })
+
+  it('should match [version?: Version | VersionOption | VersionOptionInfo | null | undefined]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('version')
+      .toEqualTypeOf<Nilable<Version | VersionOption | VersionOptionInfo>>()
   })
 })

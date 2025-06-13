@@ -679,4 +679,13 @@ describe('unit:lib/Command', () => {
       expect(result).to.have.nested.property('info.unknown', strategy)
     })
   })
+
+  describe('#version', () => {
+    it.each<string | null>([
+      null,
+      faker.system.semver()
+    ])('should return command version (%#)', version => {
+      expect(new TestSubject().version(version).version()).to.eq(version)
+    })
+  })
 })

@@ -4,6 +4,7 @@
  */
 
 import sfmt from '#tests/utils/sfmt'
+import { faker } from '@faker-js/faker'
 import type { CommandInfo } from '@flex-development/kronk'
 
 /**
@@ -38,7 +39,8 @@ export default {
       flags: '-m | --min <n>',
       parser: int
     }
-  ]
+  ],
+  version: faker.system.semver()
 } as CommandInfo
 
 /**
