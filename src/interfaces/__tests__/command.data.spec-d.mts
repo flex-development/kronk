@@ -133,6 +133,12 @@ describe('unit-d:interfaces/CommandData', () => {
       .toEqualTypeOf<Nilable<UnknownStrategy>>()
   })
 
+  it('should match [usage?: string | null | undefined]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('usage')
+      .toEqualTypeOf<Nilable<string>>()
+  })
+
   it('should match [version?: Version | VersionOption | VersionOptionInfo | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('version')

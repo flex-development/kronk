@@ -301,6 +301,7 @@ class Command {
     this.id(this.info.name)
     this.summary(this.info.summary)
     this.unknowns(this.info.unknown)
+    this.usage(this.info.usage)
     this.version(this.info.version)
 
     if (!isNIL(data.arguments)) {
@@ -2811,7 +2812,7 @@ class Command {
    *  Summary of `this` command or `this` command
    */
   public summary(summary?: string | null | undefined): string | this | null {
-    if (!arguments.length) return this.info.summary ?? null
+    if (!arguments.length) return this.info.summary || null
     return this.info.summary = summary, this
   }
 
@@ -2843,6 +2844,62 @@ class Command {
    */
   public unknowns(strategy: UnknownStrategy | null | undefined): this {
     return this.info.unknown = strategy ?? false, this
+  }
+
+  /**
+   * Set the command `usage`.
+   *
+   * @public
+   * @instance
+   *
+   * @param {string | null | undefined} usage
+   *  Command usage description
+   * @return {this}
+   *  `this` command
+   */
+  public usage(usage: string | null | undefined): this
+
+  /**
+   * Get command usage.
+   *
+   * @public
+   * @instance
+   *
+   * @return {string}
+   *  Usage description for `this` command
+   */
+  public usage(): string
+
+  /**
+   * Get or set command usage.
+   *
+   * @public
+   * @instance
+   *
+   * @param {string | null | undefined} [usage]
+   *  Command usage description
+   * @return {string | this}
+   *  Usage description for `this` command or `this` command
+   */
+  public usage(usage?: string | null | undefined): string | this {
+    if (arguments.length) return this.info.usage = usage?.trim(), this
+    usage = this.info.usage
+
+    // build default command usage string.
+    if (!usage) {
+      usage = ''
+
+      // indicate options.
+      if (this.info.options.size) usage += '[options]'
+
+      // indicate subcommands.
+      if (this.info.subcommands.length) usage += chars.space + '[command]'
+
+      // indicate command-arguments.
+      for (const arg of this.info.arguments) usage += chars.space + arg.syntax
+    }
+
+    return usage.trim()
   }
 
   /**

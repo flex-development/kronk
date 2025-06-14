@@ -140,6 +140,11 @@ interface CommandData {
   unknown?: UnknownStrategy | null | undefined
 
   /**
+   * How the command is used.
+   */
+  usage?: string | null | undefined
+
+  /**
    * The version of the command.
    *
    * @see {@linkcode Version}
