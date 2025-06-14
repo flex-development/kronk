@@ -3,7 +3,7 @@
  * @module kronk/interfaces/tests/unit-d/VersionOptionInfo
  */
 
-import type TestSubject from '#interfaces/info-option-version'
+import type TestSubject from '#interfaces/version-option.info'
 import type { Flags, OptionData, Version } from '@flex-development/kronk'
 import type { Nilable } from '@flex-development/tutils'
 

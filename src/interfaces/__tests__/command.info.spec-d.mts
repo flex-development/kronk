@@ -3,7 +3,7 @@
  * @module kronk/interfaces/tests/unit-d/CommandInfo
  */
 
-import type TestSubject from '#interfaces/info-command'
+import type TestSubject from '#interfaces/command.info'
 import type { CommandData, CommandName } from '@flex-development/kronk'
 import type { Optional } from '@flex-development/tutils'
 

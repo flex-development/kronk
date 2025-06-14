@@ -3,7 +3,7 @@
  * @module kronk/interfaces/tests/unit-d/CommandData
  */
 
-import type TestSubject from '#interfaces/data-command'
+import type TestSubject from '#interfaces/command.data'
 import type {
   Action,
   Argument,
@@ -119,6 +119,12 @@ describe('unit-d:interfaces/CommandData', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('subcommands')
       .toEqualTypeOf<Nilable<Expect>>()
+  })
+
+  it('should match [summary?: string | null | undefined]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('summary')
+      .toEqualTypeOf<Nilable<string>>()
   })
 
   it('should match [unknown?: UnknownStrategy | null | undefined]', () => {

@@ -3,7 +3,7 @@
  * @module kronk/interfaces/tests/unit-d/KronkErrorInfo
  */
 
-import type TestSubject from '#interfaces/kronk-error-info'
+import type TestSubject from '#interfaces/kronk-error.info'
 import type { ExitCode, KronkErrorCause } from '@flex-development/kronk'
 import type { Nilable } from '@flex-development/tutils'
 

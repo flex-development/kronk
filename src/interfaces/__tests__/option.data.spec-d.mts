@@ -3,7 +3,7 @@
  * @module kronk/interfaces/tests/unit-d/OptionData
  */
 
-import type TestSubject from '#interfaces/data-option'
+import type TestSubject from '#interfaces/option.data'
 import type {
   DefaultInfo,
   List,

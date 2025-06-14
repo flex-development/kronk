@@ -299,6 +299,7 @@ class Command {
     this.exiter(this.info.exit)
     this.hide(!!this.info.hidden)
     this.id(this.info.name)
+    this.summary(this.info.summary)
     this.unknowns(this.info.unknown)
     this.version(this.info.version)
 
@@ -1943,8 +1944,8 @@ class Command {
   /**
    * Handle a parsed version option `event`.
    *
-   * > 👉 **Note**: This event handler is registered each time a command version
-   * > is set (i.e. `command.version(version, info)`).
+   * > 👉 **Note**: This event listener is registered each time a command
+   * > version is set (i.e. `command.version(version, info)`).
    *
    * @see {@linkcode OptionEvent}
    * @see {@linkcode VersionOption}
@@ -1956,7 +1957,7 @@ class Command {
    *  The emitted parsed option event
    * @return {undefined}
    */
-  protected onVersionOption(event: OptionEvent<VersionOption>): undefined {
+  protected onOptionVersion(event: OptionEvent<VersionOption>): undefined {
     this.optionValue(
       event.option.key,
       event.option.version,
@@ -1965,9 +1966,7 @@ class Command {
 
     // set version event and propagate event to command ancestors so command
     // action callback is not called for `this` command or its ancestors.
-    for (const cmd of [this, ...this.ancestors()]) {
-      cmd.versionEvent = event
-    }
+    for (const cmd of [this, ...this.ancestors()]) cmd.versionEvent = event
 
     return void this.logger.log(event.option.version)
   }
@@ -2777,6 +2776,46 @@ class Command {
   }
 
   /**
+   * Set the command summary.
+   *
+   * @public
+   * @instance
+   *
+   * @param {string | null | undefined} summary
+   *  Summary of command
+   * @return {this}
+   *  `this` command
+   */
+  public summary(summary: string | null | undefined): this
+
+  /**
+   * Get the command summary.
+   *
+   * @public
+   * @instance
+   *
+   * @return {string | null}
+   *  Summary of `this` command
+   */
+  public summary(): string | null
+
+  /**
+   * Get or set the command summary.
+   *
+   * @public
+   * @instance
+   *
+   * @param {string | null | undefined} [summary]
+   *  Summary of command
+   * @return {string | this| null}
+   *  Summary of `this` command or `this` command
+   */
+  public summary(summary?: string | null | undefined): string | this | null {
+    if (!arguments.length) return this.info.summary ?? null
+    return this.info.summary = summary, this
+  }
+
+  /**
    * Get `this` command as a human-readable string.
    *
    * @public
@@ -2872,8 +2911,8 @@ class Command {
         // add version option.
         this.addOption(this.versionOption)
 
-        // register parsed version option handler.
-        this.on(this.versionOption.event, this.onVersionOption.bind(this))
+        // register parsed version option listener.
+        this.on(this.versionOption.event, this.onOptionVersion.bind(this))
       }
 
       return this

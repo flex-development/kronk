@@ -3,7 +3,7 @@
  * @module kronk/interfaces/tests/unit-d/DefaultInfo
  */
 
-import type TestSubject from '#interfaces/info-default'
+import type TestSubject from '#interfaces/default.info'
 import type { Nilable } from '@flex-development/tutils'
 
 describe('unit-d:interfaces/DefaultInfo', () => {

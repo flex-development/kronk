@@ -639,6 +639,32 @@ describe('unit:lib/Command', () => {
     })
   })
 
+  describe('#summary', () => {
+    let subject: TestSubject
+    let summary: string
+
+    beforeAll(() => {
+      summary = 'changelog generator'
+    })
+
+    beforeEach(() => {
+      subject = new TestSubject('changelog')
+    })
+
+    it('should return command summary', () => {
+      expect(subject.summary()).to.eq(null)
+    })
+
+    it('should set command summary and return `this`', () => {
+      // Act
+      const result = subject.summary(summary)
+
+      // Expect
+      expect(result).to.eq(subject)
+      expect(result).to.have.nested.property('info.summary', summary)
+    })
+  })
+
   describe('#toString', () => {
     let name: string
 

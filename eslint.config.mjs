@@ -38,7 +38,7 @@ export default [
     }
   },
   {
-    files: ['src/interfaces/info-argument.mts'],
+    files: ['src/interfaces/argument.info.mts'],
     rules: {
       '@typescript-eslint/no-redundant-type-constituents': 0
     }

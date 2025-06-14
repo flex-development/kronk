@@ -3,7 +3,7 @@
  * @module kronk/interfaces/tests/unit-d/OptionValueSourceMap
  */
 
-import type TestSubject from '#interfaces/option-value-source-map'
+import type TestSubject from '#interfaces/option-value-source.map'
 
 describe('unit-d:interfaces/OptionValueSourceMap', () => {
   it('should match [cli: "cli"]', () => {

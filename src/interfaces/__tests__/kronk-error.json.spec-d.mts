@@ -3,7 +3,7 @@
  * @module kronk/interfaces/tests/unit-d/KronkErrorJson
  */
 
-import type TestSubject from '#interfaces/kronk-error-json'
+import type TestSubject from '#interfaces/kronk-error.json'
 import type { KronkErrorCause } from '@flex-development/kronk'
 import type { Nilable } from '@flex-development/tutils'
 

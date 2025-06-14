@@ -3,7 +3,7 @@
  * @module kronk/interfaces/tests/unit-d/ArgumentData
  */
 
-import type TestSubject from '#interfaces/data-argument'
+import type TestSubject from '#interfaces/argument.data'
 import type { DefaultInfo, List, ParseArg } from '@flex-development/kronk'
 import type { Nilable } from '@flex-development/tutils'
 

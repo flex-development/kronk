@@ -3,7 +3,7 @@
  * @module kronk/interfaces/tests/unit-d/ArgumentMetadata
  */
 
-import type TestSubject from '#interfaces/metadata-argument'
+import type TestSubject from '#interfaces/argument.metadata'
 import type { ArgumentInfo } from '@flex-development/kronk'
 
 describe('unit-d:interfaces/ArgumentMetadata', () => {

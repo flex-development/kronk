@@ -3,7 +3,7 @@
  * @module kronk/interfaces/tests/unit-d/ArgvSourceMap
  */
 
-import type TestSubject from '#interfaces/argv-source-map'
+import type TestSubject from '#interfaces/argv-source.map'
 
 describe('unit-d:interfaces/ArgvSourceMap', () => {
   it('should match [node: "node"]', () => {

@@ -3,7 +3,7 @@
  * @module kronk/interfaces/tests/unit-d/CommandMetadata
  */
 
-import type { Skip, default as TestSubject } from '#interfaces/metadata-command'
+import type { Skip, default as TestSubject } from '#interfaces/command.metadata'
 import type {
   Argument,
   Command,

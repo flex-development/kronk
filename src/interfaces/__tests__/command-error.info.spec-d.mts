@@ -3,7 +3,7 @@
  * @module kronk/interfaces/tests/unit-d/CommandErrorInfo
  */
 
-import type TestSubject from '#interfaces/command-error-info'
+import type TestSubject from '#interfaces/command-error.info'
 import type { KronkErrorInfo } from '@flex-development/kronk'
 
 describe('unit-d:interfaces/CommandErrorInfo', () => {

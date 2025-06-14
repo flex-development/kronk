@@ -3,7 +3,7 @@
  * @module kronk/interfaces/tests/unit-d/ArgumentSyntaxMap
  */
 
-import type TestSubject from '#interfaces/argument-syntax-map'
+import type TestSubject from '#interfaces/argument-syntax.map'
 
 describe('unit-d:interfaces/ArgumentSyntaxMap', () => {
   it('should match [optional: `[${string}]`]', () => {

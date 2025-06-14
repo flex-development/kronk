@@ -3,7 +3,7 @@
  * @module kronk/interfaces/tests/unit-d/KronkErrorCause
  */
 
-import type TestSubject from '#interfaces/kronk-error-cause'
+import type TestSubject from '#interfaces/kronk-error.cause'
 
 describe('unit-d:interfaces/KronkErrorCause', () => {
   it('should match [[Symbol.hasInstance]?: never]', () => {

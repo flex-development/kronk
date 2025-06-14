@@ -3,7 +3,7 @@
  * @module kronk/interfaces/tests/unit-d/OptionInfo
  */
 
-import type TestSubject from '#interfaces/info-option'
+import type TestSubject from '#interfaces/option.info'
 import type { Flags, OptionData } from '@flex-development/kronk'
 
 describe('unit-d:interfaces/OptionInfo', () => {

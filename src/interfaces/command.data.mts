@@ -126,6 +126,11 @@ interface CommandData {
     | undefined
 
   /**
+   * A summary of the command.
+   */
+  summary?: string | null | undefined
+
+  /**
    * The strategy to use for handling unknown command-line arguments.
    *
    * @see {@linkcode UnknownStrategy}

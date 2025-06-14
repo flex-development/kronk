@@ -3,7 +3,7 @@
  * @module kronk/interfaces/tests/unit-d/KronkEventNameMap
  */
 
-import type TestSubject from '#interfaces/kronk-event-name-map'
+import type TestSubject from '#interfaces/kronk-event-name.map'
 import type { OptionEventNameMap } from '@flex-development/kronk'
 
 describe('unit-d:interfaces/KronkEventNameMap', () => {

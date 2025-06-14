@@ -3,7 +3,7 @@
  * @module kronk/interfaces/tests/unit-d/OptionMetadata
  */
 
-import type TestSubject from '#interfaces/metadata-option'
+import type TestSubject from '#interfaces/option.metadata'
 import type { OptionInfo } from '@flex-development/kronk'
 import type { Nilable } from '@flex-development/tutils'
 
