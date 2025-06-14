@@ -173,6 +173,18 @@ class Command {
   public parent: Command | null | undefined
 
   /**
+   * The event whose listener overrides the command action handler and any
+   * parsing checks (i.e. mandatory options, required arguments).
+   *
+   * @see {@linkcode KronkEvent}
+   *
+   * @protected
+   * @instance
+   * @member {KronkEvent | null} priorityEvent
+   */
+  protected priorityEvent: KronkEvent | null
+
+  /**
    * Object containing information about the current process.
    *
    * @see {@linkcode Process}
@@ -182,28 +194,6 @@ class Command {
    * @member {Process} process
    */
   public process: Process
-
-  /**
-   * Command version event.
-   *
-   * @see {@linkcode OptionEvent}
-   *
-   * @protected
-   * @instance
-   * @member {OptionEvent | null} versionEvent
-   */
-  protected versionEvent: OptionEvent | null
-
-  /**
-   * Command version option.
-   *
-   * @see {@linkcode VersionOption}
-   *
-   * @public
-   * @instance
-   * @member {VersionOption | null} versionOption
-   */
-  public versionOption: VersionOption | null
 
   /**
    * Create a new command.
@@ -256,7 +246,8 @@ class Command {
       ...info,
       arguments: [],
       options: new Map(),
-      subcommands: []
+      subcommands: [],
+      version: null
     }
 
     this.args = []
@@ -266,9 +257,8 @@ class Command {
     this.optionValueSources = {}
     this.optionValues = {}
     this.parent = null
+    this.priorityEvent = null
     this.process = this.info.process ?? process
-    this.versionEvent = null
-    this.versionOption = null
 
     this.logger = createLogger({
       format: { badge: false, columns: 0 },
@@ -302,7 +292,7 @@ class Command {
     this.summary(this.info.summary)
     this.unknowns(this.info.unknown)
     this.usage(this.info.usage)
-    this.version(this.info.version)
+    this.version(data.version)
 
     if (!isNIL(data.arguments)) {
       if (!isList(data.arguments) && typeof data.arguments !== 'string') {
@@ -1296,8 +1286,8 @@ class Command {
    * Create a new unattached option.
    *
    * @see {@linkcode Flags}
-   * @see {@linkcode OptionInfo}
    * @see {@linkcode Option}
+   * @see {@linkcode OptionInfo}
    *
    * @public
    * @instance
@@ -1310,11 +1300,27 @@ class Command {
   public createOption(info: Flags | OptionInfo): Option
 
   /**
+   * Create a new unattached version option.
+   *
+   * @see {@linkcode VersionOption}
+   * @see {@linkcode VersionOptionInfo}
+   *
+   * @public
+   * @instance
+   *
+   * @param {VersionOptionInfo} info
+   *  Option info
+   * @return {VersionOption}
+   *  New version option instance
+   */
+  public createOption(info: VersionOptionInfo): VersionOption
+
+  /**
    * Create a new unattached option.
    *
    * @see {@linkcode Flags}
-   * @see {@linkcode OptionData}
    * @see {@linkcode Option}
+   * @see {@linkcode OptionData}
    *
    * @public
    * @instance
@@ -1335,25 +1341,29 @@ class Command {
    * Create a new unattached option.
    *
    * @see {@linkcode Flags}
+   * @see {@linkcode Option}
    * @see {@linkcode OptionInfo}
    * @see {@linkcode OptionData}
-   * @see {@linkcode Option}
+   * @see {@linkcode VersionOption}
+   * @see {@linkcode VersionOptionInfo}
    *
    * @public
    * @instance
    *
-   * @param {Flags | OptionInfo} info
+   * @param {Flags | OptionInfo | VersionOptionInfo} info
    *  Option info or flags
    * @param {OptionData | null | undefined} [data]
    *  Option data
-   * @return {Option}
+   * @return {Option | VersionOption}
    *  New option instance
    */
   public createOption(
-    info: Flags | OptionInfo,
+    info: Flags | OptionInfo | VersionOptionInfo,
     data?: OptionData | null | undefined
-  ): Option {
-    return new Option(info as never, data)
+  ): Option | VersionOption {
+    return typeof info === 'object' && 'version' in info
+      ? new VersionOption(info)
+      : new Option(info as never, data)
   }
 
   /**
@@ -1965,9 +1975,9 @@ class Command {
       optionValueSource.cli
     )
 
-    // set version event and propagate event to command ancestors so command
+    // set priority event and propagate event to command ancestors so command
     // action callback is not called for `this` command or its ancestors.
-    for (const cmd of [this, ...this.ancestors()]) cmd.versionEvent = event
+    for (const cmd of [this, ...this.ancestors()]) cmd.priorityEvent = event
 
     return void this.logger.log(event.option.version)
   }
@@ -2333,8 +2343,8 @@ class Command {
      */
     const cmd: Command | this = this.prepareCommand([], unknown)
 
-    // run action callback if command version was not requested.
-    if (!this.versionEvent) {
+    // run action callback.
+    if (!this.priorityEvent) {
       void cmd.action().call(cmd, cmd.opts(), ...cmd.args as unknown[])
     }
 
@@ -2387,8 +2397,8 @@ class Command {
      */
     const cmd: Command | this = this.prepareCommand([], unknown)
 
-    // run action callback if command version was not requested.
-    if (!this.versionEvent) {
+    // run action callback.
+    if (!this.priorityEvent) {
       await cmd.action().call(cmd, cmd.opts(), ...cmd.args as unknown[])
     }
 
@@ -2682,7 +2692,7 @@ class Command {
     }
 
     // check for errors if command version was not requested.
-    if (!this.versionEvent) {
+    if (!this.priorityEvent) {
       this.checkForMissingMandatoryOptions()
       this.checkForUnknownOptions(result.unknown)
       this.checkCommandArguments()
@@ -2955,27 +2965,24 @@ class Command {
     v?: Version | VersionOption | VersionOptionInfo | null | undefined
   ): string | this | null {
     if (arguments.length) {
-      this.info.version = v
+      this.info.version = v as VersionOption | null | undefined
 
-      if (this.info.version !== null && this.info.version !== undefined) {
-        this.versionOption = this.info.version as VersionOption
+      if (v !== null && v !== undefined) {
+        if (typeof v === 'string' || 'compare' in v) v = { version: v }
 
-        // ensure version option is an `Option` instance.
-        if (!isOption(this.versionOption)) {
-          this.versionOption = new VersionOption(this.versionOption)
-        }
+        // create version option.
+        this.info.version = v as VersionOption
+        if (!isOption(v)) this.info.version = this.createOption(v)
 
-        // add version option.
-        this.addOption(this.versionOption)
-
-        // register parsed version option listener.
-        this.on(this.versionOption.event, this.onOptionVersion.bind(this))
+        // add version option and register parsed option listener.
+        this.addOption(this.info.version)
+        this.on(this.info.version.event, this.onOptionVersion.bind(this))
       }
 
       return this
     }
 
-    return this.versionOption ? this.versionOption.version : null
+    return this.info.version ? this.info.version.version : null
   }
 }
 

@@ -8,8 +8,10 @@ import type {
   Argument,
   Command,
   CommandInfo,
-  Option
+  Option,
+  VersionOption
 } from '@flex-development/kronk'
+import type { Nilable } from '@flex-development/tutils'
 
 describe('unit-d:interfaces/CommandMetadata', () => {
   it('should extend Omit<CommandInfo, Skip>', () => {
@@ -32,5 +34,11 @@ describe('unit-d:interfaces/CommandMetadata', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('subcommands')
       .toEqualTypeOf<Command[]>()
+  })
+
+  it('should match [version?: VersionOption | null | undefined]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('version')
+      .toEqualTypeOf<Nilable<VersionOption>>()
   })
 })

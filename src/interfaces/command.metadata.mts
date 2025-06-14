@@ -7,7 +7,8 @@ import type {
   Argument,
   Command,
   CommandInfo,
-  Option
+  Option,
+  VersionOption
 } from '@flex-development/kronk'
 
 /**
@@ -15,7 +16,7 @@ import type {
  *
  * @internal
  */
-type Skip = 'arguments' | 'options'
+type Skip = 'arguments' | 'options' | 'version'
 
 /**
  * Command metadata.
@@ -47,6 +48,13 @@ interface CommandMetadata extends Omit<CommandInfo, Skip> {
    * @see {@linkcode Command}
    */
   subcommands: Command[]
+
+  /**
+   * Version command option.
+   *
+   * @see {@linkcode VersionOption}
+   */
+  version?: VersionOption | null | undefined
 }
 
 export type { CommandMetadata as default, Skip }
