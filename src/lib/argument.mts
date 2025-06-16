@@ -9,6 +9,7 @@ import tt from '#enums/tt'
 import KronkError from '#errors/kronk.error'
 import identity from '#internal/identity'
 import kArgument from '#internal/k-argument'
+import orNull from '#internal/or-null'
 import {
   ev,
   tokenize,
@@ -260,6 +261,9 @@ class Argument {
   /**
    * Set the argument description.
    *
+   * Pass `null`, `undefined`, or an empty string to remove the argument from
+   * the auto-generated help text.
+   *
    * @public
    * @instance
    *
@@ -273,13 +277,16 @@ class Argument {
   /**
    * Get the argument description.
    *
+   * > 👉 **Note**: If the argument description is not `null`, it will never be
+   * > an empty string.
+   *
    * @public
    * @instance
    *
-   * @return {string}
+   * @return {string | null}
    *  Description of `this` argument
    */
-  public description(): string
+  public description(): string | null
 
   /**
    * Get or set the argument description.
@@ -289,14 +296,17 @@ class Argument {
    *
    * @param {URL | string | null | undefined} [description]
    *  Description of argument
-   * @return {string | this}
+   * @return {string | this | null}
    *  Description of `this` argument or `this` argument
    */
   public description(
     description?: URL | string | null | undefined
-  ): string | this {
-    if (!arguments.length) return String(this.info.description ?? chars.empty)
-    return this.info.description = description && String(description), this
+  ): string | this | null {
+    if (!arguments.length) {
+      return orNull(String(this.info.description ?? chars.empty))
+    }
+
+    return this.info.description = orNull(description), this
   }
 
   /**

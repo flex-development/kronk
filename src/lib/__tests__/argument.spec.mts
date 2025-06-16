@@ -94,7 +94,7 @@ describe('unit:lib/Argument', () => {
     })
 
     it('should return argument description', () => {
-      expect(subject.description()).to.eq(chars.empty)
+      expect(subject.description()).to.be.null
     })
 
     it('should set argument description and return `this`', () => {
