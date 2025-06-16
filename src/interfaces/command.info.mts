@@ -14,7 +14,7 @@ import type { CommandData, CommandName } from '@flex-development/kronk'
  */
 interface CommandInfo extends CommandData {
   /**
-   * Name of the command.
+   * The name of the command.
    *
    * > 👉 **Note**: The {@linkcode default} command does not need to have a
    * > name.

@@ -10,6 +10,7 @@ import type {
   ArgumentSyntax,
   Command,
   CommandInfo,
+  CommandUsageData,
   Exit,
   Flags,
   List,
@@ -140,9 +141,14 @@ interface CommandData {
   unknown?: UnknownStrategy | null | undefined
 
   /**
-   * How the command is used.
+   * An object describing how the command is used.
+   *
+   * @see {@linkcode CommandUsageData}
+   *
+   * @default
+   *  { arguments: null, options: '[options]', subcommand: '[command]' }
    */
-  usage?: string | null | undefined
+  usage?: CommandUsageData | null | undefined
 
   /**
    * The version of the command.

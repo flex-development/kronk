@@ -11,6 +11,7 @@ import type {
   ArgumentSyntax,
   Command,
   CommandInfo,
+  CommandUsageData,
   Exit,
   Flags,
   List,
@@ -133,10 +134,10 @@ describe('unit-d:interfaces/CommandData', () => {
       .toEqualTypeOf<Nilable<UnknownStrategy>>()
   })
 
-  it('should match [usage?: string | null | undefined]', () => {
+  it('should match [usage?: CommandUsageData | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('usage')
-      .toEqualTypeOf<Nilable<string>>()
+      .toEqualTypeOf<Nilable<CommandUsageData>>()
   })
 
   it('should match [version?: Version | VersionOption | VersionOptionInfo | null | undefined]', () => {

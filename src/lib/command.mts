@@ -11,6 +11,7 @@ import formatList from '#internal/format-list'
 import isList from '#internal/is-list'
 import kCommand from '#internal/k-command'
 import noop from '#internal/noop'
+import orNull from '#internal/or-null'
 import toChunks from '#internal/to-chunks'
 import toList from '#internal/to-list'
 import Argument from '#lib/argument'
@@ -31,6 +32,8 @@ import type {
   CommandInfo,
   CommandMetadata,
   CommandName,
+  CommandUsageData,
+  CommandUsageInfo,
   DefaultInfo,
   Exit,
   ExitCode,
@@ -202,7 +205,7 @@ class Command {
    *
    * @param {CommandInfo | string | null | undefined} [info]
    *  Command info, command name,
-   *  or string containing command name and arguments
+   *  or a syntax string containing command name and arguments
    */
   constructor(info?: CommandInfo | string | null | undefined)
 
@@ -212,9 +215,9 @@ class Command {
    * @see {@linkcode CommandData}
    *
    * @param {string | null | undefined} [syntax]
-   *  Command name or string containing command name and arguments
+   *  Command name or syntax string containing command name and arguments
    * @param {CommandData | null | undefined} [info]
-   *  Command info
+   *  Additional command info
    */
   constructor(
     syntax: string | null | undefined,
@@ -228,9 +231,10 @@ class Command {
    * @see {@linkcode CommandInfo}
    *
    * @param {CommandInfo | string | null | undefined} [info]
-   *  Command info or name or string containing command name and arguments
+   *  Command info, command name,
+   *  or a syntax string containing command name and arguments
    * @param {CommandData | null | undefined} [data]
-   *  Command data
+   *  Additional command info
    */
   constructor(
     info?: CommandInfo | string | null | undefined,
@@ -339,21 +343,20 @@ class Command {
   }
 
   /**
-   * Get a boolean indicating if the command is the default command.
+   * Whether the command is the default subcommand.
    *
    * @public
    * @instance
    *
    * @return {boolean}
-   *  `true` if command is default command, `false` otherwise
+   *  `true` if command is default subcommand, `false` otherwise
    */
   public get default(): boolean {
     return !!this.info.default
   }
 
   /**
-   * Get a boolean indicating if the command should **not** be displayed in
-   * help text.
+   * Whether the command should **not** be displayed in help text.
    *
    * @public
    * @instance
@@ -367,7 +370,7 @@ class Command {
   }
 
   /**
-   * Get the strategy for handling unknown command-line arguments.
+   * The strategy for handling unknown command-line arguments.
    *
    * @see {@linkcode UnknownStrategy}
    *
@@ -998,37 +1001,35 @@ class Command {
    * Define a subcommand.
    *
    * @see {@linkcode CommandInfo}
-   * @see {@linkcode CommandName}
    *
    * @public
    * @instance
    *
-   * @param {Command | CommandInfo | CommandName} info
-   *  Subcommand info or name, string containing subcommand name and arguments,
-   *  or subcommand instance
+   * @param {Command | CommandInfo | string | null} info
+   *  Subcommand instance, subcommand info, subcommand name,
+   *  or a syntax string containing subcommand name and arguments
    * @return {Command}
    *  Subcommand instance
    */
-  public command(info: Command | CommandInfo | CommandName): Command
+  public command(info: Command | CommandInfo | string | null): Command
 
   /**
    * Define a subcommand.
    *
    * @see {@linkcode CommandData}
-   * @see {@linkcode CommandName}
    *
    * @public
    * @instance
    *
-   * @param {CommandName} syntax
+   * @param {string | null} syntax
    *  Subcommand name or subcommand name and arguments
    * @param {CommandData | null | undefined} [info]
-   *  Subcommand info
+   *  Additional subcommand info
    * @return {Command}
    *  Subcommand instance
    */
   public command(
-    syntax: CommandName,
+    syntax: string | null,
     info?: CommandData | null | undefined
   ): Command
 
@@ -1037,21 +1038,20 @@ class Command {
    *
    * @see {@linkcode CommandData}
    * @see {@linkcode CommandInfo}
-   * @see {@linkcode CommandName}
    *
    * @public
    * @instance
    *
-   * @param {Command | CommandInfo | CommandName} info
-   *  Subcommand info or name, string containing subcommand name and arguments,
-   *  or subcommand instance
+   * @param {Command | CommandInfo | string | null} info
+   *  Subcommand instance, subcommand info, subcommand name,
+   *  or a syntax string containing subcommand name and arguments
    * @param {CommandData | null | undefined} [data]
-   *  Subcommand data
+   *  Additional subcommand data
    * @return {Command}
    *  Subcommand instance
    */
   public command(
-    info: Command | CommandInfo | CommandName,
+    info: Command | CommandInfo | string | null,
     data?: CommandData | null | undefined
   ): Command {
     /**
@@ -1824,7 +1824,7 @@ class Command {
   }
 
   /**
-   * Set the command name.
+   * Set the name of the command.
    *
    * @see {@linkcode CommandName}
    *
@@ -1839,7 +1839,7 @@ class Command {
   public id(name: CommandName | undefined): this
 
   /**
-   * Get the command name.
+   * Get the name of the command.
    *
    * @see {@linkcode CommandName}
    *
@@ -1852,15 +1852,13 @@ class Command {
   public id(): CommandName
 
   /**
-   * Get or set the command name.
-   *
-   * @see {@linkcode CommandName}
+   * Get or set the name of the command.
    *
    * @public
    * @instance
    *
    * @param {CommandName | undefined} [name]
-   *  Command name
+   *  The name of the command
    * @return {CommandName | this}
    *  Name of `this` command or `this` command
    */
@@ -2857,59 +2855,59 @@ class Command {
   }
 
   /**
-   * Set the command `usage`.
+   * Set the command `usage` description.
+   *
+   * @see {@linkcode CommandUsageData}
    *
    * @public
    * @instance
    *
-   * @param {string | null | undefined} usage
-   *  Command usage description
+   * @param {CommandUsageData | null | undefined} usage
+   *  Command usage data
    * @return {this}
    *  `this` command
    */
-  public usage(usage: string | null | undefined): this
+  public usage(usage: CommandUsageData | null | undefined): this
 
   /**
-   * Get command usage.
+   * Get the command usage description.
+   *
+   * @see {@linkcode CommandUsageInfo}
    *
    * @public
    * @instance
    *
-   * @return {string}
-   *  Usage description for `this` command
+   * @return {CommandUsageInfo}
+   *  Command usage info
    */
-  public usage(): string
+  public usage(): CommandUsageInfo
 
   /**
    * Get or set command usage.
    *
+   * @see {@linkcode CommandUsageInfo}
+   * @see {@linkcode CommandUsageData}
+   *
    * @public
    * @instance
    *
-   * @param {string | null | undefined} [usage]
-   *  Command usage description
-   * @return {string | this}
-   *  Usage description for `this` command or `this` command
+   * @param {CommandUsageData | null | undefined} [usage]
+   *  Command usage data
+   * @return {CommandUsageInfo | this}
+   *  Command usage info or `this` command
    */
-  public usage(usage?: string | null | undefined): string | this {
-    if (arguments.length) return this.info.usage = usage?.trim(), this
-    usage = this.info.usage
-
-    // build default command usage string.
-    if (!usage) {
-      usage = ''
-
-      // indicate options.
-      if (this.info.options.size) usage += '[options]'
-
-      // indicate subcommands.
-      if (this.info.subcommands.length) usage += chars.space + '[command]'
-
-      // indicate command-arguments.
-      for (const arg of this.info.arguments) usage += chars.space + arg.syntax
+  public usage(
+    usage?: CommandUsageData | null | undefined
+  ): CommandUsageInfo | this {
+    if (!arguments.length) {
+      return {
+        arguments: orNull(this.info.usage?.arguments),
+        options: orNull(this.info.usage?.options) ?? '[options]',
+        subcommand: orNull(this.info.usage?.subcommand) ?? '[command]'
+      }
     }
 
-    return usage.trim()
+    return this.info.usage = usage, this
   }
 
   /**

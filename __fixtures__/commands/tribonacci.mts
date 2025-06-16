@@ -42,5 +42,6 @@ export default {
         flags: '-n' + chars.ht + sfmt.required({ mandatory: true })
       }
     ]
-  }
+  },
+  usage: { arguments: '<a> <b> <c>' }
 } as CommandInfo

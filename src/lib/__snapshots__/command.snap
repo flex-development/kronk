@@ -58,14 +58,18 @@ exports[`unit:lib/Command > #addOption > should throw on short flag conflict 1`]
 }
 `;
 
-exports[`unit:lib/Command > #usage > should return command usage (0) 1`] = `""`;
+exports[`unit:lib/Command > #usage > should return command usage (0) 1`] = `
+{
+  "arguments": null,
+  "options": "[options]",
+  "subcommand": "[command]",
+}
+`;
 
-exports[`unit:lib/Command > #usage > should return command usage (1) 1`] = `"[num...]"`;
-
-exports[`unit:lib/Command > #usage > should return command usage (2) 1`] = `"[options] <n>"`;
-
-exports[`unit:lib/Command > #usage > should return command usage (3) 1`] = `"[options] [command] [date]"`;
-
-exports[`unit:lib/Command > #usage > should return command usage (4) 1`] = `"[options] [command]"`;
-
-exports[`unit:lib/Command > #usage > should return command usage (5) 1`] = `"[command]"`;
+exports[`unit:lib/Command > #usage > should return command usage (1) 1`] = `
+{
+  "arguments": "<a> <b> <c>",
+  "options": "[options]",
+  "subcommand": "[command]",
+}
+`;

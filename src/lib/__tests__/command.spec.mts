@@ -6,8 +6,6 @@
 import chars from '#enums/chars'
 import average from '#fixtures/commands/average'
 import clamp from '#fixtures/commands/clamp'
-import dateformat from '#fixtures/commands/dateformat'
-import stringUtil from '#fixtures/commands/string-util'
 import tribonacci from '#fixtures/commands/tribonacci'
 import date from '#fixtures/date'
 import kCommand from '#internal/k-command'
@@ -26,6 +24,7 @@ import type {
   CommandData,
   CommandInfo,
   CommandName,
+  CommandUsageData,
   Exit,
   Flags,
   KronkError,
@@ -711,11 +710,7 @@ describe('unit:lib/Command', () => {
 
   describe('#usage', () => {
     it.each<CommandInfo>([
-      {},
       average,
-      clamp,
-      dateformat,
-      stringUtil,
       tribonacci
     ])('should return command usage (%#)', info => {
       expect(new TestSubject(info).usage()).toMatchSnapshot()
@@ -724,14 +719,14 @@ describe('unit:lib/Command', () => {
     it('should set command usage and return `this`', () => {
       // Arrange
       const subject: TestSubject = new TestSubject()
-      const usage: string = ' [opts] [cmd] '
+      const usage: CommandUsageData = { options: '[opts]' }
 
       // Act
       const result = subject.usage(usage)
 
       // Expect
       expect(result).to.eq(subject)
-      expect(result).to.have.nested.property('info.usage', usage.trim())
+      expect(result).to.have.nested.property('info.usage', usage)
     })
   })
 

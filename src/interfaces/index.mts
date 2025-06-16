@@ -13,6 +13,12 @@ export type { default as ArgvSourceMap } from '#interfaces/argv-source.map'
 export type {
   default as CommandErrorInfo
 } from '#interfaces/command-error.info'
+export type {
+  default as CommandUsageData
+} from '#interfaces/command-usage.data'
+export type {
+  default as CommandUsageInfo
+} from '#interfaces/command-usage.info'
 export type { default as CommandData } from '#interfaces/command.data'
 export type { default as CommandInfo } from '#interfaces/command.info'
 export type { default as CommandMetadata } from '#interfaces/command.metadata'
