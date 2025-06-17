@@ -82,6 +82,18 @@ import plur from 'plur'
  */
 class Command {
   /**
+   * The event whose listener overrides the command action handler and any
+   * parsing checks (i.e. mandatory options, required arguments).
+   *
+   * @see {@linkcode KronkEvent}
+   *
+   * @protected
+   * @instance
+   * @member {KronkEvent | null} actionEvent
+   */
+  protected actionEvent: KronkEvent | null
+
+  /**
    * Parsed arguments.
    *
    * @public
@@ -176,19 +188,7 @@ class Command {
   public parent: Command | null | undefined
 
   /**
-   * The event whose listener overrides the command action handler and any
-   * parsing checks (i.e. mandatory options, required arguments).
-   *
-   * @see {@linkcode KronkEvent}
-   *
-   * @protected
-   * @instance
-   * @member {KronkEvent | null} priorityEvent
-   */
-  protected priorityEvent: KronkEvent | null
-
-  /**
-   * Object containing information about the current process.
+   * Information about the current process.
    *
    * @see {@linkcode Process}
    *
@@ -254,6 +254,7 @@ class Command {
       version: null
     }
 
+    this.actionEvent = null
     this.args = []
     this.argv = []
     this.defaultCommand = null
@@ -261,7 +262,6 @@ class Command {
     this.optionValueSources = {}
     this.optionValues = {}
     this.parent = null
-    this.priorityEvent = null
     this.process = this.info.process ?? process
 
     this.logger = createLogger({
@@ -1914,7 +1914,7 @@ class Command {
    * @template {Option} T
    *  Parsed command option
    *
-   * @param {OptionEvent} event
+   * @param {OptionEvent<T>} event
    *  The emitted parsed option event
    * @return {undefined}
    */
@@ -1973,11 +1973,28 @@ class Command {
       optionValueSource.cli
     )
 
-    // set priority event and propagate event to command ancestors so command
-    // action callback is not called for `this` command or its ancestors.
-    for (const cmd of [this, ...this.ancestors()]) cmd.priorityEvent = event
-
     return void this.logger.log(event.option.version)
+  }
+
+  /**
+   * Handle a parsed option `event`.
+   *
+   * The {@linkcode actionEvent} will be set and propagated to ancestors of
+   * the current command so the command action callback is not called for `this`
+   * command or its ancestors.
+   *
+   * @see {@linkcode OptionEvent}
+   *
+   * @protected
+   * @instance
+   *
+   * @param {OptionEvent} event
+   *  The emitted parsed option event
+   * @return {undefined}
+   */
+  protected onOptionWithAction(event: OptionEvent): undefined {
+    for (const cmd of [this, ...this.ancestors()]) cmd.actionEvent = event
+    return void event
   }
 
   /**
@@ -2342,7 +2359,7 @@ class Command {
     const cmd: Command | this = this.prepareCommand([], unknown)
 
     // run action callback.
-    if (!this.priorityEvent) {
+    if (!this.actionEvent) {
       void cmd.action().call(cmd, cmd.opts(), ...cmd.args as unknown[])
     }
 
@@ -2396,7 +2413,7 @@ class Command {
     const cmd: Command | this = this.prepareCommand([], unknown)
 
     // run action callback.
-    if (!this.priorityEvent) {
+    if (!this.actionEvent) {
       await cmd.action().call(cmd, cmd.opts(), ...cmd.args as unknown[])
     }
 
@@ -2689,8 +2706,8 @@ class Command {
       return this.defaultCommand.prepareCommand(operands, unknown)
     }
 
-    // check for errors if command version was not requested.
-    if (!this.priorityEvent) {
+    // check for errors.
+    if (!this.actionEvent) {
       this.checkForMissingMandatoryOptions()
       this.checkForUnknownOptions(result.unknown)
       this.checkCommandArguments()
@@ -2972,8 +2989,9 @@ class Command {
         this.info.version = v as VersionOption
         if (!isOption(v)) this.info.version = this.createOption(v)
 
-        // add version option and register parsed option listener.
+        // add version option and register parsed option listeners.
         this.addOption(this.info.version)
+        this.on(this.info.version.event, this.onOptionWithAction.bind(this))
         this.on(this.info.version.event, this.onOptionVersion.bind(this))
       }
 

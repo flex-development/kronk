@@ -44,6 +44,7 @@ describe('functional:lib/Command', () => {
   ]
 
   type ParseCaseHooks = {
+    actionEvent?: boolean | null | undefined
     after: Fn<[
       subject: TestSubject,
       result: TestSubject,
@@ -51,7 +52,6 @@ describe('functional:lib/Command', () => {
       optsWithGlobals: OptionValues
     ], undefined>
     before: Fn<[subject: TestSubject], undefined>
-    version?: boolean
   }
 
   let act: CreateActionSpy
@@ -452,6 +452,11 @@ describe('functional:lib/Command', () => {
 
           return {
             /**
+             * Action event test marker.
+             */
+            actionEvent: true,
+
+            /**
              * @this {void}
              *
              * @param {TestSubject} subject
@@ -500,12 +505,7 @@ describe('functional:lib/Command', () => {
               done = dn(subject)
               log = vi.spyOn(subject.logger, 'log')
               return void this
-            },
-
-            /**
-             * Version command option parsing test marker.
-             */
-            version: true
+            }
           }
         }
       ],
@@ -520,6 +520,11 @@ describe('functional:lib/Command', () => {
          */
         function context(this: void): ParseCaseHooks {
           return {
+            /**
+             * Action event test marker.
+             */
+            actionEvent: true,
+
             /**
              * @this {void}
              *
@@ -564,12 +569,7 @@ describe('functional:lib/Command', () => {
              */
             before(this: void, subject: TestSubject): undefined {
               return action = act(subject), done = dn(subject), void this
-            },
-
-            /**
-             * Version command option parsing test marker.
-             */
-            version: true
+            }
           }
         }
       ],
@@ -1224,7 +1224,7 @@ describe('functional:lib/Command', () => {
         }
       ]
     ])('should run command (%#)', (info, argv, hooks) => {
-      const { after, before, version } = hooks(argv)
+      const { actionEvent, after, before } = hooks(argv)
 
       // Arrange
       const subject: TestSubject = new TestSubject({ ...info, process })
@@ -1239,7 +1239,7 @@ describe('functional:lib/Command', () => {
       optsWithGlobals = result.optsWithGlobals()
 
       // Expect (conditional)
-      if (version) {
+      if (actionEvent) {
         expect(action).toHaveBeenCalledTimes(0)
       } else {
         expect(action).toHaveBeenCalledOnce()
@@ -1703,6 +1703,11 @@ describe('functional:lib/Command', () => {
 
           return {
             /**
+             * Action event test marker.
+             */
+            actionEvent: true,
+
+            /**
              * @this {void}
              *
              * @param {TestSubject} subject
@@ -1765,12 +1770,7 @@ describe('functional:lib/Command', () => {
               log = vi.spyOn(subcommand.logger, 'log')
 
               return void subcommand
-            },
-
-            /**
-             * Version command option parsing test marker.
-             */
-            version: true
+            }
           }
         }
       ],
@@ -2303,7 +2303,7 @@ describe('functional:lib/Command', () => {
         }
       ]
     ])('should run command (%#)', async (info, argv, hooks) => {
-      const { after, before, version } = hooks(argv)
+      const { actionEvent, after, before } = hooks(argv)
 
       // Arrange
       const subject: TestSubject = new TestSubject({ ...info, process })
@@ -2318,7 +2318,7 @@ describe('functional:lib/Command', () => {
       optsWithGlobals = result.optsWithGlobals()
 
       // Expect (conditional)
-      if (version) {
+      if (actionEvent) {
         expect(action).toHaveBeenCalledTimes(0)
       } else {
         expect(action).toHaveBeenCalledOnce()
