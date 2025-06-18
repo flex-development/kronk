@@ -170,8 +170,8 @@
     "@types/node": "24.0.1",
     "@types/node-notifier": "8.0.5",
     "@vates/toggle-scripts": "1.0.0",
-    "@vitest/coverage-v8": "3.2.3",
-    "@vitest/ui": "3.2.3",
+    "@vitest/coverage-v8": "3.2.4",
+    "@vitest/ui": "3.2.4",
     "chai": "5.2.0",
     "commander": "14.0.0",
     "cross-env": "7.0.3",
@@ -196,7 +196,7 @@
     "typescript": "5.8.3",
     "unified": "11.0.5",
     "vfile": "6.0.3",
-    "vitest": "3.2.3"
+    "vitest": "3.2.4"
   },
   "packageManager": "yarn@4.9.2",
   "sideEffects": false
