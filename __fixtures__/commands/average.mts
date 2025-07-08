@@ -4,7 +4,7 @@
  */
 
 import sfmt from '#tests/utils/sfmt'
-import type { CommandInfo } from '@flex-development/kronk'
+import type { SubcommandInfo as CommandInfo } from '@flex-development/kronk'
 
 /**
  * `average` program info.
@@ -14,4 +14,4 @@ import type { CommandInfo } from '@flex-development/kronk'
 export default {
   arguments: sfmt.optional({ id: 'num', variadic: true }),
   name: 'average'
-} as CommandInfo
+}

@@ -3,11 +3,13 @@
  * @module fixtures/commands/mlly
  */
 
+import bool from '#parsers/bool'
+import unique from '#parsers/unique'
 import sfmt from '#tests/utils/sfmt'
-import { faker } from '@faker-js/faker'
-import type { CommandInfo } from '@flex-development/kronk'
-import * as mlly from '@flex-development/mlly'
-import { SemVer } from 'semver'
+import { chars } from '@flex-development/fsm-tokenizer'
+import type { SubcommandInfo as CommandInfo } from '@flex-development/kronk'
+import { canParseUrl, defaultConditions, toUrl } from '@flex-development/mlly'
+import type {} from '@flex-development/pkg-types'
 
 /**
  * `mlly` program info.
@@ -15,18 +17,16 @@ import { SemVer } from 'semver'
  * @type {CommandInfo}
  */
 export default {
+  async: true as const,
   description: 'ecmascript module utilities',
   name: 'mlly',
   options: [
     {
-      description: 'module id of current working directory',
-      env: 'PWD',
-      flags: '--cwd <!>',
-      parser: url
-    },
-    {
+      choices: bool.choices,
       default: { value: false },
-      flags: '-d | --debug'
+      flags: '-d | --debug [choice]',
+      parser: bool(),
+      preset: chars.lowercaseY
     },
     {
       description: 'url of parent module',
@@ -34,8 +34,8 @@ export default {
       parser: url
     }
   ],
-  subcommands: [
-    {
+  subcommands: {
+    resolve: {
       arguments: [
         {
           description: 'the module specifier to resolve',
@@ -45,10 +45,7 @@ export default {
       name: 'resolve',
       options: [
         {
-          default: {
-            description: 'node,import',
-            value: mlly.defaultConditions
-          },
+          default: { description: 'node,import', value: defaultConditions },
           description: 'list of export/import conditions',
           flags: '-c | --conditions <...>',
           parser: unique
@@ -59,21 +56,10 @@ export default {
           flags: '--ps | --preserve-symlinks'
         }
       ],
-      version: new SemVer(faker.system.semver())
+      version: '0.0.1'
     }
-  ]
-} as CommandInfo
-
-/**
- * @this {void}
- *
- * @param {string[]} value
- *  The value to parse
- * @return {Set<string>}
- *  Unique list created from `value`
- */
-function unique(this: void, value: string[]): Set<string> {
-  return new Set<string>(value)
+  },
+  version: '1.0.0-alpha.20'
 }
 
 /**
@@ -85,6 +71,6 @@ function unique(this: void, value: string[]): Set<string> {
  *  The `URL` parsed from `value`
  */
 function url(this: void, value: string): URL {
-  if (mlly.canParseUrl(value)) new URL(value)
-  return mlly.toUrl(value)
+  if (canParseUrl(value)) new URL(value)
+  return toUrl(value)
 }

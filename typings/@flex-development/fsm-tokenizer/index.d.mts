@@ -3,17 +3,12 @@ import type kArgument from '#internal/k-argument'
 import type kCommand from '#internal/k-command'
 import type kOption from '#internal/k-option'
 import type {} from '@flex-development/fsm-tokenizer'
-import type {
-  Command,
-  CommandName,
-  List,
-  Option
-} from '@flex-development/kronk'
+import type { Command, Option } from '@flex-development/kronk'
 
 declare module '@flex-development/fsm-tokenizer' {
   interface TokenInfo {
     /**
-     * Whether the flag or operand was combined with a short flag.
+     * Whether a flag or operand was combined with a short flag.
      *
      * @internal
      */
@@ -29,7 +24,14 @@ declare module '@flex-development/fsm-tokenizer' {
     command?: Command | null | undefined
 
     /**
-     * Matched option instance.
+     * Whether {@linkcode option} refers to global option.
+     *
+     * @internal
+     */
+    global?: boolean | null | undefined
+
+    /**
+     * The matched command option instance.
      *
      * @see {@linkcode Option}
      *
@@ -47,7 +49,7 @@ declare module '@flex-development/fsm-tokenizer' {
 
   interface TokenFields {
     /**
-     * Whether the operand was attached to a flag using an equal (`=`) sign.
+     * Whether an operand was attached to a flag using an equal (`=`) sign.
      *
      * @internal
      */
@@ -136,75 +138,17 @@ declare module '@flex-development/fsm-tokenizer' {
     [kOption]?: boolean | null | undefined
 
     /**
+     * The current command.
+     *
+     * @internal
+     */
+    command?: Command | null | undefined
+
+    /**
      * Whether a delimiter was tokenized.
      *
      * @internal
      */
     delimiter?: boolean | null | undefined
-
-    /**
-     * Find a command with a name or alias matching `x`.
-     *
-     * > 👉 **Note**: Only defined when tokenizing in a {@linkcode Command}
-     * > instance context.
-     *
-     * @see {@linkcode CommandName}
-     * @see {@linkcode Command}
-     * @see {@linkcode List}
-     *
-     * @internal
-     *
-     * @this {void}
-     *
-     * @param {CommandName | List<CommandName>} x
-     *  Command name, command alias, or list of names and/or aliases
-     * @return {Command | undefined}
-     *  Command with name or alias matching `x`
-     */
-    findCommand?(
-      this: void,
-      x: CommandName | List<CommandName>
-    ): Command | undefined
-
-    /**
-     * Find an option with a flag matching `flag`.
-     *
-     * > 👉 **Note**: Only defined when tokenizing in a {@linkcode Command}
-     * > instance context.
-     *
-     * @see {@linkcode Option}
-     *
-     * @internal
-     *
-     * @this {void}
-     *
-     * @param {string | null | undefined} flag
-     *  The option flag to match
-     * @return {Option | undefined}
-     *  Option with the long or short flag `flag`
-     */
-    findOption?(this: void, flag: string | null | undefined): Option | undefined
-
-    /**
-     * Find a subcommand option with a flag matching `flag`.
-     *
-     * > 👉 **Note**: Only defined when tokenizing in a {@linkcode Command}
-     * > instance context.
-     *
-     * @see {@linkcode Option}
-     *
-     * @internal
-     *
-     * @this {void}
-     *
-     * @param {string | null | undefined} flag
-     *  The option flag to match
-     * @return {Option | undefined}
-     *  Subcommand option with the long or short flag `flag`
-     */
-    findSubOption?(
-      this: void,
-      flag: string | null | undefined
-    ): Option | undefined
   }
 }

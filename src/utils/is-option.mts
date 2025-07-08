@@ -21,6 +21,7 @@ import Option from '#lib/option'
  */
 function isOption(this: void, value: unknown): value is Option {
   return (
+    !Array.isArray(value) &&
     typeof value === 'object' &&
     value !== null &&
     (

@@ -3,7 +3,11 @@
  * @module kronk/interfaces/CommandErrorInfo
  */
 
-import type { KronkErrorInfo } from '@flex-development/kronk'
+import type {
+  Command,
+  KronkErrorId,
+  KronkErrorInfo
+} from '@flex-development/kronk'
 
 /**
  * Data used to create command errors.
@@ -14,11 +18,20 @@ import type { KronkErrorInfo } from '@flex-development/kronk'
  */
 interface CommandErrorInfo extends KronkErrorInfo {
   /**
+   * The command where the error originated.
+   *
+   * @see {@linkcode Command}
+   */
+  command?: Command | null | undefined
+
+  /**
    * Unique id representing the error.
+   *
+   * @see {@linkcode KronkErrorId}
    *
    * @override
    */
-  id: string
+  id: KronkErrorId
 }
 
 export type { CommandErrorInfo as default }

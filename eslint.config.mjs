@@ -14,6 +14,12 @@ import fldv from '@flex-development/eslint-config'
 export default [
   ...fldv.configs.node,
   {
+    files: ['**/*.spec.mts'],
+    rules: {
+      'unicorn/prefer-ternary': 0
+    }
+  },
+  {
     files: ['__fixtures__/commands/*.mts'],
     rules: {
       '@typescript-eslint/no-unused-expressions': 0

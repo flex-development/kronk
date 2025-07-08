@@ -3,7 +3,12 @@
  * @module kronk/interfaces/KronkErrorInfo
  */
 
-import type { ExitCode, KronkErrorCause } from '@flex-development/kronk'
+import type {
+  EmptyString,
+  ExitCode,
+  KronkErrorCause,
+  KronkErrorId
+} from '@flex-development/kronk'
 
 /**
  * Data used to create errors.
@@ -33,9 +38,12 @@ interface KronkErrorInfo {
   /**
    * Unique id representing the error.
    *
+   * @see {@linkcode EmptyString}
+   * @see {@linkcode KronkErrorId}
+   *
    * @default 'kronk/error'
    */
-  id?: string | null | undefined
+  id?: EmptyString | KronkErrorId | null | undefined
 
   /**
    * Human-readable description of the error.

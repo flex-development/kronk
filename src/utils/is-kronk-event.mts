@@ -21,6 +21,7 @@ import { KronkEvent } from '@flex-development/kronk/events'
  */
 function isKronkEvent(this: void, value: unknown): value is KronkEvent {
   return (
+    !Array.isArray(value) &&
     typeof value === 'object' &&
     value !== null &&
     (

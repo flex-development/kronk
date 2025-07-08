@@ -4,7 +4,7 @@
  */
 
 import type TestSubject from '#types/exit'
-import type { Command, CommandError } from '@flex-development/kronk'
+import type { Command, CommandError, KronkError } from '@flex-development/kronk'
 
 describe('unit-d:types/Exit', () => {
   it('should match [this: Command]', () => {
@@ -12,16 +12,16 @@ describe('unit-d:types/Exit', () => {
   })
 
   describe('parameters', () => {
-    it('should be callable with [(CommandError | null | undefined)?]', () => {
+    it('should be callable with [(CommandError | KronkError | null | undefined)?]', () => {
       expectTypeOf<TestSubject>()
         .parameters
-        .toEqualTypeOf<[(CommandError | null | undefined)?]>()
+        .toEqualTypeOf<[(CommandError | KronkError | null | undefined)?]>()
     })
   })
 
   describe('returns', () => {
-    it('should return never | undefined', () => {
-      expectTypeOf<TestSubject>().returns.toEqualTypeOf<never | undefined>()
+    it('should return undefined', () => {
+      expectTypeOf<TestSubject>().returns.toEqualTypeOf<undefined>()
     })
   })
 })

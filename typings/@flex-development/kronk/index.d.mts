@@ -1,9 +1,9 @@
-declare module '@flex-development/kronk' {
-  import type { CommandError, ExitCode } from '@flex-development/kronk'
+import type { Process } from '@flex-development/kronk'
 
+declare module '@flex-development/kronk' {
   interface CommandData {
     /**
-     * Object containing information about the current process.
+     * Information about the current process.
      *
      * @internal
      *
@@ -12,26 +12,22 @@ declare module '@flex-development/kronk' {
     process?: Process | null | undefined
   }
 
-  interface Process {
+  interface CommandInfo {
     /**
-     * Terminate the process synchronously with an exit status of `code`.
-     * If `code` is omitted, `exit` uses either the 'success' code `0` or the
-     * value of {@linkcode exitCode} if it has been set.
-     *
-     * @see {@linkcode ExitCode}
+     * Whether the command {@linkcode action} is expected to be overridden
+     * during testing (e.g. testing `--version`).
      *
      * @internal
-     *
-     * @param {ExitCode | null | undefined} code
-     *  Exit status code
-     * @param {CommandError | null | undefined} e
-     *  Command error
-     * @return {never}
      */
-    exit(
-      code: ExitCode | null | undefined,
-      e: CommandError | null | undefined
-    ): never
+    actionOverride?: true
+
+    /**
+     * Whether the `parseAsync` method should be called instead of `parse`
+     * during testing.
+     *
+     * @internal
+     */
+    async?: true
   }
 }
 

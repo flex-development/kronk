@@ -5,12 +5,14 @@
 
 import initialOption from '#constructs/initial-option'
 import chars from '#enums/chars'
+import keid from '#enums/keid'
 import tt from '#enums/tt'
-import KronkError from '#errors/kronk.error'
 import camelcase from '#internal/camelcase'
 import kOption from '#internal/k-option'
+import orNIL from '#internal/or-nil'
 import snakecase from '#internal/snakecase'
 import toChunks from '#internal/to-chunks'
+import toList from '#internal/to-list'
 import {
   ev,
   tokenize,
@@ -27,17 +29,19 @@ import type {
   OptionMetadata,
   ParseArg
 } from '@flex-development/kronk'
+import { KronkError } from '@flex-development/kronk/errors'
 import {
   fallback,
   identity,
   ifelse,
+  isFalsy,
   isNIL,
   isString
 } from '@flex-development/tutils'
 import { ok } from 'devlop'
 
 /**
- * Data model representing a command option.
+ * A command option.
  *
  * @class
  */
@@ -73,7 +77,7 @@ class Option {
    * @param {Flags} flags
    *  Option flags
    * @param {OptionData | null | undefined} [info]
-   *  Option data
+   *  Additional option info
    */
   constructor(flags: Flags, info?: OptionData | null | undefined)
 
@@ -87,7 +91,7 @@ class Option {
    * @param {Flags | OptionInfo} info
    *  Option flags or info
    * @param {OptionData | null | undefined} [data]
-   *  Option data
+   *  Additional option info
    */
   constructor(
     info: Flags | OptionInfo,
@@ -157,19 +161,20 @@ class Option {
   /**
    * Get option flags.
    *
+   * @see {@linkcode Flags}
+   *
    * @public
    * @instance
    *
-   * @return {string}
+   * @return {Flags}
    *  Option flags
    */
-  public get flags(): string {
+  public get flags(): Flags {
     return this.info.flags
   }
 
   /**
-   * Get a boolean indicating if the option should **not** be displayed in
-   * help text.
+   * Whether the option should **not** be displayed in help text.
    *
    * @public
    * @instance
@@ -192,9 +197,9 @@ class Option {
    *  Option id
    */
   public get id(): string {
-    if (this.long) return this.long.replace(/^--/, chars.empty)
-    ok(this.short, 'expected short flag')
-    return this.short.replace(/^-/, chars.empty)
+    if (this.short && !this.long) return this.short.replace(/^-/, chars.empty)
+    ok(this.long, 'expected long flag')
+    return this.long.replace(/^--/, chars.empty)
   }
 
   /**
@@ -223,7 +228,7 @@ class Option {
    *  Long flag
    */
   public get long(): string | null {
-    return fallback(this.info.long, null)
+    return fallback(this.info.long, null, isFalsy)
   }
 
   /**
@@ -279,7 +284,7 @@ class Option {
    *  Short flag
    */
   public get short(): string | null {
-    return fallback(this.info.short, null)
+    return fallback(this.info.short, null, isFalsy)
   }
 
   /**
@@ -431,49 +436,53 @@ class Option {
     description?: URL | string | null | undefined
   ): string | this {
     if (!arguments.length) return String(this.info.description ?? chars.empty)
-    return this.info.description = description && String(description), this
+    return this.info.description = orNIL(description), this
   }
 
   /**
-   * Set the environment variable to check for the value of the option.
+   * Set the environment variables to check for the value of the option.
+   *
+   * @see {@linkcode List}
    *
    * @public
    * @instance
    *
-   * @param {string | null | undefined} name
-   *  Environment variable name
+   * @param {List<string> | string | null | undefined} env
+   *  The name of the environment variable to check
+   *  or a list of names, in order of priority, to check
    * @return {this}
    *  `this` option
    */
-  public env(name: string | null | undefined): this
+  public env(env: List<string> | string | null | undefined): this
 
   /**
-   * Get the name of the environment variable to check for the value of the
-   * option.
+   * Get a list of environment variables to check for the value of the option.
    *
    * @public
    * @instance
    *
-   * @return {string | null}
-   *  Environment variable name
+   * @return {Set<string>}
+   *  Environment variable names
    */
-  public env(): string | null
+  public env(): Set<string>
 
   /**
-   * Get or set the name of the environment variable to check for the value of
-   * the option.
+   * Get or set the environment variables to check for the value of the option.
    *
    * @public
    * @instance
    *
-   * @param {string | null | undefined} [name]
-   *  Environment variable name
-   * @return {string | this | null}
-   *  Environment variable name or `this` option
+   * @param {List<string> | string | null | undefined} [env]
+   *  The name of the environment variable to check
+   *  or a list of names, in order of priority, to check
+   * @return {Set<string> | this}
+   *  Environment variable names or `this` option
    */
-  public env(name?: string | null | undefined): string | this | null {
-    if (!arguments.length) return fallback(this.info.env, null)
-    return this.info.env = name, this
+  public env(
+    env?: List<string> | string | null | undefined
+  ): Set<string> | this {
+    if (arguments.length) return this.info.env = env, this
+    return new Set(toList(this.info.env))
   }
 
   /**
@@ -748,7 +757,7 @@ class Option {
 
         throw new KronkError({
           cause: { flags: this.info.flags, part },
-          id: 'kronk/invalid-flags',
+          id: keid.invalid_flags,
           reason
         })
       }
@@ -758,7 +767,7 @@ class Option {
     if (!this.info.long && !this.info.short) {
       throw new KronkError({
         cause: { flags: this.info.flags },
-        id: 'kronk/no-flags',
+        id: keid.no_flags,
         reason: `No flags found in ${String(this)}`
       })
     }

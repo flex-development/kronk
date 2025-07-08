@@ -17,8 +17,10 @@ interface DefaultInfo<T = any> {
 
   /**
    * The default value.
+   *
+   * @default undefined
    */
-  value: T
+  value?: T
 }
 
 export type { DefaultInfo as default }

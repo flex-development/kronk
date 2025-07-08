@@ -6,26 +6,29 @@
 import type TestSubject from '#interfaces/command.data'
 import type {
   Action,
-  Argument,
   ArgumentInfo,
   ArgumentSyntax,
   Command,
-  CommandInfo,
   CommandUsageData,
   Exit,
   Flags,
   List,
-  Option,
   OptionInfo,
   OptionPriority,
+  SubcommandInfo,
+  SubcommandsInfo,
   UnknownStrategy,
   Version,
   VersionOption,
   VersionOptionInfo
 } from '@flex-development/kronk'
-import type { Nilable } from '@flex-development/tutils'
+import type { Nilable, OptionalKeys } from '@flex-development/tutils'
 
 describe('unit-d:interfaces/CommandData', () => {
+  it('should have all optional keys', () => {
+    expectTypeOf<OptionalKeys<TestSubject>>().toEqualTypeOf<keyof TestSubject>()
+  })
+
   it('should match [action?: Action<any> | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('action')
@@ -38,12 +41,11 @@ describe('unit-d:interfaces/CommandData', () => {
       .toEqualTypeOf<Nilable<List<string> | string>>()
   })
 
-  it('should match [arguments?: Argument | ArgumentInfo | List<ArgumentInfo | ArgumentSyntax> | string | null | undefined]', () => {
+  it('should match [arguments?: ArgumentInfo | List<ArgumentInfo | ArgumentSyntax> | string | null | undefined]', () => {
     // Arrange
     type Expect =
-      | Argument
       | ArgumentInfo
-      | List<Argument | ArgumentInfo | ArgumentSyntax>
+      | List<ArgumentInfo | ArgumentSyntax>
       | string
       | null
       | undefined
@@ -90,12 +92,11 @@ describe('unit-d:interfaces/CommandData', () => {
       .toEqualTypeOf<Nilable<OptionPriority>>()
   })
 
-  it('should match [options?: Flags | List<Flags | Option | OptionInfo> | Option | OptionInfo | null | undefined]', () => {
+  it('should match [options?: Flags | List<Flags | OptionInfo> | OptionInfo | null | undefined]', () => {
     // Arrange
     type Expect =
       | Flags
-      | List<Flags | Option | OptionInfo>
-      | Option
+      | List<Flags | OptionInfo>
       | OptionInfo
       | null
       | undefined
@@ -106,20 +107,16 @@ describe('unit-d:interfaces/CommandData', () => {
       .toEqualTypeOf<Nilable<Expect>>()
   })
 
-  it('should match [subcommands?: Command | CommandInfo | List<Command | CommandInfo | string> | string | null | undefined]', () => {
-    // Arrange
-    type Expect =
-      | Command
-      | CommandInfo
-      | List<Command | CommandInfo | string>
-      | string
-      | null
-      | undefined
+  it('should match [parent?: Command | null | undefined]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('parent')
+      .toEqualTypeOf<Nilable<Command>>()
+  })
 
-    // Expect
+  it('should match [subcommands?: SubcommandInfo | SubcommandsInfo | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('subcommands')
-      .toEqualTypeOf<Nilable<Expect>>()
+      .toEqualTypeOf<Nilable<SubcommandInfo | SubcommandsInfo>>()
   })
 
   it('should match [summary?: string | null | undefined]', () => {

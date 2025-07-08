@@ -3,7 +3,10 @@
  * @module kronk/interfaces/tests/unit-d/CommandMetadata
  */
 
-import type { Skip, default as TestSubject } from '#interfaces/command.metadata'
+import type {
+  Skip,
+  default as TestSubject
+} from '#interfaces/command.metadata'
 import type {
   Argument,
   Command,
@@ -15,7 +18,11 @@ import type { Nilable } from '@flex-development/tutils'
 
 describe('unit-d:interfaces/CommandMetadata', () => {
   it('should extend Omit<CommandInfo, Skip>', () => {
-    expectTypeOf<TestSubject>().toExtend<Omit<CommandInfo, Skip>>()
+    // Arrange
+    type Expect = Omit<CommandInfo, Skip>
+
+    // Expect
+    expectTypeOf<TestSubject>().toExtend<Expect>()
   })
 
   it('should match [arguments: Argument[]]', () => {
@@ -30,13 +37,19 @@ describe('unit-d:interfaces/CommandMetadata', () => {
       .toEqualTypeOf<Map<string, Option>>()
   })
 
-  it('should match [subcommands: Command[]]', () => {
+  it('should match [parent?: null | undefined]', () => {
     expectTypeOf<TestSubject>()
-      .toHaveProperty('subcommands')
-      .toEqualTypeOf<Command[]>()
+      .toHaveProperty('parent')
+      .toEqualTypeOf<Nilable<never>>()
   })
 
-  it('should match [version?: VersionOption | null | undefined]', () => {
+  it('should match [subcommands: Map<string, Command>]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('subcommands')
+      .toEqualTypeOf<Map<string, Command>>()
+  })
+
+  it('should match [version: VersionOption | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('version')
       .toEqualTypeOf<Nilable<VersionOption>>()

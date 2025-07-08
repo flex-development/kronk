@@ -107,12 +107,11 @@ function config(this: void, env: ConfigEnv): ViteUserConfig {
       restoreMocks: true,
       setupFiles: ['./__tests__/setup/chai.mts', './__tests__/setup/faker.mts'],
       snapshotFormat: {
-        callToJSON: true,
-        min: false,
+        compareKeys: null,
         printBasicPrototype: false,
         printFunctionName: true
       },
-      snapshotSerializers: ['./__tests__/serializers/cwd.mts'],
+      snapshotSerializers: ['./__tests__/serializers/serializer.mts'],
       typecheck: {
         allowJs: false,
         checker: 'tsc',

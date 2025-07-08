@@ -86,7 +86,7 @@ function resolveOperand(
   context: TokenizeContext
 ): Event[] {
   assert(!context[kOption], 'expected to not to be in `Option` context')
-  assert(context.findCommand, 'expected `context.findCommand`')
+  assert(context.command, 'expected `context.command`')
 
   /**
    * Index of current event.
@@ -101,8 +101,16 @@ function resolveOperand(
 
     if (event === ev.enter) {
       assert(token.type === tt.operand, 'expected `operand` token')
+
       token.value = context.sliceSerialize(token)
-      token.command = context.findCommand(token.value)
+      token.command = context.command.findCommand(token.value)
+
+      // refine command context to subcommand.
+      if (token.command) {
+        context.command = token.command
+        delete token.attached
+      }
+
       index++
     }
   }

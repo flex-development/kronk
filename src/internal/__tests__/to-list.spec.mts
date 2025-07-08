@@ -7,10 +7,19 @@ import testSubject from '#internal/to-list'
 
 describe('unit:internal/toList', () => {
   it.each<Parameters<typeof testSubject>>([
-    [[0, 3, 1, 3]],
+    [[]],
+    [Object.freeze([])],
+    [Object.freeze(new Set())],
     [new Set()]
-  ])('should return `value` if `value` is list (%#)', value => {
+  ])('should return `value` if `value` is a list (%#)', value => {
     expect(testSubject(value)).to.eq(value)
+  })
+
+  it.each<Parameters<typeof testSubject>>([
+    [null],
+    [undefined]
+  ])('should return empty list if `value` is `NIL` (%j)', value => {
+    expect(testSubject(value)).to.be.an('array').and.eql([])
   })
 
   it('should return new list if `value` is not a list', () => {

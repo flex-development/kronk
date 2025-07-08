@@ -5,18 +5,17 @@
 
 import type {
   Action,
-  Argument,
   ArgumentInfo,
   ArgumentSyntax,
   Command,
-  CommandInfo,
   CommandUsageData,
   Exit,
   Flags,
   List,
-  Option,
   OptionInfo,
   OptionPriority,
+  SubcommandInfo,
+  SubcommandsInfo,
   UnknownStrategy,
   Version,
   VersionOption,
@@ -44,15 +43,13 @@ interface CommandData {
   /**
    * Arguments for the command.
    *
-   * @see {@linkcode Argument}
    * @see {@linkcode ArgumentInfo}
    * @see {@linkcode ArgumentSyntax}
    * @see {@linkcode List}
    */
   arguments?:
-    | Argument
     | ArgumentInfo
-    | List<Argument | ArgumentInfo | ArgumentSyntax>
+    | List<ArgumentInfo | ArgumentSyntax>
     | string
     | null
     | undefined
@@ -68,14 +65,14 @@ interface CommandData {
   description?: URL | string | null | undefined
 
   /**
-   * Callback to fire after the command is executed.
+   * The callback to fire after the command {@linkcode action} is executed.
    *
    * @see {@linkcode Action}
    */
   done?: Action<any> | null | undefined
 
   /**
-   * Callback to fire when the process is exited.
+   * The callback to fire when the process is exited.
    *
    * @see {@linkcode Exit}
    */
@@ -100,29 +97,31 @@ interface CommandData {
    *
    * @see {@linkcode Flags}
    * @see {@linkcode List}
-   * @see {@linkcode Option}
    * @see {@linkcode OptionInfo}
    */
   options?:
     | Flags
-    | List<Flags | Option | OptionInfo>
-    | Option
+    | List<Flags | OptionInfo>
     | OptionInfo
     | null
     | undefined
 
   /**
-   * Subcommands for the command.
+   * The parent command.
    *
    * @see {@linkcode Command}
-   * @see {@linkcode CommandInfo}
-   * @see {@linkcode List}
+   */
+  parent?: Command | null | undefined
+
+  /**
+   * Subcommands for the command.
+   *
+   * @see {@linkcode SubcommandInfo}
+   * @see {@linkcode SubcommandsInfo}
    */
   subcommands?:
-    | Command
-    | CommandInfo
-    | List<Command | CommandInfo | string>
-    | string
+    | SubcommandInfo
+    | SubcommandsInfo
     | null
     | undefined
 

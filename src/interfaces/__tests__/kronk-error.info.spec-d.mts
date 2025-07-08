@@ -4,11 +4,16 @@
  */
 
 import type TestSubject from '#interfaces/kronk-error.info'
-import type { ExitCode, KronkErrorCause } from '@flex-development/kronk'
+import type {
+  EmptyString,
+  ExitCode,
+  KronkErrorCause,
+  KronkErrorId
+} from '@flex-development/kronk'
 import type { Nilable } from '@flex-development/tutils'
 
 describe('unit-d:interfaces/KronkErrorInfo', () => {
-  it('should match [additional: string | string[] | null | undefined]', () => {
+  it('should match [additional?: string | string[] | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('additional')
       .toEqualTypeOf<string | string[] | null | undefined>()
@@ -20,16 +25,16 @@ describe('unit-d:interfaces/KronkErrorInfo', () => {
       .toEqualTypeOf<Nilable<KronkErrorCause>>()
   })
 
-  it('should match [code: ExitCode | null | undefined]', () => {
+  it('should match [code?: ExitCode | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('code')
       .toEqualTypeOf<ExitCode | null | undefined>()
   })
 
-  it('should match [id: string | null | undefined]', () => {
+  it('should match [id?: EmptyString | KronkErrorId | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('id')
-      .toEqualTypeOf<Nilable<string>>()
+      .toEqualTypeOf<Nilable<EmptyString | KronkErrorId>>()
   })
 
   it('should match [reason: string]', () => {

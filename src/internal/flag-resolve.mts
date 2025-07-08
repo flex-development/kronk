@@ -12,6 +12,7 @@ import {
   type Token,
   type TokenizeContext
 } from '@flex-development/fsm-tokenizer'
+import type { Option } from '@flex-development/kronk'
 import { ok } from 'devlop'
 
 /**
@@ -77,13 +78,37 @@ function resolveFlag(
 
       // handle flag when tokenizing in a `Command` instance context.
       if (context[kCommand]) {
-        ok(context.findOption, 'expected `context.findOption`')
-        ok(context.findSubOption, 'expected `context.findSubOption`')
+        ok(context.command, 'expected `context.command`')
 
         // find option associated with flag.
         if (!token.option) {
-          const { value: flag } = token
-          token.option = context.findOption(flag) ?? context.findSubOption(flag)
+          token.option = context.command.findOption(token.value, 0)
+
+          if (token.option) {
+            token.command = context.command
+          } else { // look for default command option or global option.
+            token.option = context.command.findOption(token.value)
+
+            if (token.option) {
+              token.command = context.command.defaultCommand
+            } else { // look for global option.
+              for (const ancestor of context.command.ancestors()) {
+                /**
+                 * Ancestor option with the flag `token.value`.
+                 *
+                 * @var {Option | undefined} option
+                 */
+                let option: Option | undefined
+
+                if ((option = ancestor.findOption(token.value, 0))) {
+                  token.command = ancestor
+                  token.global = true
+                  token.option = option
+                  break
+                }
+              }
+            }
+          }
         }
 
         // split combined short flag.

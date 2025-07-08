@@ -5,11 +5,12 @@
 
 import initialArgument from '#constructs/initial-argument'
 import chars from '#enums/chars'
+import keid from '#enums/keid'
 import tt from '#enums/tt'
 import KronkError from '#errors/kronk.error'
 import identity from '#internal/identity'
 import kArgument from '#internal/k-argument'
-import orNull from '#internal/or-null'
+import orNIL from '#internal/or-nil'
 import {
   ev,
   tokenize,
@@ -29,7 +30,7 @@ import { fallback, isNIL } from '@flex-development/tutils'
 import { ok } from 'devlop'
 
 /**
- * Data model representing a command-argument.
+ * A command-argument.
  *
  * @class
  */
@@ -277,16 +278,13 @@ class Argument {
   /**
    * Get the argument description.
    *
-   * > 👉 **Note**: If the argument description is not `null`, it will never be
-   * > an empty string.
-   *
    * @public
    * @instance
    *
-   * @return {string | null}
+   * @return {string}
    *  Description of `this` argument
    */
-  public description(): string | null
+  public description(): string
 
   /**
    * Get or set the argument description.
@@ -296,17 +294,14 @@ class Argument {
    *
    * @param {URL | string | null | undefined} [description]
    *  Description of argument
-   * @return {string | this | null}
+   * @return {string | this}
    *  Description of `this` argument or `this` argument
    */
   public description(
     description?: URL | string | null | undefined
-  ): string | this | null {
-    if (!arguments.length) {
-      return orNull(String(this.info.description ?? chars.empty))
-    }
-
-    return this.info.description = orNull(description), this
+  ): string | this {
+    if (!arguments.length) return String(this.info.description ?? chars.empty)
+    return this.info.description = orNIL(description), this
   }
 
   /**
@@ -435,7 +430,7 @@ class Argument {
     } else {
       throw new KronkError({
         cause: { syntax: this.info.syntax },
-        id: 'kronk/invalid-argument-syntax',
+        id: keid.invalid_argument_syntax,
         reason: `Invalid command-argument syntax for ${String(this)}`
       })
     }

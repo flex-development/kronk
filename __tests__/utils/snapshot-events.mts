@@ -34,6 +34,7 @@ function snapshotEvents(this: void, events: Event[]): [EventType, Token][] {
       combined: this.combined,
       command: this.command ? String(this.command) : this.command,
       end: this.end,
+      global: this.global,
       id: this.id,
       long: this.long,
       mandatory: this.mandatory,

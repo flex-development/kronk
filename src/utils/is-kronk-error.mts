@@ -21,6 +21,7 @@ import { KronkError } from '@flex-development/kronk/errors'
  */
 function isKronkError(this: void, value: unknown): value is KronkError {
   return (
+    !Array.isArray(value) &&
     typeof value === 'object' &&
     value !== null &&
     value instanceof Error &&

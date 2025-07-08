@@ -4,9 +4,10 @@
  */
 
 /**
- * Name of a command.
+ * The name of a command.
  *
- * The default command does not need to have a name.
+ * Parent commands do not need to have a name, but all subcommands must have a
+ * name. Valid command names are non-empty strings.
  */
 type CommandName = string | null
 

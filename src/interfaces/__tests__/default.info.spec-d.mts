@@ -4,20 +4,21 @@
  */
 
 import type TestSubject from '#interfaces/default.info'
-import type { Nilable } from '@flex-development/tutils'
+import type { Nilable, Optional } from '@flex-development/tutils'
 
 describe('unit-d:interfaces/DefaultInfo', () => {
+  type T = number
+  type Subject = TestSubject<T>
+
   it('should match [description?: URL | string | null | undefined]', () => {
-    expectTypeOf<TestSubject>()
+    expectTypeOf<Subject>()
       .toHaveProperty('description')
       .toEqualTypeOf<Nilable<URL | string>>()
   })
 
-  it('should match [value: T]', () => {
-    // Arrange
-    type T = number
-
-    // Expect
-    expectTypeOf<TestSubject<T>>().toHaveProperty('value').toEqualTypeOf<T>()
+  it('should match [value?: T]', () => {
+    expectTypeOf<Subject>()
+      .toHaveProperty('value')
+      .toEqualTypeOf<Optional<T>>()
   })
 })

@@ -33,9 +33,12 @@ interface OptionData {
   description?: URL | string | null | undefined
 
   /**
-   * Name of the environment variable to check for option value.
+   * The name of the environment variable to check for option value, or a list
+   * of names, in order of priority, to check.
+   *
+   * @see {@linkcode List}
    */
-  env?: string | null | undefined
+  env?: List<string> | string | null | undefined
 
   /**
    * Whether the option should be not displayed in help text.

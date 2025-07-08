@@ -5,6 +5,7 @@
 
 import isList from '#internal/is-list'
 import type { List } from '@flex-development/kronk'
+import { isNIL } from '@flex-development/tutils'
 
 export default toList
 
@@ -16,7 +17,7 @@ export default toList
  * @template {any} T
  *  The value to convert
  */
-type ToList<T> = T extends List ? T : T[]
+type ToList<T> = T extends List ? T : T extends null | undefined ? [] : T[]
 
 /**
  * Convert `value` to a list.
@@ -34,5 +35,5 @@ type ToList<T> = T extends List ? T : T[]
  *  `value` or array containing `value`
  */
 function toList<T>(this: void, value: T): ToList<T> {
-  return (isList(value) ? value : [value]) as ToList<T>
+  return (isNIL(value) ? [] : isList(value) ? value : [value]) as ToList<T>
 }

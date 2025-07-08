@@ -1,324 +1,1887 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`functional:lib/Command > #checkChoices > should error on invalid command-argument choice 1`] = `
+exports[`functional:lib/Command > errors > should error on excess command or option arguments (0) 1`] = `
 {
-  "icon": "😵",
-  "message": {
-    "additional": [
-      "Choices: '0', '1', '2', '3', '4', '5', '6', '7', '8', and '9'",
+  "code": 1,
+  "id": "kronk/excess-arguments",
+  "message": "Option(--watch) does not allow an argument",
+  "additional": [],
+  "cause": {
+    "argument": "server.mts",
+  },
+  "command": {
+    "command": "bun",
+    "ancestors": [],
+    "args": [],
+    "argv": [],
+    "optionValueSources": {
+      "version": "default",
+      "bun": "default",
+      "conditions": "default",
+      "config": "default",
+      "cwd": "default",
+      "dnsResultOrder": "default",
+      "elideLines": "default",
+      "envFile": "default",
+      "filter": "default",
+      "hot": "default",
+      "noClearScreen": "default",
+      "preferLatest": "default",
+      "preload": "default",
+      "shell": "default",
+      "watch": "default",
+    },
+    "opts": {
+      "version": undefined,
+      "bun": undefined,
+      "conditions": undefined,
+      "config": undefined,
+      "cwd": undefined,
+      "dnsResultOrder": "verbatim",
+      "elideLines": 10,
+      "envFile": undefined,
+      "filter": undefined,
+      "hot": undefined,
+      "noClearScreen": undefined,
+      "preferLatest": undefined,
+      "preload": undefined,
+      "shell": undefined,
+      "watch": undefined,
+    },
+    "optsWithGlobals": {
+      "version": undefined,
+      "bun": undefined,
+      "conditions": undefined,
+      "config": undefined,
+      "cwd": undefined,
+      "dnsResultOrder": "verbatim",
+      "elideLines": 10,
+      "envFile": undefined,
+      "filter": undefined,
+      "hot": undefined,
+      "noClearScreen": undefined,
+      "preferLatest": undefined,
+      "preload": undefined,
+      "shell": undefined,
+      "watch": undefined,
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on excess command or option arguments (1) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/excess-arguments",
+  "message": "Expected \`1\` argument, but got \`2\`",
+  "additional": [],
+  "command": {
+    "command": "run",
+    "ancestors": [
+      "bun",
     ],
-    "cause": {
-      "choice": "13",
-      "choices": [
-        "0",
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-      ],
-    },
-    "code": 1,
-    "id": "kronk/invalid-argument",
-    "message": "Argument(<c>) does not allow '13'",
-  },
-  "tag": null,
-}
-`;
-
-exports[`functional:lib/Command > #checkChoices > should error on invalid option-argument choice 1`] = `
-{
-  "icon": "😵",
-  "message": {
-    "additional": [
-      "Choices: '1', '2', '3', '4', '5', '6', '7', '8', and '9'",
+    "args": [],
+    "argv": [
+      "server.mts",
+      "main.mts",
     ],
-    "cause": {
-      "choice": "13",
-      "choices": [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-      ],
+    "optionValueSources": {
+      "define": "default",
+      "extensionOrder": "default",
+      "loader": "default",
+      "mainFields": "default",
+      "preserveSymlinks": "default",
+      "tsconfigOverride": "default",
     },
-    "code": 1,
-    "id": "kronk/invalid-argument",
-    "message": "Option(-n\\t<!>) does not allow '13'",
-  },
-  "tag": null,
-}
-`;
-
-exports[`functional:lib/Command > #checkCommandArguments > should error on excess arguments (0) 1`] = `
-{
-  "icon": "😵",
-  "message": {
-    "additional": [],
-    "code": 1,
-    "id": "kronk/excess-arguments",
-    "message": "Expected \`1\` argument, but got \`2\`",
-  },
-  "tag": "clamp",
-}
-`;
-
-exports[`functional:lib/Command > #checkCommandArguments > should error on excess arguments (1) 1`] = `
-{
-  "icon": "😵",
-  "message": {
-    "additional": [],
-    "code": 1,
-    "id": "kronk/excess-arguments",
-    "message": "Expected \`1\` argument, but got \`3\`",
-  },
-  "tag": "split",
-}
-`;
-
-exports[`functional:lib/Command > #checkCommandArguments > should error on missing required argument 1`] = `
-{
-  "icon": "😵",
-  "message": {
-    "additional": [],
-    "code": 1,
-    "id": "kronk/missing-required-argument",
-    "message": "Missing required argument '<n>'",
-  },
-  "tag": "clamp",
-}
-`;
-
-exports[`functional:lib/Command > #checkCommandArguments > should error on missing required argument 2`] = `
-{
-  "icon": "😵",
-  "message": {
-    "additional": [],
-    "code": 1,
-    "id": "kronk/missing-required-argument",
-    "message": "Missing required argument '<c>'",
-  },
-  "tag": null,
-}
-`;
-
-exports[`functional:lib/Command > #checkForMissingMandatoryOptions > should error on missing mandatory option (0) 1`] = `
-{
-  "icon": "😵",
-  "message": {
-    "additional": [],
-    "code": 1,
-    "id": "kronk/missing-mandatory-option",
-    "message": "Option(-p | --parent <!>) is required",
-  },
-  "tag": "resolve",
-}
-`;
-
-exports[`functional:lib/Command > #checkForMissingMandatoryOptions > should error on missing mandatory option (1) 1`] = `
-{
-  "icon": "😵",
-  "message": {
-    "additional": [],
-    "code": 1,
-    "id": "kronk/missing-mandatory-option",
-    "message": "Option(-n\\t<!>) is required",
-  },
-  "tag": null,
-}
-`;
-
-exports[`functional:lib/Command > #checkForUnknownOptions > should error on unknown option (0) 1`] = `
-{
-  "icon": "😵",
-  "message": {
-    "additional": [],
-    "cause": {
-      "flag": "-c",
+    "opts": {
+      "define": undefined,
+      "extensionOrder": "tsx,.ts,.jsx,.js,.json",
+      "loader": undefined,
+      "mainFields": undefined,
+      "preserveSymlinks": undefined,
+      "tsconfigOverride": undefined,
     },
-    "code": 1,
-    "id": "kronk/unknown-option",
-    "message": "Unknown option '-c'",
-  },
-  "tag": "mlly",
-}
-`;
-
-exports[`functional:lib/Command > #checkForUnknownOptions > should error on unknown option (1) 1`] = `
-{
-  "icon": "😵",
-  "message": {
-    "additional": [],
-    "cause": {
-      "flag": "--verbose",
+    "optsWithGlobals": {
+      "version": undefined,
+      "bun": undefined,
+      "conditions": undefined,
+      "config": undefined,
+      "cwd": undefined,
+      "dnsResultOrder": "verbatim",
+      "elideLines": 10,
+      "envFile": undefined,
+      "filter": undefined,
+      "hot": true,
+      "noClearScreen": undefined,
+      "preferLatest": undefined,
+      "preload": undefined,
+      "shell": undefined,
+      "watch": undefined,
+      "define": undefined,
+      "extensionOrder": "tsx,.ts,.jsx,.js,.json",
+      "loader": undefined,
+      "mainFields": undefined,
+      "preserveSymlinks": undefined,
+      "tsconfigOverride": undefined,
     },
-    "code": 1,
-    "id": "kronk/unknown-option",
-    "message": "Unknown option '--verbose'",
   },
-  "tag": "resolve",
 }
 `;
 
-exports[`functional:lib/Command > #prepareCommand > should error on extra option-argument (0) 1`] = `
+exports[`functional:lib/Command > errors > should error on excess command or option arguments (2) 1`] = `
 {
-  "icon": "😵",
-  "message": {
-    "additional": [],
-    "cause": {
-      "argument": "1",
+  "code": 1,
+  "id": "kronk/excess-arguments",
+  "message": "Expected \`1\` argument, but got \`2\`",
+  "additional": [],
+  "command": {
+    "command": "clamp",
+    "ancestors": [],
+    "args": [],
+    "argv": [
+      "0",
+      "1",
+    ],
+    "optionValueSources": {
+      "debug": "default",
+      "max": "default",
+      "min": "default",
     },
-    "code": 1,
-    "id": "kronk/invalid-argument",
-    "message": "Option(-d | --debug) does not allow an argument",
-  },
-  "tag": "mlly",
-}
-`;
-
-exports[`functional:lib/Command > #prepareCommand > should error on extra option-argument (0) 2`] = `
-{
-  "icon": "😵",
-  "message": {
-    "additional": [],
-    "cause": {
-      "argument": "1",
+    "opts": {
+      "debug": undefined,
+      "max": 9007199254740991,
+      "min": 0,
     },
-    "code": 1,
-    "id": "kronk/invalid-argument",
-    "message": "Option(-d | --debug) does not allow an argument",
-  },
-  "tag": "mlly",
-}
-`;
-
-exports[`functional:lib/Command > #prepareCommand > should error on extra option-argument (1) 1`] = `
-{
-  "icon": "😵",
-  "message": {
-    "additional": [],
-    "cause": {
-      "argument": "2",
+    "optsWithGlobals": {
+      "debug": undefined,
+      "max": 9007199254740991,
+      "min": 0,
     },
-    "code": 1,
-    "id": "kronk/invalid-argument",
-    "message": "Option(-d | --debug) does not allow an argument",
   },
-  "tag": "mlly",
 }
 `;
 
-exports[`functional:lib/Command > #prepareCommand > should error on extra option-argument (1) 2`] = `
+exports[`functional:lib/Command > errors > should error on excess command or option arguments (3) 1`] = `
 {
-  "icon": "😵",
-  "message": {
-    "additional": [],
-    "cause": {
-      "argument": "2",
+  "code": 1,
+  "id": "kronk/excess-arguments",
+  "message": "Expected \`1\` argument, but got \`2\`",
+  "additional": [],
+  "command": {
+    "command": "clamp",
+    "ancestors": [],
+    "args": [],
+    "argv": [
+      "-1",
+      "1",
+    ],
+    "optionValueSources": {
+      "debug": "default",
+      "max": "default",
+      "min": "default",
     },
-    "code": 1,
-    "id": "kronk/invalid-argument",
-    "message": "Option(-d | --debug) does not allow an argument",
-  },
-  "tag": "mlly",
-}
-`;
-
-exports[`functional:lib/Command > #prepareCommand > should error on extra option-argument (attached) (0) 1`] = `
-{
-  "icon": "😵",
-  "message": {
-    "additional": [],
-    "cause": {
-      "argument": "1",
+    "opts": {
+      "debug": undefined,
+      "max": 9007199254740991,
+      "min": 0,
     },
-    "code": 1,
-    "id": "kronk/invalid-argument",
-    "message": "Option(-g | --gmt) does not allow an argument",
-  },
-  "tag": null,
-}
-`;
-
-exports[`functional:lib/Command > #prepareCommand > should error on extra option-argument (attached) (1) 1`] = `
-{
-  "icon": "😵",
-  "message": {
-    "additional": [],
-    "cause": {
-      "argument": "",
+    "optsWithGlobals": {
+      "debug": undefined,
+      "max": 9007199254740991,
+      "min": 0,
     },
-    "code": 1,
-    "id": "kronk/invalid-argument",
-    "message": "Option(-u | --utc) does not allow an argument",
   },
-  "tag": null,
 }
 `;
 
-exports[`functional:lib/Command > #prepareCommand > should error on extra option-argument (attached) (2) 1`] = `
+exports[`functional:lib/Command > errors > should error on excess command or option arguments (4) 1`] = `
 {
-  "icon": "😵",
-  "message": {
-    "additional": [],
-    "cause": {
-      "argument": "",
+  "code": 1,
+  "id": "kronk/excess-arguments",
+  "message": "Option(-w | --write) does not allow an argument",
+  "additional": [],
+  "cause": {
+    "argument": "1",
+  },
+  "command": {
+    "command": "grease",
+    "ancestors": [],
+    "args": [],
+    "argv": [],
+    "optionValueSources": {
+      "version": "default",
+      "color": "default",
+      "config": "default",
+      "cwd": "default",
+      "json": "default",
+      "level": "default",
+      "tagPrefix": "default",
+      "unstable": "default",
+      "write": "default",
     },
-    "code": 1,
-    "id": "kronk/invalid-argument",
-    "message": "Option(-d | --debug) does not allow an argument",
-  },
-  "tag": "mlly",
-}
-`;
-
-exports[`functional:lib/Command > #prepareCommand > should error on extra option-argument (attached) (3) 1`] = `
-{
-  "icon": "😵",
-  "message": {
-    "additional": [],
-    "cause": {
-      "argument": "1",
+    "opts": {
+      "version": undefined,
+      "color": undefined,
+      "config": true,
+      "cwd": undefined,
+      "json": undefined,
+      "level": "info",
+      "tagPrefix": "",
+      "unstable": undefined,
+      "write": false,
     },
-    "code": 1,
-    "id": "kronk/invalid-argument",
-    "message": "Option(-d | --debug) does not allow an argument",
+    "optsWithGlobals": {
+      "version": undefined,
+      "color": undefined,
+      "config": true,
+      "cwd": undefined,
+      "json": undefined,
+      "level": "info",
+      "tagPrefix": "",
+      "unstable": undefined,
+      "write": false,
+    },
   },
-  "tag": "mlly",
 }
 `;
 
-exports[`functional:lib/Command > #prepareCommand > should error on missing option-argument (0) 1`] = `
+exports[`functional:lib/Command > errors > should error on excess command or option arguments (5) 1`] = `
 {
-  "icon": "😵",
-  "message": {
-    "additional": [],
-    "code": 1,
-    "id": "kronk/invalid-argument",
-    "message": "Option(-m --mask <>) requires an argument",
+  "code": 1,
+  "id": "kronk/excess-arguments",
+  "message": "Expected \`0\` arguments, but got \`4\`",
+  "additional": [],
+  "command": {
+    "command": "pack",
+    "ancestors": [
+      "grease",
+    ],
+    "args": [],
+    "argv": [
+      "CHANGELOG.md",
+      "LICENSE.md",
+      "README.md",
+      "dist",
+    ],
+    "optionValueSources": {
+      "dry": "default",
+      "gzipLevel": "default",
+      "out": "default",
+    },
+    "opts": {
+      "dry": undefined,
+      "gzipLevel": 9,
+      "out": undefined,
+    },
+    "optsWithGlobals": {
+      "version": undefined,
+      "color": undefined,
+      "config": true,
+      "cwd": undefined,
+      "json": undefined,
+      "level": "info",
+      "tagPrefix": "",
+      "unstable": undefined,
+      "write": false,
+      "dry": undefined,
+      "gzipLevel": 9,
+      "out": undefined,
+    },
   },
-  "tag": null,
 }
 `;
 
-exports[`functional:lib/Command > #prepareCommand > should error on missing option-argument (1) 1`] = `
+exports[`functional:lib/Command > errors > should error on excess command or option arguments (6) 1`] = `
 {
-  "icon": "😵",
-  "message": {
-    "additional": [],
-    "code": 1,
-    "id": "kronk/invalid-argument",
-    "message": "Option(-c | --conditions <...>) requires an argument",
+  "code": 1,
+  "id": "kronk/excess-arguments",
+  "message": "Expected \`0\` arguments, but got \`1\`",
+  "additional": [],
+  "command": {
+    "command": "list",
+    "ancestors": [
+      "tag",
+      "grease",
+    ],
+    "args": [],
+    "argv": [
+      "fab255b",
+    ],
+    "optionValueSources": {},
+    "opts": {},
+    "optsWithGlobals": {
+      "version": undefined,
+      "color": undefined,
+      "config": true,
+      "cwd": undefined,
+      "json": undefined,
+      "level": "info",
+      "tagPrefix": "",
+      "unstable": undefined,
+      "write": false,
+      "sort": "-creatordate",
+    },
   },
-  "tag": "resolve",
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on excess command or option arguments (7) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/excess-arguments",
+  "message": "Expected \`3\` arguments, but got \`4\`",
+  "additional": [],
+  "command": {
+    "command": "tribonacci",
+    "ancestors": [],
+    "args": [],
+    "argv": [
+      "0",
+      "1",
+      "2",
+      "3",
+    ],
+    "optionValueSources": {
+      "n": "cli",
+    },
+    "opts": {
+      "n": "3",
+    },
+    "optsWithGlobals": {
+      "n": "3",
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on invalid command or option argument choice (0) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/invalid-argument",
+  "message": "Option(--shell <sh>) does not allow 'node'",
+  "additional": [
+    "Choices: 'bun' and 'system'",
+  ],
+  "cause": {
+    "choice": "node",
+    "choices": [
+      "bun",
+      "system",
+    ],
+  },
+  "command": {
+    "command": "bun",
+    "ancestors": [],
+    "args": [],
+    "argv": [],
+    "optionValueSources": {
+      "version": "default",
+      "bun": "default",
+      "conditions": "default",
+      "config": "default",
+      "cwd": "default",
+      "dnsResultOrder": "default",
+      "elideLines": "default",
+      "envFile": "default",
+      "filter": "default",
+      "hot": "default",
+      "noClearScreen": "default",
+      "preferLatest": "default",
+      "preload": "default",
+      "shell": "default",
+      "watch": "default",
+    },
+    "opts": {
+      "version": undefined,
+      "bun": undefined,
+      "conditions": undefined,
+      "config": undefined,
+      "cwd": undefined,
+      "dnsResultOrder": "verbatim",
+      "elideLines": 10,
+      "envFile": undefined,
+      "filter": undefined,
+      "hot": undefined,
+      "noClearScreen": undefined,
+      "preferLatest": undefined,
+      "preload": undefined,
+      "shell": undefined,
+      "watch": undefined,
+    },
+    "optsWithGlobals": {
+      "version": undefined,
+      "bun": undefined,
+      "conditions": undefined,
+      "config": undefined,
+      "cwd": undefined,
+      "dnsResultOrder": "verbatim",
+      "elideLines": 10,
+      "envFile": undefined,
+      "filter": undefined,
+      "hot": undefined,
+      "noClearScreen": undefined,
+      "preferLatest": undefined,
+      "preload": undefined,
+      "shell": undefined,
+      "watch": undefined,
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on invalid command or option argument choice (1) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/invalid-argument",
+  "message": "Option(-d | --debug [choice]) does not allow 'f'",
+  "additional": [
+    "Choices: '0', '1', 'false', 'n', 'true', and 'y'",
+  ],
+  "cause": {
+    "choice": "f",
+    "choices": [
+      "0",
+      "1",
+      "false",
+      "n",
+      "true",
+      "y",
+    ],
+  },
+  "command": {
+    "command": "clamp",
+    "ancestors": [],
+    "args": [],
+    "argv": [],
+    "optionValueSources": {
+      "debug": "default",
+      "max": "default",
+      "min": "default",
+    },
+    "opts": {
+      "debug": undefined,
+      "max": 9007199254740991,
+      "min": 0,
+    },
+    "optsWithGlobals": {
+      "debug": undefined,
+      "max": 9007199254740991,
+      "min": 0,
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on invalid command or option argument choice (2) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/invalid-argument",
+  "message": "Option(--gzip-level <level>) does not allow '-1'",
+  "additional": [
+    "Choices: '0', '1', '2', '3', '4', '5', '6', '7', '8', and '9'",
+  ],
+  "cause": {
+    "choice": "-1",
+    "choices": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+    ],
+  },
+  "command": {
+    "command": "pack",
+    "ancestors": [
+      "grease",
+    ],
+    "args": [],
+    "argv": [],
+    "optionValueSources": {
+      "dry": "default",
+      "gzipLevel": "default",
+      "out": "default",
+    },
+    "opts": {
+      "dry": undefined,
+      "gzipLevel": 9,
+      "out": undefined,
+    },
+    "optsWithGlobals": {
+      "version": undefined,
+      "color": undefined,
+      "config": true,
+      "cwd": undefined,
+      "json": undefined,
+      "level": "info",
+      "tagPrefix": "",
+      "unstable": undefined,
+      "write": false,
+      "dry": undefined,
+      "gzipLevel": 9,
+      "out": undefined,
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on invalid command or option argument choice (3) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/invalid-argument",
+  "message": "Option(-n\\t<!>) does not allow '13'",
+  "additional": [
+    "Choices: '1', '2', '3', '4', '5', '6', '7', '8', and '9'",
+  ],
+  "cause": {
+    "choice": "13",
+    "choices": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+    ],
+  },
+  "command": {
+    "command": "tribonacci",
+    "ancestors": [],
+    "args": [],
+    "argv": [],
+    "optionValueSources": {
+      "n": "default",
+    },
+    "opts": {
+      "n": undefined,
+    },
+    "optsWithGlobals": {
+      "n": undefined,
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on invalid command or option argument choice (4) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/invalid-argument",
+  "message": "Argument(<a>) does not allow 'a'",
+  "additional": [
+    "Choices: '0', '1', '2', '3', '4', '5', '6', '7', '8', and '9'",
+  ],
+  "cause": {
+    "choice": "a",
+    "choices": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+    ],
+  },
+  "command": {
+    "command": "tribonacci",
+    "ancestors": [],
+    "args": [],
+    "argv": [
+      "a",
+      "0",
+      "1",
+    ],
+    "optionValueSources": {
+      "n": "cli",
+    },
+    "opts": {
+      "n": "1",
+    },
+    "optsWithGlobals": {
+      "n": "1",
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on missing command or option argument (0) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/missing-argument",
+  "message": "Missing required argument '<>'",
+  "additional": [],
+  "command": {
+    "command": "run",
+    "ancestors": [
+      "bun",
+    ],
+    "args": [],
+    "argv": [],
+    "optionValueSources": {
+      "define": "default",
+      "extensionOrder": "default",
+      "loader": "default",
+      "mainFields": "default",
+      "preserveSymlinks": "default",
+      "tsconfigOverride": "default",
+    },
+    "opts": {
+      "define": undefined,
+      "extensionOrder": "tsx,.ts,.jsx,.js,.json",
+      "loader": undefined,
+      "mainFields": undefined,
+      "preserveSymlinks": undefined,
+      "tsconfigOverride": undefined,
+    },
+    "optsWithGlobals": {
+      "version": undefined,
+      "bun": undefined,
+      "conditions": undefined,
+      "config": undefined,
+      "cwd": undefined,
+      "dnsResultOrder": "verbatim",
+      "elideLines": 10,
+      "envFile": undefined,
+      "filter": undefined,
+      "hot": undefined,
+      "noClearScreen": undefined,
+      "preferLatest": undefined,
+      "preload": undefined,
+      "shell": undefined,
+      "watch": undefined,
+      "define": undefined,
+      "extensionOrder": "tsx,.ts,.jsx,.js,.json",
+      "loader": undefined,
+      "mainFields": undefined,
+      "preserveSymlinks": undefined,
+      "tsconfigOverride": undefined,
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on missing command or option argument (1) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/missing-argument",
+  "message": "Option(--elide-lines <num>) requires an argument",
+  "additional": [],
+  "command": {
+    "command": "bun",
+    "ancestors": [],
+    "args": [],
+    "argv": [],
+    "optionValueSources": {
+      "version": "default",
+      "bun": "default",
+      "conditions": "default",
+      "config": "default",
+      "cwd": "default",
+      "dnsResultOrder": "default",
+      "elideLines": "default",
+      "envFile": "default",
+      "filter": "default",
+      "hot": "default",
+      "noClearScreen": "default",
+      "preferLatest": "default",
+      "preload": "default",
+      "shell": "default",
+      "watch": "default",
+    },
+    "opts": {
+      "version": undefined,
+      "bun": undefined,
+      "conditions": undefined,
+      "config": undefined,
+      "cwd": undefined,
+      "dnsResultOrder": "verbatim",
+      "elideLines": 10,
+      "envFile": undefined,
+      "filter": undefined,
+      "hot": undefined,
+      "noClearScreen": undefined,
+      "preferLatest": undefined,
+      "preload": undefined,
+      "shell": undefined,
+      "watch": undefined,
+    },
+    "optsWithGlobals": {
+      "version": undefined,
+      "bun": undefined,
+      "conditions": undefined,
+      "config": undefined,
+      "cwd": undefined,
+      "dnsResultOrder": "verbatim",
+      "elideLines": 10,
+      "envFile": undefined,
+      "filter": undefined,
+      "hot": undefined,
+      "noClearScreen": undefined,
+      "preferLatest": undefined,
+      "preload": undefined,
+      "shell": undefined,
+      "watch": undefined,
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on missing command or option argument (2) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/missing-argument",
+  "message": "Missing required argument '<n>'",
+  "additional": [],
+  "command": {
+    "command": "clamp",
+    "ancestors": [],
+    "args": [],
+    "argv": [],
+    "optionValueSources": {
+      "debug": "default",
+      "max": "default",
+      "min": "default",
+    },
+    "opts": {
+      "debug": undefined,
+      "max": 9007199254740991,
+      "min": 0,
+    },
+    "optsWithGlobals": {
+      "debug": undefined,
+      "max": 9007199254740991,
+      "min": 0,
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on missing command or option argument (3) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/missing-argument",
+  "message": "Option(-M | --max <n>) requires an argument",
+  "additional": [],
+  "command": {
+    "command": "clamp",
+    "ancestors": [],
+    "args": [],
+    "argv": [],
+    "optionValueSources": {
+      "debug": "default",
+      "max": "default",
+      "min": "default",
+    },
+    "opts": {
+      "debug": undefined,
+      "max": 9007199254740991,
+      "min": 0,
+    },
+    "optsWithGlobals": {
+      "debug": undefined,
+      "max": 9007199254740991,
+      "min": 0,
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on missing command or option argument (4) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/missing-argument",
+  "message": "Missing required argument '<tag>'",
+  "additional": [],
+  "command": {
+    "command": "create",
+    "ancestors": [
+      "tag",
+      "grease",
+    ],
+    "args": [],
+    "argv": [],
+    "optionValueSources": {
+      "force": "default",
+      "message": "default",
+      "object": "default",
+      "push": "default",
+      "remote": "default",
+      "sign": "default",
+      "verify": "default",
+    },
+    "opts": {
+      "force": undefined,
+      "message": "",
+      "object": "HEAD",
+      "push": undefined,
+      "remote": "origin",
+      "sign": false,
+      "verify": undefined,
+    },
+    "optsWithGlobals": {
+      "version": undefined,
+      "color": undefined,
+      "config": true,
+      "cwd": undefined,
+      "json": undefined,
+      "level": "info",
+      "tagPrefix": "",
+      "unstable": undefined,
+      "write": false,
+      "sort": "-creatordate",
+      "force": undefined,
+      "message": "",
+      "object": "HEAD",
+      "push": undefined,
+      "remote": "origin",
+      "sign": false,
+      "verify": undefined,
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on missing command or option argument (5) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/missing-argument",
+  "message": "Option(-s, --separator <char>) requires an argument",
+  "additional": [],
+  "command": {
+    "command": "string-util",
+    "ancestors": [],
+    "args": [],
+    "argv": [],
+    "optionValueSources": {
+      "separator": "default",
+    },
+    "opts": {
+      "separator": ",",
+    },
+    "optsWithGlobals": {
+      "separator": ",",
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on missing command or option argument (6) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/missing-argument",
+  "message": "Missing required argument '<c>'",
+  "additional": [],
+  "command": {
+    "command": "tribonacci",
+    "ancestors": [],
+    "args": [],
+    "argv": [
+      "3",
+      "9",
+    ],
+    "optionValueSources": {
+      "n": "cli",
+    },
+    "opts": {
+      "n": "3",
+    },
+    "optsWithGlobals": {
+      "n": "3",
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on missing mandatory option (0) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/missing-mandatory-option",
+  "message": "Option(-p | --parent <!>) is required",
+  "additional": [],
+  "command": {
+    "command": "resolve",
+    "ancestors": [
+      "mlly",
+    ],
+    "args": [],
+    "argv": [
+      "#lib/command",
+    ],
+    "optionValueSources": {
+      "version": "default",
+      "conditions": "default",
+      "preserveSymlinks": "default",
+    },
+    "opts": {
+      "version": undefined,
+      "conditions": Set {
+        "node",
+        "import",
+      },
+      "preserveSymlinks": false,
+    },
+    "optsWithGlobals": {
+      "version": undefined,
+      "debug": false,
+      "parent": undefined,
+      "conditions": Set {
+        "node",
+        "import",
+      },
+      "preserveSymlinks": false,
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on unknown option (0) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/unknown-option",
+  "message": "Unknown option '--debug'",
+  "additional": [],
+  "cause": {
+    "flag": "--debug",
+  },
+  "command": {
+    "command": "average",
+    "ancestors": [],
+    "args": [],
+    "argv": [
+      "--debug",
+      "--debug",
+      "--",
+      "13",
+      "26",
+    ],
+    "optionValueSources": {},
+    "opts": {},
+    "optsWithGlobals": {},
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on unknown option (1) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/unknown-option",
+  "message": "Unknown option '--import'",
+  "additional": [],
+  "cause": {
+    "flag": "--import",
+  },
+  "command": {
+    "command": "run",
+    "ancestors": [
+      "bun",
+    ],
+    "args": [],
+    "argv": [
+      "run.mts",
+      "--import",
+      "./loader.mjs",
+    ],
+    "optionValueSources": {
+      "define": "default",
+      "extensionOrder": "default",
+      "loader": "default",
+      "mainFields": "default",
+      "preserveSymlinks": "default",
+      "tsconfigOverride": "default",
+    },
+    "opts": {
+      "define": undefined,
+      "extensionOrder": "tsx,.ts,.jsx,.js,.json",
+      "loader": undefined,
+      "mainFields": undefined,
+      "preserveSymlinks": undefined,
+      "tsconfigOverride": undefined,
+    },
+    "optsWithGlobals": {
+      "version": undefined,
+      "bun": undefined,
+      "conditions": undefined,
+      "config": undefined,
+      "cwd": undefined,
+      "dnsResultOrder": "verbatim",
+      "elideLines": 10,
+      "envFile": undefined,
+      "filter": undefined,
+      "hot": undefined,
+      "noClearScreen": undefined,
+      "preferLatest": undefined,
+      "preload": undefined,
+      "shell": undefined,
+      "watch": undefined,
+      "define": undefined,
+      "extensionOrder": "tsx,.ts,.jsx,.js,.json",
+      "loader": undefined,
+      "mainFields": undefined,
+      "preserveSymlinks": undefined,
+      "tsconfigOverride": undefined,
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on unknown option (2) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/unknown-option",
+  "message": "Unknown option '--list'",
+  "additional": [],
+  "cause": {
+    "flag": "--list",
+  },
+  "command": {
+    "command": "tag",
+    "ancestors": [
+      "grease",
+    ],
+    "args": [],
+    "argv": [
+      "--list",
+    ],
+    "optionValueSources": {
+      "sort": "default",
+    },
+    "opts": {
+      "sort": "-creatordate",
+    },
+    "optsWithGlobals": {
+      "version": undefined,
+      "color": undefined,
+      "config": true,
+      "cwd": undefined,
+      "json": undefined,
+      "level": "info",
+      "tagPrefix": "",
+      "unstable": undefined,
+      "write": false,
+      "sort": "-creatordate",
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on unknown option (3) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/unknown-option",
+  "message": "Unknown option '-m'",
+  "additional": [],
+  "cause": {
+    "flag": "-m",
+  },
+  "command": {
+    "command": "resolve",
+    "ancestors": [
+      "mlly",
+    ],
+    "args": [],
+    "argv": [
+      "a.mts",
+      "-m",
+      "main",
+    ],
+    "optionValueSources": {
+      "version": "default",
+      "conditions": "default",
+      "preserveSymlinks": "default",
+    },
+    "opts": {
+      "version": undefined,
+      "conditions": Set {
+        "node",
+        "import",
+      },
+      "preserveSymlinks": false,
+    },
+    "optsWithGlobals": {
+      "version": undefined,
+      "debug": false,
+      "parent": "file://\${process.cwd()}",
+      "conditions": Set {
+        "node",
+        "import",
+      },
+      "preserveSymlinks": false,
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (0) 1`] = `
+{
+  "command": "average",
+  "ancestors": [],
+  "args": [],
+  "argv": [],
+  "optionValueSources": {},
+  "opts": {},
+  "optsWithGlobals": {},
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (1) 1`] = `
+{
+  "command": "average",
+  "ancestors": [],
+  "args": [],
+  "argv": [],
+  "optionValueSources": {},
+  "opts": {},
+  "optsWithGlobals": {},
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (2) 1`] = `
+{
+  "command": "average",
+  "ancestors": [],
+  "args": [
+    "3",
+    "4",
+    "5",
+  ],
+  "argv": [
+    "3",
+    "4",
+    "5",
+  ],
+  "optionValueSources": {},
+  "opts": {},
+  "optsWithGlobals": {},
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (3) 1`] = `
+{
+  "command": "average",
+  "ancestors": [],
+  "args": [
+    "3",
+    "6",
+    "9",
+  ],
+  "argv": [
+    "3",
+    "6",
+    "9",
+  ],
+  "optionValueSources": {},
+  "opts": {},
+  "optsWithGlobals": {},
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (4) 1`] = `
+{
+  "command": "init",
+  "ancestors": [
+    "bun",
+  ],
+  "args": [
+    "packages/types",
+  ],
+  "argv": [
+    "packages/types",
+  ],
+  "optionValueSources": {
+    "minimal": "cli",
+    "yes": "cli",
+  },
+  "opts": {
+    "minimal": true,
+    "yes": true,
+  },
+  "optsWithGlobals": {
+    "version": undefined,
+    "bun": undefined,
+    "conditions": undefined,
+    "config": undefined,
+    "cwd": "\${process.cwd()}",
+    "dnsResultOrder": "verbatim",
+    "elideLines": 10,
+    "envFile": undefined,
+    "filter": undefined,
+    "hot": undefined,
+    "noClearScreen": undefined,
+    "preferLatest": undefined,
+    "preload": undefined,
+    "shell": undefined,
+    "watch": undefined,
+    "minimal": true,
+    "yes": true,
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (5) 1`] = `
+{
+  "command": "run",
+  "ancestors": [
+    "bun",
+  ],
+  "args": [
+    "src/main.mts",
+  ],
+  "argv": [
+    "src/main.mts",
+  ],
+  "optionValueSources": {
+    "define": "default",
+    "extensionOrder": "default",
+    "loader": "default",
+    "mainFields": "default",
+    "preserveSymlinks": "default",
+    "tsconfigOverride": "cli",
+  },
+  "opts": {
+    "define": undefined,
+    "extensionOrder": "tsx,.ts,.jsx,.js,.json",
+    "loader": undefined,
+    "mainFields": undefined,
+    "preserveSymlinks": undefined,
+    "tsconfigOverride": "tsconfig.prod.json",
+  },
+  "optsWithGlobals": {
+    "version": undefined,
+    "bun": undefined,
+    "conditions": undefined,
+    "config": undefined,
+    "cwd": "\${process.cwd()}",
+    "dnsResultOrder": "verbatim",
+    "elideLines": 10,
+    "envFile": undefined,
+    "filter": undefined,
+    "hot": undefined,
+    "noClearScreen": undefined,
+    "preferLatest": undefined,
+    "preload": undefined,
+    "shell": undefined,
+    "watch": undefined,
+    "define": undefined,
+    "extensionOrder": "tsx,.ts,.jsx,.js,.json",
+    "loader": undefined,
+    "mainFields": undefined,
+    "preserveSymlinks": undefined,
+    "tsconfigOverride": "tsconfig.prod.json",
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (6) 1`] = `
+{
+  "command": "clamp",
+  "ancestors": [],
+  "args": [
+    -13,
+  ],
+  "argv": [
+    "-13",
+  ],
+  "optionValueSources": {
+    "debug": "default",
+    "max": "cli",
+    "min": "cli",
+  },
+  "opts": {
+    "debug": undefined,
+    "max": 3,
+    "min": -1,
+  },
+  "optsWithGlobals": {
+    "debug": undefined,
+    "max": 3,
+    "min": -1,
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (7) 1`] = `
+{
+  "command": "clamp",
+  "ancestors": [],
+  "args": [
+    9,
+  ],
+  "argv": [
+    "9",
+  ],
+  "optionValueSources": {
+    "debug": "default",
+    "max": "cli",
+    "min": "default",
+  },
+  "opts": {
+    "debug": undefined,
+    "max": 26,
+    "min": 0,
+  },
+  "optsWithGlobals": {
+    "debug": undefined,
+    "max": 26,
+    "min": 0,
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (8) 1`] = `
+{
+  "command": "clamp",
+  "ancestors": [],
+  "args": [
+    1,
+  ],
+  "argv": [
+    "1",
+  ],
+  "optionValueSources": {
+    "debug": "default",
+    "max": "cli",
+    "min": "cli",
+  },
+  "opts": {
+    "debug": undefined,
+    "max": 26,
+    "min": 13,
+  },
+  "optsWithGlobals": {
+    "debug": undefined,
+    "max": 26,
+    "min": 13,
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (9) 1`] = `
+{
+  "command": "clamp",
+  "ancestors": [],
+  "args": [
+    3,
+  ],
+  "argv": [
+    "3",
+  ],
+  "optionValueSources": {
+    "debug": "default",
+    "max": "cli",
+    "min": "cli",
+  },
+  "opts": {
+    "debug": undefined,
+    "max": 13,
+    "min": 0,
+  },
+  "optsWithGlobals": {
+    "debug": undefined,
+    "max": 13,
+    "min": 0,
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (10) 1`] = `
+{
+  "command": "grease",
+  "ancestors": [],
+  "args": [],
+  "argv": [],
+  "optionValueSources": {
+    "version": "default",
+    "color": "env",
+    "config": "default",
+    "cwd": "env",
+    "json": "default",
+    "level": "default",
+    "tagPrefix": "default",
+    "unstable": "default",
+    "write": "default",
+  },
+  "opts": {
+    "version": undefined,
+    "color": true,
+    "config": true,
+    "cwd": "\${process.cwd()}",
+    "json": undefined,
+    "level": "info",
+    "tagPrefix": "",
+    "unstable": undefined,
+    "write": false,
+  },
+  "optsWithGlobals": {
+    "version": undefined,
+    "color": true,
+    "config": true,
+    "cwd": "\${process.cwd()}",
+    "json": undefined,
+    "level": "info",
+    "tagPrefix": "",
+    "unstable": undefined,
+    "write": false,
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (11) 1`] = `
+{
+  "command": "grease",
+  "ancestors": [],
+  "args": [],
+  "argv": [],
+  "optionValueSources": {
+    "version": "cli",
+    "color": "env",
+    "config": "default",
+    "cwd": "env",
+    "json": "default",
+    "level": "default",
+    "tagPrefix": "default",
+    "unstable": "cli",
+    "write": "default",
+  },
+  "opts": {
+    "version": "3.0.0-alpha.10",
+    "color": true,
+    "config": true,
+    "cwd": "\${process.cwd()}",
+    "json": undefined,
+    "level": "info",
+    "tagPrefix": "",
+    "unstable": true,
+    "write": false,
+  },
+  "optsWithGlobals": {
+    "version": "3.0.0-alpha.10",
+    "color": true,
+    "config": true,
+    "cwd": "\${process.cwd()}",
+    "json": undefined,
+    "level": "info",
+    "tagPrefix": "",
+    "unstable": true,
+    "write": false,
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (12) 1`] = `
+{
+  "command": "recommend",
+  "ancestors": [
+    "bump",
+    "grease",
+  ],
+  "args": [],
+  "argv": [],
+  "optionValueSources": {},
+  "opts": {},
+  "optsWithGlobals": {
+    "version": undefined,
+    "color": true,
+    "config": true,
+    "cwd": "\${process.cwd()}",
+    "json": true,
+    "level": "info",
+    "tagPrefix": "",
+    "unstable": true,
+    "write": false,
+    "preid": "alpha",
+    "prestart": 1,
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (13) 1`] = `
+{
+  "command": "changelog",
+  "ancestors": [
+    "grease",
+  ],
+  "args": [],
+  "argv": [],
+  "optionValueSources": {
+    "infile": "default",
+    "outfile": "default",
+    "releases": "cli",
+    "samefile": "default",
+    "to": "cli",
+  },
+  "opts": {
+    "infile": undefined,
+    "outfile": undefined,
+    "releases": 0,
+    "samefile": false,
+    "to": "$(jq .version package.json -r)",
+  },
+  "optsWithGlobals": {
+    "version": undefined,
+    "color": true,
+    "config": true,
+    "cwd": "\${process.cwd()}",
+    "json": undefined,
+    "level": "info",
+    "tagPrefix": "",
+    "unstable": undefined,
+    "write": true,
+    "infile": undefined,
+    "outfile": undefined,
+    "releases": 0,
+    "samefile": false,
+    "to": "$(jq .version package.json -r)",
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (14) 1`] = `
+{
+  "command": "changelog",
+  "ancestors": [
+    "grease",
+  ],
+  "args": [],
+  "argv": [],
+  "optionValueSources": {
+    "infile": "default",
+    "outfile": "cli",
+    "releases": "default",
+    "samefile": "default",
+    "to": "default",
+  },
+  "opts": {
+    "infile": undefined,
+    "outfile": "$NOTES_FILE",
+    "releases": 1,
+    "samefile": false,
+    "to": "HEAD",
+  },
+  "optsWithGlobals": {
+    "version": undefined,
+    "color": true,
+    "config": true,
+    "cwd": "\${process.cwd()}",
+    "json": undefined,
+    "level": "info",
+    "tagPrefix": "",
+    "unstable": undefined,
+    "write": true,
+    "infile": undefined,
+    "outfile": "$NOTES_FILE",
+    "releases": 1,
+    "samefile": false,
+    "to": "HEAD",
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (15) 1`] = `
+{
+  "command": "pack",
+  "ancestors": [
+    "grease",
+  ],
+  "args": [],
+  "argv": [],
+  "optionValueSources": {
+    "dry": "default",
+    "gzipLevel": "default",
+    "out": "cli",
+  },
+  "opts": {
+    "dry": undefined,
+    "gzipLevel": 9,
+    "out": "%s-%v.tgz",
+  },
+  "optsWithGlobals": {
+    "version": undefined,
+    "color": true,
+    "config": true,
+    "cwd": "\${process.cwd()}",
+    "json": undefined,
+    "level": "info",
+    "tagPrefix": "",
+    "unstable": undefined,
+    "write": false,
+    "dry": undefined,
+    "gzipLevel": 9,
+    "out": "%s-%v.tgz",
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (16) 1`] = `
+{
+  "command": "create",
+  "ancestors": [
+    "tag",
+    "grease",
+  ],
+  "args": [
+    "3.0.0-alpha.10",
+  ],
+  "argv": [
+    "3.0.0-alpha.10",
+  ],
+  "optionValueSources": {
+    "force": "default",
+    "message": "cli",
+    "object": "default",
+    "push": "cli",
+    "remote": "default",
+    "sign": "cli",
+    "verify": "default",
+  },
+  "opts": {
+    "force": undefined,
+    "message": "release: {tag}",
+    "object": "HEAD",
+    "push": true,
+    "remote": "origin",
+    "sign": "true",
+    "verify": undefined,
+  },
+  "optsWithGlobals": {
+    "version": undefined,
+    "color": true,
+    "config": true,
+    "cwd": "\${process.cwd()}",
+    "json": undefined,
+    "level": "info",
+    "tagPrefix": "",
+    "unstable": undefined,
+    "write": false,
+    "sort": "-creatordate",
+    "force": undefined,
+    "message": "release: {tag}",
+    "object": "HEAD",
+    "push": true,
+    "remote": "origin",
+    "sign": "true",
+    "verify": undefined,
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (17) 1`] = `
+{
+  "command": "mlly",
+  "ancestors": [],
+  "args": [],
+  "argv": [],
+  "optionValueSources": {
+    "version": "cli",
+    "debug": "default",
+    "parent": "default",
+  },
+  "opts": {
+    "version": "1.0.0-alpha.20",
+    "debug": false,
+    "parent": undefined,
+  },
+  "optsWithGlobals": {
+    "version": "1.0.0-alpha.20",
+    "debug": false,
+    "parent": undefined,
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (18) 1`] = `
+{
+  "command": "resolve",
+  "ancestors": [
+    "mlly",
+  ],
+  "args": [],
+  "argv": [],
+  "optionValueSources": {
+    "version": "cli",
+    "conditions": "default",
+    "preserveSymlinks": "default",
+  },
+  "opts": {
+    "version": "0.0.1",
+    "conditions": Set {
+      "node",
+      "import",
+    },
+    "preserveSymlinks": false,
+  },
+  "optsWithGlobals": {
+    "version": "0.0.1",
+    "debug": false,
+    "parent": undefined,
+    "conditions": Set {
+      "node",
+      "import",
+    },
+    "preserveSymlinks": false,
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (19) 1`] = `
+{
+  "command": "resolve",
+  "ancestors": [
+    "mlly",
+  ],
+  "args": [
+    "#internal/tokenize",
+  ],
+  "argv": [
+    "#internal/tokenize",
+  ],
+  "optionValueSources": {
+    "version": "default",
+    "conditions": "default",
+    "preserveSymlinks": "default",
+  },
+  "opts": {
+    "version": undefined,
+    "conditions": Set {
+      "node",
+      "import",
+    },
+    "preserveSymlinks": false,
+  },
+  "optsWithGlobals": {
+    "version": undefined,
+    "debug": false,
+    "parent": "file://\${process.cwd()}",
+    "conditions": Set {
+      "node",
+      "import",
+    },
+    "preserveSymlinks": false,
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (20) 1`] = `
+{
+  "command": "resolve",
+  "ancestors": [
+    "mlly",
+  ],
+  "args": [
+    "#lib/command",
+  ],
+  "argv": [
+    "#lib/command",
+  ],
+  "optionValueSources": {
+    "version": "default",
+    "conditions": "cli",
+    "preserveSymlinks": "cli",
+  },
+  "opts": {
+    "version": undefined,
+    "conditions": Set {
+      "kronk",
+      "development",
+      "node",
+    },
+    "preserveSymlinks": true,
+  },
+  "optsWithGlobals": {
+    "version": undefined,
+    "debug": false,
+    "parent": "file://\${process.cwd()}",
+    "conditions": Set {
+      "kronk",
+      "development",
+      "node",
+    },
+    "preserveSymlinks": true,
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (21) 1`] = `
+{
+  "command": "smallest-num",
+  "ancestors": [],
+  "args": [
+    Set {
+      "0",
+      "3",
+      "5",
+    },
+  ],
+  "argv": [
+    "0",
+    "0",
+    "3",
+    "5",
+  ],
+  "optionValueSources": {
+    "version": "default",
+  },
+  "opts": {
+    "version": undefined,
+  },
+  "optsWithGlobals": {
+    "version": undefined,
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (22) 1`] = `
+{
+  "command": "join",
+  "ancestors": [
+    "string-util",
+  ],
+  "args": [
+    "a/z",
+  ],
+  "argv": [
+    "a/z",
+  ],
+  "optionValueSources": {},
+  "opts": {},
+  "optsWithGlobals": {
+    "separator": "/",
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (23) 1`] = `
+{
+  "command": "tribonacci",
+  "ancestors": [],
+  "args": [
+    3,
+    3,
+    9,
+  ],
+  "argv": [
+    "3",
+    "3",
+    "9",
+  ],
+  "optionValueSources": {
+    "n": "cli",
+  },
+  "opts": {
+    "n": "3",
+  },
+  "optsWithGlobals": {
+    "n": "3",
+  },
 }
 `;

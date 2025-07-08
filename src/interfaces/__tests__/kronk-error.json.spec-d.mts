@@ -4,7 +4,7 @@
  */
 
 import type TestSubject from '#interfaces/kronk-error.json'
-import type { KronkErrorCause } from '@flex-development/kronk'
+import type { KronkErrorCause, KronkErrorId } from '@flex-development/kronk'
 import type { Nilable } from '@flex-development/tutils'
 
 describe('unit-d:interfaces/KronkErrorJson', () => {
@@ -24,8 +24,10 @@ describe('unit-d:interfaces/KronkErrorJson', () => {
     expectTypeOf<TestSubject>().toHaveProperty('code').toEqualTypeOf<number>()
   })
 
-  it('should match [id: string]', () => {
-    expectTypeOf<TestSubject>().toHaveProperty('id').toEqualTypeOf<string>()
+  it('should match [id: KronkErrorId]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('id')
+      .toEqualTypeOf<KronkErrorId>()
   })
 
   it('should match [message: string]', () => {

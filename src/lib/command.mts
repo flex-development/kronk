@@ -5,13 +5,14 @@
 
 import initialCommand from '#constructs/initial-command'
 import chars from '#enums/chars'
+import keid from '#enums/keid'
 import optionValueSource from '#enums/option-value-source'
 import tt from '#enums/tt'
 import formatList from '#internal/format-list'
 import isList from '#internal/is-list'
 import kCommand from '#internal/k-command'
 import noop from '#internal/noop'
-import orNull from '#internal/or-null'
+import orNIL from '#internal/or-nil'
 import toChunks from '#internal/to-chunks'
 import toList from '#internal/to-list'
 import Argument from '#lib/argument'
@@ -29,17 +30,16 @@ import type {
   ArgumentInfo,
   ArgumentSyntax,
   CommandData,
+  CommandErrorInfo,
   CommandInfo,
   CommandMetadata,
   CommandName,
+  CommandSnapshot,
   CommandUsageData,
   CommandUsageInfo,
   DefaultInfo,
   Exit,
-  ExitCode,
   Flags,
-  KronkErrorCause,
-  KronkErrorInfo,
   KronkEventListener,
   List,
   OptionData,
@@ -51,6 +51,8 @@ import type {
   ParseOptions,
   Process,
   RawOptionValue,
+  SubcommandInfo,
+  SubcommandsInfo,
   UnknownStrategy,
   Version,
   VersionOptionInfo
@@ -58,9 +60,9 @@ import type {
 import { CommandError, KronkError } from '@flex-development/kronk/errors'
 import { KronkEvent, OptionEvent } from '@flex-development/kronk/events'
 import {
-  isArgument,
   isKronkError,
-  isOption
+  isOption,
+  isSubcommandInfo
 } from '@flex-development/kronk/utils'
 import { createLogger, type Logger } from '@flex-development/log'
 import { FancyReporter } from '@flex-development/log/reporters'
@@ -76,7 +78,7 @@ import EventEmitter, { type OnOptions } from 'eventemitter2'
 import plur from 'plur'
 
 /**
- * Data model representing a command.
+ * A command.
  *
  * @class
  */
@@ -114,11 +116,11 @@ class Command {
   /**
    * The default command.
    *
-   * @protected
+   * @public
    * @instance
    * @member {Command | null | undefined} defaultCommand
    */
-  protected defaultCommand: Command | null | undefined
+  public defaultCommand: Command | null | undefined
 
   /**
    * Command event emitter.
@@ -204,8 +206,7 @@ class Command {
    * @see {@linkcode CommandInfo}
    *
    * @param {CommandInfo | string | null | undefined} [info]
-   *  Command info, command name,
-   *  or a syntax string containing command name and arguments
+   *  Command info or name
    */
   constructor(info?: CommandInfo | string | null | undefined)
 
@@ -214,13 +215,13 @@ class Command {
    *
    * @see {@linkcode CommandData}
    *
-   * @param {string | null | undefined} [syntax]
-   *  Command name or syntax string containing command name and arguments
+   * @param {string | null | undefined} [name]
+   *  Command name
    * @param {CommandData | null | undefined} [info]
    *  Additional command info
    */
   constructor(
-    syntax: string | null | undefined,
+    name: string | null | undefined,
     info?: CommandData | null | undefined
   )
 
@@ -231,8 +232,7 @@ class Command {
    * @see {@linkcode CommandInfo}
    *
    * @param {CommandInfo | string | null | undefined} [info]
-   *  Command info, command name,
-   *  or a syntax string containing command name and arguments
+   *  Command info or name
    * @param {CommandData | null | undefined} [data]
    *  Additional command info
    */
@@ -241,7 +241,7 @@ class Command {
     data?: CommandData | null | undefined
   ) {
     if (typeof info === 'object' && info !== null) {
-      data = { ...info }
+      data = { ...data, ...info }
     } else {
       info = { ...data = { ...data }, name: info }
     }
@@ -250,7 +250,8 @@ class Command {
       ...info,
       arguments: [],
       options: new Map(),
-      subcommands: [],
+      parent: undefined,
+      subcommands: new Map(),
       version: null
     }
 
@@ -261,8 +262,11 @@ class Command {
     this.events = new EventEmitter({ delimiter: chars.colon })
     this.optionValueSources = {}
     this.optionValues = {}
-    this.parent = null
+    this.parent = data.parent ?? null
     this.process = this.info.process ?? process
+
+    delete this.info.parent
+    delete this.info.process
 
     this.logger = createLogger({
       format: { badge: false, columns: 0 },
@@ -272,19 +276,20 @@ class Command {
       stdout: this.process.stdout
     })
 
-    Object.defineProperty(this, kCommand, {
-      configurable: false,
-      enumerable: false,
-      value: true,
-      writable: false
+    Object.defineProperties(this, {
+      [kCommand]: {
+        configurable: false,
+        enumerable: false,
+        value: true,
+        writable: false
+      },
+      logger: {
+        enumerable: false
+      },
+      process: {
+        enumerable: false
+      }
     })
-
-    if (typeof this.info.name === 'string') {
-      const [, name, args] = /([^ ]+) *(.*)/.exec(this.info.name) ?? []
-
-      this.info.name = name
-      if (isNIL(data.arguments) && args) data.arguments = args
-    }
 
     this.action(this.info.action)
     this.aliases(this.info.aliases)
@@ -297,6 +302,8 @@ class Command {
     this.unknowns(this.info.unknown)
     this.usage(this.info.usage)
     this.version(data.version)
+
+    if (this.parent) this.copyInheritedSettings(this.parent)
 
     if (!isNIL(data.arguments)) {
       if (!isList(data.arguments) && typeof data.arguments !== 'string') {
@@ -311,9 +318,12 @@ class Command {
       else this.option(data.options)
     }
 
-    if (!isNIL(data.subcommands)) {
-      if (isList(data.subcommands)) this.commands(data.subcommands)
-      else this.command(data.subcommands)
+    if (data.subcommands) {
+      if (!isSubcommandInfo(data.subcommands)) {
+        this.commands(data.subcommands)
+      } else {
+        this.command(data.subcommands)
+      }
     }
   }
 
@@ -333,6 +343,7 @@ class Command {
    */
   public static isCommand<T extends Command>(value: unknown): value is T {
     return (
+      !Array.isArray(value) &&
       typeof value === 'object' &&
       value !== null &&
       (
@@ -439,12 +450,8 @@ class Command {
   public action(
     action?: Action | null | undefined
   ): Action | this {
-    if (!arguments.length) {
-      ok(this.info.action, 'expected `info.action`')
-      return this.info.action
-    }
-
-    return this.info.action = fallback(action, noop, isNIL), this
+    if (!arguments.length) return fallback(this.info.action, noop, isNIL)
+    return this.info.action = action, this
   }
 
   /**
@@ -474,7 +481,7 @@ class Command {
     if (last?.variadic) {
       throw new KronkError({
         cause: { argument: argument.syntax, last: last.syntax },
-        id: 'kronk/argument-after-variadic',
+        id: keid.argument_after_variadic,
         reason: `Cannot have argument after variadic argument (${last.syntax})`
       })
     }
@@ -499,45 +506,45 @@ class Command {
    * @return {never | this}
    *  `this` command
    * @throws {KronkError}
-   *  If `subcommand` is the not the default subcommand and does not have a name
+   *  If `subcommand` does not have a valid name
    *  or a subcommand with the same name or alias as `subcommand` already exists
    */
   public addCommand(subcommand: Command): never | this {
     /**
-     * Subcommand name.
+     * The name of the subcommand.
      *
-     * @const {CommandName} id
+     * @const {CommandName} sub
      */
-    const id: CommandName = subcommand.id()
+    const sub: CommandName = subcommand.id()
 
-    // ensure subcommands that are not the default subcommand have a name.
-    if (!subcommand.default && !id) {
-      throw new KronkError(
-        'Subcommand must have name if not the default subcommand',
-        'kronk/no-subcommand-id'
-      )
+    // ensure `subcommand` have a valid name.
+    if (!sub) {
+      throw new KronkError({
+        id: keid.invalid_subcommand_name,
+        reason: 'Invalid subcommand name'
+      })
     }
 
     // check subcommand id for conflicts.
-    if (id && this.findCommand(id)) {
-      throw new KronkError(
-        `Subcommand with name or alias '${id}' already exists`,
-        'kronk/duplicate-subcommand'
-      )
+    if (sub && this.findCommand(sub)) {
+      throw new KronkError({
+        id: keid.duplicate_subcommand,
+        reason: `Subcommand with name or alias '${sub}' already exists`
+      })
     }
 
     // check subcommand aliases for conflicts.
     for (const alias of subcommand.aliases()) {
       if (this.findCommand(alias)) {
-        throw new KronkError(
-          `Subcommand with name or alias '${alias}' already exists`,
-          'kronk/duplicate-subcommand'
-        )
+        throw new KronkError({
+          id: keid.duplicate_subcommand,
+          reason: `Subcommand with name or alias '${alias}' already exists`
+        })
       }
     }
 
     // add new subcommand.
-    this.info.subcommands.push(subcommand)
+    this.info.subcommands.set(sub, subcommand)
 
     // set parent command.
     // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -568,10 +575,10 @@ class Command {
     // check for conflicting flags.
     for (const flag of [option.long, option.short]) {
       if (this.findOption(flag)) {
-        throw new KronkError(
-          `Option with flag '${flag}' already exists`,
-          'kronk/duplicate-option'
-        )
+        throw new KronkError({
+          id: keid.duplicate_option,
+          reason: `Option with flag '${flag}' already exists`
+        })
       }
     }
 
@@ -638,17 +645,10 @@ class Command {
    *  Command alias or `this` command
    */
   public alias(alias?: List<string> | string): CommandName | this {
-    if (arguments.length) {
-      ok(alias !== undefined, 'expected `alias`')
-      ok(this.info.aliases instanceof Set, 'expected `info.aliases`')
-
-      if (!isList(alias)) alias = [alias]
-      for (const x of alias) this.info.aliases.add(x)
-
-      return this
-    }
-
-    return fallback([...this.aliases()][0], null)
+    if (!arguments.length) return fallback([...this.aliases()][0], null)
+    ok(this.info.aliases instanceof Set, 'expected `info.aliases`')
+    for (const x of toList(alias)) this.info.aliases.add(x)
+    return this
   }
 
   /**
@@ -693,13 +693,8 @@ class Command {
   public aliases(
     aliases?: List<string> | string | null | undefined
   ): Set<string> | this {
-    if (!arguments.length) {
-      ok(typeof this.info.aliases !== 'string', 'expected `info.aliases`')
-      return new Set(this.info.aliases)
-    }
-
-    if (typeof aliases === 'string') aliases = [aliases]
-    return this.info.aliases = new Set(aliases), this
+    if (!arguments.length) return new Set(toList(this.info.aliases))
+    return this.info.aliases = new Set(toList(aliases)), this
   }
 
   /**
@@ -732,18 +727,17 @@ class Command {
   /**
    * Define an argument for the command.
    *
-   * @see {@linkcode Argument}
    * @see {@linkcode ArgumentInfo}
    *
    * @public
    * @instance
    *
-   * @param {Argument | ArgumentInfo | string} info
-   *  Argument instance, info, or syntax
+   * @param {ArgumentInfo | string} info
+   *  Argument info or syntax
    * @return {this}
    *  `this` command
    */
-  public argument(info: Argument | ArgumentInfo | string): this
+  public argument(info: ArgumentInfo | string): this
 
   /**
    * Define an argument for the command.
@@ -756,7 +750,7 @@ class Command {
    * @param {string} syntax
    *  Argument syntax
    * @param {ArgumentData | null | undefined} [info]
-   *  Argument info
+   *  Additional argument info
    * @return {this}
    *  `this` command
    */
@@ -765,55 +759,42 @@ class Command {
   /**
    * Define an argument for the command.
    *
-   * @see {@linkcode Argument}
    * @see {@linkcode ArgumentData}
    * @see {@linkcode ArgumentInfo}
    *
    * @public
    * @instance
    *
-   * @param {Argument | ArgumentInfo | string} info
-   *  Argument instance, info, or syntax
+   * @param {ArgumentInfo | string} info
+   *  Argument info or syntax
    * @param {ArgumentData | null | undefined} [data]
-   *  Argument data
+   *  Additional argument info
    * @return {this}
    *  `this` command
    */
   public argument(
-    info: Argument | ArgumentInfo | string,
+    info: ArgumentInfo | string,
     data?: ArgumentData | null | undefined
   ): this {
-    /**
-     * The argument to add.
-     *
-     * @var {Argument} argument
-     */
-    let argument: Argument = info as Argument
-
-    // create argument
-    if (!isArgument(info)) argument = this.createArgument(info as never, data)
-
-    // add new argument.
-    return this.addArgument(argument)
+    return this.addArgument(this.createArgument(info as never, data))
   }
 
   /**
    * Define arguments for the command.
    *
-   * @see {@linkcode Argument}
    * @see {@linkcode ArgumentInfo}
    * @see {@linkcode List}
    *
    * @public
    * @instance
    *
-   * @param {List<Argument | ArgumentInfo | string> | string} infos
-   *  List of argument instances, info, and/or syntaxes,
+   * @param {List<ArgumentInfo | string> | string} infos
+   *  List of argument info and/or syntaxes,
    *  or a string containing argument syntaxes
    * @return {this}
    *  `this` command
    */
-  public arguments(infos: List<Argument | ArgumentInfo | string> | string): this
+  public arguments(infos: List<ArgumentInfo | string> | string): this
 
   /**
    * Get a list of command arguments.
@@ -838,14 +819,14 @@ class Command {
    * @public
    * @instance
    *
-   * @param {List<Argument | ArgumentInfo | string> | string} [infos]
-   *  List of argument instances, info, and/or syntaxes,
+   * @param {List<ArgumentInfo | string> | string} [infos]
+   *  List of argument info and/or syntaxes,
    *  or a string containing argument syntaxes
    * @return {Argument[] | this}
    *  List of command arguments or `this` command
    */
   public arguments(
-    infos?: List<Argument | ArgumentInfo | string> | string
+    infos?: List<ArgumentInfo | string> | string
   ): Argument[] | this {
     if (!infos) return [...this.info.arguments]
     if (typeof infos === 'string') infos = toChunks(infos.trim(), kCommand)
@@ -888,9 +869,10 @@ class Command {
 
       for (const value of choice) {
         if (!choices.includes(value)) {
-          this.errorInvalidArgument({
+          this.error({
             additional: [`Choices: ${formatList(choices.map(c => `'${c}'`))}`],
             cause: { choice: value, choices },
+            id: keid.invalid_argument,
             reason: `${String(candidate)} does not allow '${value}'`
           })
         }
@@ -913,10 +895,10 @@ class Command {
     // check for too few arguments.
     for (const [i, argument] of this.info.arguments.entries()) {
       if (argument.required && this.argv[i] === undefined) {
-        this.error(
-          'kronk/missing-required-argument',
-          `Missing required argument '${String(argument.syntax)}'`
-        )
+        this.error({
+          id: keid.missing_argument,
+          reason: `Missing required argument '${String(argument.syntax)}'`
+        })
       }
     }
 
@@ -940,7 +922,7 @@ class Command {
       reason += chars.space
       reason += `but got \`${this.argv.length}\``
 
-      this.error('kronk/excess-arguments', reason)
+      this.error({ id: keid.excess_arguments, reason })
     }
 
     return this
@@ -959,10 +941,10 @@ class Command {
     for (const cmd of [this, ...this.ancestors()]) {
       for (const option of cmd.options()) {
         if (option.mandatory && cmd.optionValue(option.key) === undefined) {
-          this.error(
-            'kronk/missing-mandatory-option',
-            `${String(option)} is required`
-          )
+          this.error({
+            id: keid.missing_mandatory_option,
+            reason: `${String(option)} is required`
+          })
         }
       }
     }
@@ -988,7 +970,7 @@ class Command {
       for (const flag of unknown) {
         this.error({
           cause: { flag },
-          id: 'kronk/unknown-option',
+          id: keid.unknown_option,
           reason: `Unknown option '${flag}'`
         })
       }
@@ -1000,18 +982,17 @@ class Command {
   /**
    * Define a subcommand.
    *
-   * @see {@linkcode CommandInfo}
+   * @see {@linkcode SubcommandInfo}
    *
    * @public
    * @instance
    *
-   * @param {Command | CommandInfo | string | null} info
-   *  Subcommand instance, subcommand info, subcommand name,
-   *  or a syntax string containing subcommand name and arguments
+   * @param {SubcommandInfo | string} info
+   *  Subcommand info or name
    * @return {Command}
-   *  Subcommand instance
+   *  New subcommand instance
    */
-  public command(info: Command | CommandInfo | string | null): Command
+  public command(info: SubcommandInfo | string): Command
 
   /**
    * Define a subcommand.
@@ -1021,15 +1002,15 @@ class Command {
    * @public
    * @instance
    *
-   * @param {string | null} syntax
-   *  Subcommand name or subcommand name and arguments
+   * @param {string} syntax
+   *  Subcommand name
    * @param {CommandData | null | undefined} [info]
    *  Additional subcommand info
    * @return {Command}
-   *  Subcommand instance
+   *  New subcommand instance
    */
   public command(
-    syntax: string | null,
+    syntax: string,
     info?: CommandData | null | undefined
   ): Command
 
@@ -1037,39 +1018,36 @@ class Command {
    * Define a subcommand.
    *
    * @see {@linkcode CommandData}
-   * @see {@linkcode CommandInfo}
+   * @see {@linkcode SubcommandInfo}
    *
    * @public
    * @instance
    *
-   * @param {Command | CommandInfo | string | null} info
-   *  Subcommand instance, subcommand info, subcommand name,
-   *  or a syntax string containing subcommand name and arguments
+   * @param {SubcommandInfo | string} info
+   *  Subcommand info or name
    * @param {CommandData | null | undefined} [data]
    *  Additional subcommand data
    * @return {Command}
    *  Subcommand instance
    */
   public command(
-    info: Command | CommandInfo | string | null,
+    info: SubcommandInfo | string,
     data?: CommandData | null | undefined
   ): Command {
     /**
      * The subcommand to add.
      *
-     * @var {Command} subcommand
+     * @const {Command} subcommand
      */
-    let subcommand: Command = info as Command
-
-    // create subcommand
-    if (!Command.isCommand(info)) {
-      subcommand = this.createCommand(info as never, data)
-    }
+    const subcommand: Command = this.createCommand(info as never, {
+      ...data,
+      parent: this
+    })
 
     // add new subcommand.
     this.addCommand(subcommand)
 
-    // copy inheritied settings.
+    // copy inherited settings.
     subcommand.copyInheritedSettings(this)
 
     return subcommand
@@ -1078,52 +1056,53 @@ class Command {
   /**
    * Batch define subcommands for the command.
    *
-   * @see {@linkcode CommandInfo}
-   * @see {@linkcode List}
+   * @see {@linkcode SubcommandsInfo}
    *
    * @public
    * @instance
    *
-   * @param {List<Command | CommandInfo | string>} infos
-   *  List of subcommand instances, info, names,
-   *  or strings defining subcommand name and arguments
+   * @param {SubcommandsInfo} infos
+   *  Subcommands info
    * @return {this}
    *  `this` command
    */
-  public commands(infos: List<Command | CommandInfo | string>): this
+  public commands(infos: SubcommandsInfo): this
 
   /**
-   * Get a list of subcommands.
+   * Get a subcommand map.
    *
    * @public
    * @instance
    *
-   * @return {Command[]}
-   *  List of subcommands
+   * @return {Map<string, Command>}
+   *  Subcommands map
    */
-  public commands(): Command[]
+  public commands(): Map<string, Command>
 
   /**
    * Get a list of subcommands or define subcommands for the command.
    *
-   * @see {@linkcode CommandInfo}
-   * @see {@linkcode List}
+   * @see {@linkcode SubcommandsInfo}
    *
    * @public
    * @instance
    *
-   * @param {List<Command | CommandInfo | string>} [infos]
-   *  List of subcommand instances, info, names,
-   *  or strings defining subcommand name and arguments
-   * @return {Command[] | this}
-   *  List of subcommands or `this` command
+   * @param {SubcommandsInfo} [infos]
+   *  Subcommands info
+   * @return {Map<string, Command> | this}
+   *  Subcommands map or `this` command
    */
-  public commands(
-    infos?: List<Command | CommandInfo | string>
-  ): Command[] | this {
-    if (!infos) return this.info.subcommands
-    for (const info of infos) void this.command(info)
-    return this
+  public commands(infos?: SubcommandsInfo): Map<string, Command> | this {
+    if (infos) {
+      for (const [name, info] of Object.entries(infos)) {
+        info.name = name
+        this.command(info as SubcommandInfo)
+      }
+
+      return this
+    }
+
+    return this.info.subcommands
   }
 
   /**
@@ -1142,15 +1121,11 @@ class Command {
    *  `this` command
    */
   public copyInheritedSettings(parent: Command): this {
-    ok(this.info.done, 'expected `info.done`')
-    ok(this.info.exit, 'expected `info.exit`')
-
-    this.process = parent.process
     this.logger = parent.logger
+    this.process = parent.process
 
+    this.exiter(this.info.exit ?? parent.info.exit)
     this.unknowns(parent.info.unknown)
-    if (this.info.done === noop) this.done(parent.info.done)
-    if (this.info.exit === noop) this.exiter(parent.info.exit)
 
     return this
   }
@@ -1158,9 +1133,9 @@ class Command {
   /**
    * Create a new unattached argument.
    *
+   * @see {@linkcode Argument}
    * @see {@linkcode ArgumentInfo}
    * @see {@linkcode ArgumentSyntax}
-   * @see {@linkcode Argument}
    *
    * @public
    * @instance
@@ -1177,9 +1152,9 @@ class Command {
   /**
    * Create a new unattached argument.
    *
+   * @see {@linkcode Argument}
    * @see {@linkcode ArgumentData}
    * @see {@linkcode ArgumentSyntax}
-   * @see {@linkcode Argument}
    *
    * @public
    * @instance
@@ -1199,10 +1174,10 @@ class Command {
   /**
    * Create a new unattached argument.
    *
+   * @see {@linkcode Argument}
    * @see {@linkcode ArgumentData}
    * @see {@linkcode ArgumentInfo}
    * @see {@linkcode ArgumentSyntax}
-   * @see {@linkcode Argument}
    *
    * @public
    * @instance
@@ -1225,13 +1200,12 @@ class Command {
    * Create a new unattached command.
    *
    * @see {@linkcode CommandInfo}
-   * @see {@linkcode Command}
    *
    * @public
    * @instance
    *
    * @param {CommandInfo | string | null | undefined} [info]
-   *  Command info or name or string containing command name and arguments
+   *  Command info or name
    * @return {Command}
    *  New command instance
    */
@@ -1241,37 +1215,36 @@ class Command {
    * Create a new unattached command.
    *
    * @see {@linkcode CommandData}
-   * @see {@linkcode Command}
    *
    * @public
    * @instance
    *
-   * @param {string | null | undefined} [syntax]
-   *  Command name or command name and arguments
+   * @param {string | null | undefined} [name]
+   *  Command name
    * @param {CommandData | null | undefined} [info]
-   *  Command info
+   *  Additional command info
    * @return {Command}
    *  New command instance
    */
   public createCommand(
-    syntax: string | null | undefined,
+    name: string | null | undefined,
     info?: CommandData | null | undefined
   ): Command
 
   /**
    * Create a new unattached command.
    *
+   * @see {@linkcode Command}
    * @see {@linkcode CommandData}
    * @see {@linkcode CommandInfo}
-   * @see {@linkcode Command}
    *
    * @public
    * @instance
    *
    * @param {CommandInfo | string | null | undefined} [info]
-   *  Command info or name or string containing command name and arguments
+   *  Command info or name
    * @param {CommandData | null | undefined} [data]
-   *  Command data
+   *  Additional command info
    * @return {Command}
    *  New command instance
    */
@@ -1405,7 +1378,7 @@ class Command {
     description?: URL | string | null | undefined
   ): string | this {
     if (!arguments.length) return String(this.info.description ?? chars.empty)
-    return this.info.description = description, this
+    return this.info.description = orNIL(description), this
   }
 
   /**
@@ -1460,7 +1433,7 @@ class Command {
    */
   public done(done?: Action | null | undefined): Action | this {
     if (!arguments.length) return fallback(this.info.done, noop, isNIL)
-    return this.info.done = fallback(done, noop, isNIL), this
+    return this.info.done = done, this
   }
 
   /**
@@ -1514,163 +1487,90 @@ class Command {
   /**
    * Display an error message and exit.
    *
+   * @see {@linkcode CommandErrorInfo}
    * @see {@linkcode KronkError}
-   * @see {@linkcode KronkErrorInfo}
    *
    * @public
    * @instance
    *
-   * @param {KronkError | KronkErrorInfo} e
+   * @param {CommandErrorInfo | KronkError} info
    *  The error to display or info about the error
    * @return {never}
+   *  Exits by throwing
    */
-  public error(e: KronkError | KronkErrorInfo): never
-
-  /**
-   * Display an error message and exit.
-   *
-   * @see {@linkcode ExitCode}
-   *
-   * @public
-   * @instance
-   *
-   * @param {string} id
-   *  Unique id representing the error
-   * @param {string} reason
-   *  Human-readable description of the error
-   * @param {ExitCode | null | undefined} [code]
-   *  Suggested exit code to use with {@linkcode process.exit}
-   * @return {never}
-   */
-  public error(
-    id: string,
-    reason: string,
-    code?: ExitCode | null | undefined
-  ): never
-
-  /**
-   * Display an error message and exit.
-   *
-   * @see {@linkcode ExitCode}
-   * @see {@linkcode KronkError}
-   * @see {@linkcode KronkErrorInfo}
-   *
-   * @public
-   * @instance
-   *
-   * @param {KronkError | KronkErrorInfo | string} info
-   *  The error to display, info about the error, or unique error id
-   * @param {string} [reason]
-   *  Human-readable description of the error
-   * @param {ExitCode | null | undefined} [code]
-   *  Suggested exit code to use with {@linkcode info.process.exit}
-   * @return {never}
-   *  Never
-   */
-  public error(
-    info: KronkError | KronkErrorInfo | string,
-    reason?: string,
-    code?: ExitCode | number | null | undefined
-  ): never {
+  public error(info: CommandErrorInfo | KronkError): never {
     /**
      * The error to display.
      *
-     * @var {KronkError} e
+     * @var {KronkError} error
      */
-    let e: KronkError = info as KronkError
+    let error: KronkError = info as KronkError
 
-    if (!isKronkError(info)) { // @ts-expect-error [2345] overload usage.
-      e = new CommandError(info, reason, code)
+    if (!isKronkError(info)) {
+      error = new CommandError({ ...info, command: this })
     }
 
-    this.logger.fatal({ icon: '😵', message: e, tag: this.id() })
-    this.exit(e)
-  }
-
-  /**
-   * Display an invalid argument error and exit.
-   *
-   * @see {@linkcode ExitCode}
-   * @see {@linkcode KronkErrorCause}
-   * @see {@linkcode KronkErrorInfo}
-   *
-   * @public
-   * @instance
-   *
-   * @param {KronkErrorInfo} info
-   *  Info about the error
-   * @param {string | string[] | null | undefined} [info.additional]
-   *  Additional lines to be logged with the error
-   * @param {KronkErrorCause | null | undefined} [info.cause]
-   *  Info about the cause of the error
-   * @param {ExitCode | null | undefined} [info.code]
-   *  Suggested exit code to use with {@linkcode process.exit}
-   * @param {string} info.reason
-   *  Why the argument is invalid
-   * @return {never}
-   *  Never
-   */
-  public errorInvalidArgument(info: KronkErrorInfo): never
-
-  /**
-   * Display an invalid argument error and exit.
-   *
-   * @see {@linkcode KronkErrorCause}
-   *
-   * @public
-   * @instance
-   *
-   * @param {string} reason
-   *  Human-readable description of the error
-   * @param {KronkErrorCause | null | undefined} [cause]
-   *  Info about the cause of the error
-   * @return {never}
-   *  Never
-   */
-  public errorInvalidArgument(
-    reason: string,
-    cause?: KronkErrorCause | null | undefined
-  ): never
-
-  /**
-   * Display an invalid argument error and exit.
-   *
-   * @see {@linkcode KronkErrorCause}
-   *
-   * @public
-   * @instance
-   *
-   * @param {KronkErrorInfo | string} info
-   *  Info about the error or why the argument is invalid
-   * @param {KronkErrorCause | null | undefined} [cause]
-   *  Info about the cause of the error
-   * @return {never}
-   *  Never
-   */
-  public errorInvalidArgument(
-    info: KronkErrorInfo | string,
-    cause?: KronkErrorCause | null | undefined
-  ): never {
-    if (typeof info === 'string') info = { cause, reason: info }
-    this.error(new CommandError({ ...info, id: 'kronk/invalid-argument' }))
+    this.exit(error)
   }
 
   /**
    * Exit the process.
    *
+   * > 👉 **Note**: The command process is "exited" by setting the exit code
+   * > ({@linkcode process.exitCode}) and throwing `e`.
+   * > {@linkcode process.exit} is **not** called. To change this behavior,
+   * > override the exit callback using {@linkcode exiter}.
+   *
    * @see {@linkcode CommandError}
+   * @see {@linkcode KronkError}
    *
    * @public
    * @instance
    *
-   * @param {CommandError | null | undefined} [e]
+   * @param {CommandError | KronkError} e
    *  The error to handle
    * @return {never}
    *  Never
    */
-  public exit(e?: CommandError | null | undefined): never {
+  public exit(e: CommandError | KronkError): never
+
+  /**
+   * Exit the process.
+   *
+   * > 👉 **Note**: {@linkcode process.exit} is **not** called. To change this
+   * > behavior, override the exit callback using {@linkcode exiter}.
+   *
+   * @see {@linkcode CommandError}
+   * @see {@linkcode KronkError}
+   *
+   * @public
+   * @instance
+   *
+   * @param {CommandError | KronkError | null | undefined} [e]
+   *  The error to handle
+   * @return {undefined}
+   */
+  public exit(e?: CommandError | KronkError | null | undefined): undefined
+
+  /**
+   * Exit the process.
+   *
+   * @see {@linkcode CommandError}
+   * @see {@linkcode KronkError}
+   *
+   * @public
+   * @instance
+   *
+   * @param {CommandError | KronkError | null | undefined} [e]
+   *  The error to handle
+   * @return {undefined}
+   * @throws {KronkError}
+   */
+  public exit(e?: CommandError | KronkError | null | undefined): undefined {
+    this.process.exitCode = e?.code
     this.exiter().call(this, e)
-    this.process.exit(e?.code, e)
+    if (e) throw e
+    return void e
   }
 
   /**
@@ -1716,17 +1616,16 @@ class Command {
    */
   public exiter(exit?: Exit | null | undefined): Exit | this {
     if (!arguments.length) return fallback(this.info.exit, noop, isNIL)
-    return this.info.exit = fallback(exit, noop, isNIL), this
+    return this.info.exit = exit, this
   }
 
   /**
    * Find a command with a name or alias matching `x`.
    *
-   * @see {@linkcode Command}
    * @see {@linkcode CommandName}
    * @see {@linkcode List}
    *
-   * @protected
+   * @public
    * @instance
    *
    * @param {CommandName | List<CommandName> | undefined} x
@@ -1734,15 +1633,15 @@ class Command {
    * @return {Command | this | undefined}
    *  Command with name or alias matching `x`
    */
-  protected findCommand(
+  public findCommand(
     x: CommandName | List<CommandName> | undefined
   ): Command | this | undefined {
     if (typeof x === 'string' && (this.id() === x || this.aliases().has(x))) {
       return this
     }
 
-    if (x !== undefined && this.info.subcommands.length) {
-      for (const cmd of this.commands()) {
+    if (x !== undefined && this.info.subcommands.size) {
+      for (const [, cmd] of this.commands()) {
         for (const id of toList(x)) {
           switch (true) {
             case id === cmd.id():
@@ -1761,47 +1660,39 @@ class Command {
   /**
    * Find an option with a flag matching `flag`.
    *
+   * By default, only options known to `this` command and the default command
+   * ({@linkcode defaultCommand}) can be searched.\
+   * Pass `-1` to search for only global options, or `0` to only search for
+   * options known to `this` command.
+   *
    * @see {@linkcode Option}
    *
-   * @protected
+   * @public
    * @instance
    *
    * @param {string | null | undefined} flag
    *  The option flag to match
+   * @param {0 | null | undefined} [direction]
+   *  The direction to search for options
    * @return {Option | undefined}
    *  Option with the long or short flag `flag`
    */
-  protected findOption(flag: string | null | undefined): Option | undefined {
-    return flag ? this.info.options.get(flag) : undefined
-  }
-
-  /**
-   * Find a subcommand option with a flag matching `flag`.
-   *
-   * @see {@linkcode Option}
-   *
-   * @protected
-   * @instance
-   *
-   * @param {string | null | undefined} flag
-   *  The option flag to match
-   * @return {Option | undefined}
-   *  Subcommand option with the long or short flag `flag`
-   */
-  protected findSubOption(flag: string | null | undefined): Option | undefined {
+  public findOption(
+    flag: string | null | undefined,
+    direction?: 0 | null | undefined
+  ): Option | undefined {
     /**
-     * Subcommand option with the long or short flag `flag`.
+     * Option with the long or short flag `flag`.
      *
      * @var {Option | undefined} option
      */
-    let option: Option | undefined = undefined
+    let option: Option | undefined
 
     if (flag) {
-      for (const subcommand of this.commands()) {
-        if (subcommand.info.options.has(flag)) {
-          option = subcommand.info.options.get(flag)
-          break
-        }
+      option = this.info.options.get(flag)
+
+      if (!option && this.defaultCommand && direction !== +chars.digit0) {
+        option = this.defaultCommand.info.options.get(flag)
       }
     }
 
@@ -1904,6 +1795,9 @@ class Command {
    *
    * > 👉 **Note**: This event handler is registered each time a prepared option
    * > is added (i.e. `command.addOption(option)`).
+   * > For convenience, when the command version option is parsed, the command
+   * > version (`event.option.version`) is set as the option value even though
+   * > the option is a boolean option.
    *
    * @see {@linkcode Option}
    * @see {@linkcode OptionEvent}
@@ -1919,7 +1813,10 @@ class Command {
    * @return {undefined}
    */
   protected onOption<T extends Option>(event: OptionEvent<T>): undefined {
-    if (typeof event.value === 'boolean') {
+    if (this.info.version === event.option as Option) {
+      ok('version' in event.option, 'expected `event.option.version`')
+      this.optionValue(event.option.key, event.option.version, event.source)
+    } else if (typeof event.value === 'boolean') {
       this.optionValue(event.option.key, event.value, event.source)
     } else if (event.value !== null) {
       /**
@@ -1939,10 +1836,7 @@ class Command {
        */
       const def: DefaultInfo = event.option.default()
 
-      if (event.source !== optionValueSource.env) {
-        this.checkChoices(event.value, event.option)
-      }
-
+      this.checkChoices(event.value, event.option)
       this.optionValue(event.option.key, parser(event.value, def.value))
       this.optionValueSource(event.option.key, event.source)
     }
@@ -1953,8 +1847,9 @@ class Command {
   /**
    * Handle a parsed version option `event`.
    *
-   * > 👉 **Note**: This event listener is registered each time a command
-   * > version is set (i.e. `command.version(version, info)`).
+   * > 👉 **Note**: This event listener is registered each time the command
+   * > version is set (i.e. `command.version(version, info)`) and will override
+   * > the {@linkcode action} callback to print the command version on request.
    *
    * @see {@linkcode OptionEvent}
    * @see {@linkcode VersionOption}
@@ -1967,21 +1862,22 @@ class Command {
    * @return {undefined}
    */
   protected onOptionVersion(event: OptionEvent<VersionOption>): undefined {
-    this.optionValue(
-      event.option.key,
-      event.option.version,
-      optionValueSource.cli
-    )
+    return void this.action(version)
 
-    return void this.logger.log(event.option.version)
+    /**
+     * @this {Command}
+     *
+     * @return {undefined}
+     */
+    function version(this: Command): undefined {
+      return void this.logger.log(event.option.version)
+    }
   }
 
   /**
    * Handle a parsed option `event`.
    *
-   * The {@linkcode actionEvent} will be set and propagated to ancestors of
-   * the current command so the command action callback is not called for `this`
-   * command or its ancestors.
+   * The {@linkcode actionEvent} will be set and propagated to ancestors.
    *
    * @see {@linkcode OptionEvent}
    *
@@ -2001,18 +1897,17 @@ class Command {
    * Define an option for the command.
    *
    * @see {@linkcode Flags}
-   * @see {@linkcode Option}
    * @see {@linkcode OptionInfo}
    *
    * @public
    * @instance
    *
-   * @param {Flags | Option | OptionInfo} info
-   *  Option flags, instance, or info
+   * @param {Flags | OptionInfo} info
+   *  Option flags or info
    * @return {this}
    *  `this` command
    */
-  public option(info: Flags | Option | OptionInfo): this
+  public option(info: Flags | OptionInfo): this
 
   /**
    * Define an option for the command.
@@ -2036,36 +1931,24 @@ class Command {
    * Define an option for the command.
    *
    * @see {@linkcode Flags}
-   * @see {@linkcode Option}
    * @see {@linkcode OptionData}
    * @see {@linkcode OptionInfo}
    *
    * @public
    * @instance
    *
-   * @param {Flags | Option | OptionInfo} info
-   *  Option flags, instance, or info
+   * @param {Flags | OptionInfo} info
+   *  Option flags or info
    * @param {OptionData | null | undefined} [data]
    *  Option data
    * @return {this}
    *  `this` command
    */
   public option(
-    info: Flags | Option | OptionInfo,
+    info: Flags | OptionInfo,
     data?: OptionData | null | undefined
   ): this {
-    /**
-     * The option to add.
-     *
-     * @var {Option} option
-     */
-    let option: Option = info as Option
-
-    // create option.
-    if (!isOption(info)) option = this.createOption(info as never, data)
-
-    // add new option.
-    return this.addOption(option)
+    return this.addOption(this.createOption(info as never, data))
   }
 
   /**
@@ -2206,18 +2089,17 @@ class Command {
    *
    * @see {@linkcode Flags}
    * @see {@linkcode List}
-   * @see {@linkcode Option}
    * @see {@linkcode OptionInfo}
    *
    * @public
    * @instance
    *
-   * @param {List<Flags | Option | OptionInfo>} infos
-   *  List of option flags, instances, or info
+   * @param {List<Flags | OptionInfo>} infos
+   *  List of option flags and/or info
    * @return {this}
    *  `this` command
    */
-  public options(infos: List<Flags | Option | OptionInfo>): this
+  public options(infos: List<Flags | OptionInfo>): this
 
   /**
    * Get a list of command options.
@@ -2243,12 +2125,12 @@ class Command {
    * @public
    * @instance
    *
-   * @param {List<Flags | Option | OptionInfo>} [infos]
-   *  List of option flags, instances, or info
+   * @param {List<Flags | OptionInfo>} [infos]
+   *  List of option flags and/or info
    * @return {Option[] | this}
    *  List of command options or `this` command
    */
-  public options(infos?: List<Flags | Option | OptionInfo>): Option[] | this {
+  public options(infos?: List<Flags | OptionInfo>): Option[] | this {
     if (!infos) return [...new Set(this.info.options.values())]
     for (const info of infos) void this.option(info)
     return this
@@ -2275,9 +2157,9 @@ class Command {
   /**
    * Get a record of global and local option values.
    *
-   * > 👉 **Note**: By default, global options overwrite local options. To
+   * > 👉 **Note**: By default, local options overwrite global options. To
    * > change this behavior, `info.optionPriority`
-   * > ({@linkcode CommandInfo.optionPriority}) should be set to `'local'`.
+   * > ({@linkcode CommandInfo.optionPriority}) should be set to `'global'`.
    *
    * @see {@linkcode OptionValues}
    *
@@ -2359,11 +2241,9 @@ class Command {
     const cmd: Command | this = this.prepareCommand([], unknown)
 
     // run action callback.
-    if (!this.actionEvent) {
-      void cmd.action().call(cmd, cmd.opts(), ...cmd.args as unknown[])
-    }
+    void cmd.action().call(cmd, cmd.opts(), ...cmd.args as unknown[])
 
-    // run command done callback.
+    // run done callback.
     void cmd.done().call(cmd, cmd.optsWithGlobals(), ...cmd.args as unknown[])
 
     return cmd
@@ -2413,11 +2293,9 @@ class Command {
     const cmd: Command | this = this.prepareCommand([], unknown)
 
     // run action callback.
-    if (!this.actionEvent) {
-      await cmd.action().call(cmd, cmd.opts(), ...cmd.args as unknown[])
-    }
+    await cmd.action().call(cmd, cmd.opts(), ...cmd.args as unknown[])
 
-    // run command done callback.
+    // run done callback.
     await cmd.done().call(cmd, cmd.optsWithGlobals(), ...cmd.args as unknown[])
 
     return cmd
@@ -2459,10 +2337,8 @@ class Command {
        * @return {undefined}
        */
       finalizeContext: (context: TokenizeContext): undefined => {
-        context.findCommand = this.findCommand.bind(this)
-        context.findOption = this.findOption.bind(this)
-        context.findSubOption = this.findSubOption.bind(this)
-        return context[kCommand] = true, void context
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        return context[kCommand] = true, context.command = this, void context
       },
       initial: initialCommand,
       moveOnBreak: true
@@ -2504,7 +2380,7 @@ class Command {
         ok(event === ev.enter, 'expected delimiter enter event')
 
         /**
-         * Index of command-line argument chunk the token was created from.
+         * Index of the command-line argument chunk `token` was created from.
          *
          * @var {number} chunkIndex
          */
@@ -2528,10 +2404,21 @@ class Command {
         ok(event === ev.enter, 'expected operand enter event')
         ok(token.value !== undefined, 'expected operand token value')
 
-        // `token.value` is either a subcommand id, command-argument, or a raw
-        // option-argument for an option unknown to `this` command.
+        // `token.value` is either a variadic option-argument, subcommand id,
+        // command-argument, or a raw option-argument for an option unknown to
+        // `this` command.
         if (Array.isArray(token.value)) {
           dest.push(...token.value)
+        } else if (token.command) {
+          // `token.value` is the name of a subcommand.
+          // remaining arguments are classified as unknown.
+
+          dest.push(token.value)
+          dest = result.unknown
+
+          // note: this branch means global options must be specified before
+          // subcommands, but also that subcommand options can have the same
+          // flag as a parent command option.
         } else {
           dest.push(token.value)
         }
@@ -2552,10 +2439,7 @@ class Command {
         ok(events[index + 1]![1].type === tt.flag, 'expected flag exit event')
         ok(typeof token.value === 'string', 'expected string token value')
 
-        if (
-          token.option && // make sure option is not a subcommand option.
-          this.findOption(token.option.long || token.option.short)
-        ) {
+        if (token.option && token.command === this) {
           /**
            * Index of event after flag exit event.
            *
@@ -2588,25 +2472,26 @@ class Command {
               // specified before command-arguments. otherwise, consider the
               // operand an option-argument and error accordingly.
               if (operand.attached || !this.info.arguments.length) {
-                /**
-                 * Reason for error.
-                 *
-                 * @var {string} reason
-                 */
-                let reason: string = String(token.option)
-
-                reason += chars.space + 'does not allow an argument'
-
-                this.errorInvalidArgument(reason, { argument: operand.value })
+                this.error({
+                  cause: { argument: operand.value },
+                  id: keid.excess_arguments,
+                  reason: `${String(token.option)} does not allow an argument`
+                })
               }
             } else { // use option-argument passed by user.
               ok(operand.value !== undefined, 'expected operand token value')
               value = operand.value
-              events.splice(afterIndex, 2)
             }
+
+            // remove operand tokens.
+            // tokens are removed outside of the if statement so the `splice`
+            // call functions as cleanup when `error` does not exit the process.
+            events.splice(afterIndex, 2)
           } else if (token.option.required) { // option-argument not passed.
-            const { option } = token
-            this.errorInvalidArgument(`${String(option)} requires an argument`)
+            this.error({
+              id: keid.missing_argument,
+              reason: `${String(token.option)} requires an argument`
+            })
           } else { // use option-argument preset.
             value = token.option.preset()
           }
@@ -2648,38 +2533,35 @@ class Command {
     // value sourced from the cli, config, or unknown source.
     for (const cmd of [...this.ancestors(), this]) {
       for (const option of cmd.options()) {
-        /**
-         * Name of environment variable to check for {@linkcode option} value.
-         *
-         * @const {string | null} env
-         */
-        const env: string | null = option.env()
+        for (const env of option.env()) {
+          /**
+           * The source of the raw option value.
+           *
+           * @var {OptionValueSource | null | undefined} src
+           */
+          let src: OptionValueSource | null | undefined
 
-        /**
-         * The source of the raw option value.
-         *
-         * @var {OptionValueSource | null | undefined} source
-         */
-        let source: OptionValueSource | null | undefined
+          if (env && env in cmd.process.env) {
+            src = cmd.optionValueSource(option.key)
 
-        if (env && env in cmd.process.env) {
-          source = cmd.optionValueSource(option.key)
+            if (
+              cmd.optionValue(option.key) === undefined ||
+              includes([optionValueSource.default, optionValueSource.env], src)
+            ) {
+              /**
+               * Environment variable value.
+               *
+               * @const {string} value
+               */
+              const value: string = cmd.process.env[env]!
 
-          if (
-            cmd.optionValue(option.key) === undefined ||
-            includes([optionValueSource.default, optionValueSource.env], source)
-          ) {
-            /**
-             * Environment variable value.
-             *
-             * @const {string} value
-             */
-            const value: string = cmd.process.env[env]!
+              // emit option event.
+              // the option event handler will parse the environment variable
+              // value, as well as store the option value and source.
+              this.emitOption(option, value, optionValueSource.env)
+            }
 
-            // emit option event.
-            // the option event handler will parse the environment variable
-            // value, as well as store the option value and source.
-            this.emitOption(option, value, optionValueSource.env)
+            break
           }
         }
       }
@@ -2690,7 +2572,7 @@ class Command {
     this.argv = [...operands, ...unknown]
 
     /**
-     * Subcommand instance.
+     * The command to dispatch.
      *
      * @const {Command | undefined} subcommand
      */
@@ -2799,6 +2681,29 @@ class Command {
     }
 
     return args
+  }
+
+  /**
+   * Get a snapshot of the command.
+   *
+   * @see {@linkcode CommandSnapshot}
+   *
+   * @public
+   * @instance
+   *
+   * @return {CommandSnapshot}
+   *  Command snapshot object
+   */
+  public snapshot(): CommandSnapshot {
+    return {
+      command: this.id(), // eslint-disable-next-line sort-keys
+      ancestors: this.ancestors().map(ancestor => ancestor.id()),
+      args: [...this.args],
+      argv: [...this.argv],
+      optionValueSources: { ...this.optionValueSources },
+      opts: this.opts(),
+      optsWithGlobals: this.optsWithGlobals()
+    }
   }
 
   /**
@@ -2918,9 +2823,9 @@ class Command {
   ): CommandUsageInfo | this {
     if (!arguments.length) {
       return {
-        arguments: orNull(this.info.usage?.arguments),
-        options: orNull(this.info.usage?.options) ?? '[options]',
-        subcommand: orNull(this.info.usage?.subcommand) ?? '[command]'
+        arguments: orNIL(this.info.usage?.arguments),
+        options: orNIL(this.info.usage?.options) ?? '[options]',
+        subcommand: orNIL(this.info.usage?.subcommand) ?? '[command]'
       }
     }
 

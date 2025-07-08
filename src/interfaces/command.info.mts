@@ -16,8 +16,7 @@ interface CommandInfo extends CommandData {
   /**
    * The name of the command.
    *
-   * > 👉 **Note**: The {@linkcode default} command does not need to have a
-   * > name.
+   * > 👉 **Note**: Parent commands do not need to have a name.
    *
    * @see {@linkcode CommandName}
    */

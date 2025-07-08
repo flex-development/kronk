@@ -21,6 +21,7 @@ import Argument from '#lib/argument'
  */
 function isArgument(this: void, value: unknown): value is Argument {
   return (
+    !Array.isArray(value) &&
     typeof value === 'object' &&
     value !== null &&
     (

@@ -12,6 +12,11 @@ import * as vt from '@flex-development/fsm-tokenizer'
  *
  * @enum {string | null}
  */
-const chars = { ...vt.chars, delimiter: vt.chars.hyphen.repeat(2) } as const
+const chars = {
+  ...vt.chars,
+  delimiter: vt.chars.hyphen.repeat(2),
+  false: 'false',
+  true: 'true'
+} as const
 
 export default chars

@@ -12,17 +12,16 @@ import type {
 } from '@flex-development/kronk'
 
 /**
- * Overwritten {@linkcode CommandInfo} properties.
+ * Overwritten properties.
  *
  * @internal
  */
-type Skip = 'arguments' | 'options' | 'version'
+type Skip = 'arguments' | 'options' | 'subcommands'
 
 /**
  * Command metadata.
  *
  * @see {@linkcode CommandInfo}
- * @see {@linkcode Skip}
  *
  * @extends {Omit<CommandInfo,Skip>}
  */
@@ -35,26 +34,35 @@ interface CommandMetadata extends Omit<CommandInfo, Skip> {
   arguments: Argument[]
 
   /**
-   * Map, where key is a long or short flag and each value is the command option
-   * instance registered for that flag.
+   * Map, where each key is a long or short flag and each value is the command
+   * option instance registered for that flag.
    *
    * @see {@linkcode Option}
    */
   options: Map<string, Option>
 
   /**
-   * List of subcommands.
+   * The parent command.
+   *
+   * @override
+   */
+  parent?: null | undefined
+
+  /**
+   * Map, where each key is the name of a subcommand each value is a subcommand.
    *
    * @see {@linkcode Command}
    */
-  subcommands: Command[]
+  subcommands: Map<string, Command>
 
   /**
-   * Version command option.
+   * Command version option.
    *
    * @see {@linkcode VersionOption}
+   *
+   * @override
    */
-  version?: VersionOption | null | undefined
+  version: VersionOption | null | undefined
 }
 
 export type { CommandMetadata as default, Skip }

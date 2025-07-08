@@ -4,6 +4,7 @@
  */
 
 import chars from '#enums/chars'
+import keid from '#enums/keid'
 import KronkError from '#errors/kronk.error'
 import identity from '#internal/identity'
 import TestSubject from '#lib/option'
@@ -11,6 +12,7 @@ import isKronkError from '#utils/is-kronk-error'
 import type {
   DefaultInfo,
   Flags,
+  List,
   OptionInfo,
   ParseArg
 } from '@flex-development/kronk'
@@ -31,7 +33,7 @@ describe('unit:lib/Option', () => {
     expect(error).to.be.instanceof(KronkError).and.satisfy(isKronkError)
     expect(error).to.have.property('cause').eql({ flags: chars.empty })
     expect(error).to.have.property('code', 1)
-    expect(error).to.have.property('id', 'kronk/no-flags')
+    expect(error).to.have.property('id', keid.no_flags)
     expect(error).to.have.property('message').be.a('string')
     expect(error.message).toMatchSnapshot()
   })
@@ -56,7 +58,7 @@ describe('unit:lib/Option', () => {
     expect(error).to.have.nested.property('cause.flags', flags)
     expect(error).to.have.nested.property('cause.part').be.a('string')
     expect(error).to.have.property('code', 1)
-    expect(error).to.have.property('id', 'kronk/invalid-flags')
+    expect(error).to.have.property('id', keid.invalid_flags)
     expect(error).to.have.property('message').be.a('string')
     expect(error.message).toMatchSnapshot()
   })
@@ -91,7 +93,12 @@ describe('unit:lib/Option', () => {
     })
 
     it('should return list of option choices', () => {
-      expect(subject.choices()).to.be.instanceof(Set).and.empty
+      // Act
+      const result = subject.choices()
+
+      // Expect
+      expect(result).to.be.instanceof(Set).and.empty
+      expect(result).to.not.be.frozen
     })
 
     it('should set option choices and return `this`', () => {
@@ -103,7 +110,7 @@ describe('unit:lib/Option', () => {
 
       // Expect
       expect(result).to.eq(subject)
-      expect(result).to.have.nested.property('info.choices').eql(choices)
+      expect(result).to.have.nested.property('info.choices', choices)
     })
   })
 
@@ -145,14 +152,13 @@ describe('unit:lib/Option', () => {
     it('should set option description and return `this`', () => {
       // Arrange
       const description: URL = new URL('https://esbuild.github.io/api/#target')
-      const expected: string = String(description)
 
       // Act
       const result = subject.description(description)
 
       // Expect
       expect(result).to.eq(subject)
-      expect(result).to.have.nested.property('info.description', expected)
+      expect(result).to.have.nested.property('info.description', description)
     })
   })
 
@@ -160,16 +166,21 @@ describe('unit:lib/Option', () => {
     let subject: TestSubject
 
     beforeEach(() => {
-      subject = new TestSubject('--color')
+      subject = new TestSubject('--cwd')
     })
 
-    it('should return environment variable name', () => {
-      expect(subject.env()).to.be.null
+    it('should return environment variable names', () => {
+      // Act
+      const result = subject.env()
+
+      // Expect
+      expect(result).to.be.instanceof(Set).and.empty
+      expect(result).to.not.be.frozen
     })
 
-    it('should set environment variable name and return `this`', () => {
+    it('should set environment variable names and return `this`', () => {
       // Arrange
-      const env: string = 'GREASE_COLOR'
+      const env: List<string> = ['GREASE_CWD', 'PWD']
 
       // Act
       const result = subject.env(env)

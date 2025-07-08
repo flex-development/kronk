@@ -4,6 +4,7 @@
  */
 
 import chars from '#enums/chars'
+import keid from '#enums/keid'
 import KronkError from '#errors/kronk.error'
 import identity from '#internal/identity'
 import TestSubject from '#lib/argument'
@@ -33,7 +34,7 @@ describe('unit:lib/Argument', () => {
     expect(error).to.have.property('cause').with.keys(['syntax'])
     expect(error).to.have.nested.property('cause.syntax', syntax)
     expect(error).to.have.property('code', 1)
-    expect(error).to.have.property('id', 'kronk/invalid-argument-syntax')
+    expect(error).to.have.property('id', keid.invalid_argument_syntax)
     expect(error).to.have.property('message').be.a('string')
     expect(error.message).toMatchSnapshot()
   })
@@ -46,7 +47,12 @@ describe('unit:lib/Argument', () => {
     })
 
     it('should return list of argument choices', () => {
-      expect(subject.choices()).to.be.instanceof(Set).and.empty
+      // Act
+      const result = subject.choices()
+
+      // Expect
+      expect(result).to.be.instanceof(Set).and.empty
+      expect(result).to.not.be.frozen
     })
 
     it('should set list of argument choices and return `this`', () => {
@@ -58,7 +64,7 @@ describe('unit:lib/Argument', () => {
 
       // Expect
       expect(result).to.eq(subject)
-      expect(result).to.have.nested.property('info.choices').eql(choices)
+      expect(result).to.have.nested.property('info.choices', choices)
     })
   })
 
@@ -94,7 +100,7 @@ describe('unit:lib/Argument', () => {
     })
 
     it('should return argument description', () => {
-      expect(subject.description()).to.be.null
+      expect(subject.description()).to.eq(chars.empty)
     })
 
     it('should set argument description and return `this`', () => {

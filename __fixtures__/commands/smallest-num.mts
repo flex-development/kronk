@@ -1,10 +1,12 @@
 /**
- * @file Command Fixtures - smallestNum
- * @module fixtures/commands/smallestNum
+ * @file Command Fixtures - smallest-num
+ * @module fixtures/commands/smallest-num
  */
 
+import unique from '#parsers/unique'
 import sfmt from '#tests/utils/sfmt'
-import type { CommandInfo } from '@flex-development/kronk'
+import { faker } from '@faker-js/faker'
+import type { SubcommandInfo as CommandInfo } from '@flex-development/kronk'
 
 /**
  * `smallest-num` program info.
@@ -12,23 +14,12 @@ import type { CommandInfo } from '@flex-development/kronk'
  * @type {CommandInfo}
  */
 export default {
-  aliases: ['sn'],
+  aliases: 'sn',
   arguments: {
     parser: unique,
-    syntax: sfmt.required({ id: 'num', variadic: true })
+    syntax: sfmt.required({ id: 'numbers', variadic: true })
   },
   description: 'find the smallest number',
-  name: 'smallest-num'
-} as CommandInfo
-
-/**
- * @this {void}
- *
- * @param {string[]} value
- *  The value to parse
- * @return {Set<number>}
- *  Unique list created from `value`
- */
-function unique(this: void, value: string[]): Set<number> {
-  return new Set(value.map(str => +str))
+  name: 'smallest-num',
+  version: faker.system.semver()
 }

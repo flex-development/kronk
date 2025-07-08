@@ -30,10 +30,10 @@ describe('unit-d:interfaces/OptionData', () => {
       .toEqualTypeOf<Nilable<URL | string>>()
   })
 
-  it('should match [env?: string | null | undefined]', () => {
+  it('should match [env?: List<string> | string | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('env')
-      .toEqualTypeOf<Nilable<string>>()
+      .toEqualTypeOf<Nilable<List<string> | string>>()
   })
 
   it('should match [hidden?: boolean | null | undefined]', () => {

@@ -1,66 +1,80 @@
 /**
- * @file Functional  Tests - Command
+ * @file Functional Tests - Command
  * @module kronk/lib/tests/functional/Command
  */
 
 import chars from '#enums/chars'
+import eid from '#enums/keid'
+import CommandError from '#errors/command.error'
 import average from '#fixtures/commands/average'
+import bun from '#fixtures/commands/bun'
 import clamp from '#fixtures/commands/clamp'
-import dateformat from '#fixtures/commands/dateformat'
+import grease from '#fixtures/commands/grease'
 import mlly from '#fixtures/commands/mlly'
-import smallest from '#fixtures/commands/smallest-num'
+import smallestNum from '#fixtures/commands/smallest-num'
 import stringUtil from '#fixtures/commands/string-util'
 import tribonacci from '#fixtures/commands/tribonacci'
-import date from '#fixtures/date'
-import process from '#fixtures/process'
-import isList from '#internal/is-list'
 import TestSubject from '#lib/command'
-import findCommand from '#tests/utils/find-command'
-import isCommandError from '#utils/is-command-error'
+import createProcess from '#tests/utils/create-process'
+import errorSnapshot from '#tests/utils/error-snapshot'
 import type {
   Action,
   CommandInfo,
+  Exit,
   List,
-  OptionValues
+  OptionValues,
+  ParseOptions,
+  Process
 } from '@flex-development/kronk'
-import type { InputLogObject, Logger } from '@flex-development/log'
-import { defaultConditions as mConditions } from '@flex-development/mlly'
+import type { Logger } from '@flex-development/log'
 import pathe from '@flex-development/pathe'
-import { omit, shake, type Fn } from '@flex-development/tutils'
-import { masks } from 'dateformat'
 import { ok } from 'devlop'
 import type { MockInstance } from 'vitest'
 
 describe('functional:lib/Command', () => {
-  type CreateActionSpy = Fn<[TestSubject], MockInstance<Action>>
-  type Fatal = MockInstance<TestSubject['logger']['fatal']>
-  type FatalCase = [info: CommandInfo, argv: string[]]
-  type FatalSnapshot = Fn<[unknown], unknown>
+  type ActionMock = MockInstance<Action>
+  type GetActionSpy = (this: void, command: TestSubject) => ActionMock
 
   type ParseCase = [
     info: CommandInfo,
     argv: string[],
-    hooks: Fn<[argv: ParseCase[1]], ParseCaseHooks>
+    hooks?: (this: void, argv: string[]) => ParseCaseHooks
   ]
 
   type ParseCaseHooks = {
-    actionEvent?: boolean | null | undefined
-    after: Fn<[
-      subject: TestSubject,
-      result: TestSubject,
-      opts: OptionValues,
-      optsWithGlobals: OptionValues
-    ], undefined>
-    before: Fn<[subject: TestSubject], undefined>
+    /**
+     * After parse hook.
+     *
+     * @this {void}
+     *
+     * @param {Command} subject
+     *  The command under test
+     * @param {Command} result
+     *  The command that was run
+     * @return {undefined}
+     */
+    after?(this: void, subject: TestSubject, result: TestSubject): undefined
+
+    /**
+     * Before parse hook.
+     *
+     * @this {void}
+     *
+     * @param {Command} subject
+     *  The command under test
+     * @return {undefined}
+     */
+    before?(this: void, subject: TestSubject): undefined
   }
 
-  let act: CreateActionSpy
-  let dn: CreateActionSpy
-  let fatalSnapshot: FatalSnapshot
+  let act: GetActionSpy
+  let dn: GetActionSpy
   let nodeArgv: List<string>
+  let options: ParseOptions
 
   beforeAll(() => {
     nodeArgv = ['node', pathe.fileURLToPath(import.meta.url)]
+    options = { from: 'user' }
 
     /**
      * @this {void}
@@ -91,245 +105,181 @@ describe('functional:lib/Command', () => {
       ok(command.info.done, 'expected command done callback')
 
       // @ts-expect-error [2445] testing.
-      return vi.spyOn(command.info, 'done')
-    }
-
-    /**
-     * @this {void}
-     *
-     * @param {unknown} value
-     *  First argument of the last call to `logger.fatal`
-     * @return {unknown}
-     *  `value`
-     */
-    fatalSnapshot = function snapshot(this: void, value: unknown): unknown {
-      return Object.defineProperties(value, { toJSON: { value: toJSON } })
+      return vi.spyOn(command.info, 'done').mockImplementation(done)
 
       /**
-       * @this {InputLogObject}
+       * @this {TestSubject}
        *
-       * @return {Record<string, any>}
-       *  JSON representation of `value`
+       * @return {undefined}
        */
-      function toJSON(this: InputLogObject): Record<string, any> {
-        ok(isCommandError(this.message), 'expected command error `message`')
-        ok(!this.stack, 'expected no `stack`')
-
-        return shake({
-          additional: this.additional,
-          args: this.args,
-          color: this.color,
-          date: this.date,
-          format: this.format,
-          icon: this.icon,
-          level: this.level,
-          message: omit(this.message.toJSON(), ['stack']),
-          tag: this.tag,
-          type: this.type
-        })
+      function done(this: TestSubject): undefined {
+        return void this.exit()
       }
     }
   })
 
-  describe('#checkChoices', () => {
-    let argv: string[]
-    let choice: string
-    let error: unknown
-    let fatal: Fatal
-    let id: string
-    let subject: TestSubject
+  describe('errors', () => {
+    let exiter: Exit
+
+    beforeEach(() => {
+      exiter = vi.fn().mockName('exiter')
+    })
+
+    it.each<ParseCase>([
+      [bun, ['--watch', 'server.mts', 'main.mts']],
+      [bun, ['server.mts', 'main.mts', '--hot']],
+      [clamp, [chars.digit0, chars.digit1]],
+      [clamp, [chars.delimiter, chars.minus + chars.digit1, chars.digit1]],
+      [grease, ['-w' + chars.equal + chars.digit1]],
+      [grease, ['pack', 'CHANGELOG.md', 'LICENSE.md', 'README.md', 'dist']],
+      [grease, [grease.name, 'tag', 'list', 'fab255b']],
+      [
+        tribonacci,
+        [
+          '-n' + chars.digit3,
+          chars.digit0,
+          chars.digit1,
+          chars.digit2,
+          chars.digit3
+        ]
+      ]
+    ])('should error on excess command or option arguments (%#)', async (
+      info,
+      argv
+    ) => {
+      void test(eid.excess_arguments, info, argv)
+    })
+
+    it.each<ParseCase>([
+      [bun, ['--shell=node', 'release']],
+      [clamp, [chars.delimiter, chars.minus + chars.digit4]],
+      [grease, [grease.name, 'pack']],
+      [tribonacci, [chars.digit0, chars.digit1, '-n13', chars.digit2]],
+      [
+        tribonacci,
+        ['-n' + chars.digit1, chars.lowercaseA, chars.digit0, chars.digit1]
+      ]
+    ])('should error on invalid command or option argument choice (%#)', async (
+      info,
+      argv
+    ) => {
+      info.process = createProcess({
+        CLAMP_DEBUG: chars.lowercaseF,
+        GREASE_PACK_GZIP_LEVEL: '-1'
+      })
+
+      void test(eid.invalid_argument, info, argv)
+    })
+
+    it.each<ParseCase>([
+      [bun, []],
+      [bun, [bun.name, 'app.mts', '--elide-lines']],
+      [clamp, []],
+      [clamp, [clamp.name, chars.digit5, '-M']],
+      [grease, [grease.name, 'tag', 'create']],
+      [stringUtil, ['join', chars.digit1 + chars.plus + chars.digit2, '-s']],
+      [tribonacci, ['-n', chars.digit3, chars.digit3, chars.digit9]]
+    ])('should error on missing command or option argument (%#)', async (
+      info,
+      argv
+    ) => {
+      void test(eid.missing_argument, info, argv)
+    })
+
+    it.each<ParseCase>([
+      [mlly, [mlly.name, 'resolve', '#lib/command']]
+    ])('should error on missing mandatory option (%#)', async (info, argv) => {
+      void test(eid.missing_mandatory_option, info, argv)
+    })
+
+    it.each<ParseCase>([
+      [average, ['--debug', chars.delimiter, '13', '26']],
+      [bun, ['run.mts', '--import=./loader.mjs']],
+      [grease, [grease.name, 'tag', '--list']],
+      [mlly, [mlly.name, '-p' + chars.dot, 'resolve', 'a.mts', '-m', 'main']]
+    ])('should error on unknown option (%#)', async (info, argv) => {
+      void test(eid.unknown_option, info, argv)
+    })
+
+    /**
+     * @async
+     *
+     * @this {void}
+     *
+     * @param {string} id
+     *  Unique id representing the expected error
+     * @param {CommandInfo} info
+     *  Command info
+     * @param {string[]} argv
+     *  Command-line arguments
+     * @return {Promise<undefined>}
+     */
+    async function test(
+      this: void,
+      id: string,
+      info: CommandInfo,
+      argv: string[]
+    ): Promise<undefined> {
+      info.exit = exiter
+      info.process ??= createProcess()
+
+      // Arrange
+      const method: 'parse' | 'parseAsync' = info.async ? 'parseAsync' : 'parse'
+      const subject: TestSubject = new TestSubject(info)
+      let error!: CommandError
+
+      // Act
+      try {
+        await subject[method]([...nodeArgv, ...argv])
+      } catch (e: unknown) {
+        error = e as typeof error
+      }
+
+      // Expect
+      expect(error).to.be.instanceof(CommandError).and.have.property('id', id)
+      expect(error).to.have.property('command').be.instanceof(TestSubject)
+      expect(exiter).toHaveBeenCalledExactlyOnceWith(error)
+      expect(info.process).to.have.property('exitCode', error.code)
+      expect(errorSnapshot(error)).toMatchSnapshot()
+
+      return delete info.process, void 0
+    }
+  })
+
+  describe('parsing', () => {
+    let action: MockInstance<Action<any, any>> | undefined
+    let done: MockInstance<Action<any, any>> | undefined
+    let process: Process
+    let log: MockInstance<Logger['log']>
+    let message: string | undefined
+    let subcommand: TestSubject | undefined
 
     afterEach(() => {
-      error = undefined
+      action = undefined
+      done = undefined
+      message = undefined
+      subcommand = undefined
     })
 
     beforeAll(() => {
-      subject = new TestSubject({ ...tribonacci, process })
-
-      choice = chars.digit1 + chars.digit3
-      id = 'kronk/invalid-argument'
-
-      argv = [...nodeArgv, chars.digit1, chars.digit3, choice,
-        '-n' + chars.digit1]
+      process = createProcess({ GREASE_COLOR: chars.true, PWD: pathe.cwd() })
     })
-
-    beforeEach(() => {
-      fatal = vi.spyOn(subject.logger, 'fatal')
-    })
-
-    it('should error on invalid command-argument choice', () => {
-      // Act
-      try {
-        subject.parse(argv)
-      } catch (e: unknown) {
-        error = e
-      }
-
-      // Expect
-      expect(error).to.satisfy(isCommandError)
-      expect(error).to.have.property('id', id)
-      expect(fatal).toHaveBeenCalledOnce()
-      expect(fatal.mock.lastCall).to.have.property('length', 1)
-      expect(fatalSnapshot(fatal.mock.lastCall![0])).toMatchSnapshot()
-    })
-
-    it('should error on invalid option-argument choice', () => {
-      // Act
-      try {
-        subject.parse([...argv, '-n', choice])
-      } catch (e: unknown) {
-        error = e
-      }
-
-      // Expect
-      expect(error).to.satisfy(isCommandError)
-      expect(error).to.have.property('id', id)
-      expect(fatal).toHaveBeenCalledOnce()
-      expect(fatal.mock.lastCall).to.have.property('length', 1)
-      expect(fatalSnapshot(fatal.mock.lastCall![0])).toMatchSnapshot()
-    })
-  })
-
-  describe('#checkCommandArguments', () => {
-    let error: unknown
-    let fatal: Fatal
-    let subject: TestSubject
-
-    afterEach(() => {
-      error = undefined
-    })
-
-    it.each<FatalCase>([
-      [clamp, [chars.digit0, chars.digit1]],
-      [stringUtil, ['split', chars.lowercaseA, chars.comma, chars.lowercaseB]]
-    ])('should error on excess arguments (%#)', async (info, argv) => {
-      // Arrange
-      subject = new TestSubject({ ...info, process })
-      fatal = vi.spyOn(subject.logger, 'fatal')
-
-      // Act
-      try {
-        subject.parse([...nodeArgv, ...argv])
-      } catch (e: unknown) {
-        error = e
-      }
-
-      // Expect
-      expect(error).to.satisfy(isCommandError)
-      expect(error).to.have.property('id', 'kronk/excess-arguments')
-      expect(fatal).toHaveBeenCalledOnce()
-      expect(fatal.mock.lastCall).to.have.property('length', 1)
-      expect(fatalSnapshot(fatal.mock.lastCall![0])).toMatchSnapshot()
-    })
-
-    it.each<FatalCase>([
-      [clamp, []],
-      [tribonacci, ['-n', chars.digit3, chars.digit0, chars.digit0]]
-    ])('should error on missing required argument', async (info, argv) => {
-      // Arrange
-      subject = new TestSubject({ ...info, process })
-      fatal = vi.spyOn(subject.logger, 'fatal')
-
-      // Act
-      try {
-        subject.parse([...nodeArgv, ...argv])
-      } catch (e: unknown) {
-        error = e
-      }
-
-      // Expect
-      expect(error).to.satisfy(isCommandError)
-      expect(error).to.have.property('id', 'kronk/missing-required-argument')
-      expect(fatal).toHaveBeenCalledOnce()
-      expect(fatal.mock.lastCall).to.have.property('length', 1)
-      expect(fatalSnapshot(fatal.mock.lastCall![0])).toMatchSnapshot()
-    })
-  })
-
-  describe('#checkForMissingMandatoryOptions', () => {
-    let error: unknown
-    let fatal: Fatal
-    let subject: TestSubject
-
-    afterEach(() => {
-      error = undefined
-    })
-
-    it.each<FatalCase>([
-      [mlly, ['resolve', chars.dot]],
-      [tribonacci, [chars.digit1, chars.digit3, chars.digit9]]
-    ])('should error on missing mandatory option (%#)', async (info, argv) => {
-      // Arrange
-      subject = new TestSubject({ ...info, process })
-      fatal = vi.spyOn(subject.logger, 'fatal')
-
-      // Act
-      try {
-        await subject.parseAsync([...nodeArgv, ...argv])
-      } catch (e: unknown) {
-        error = e
-      }
-
-      // Expect
-      expect(error).to.satisfy(isCommandError)
-      expect(error).to.have.property('id', 'kronk/missing-mandatory-option')
-      expect(fatal).toHaveBeenCalledOnce()
-      expect(fatal.mock.lastCall).to.have.property('length', 1)
-      expect(fatalSnapshot(fatal.mock.lastCall![0])).toMatchSnapshot()
-    })
-  })
-
-  describe('#checkForUnknownOptions', () => {
-    let error: unknown
-    let fatal: Fatal
-    let subject: TestSubject
-
-    afterEach(() => {
-      error = undefined
-    })
-
-    it.each<FatalCase>([
-      [mlly, ['--parent', import.meta.url, '-c=kronk', 'resolve', chars.dot]],
-      [mlly, ['-p' + import.meta.url, 'resolve', chars.dot, '--verbose']]
-    ])('should error on unknown option (%#)', async (info, argv) => {
-      // Arrange
-      subject = new TestSubject({ ...info, process })
-      fatal = vi.spyOn(subject.logger, 'fatal')
-
-      // Act
-      try {
-        await subject.parseAsync([...nodeArgv, ...argv])
-      } catch (e: unknown) {
-        error = e
-      }
-
-      // Expect
-      expect(error).to.satisfy(isCommandError)
-      expect(error).to.have.property('id', 'kronk/unknown-option')
-      expect(fatal).toHaveBeenCalledOnce()
-      expect(fatal.mock.lastCall).to.have.property('length', 1)
-      expect(fatalSnapshot(fatal.mock.lastCall![0])).toMatchSnapshot()
-    })
-  })
-
-  describe('#parse', () => {
-    let action: MockInstance<Action<any, any>>
-    let done: MockInstance<Action<any, any>>
-
-    ok(average.name, 'expected `average.name`')
-    ok(clamp.name, 'expected `clamp.name`')
 
     it.each<ParseCase>([
+      [average, []],
+      [average, [average.name]],
+      [average, [average.name, chars.digit3, chars.digit4, chars.digit5]],
+      [average, [chars.digit3, chars.digit6, chars.digit9]],
       [
-        average,
-        [],
+        bun,
+        [bun.name, 'init', 'packages/types', '-ym'],
         /**
          * @this {void}
          *
          * @param {string[]} argv
          *  Command-line arguments
          * @return {ParseCaseHooks}
-         *  Parse test case hooks
+         *  Test case hooks
          */
         function context(this: void, argv: string[]): ParseCaseHooks {
           return {
@@ -338,31 +288,27 @@ describe('functional:lib/Command', () => {
              *
              * @param {TestSubject} subject
              *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
              * @return {undefined}
              */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.eq(subject)
-              expect(result.args).to.eql(result.argv).and.eql(argv)
-
-              expect(opts).to.eql({})
-
-              expect(optsWithGlobals).to.eql(opts)
-
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[1]!)!
+              ok(subcommand, 'expected `subcommand`')
               return void this
-            },
-
+            }
+          }
+        }
+      ],
+      [
+        bun,
+        ['--tsconfig-override=tsconfig.prod.json', 'src/main.mts'],
+        /**
+         * @this {void}
+         *
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void): ParseCaseHooks {
+          return {
             /**
              * @this {void}
              *
@@ -371,21 +317,50 @@ describe('functional:lib/Command', () => {
              * @return {undefined}
              */
             before(this: void, subject: TestSubject): undefined {
-              return action = act(subject), done = dn(subject), void this
+              ok(subject.defaultCommand, 'expected `subject.defaultCommand`')
+              subcommand = subject.defaultCommand
+              return void this
+            }
+          }
+        }
+      ],
+      [clamp, ['-M3', '-m-1', chars.delimiter, '-13']],
+      [clamp, ['-M=26', chars.digit9]],
+      [clamp, [chars.digit1, '--max', '26', '--min=13']],
+      [clamp, [clamp.name, chars.digit3, '--max', '13', '--min=']],
+      [grease, [grease.name]],
+      [
+        Object.assign({}, grease, { actionOverride: true as const }),
+        ['-u', '--version'],
+        /**
+         * @this {void}
+         *
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @return {undefined}
+             */
+            before(this: void): undefined {
+              return message = grease.version, void this
             }
           }
         }
       ],
       [
-        average,
-        [average.name, chars.digit0, chars.digit1, chars.digit2],
+        grease,
+        ['-ju', 'bump', '--preid=alpha', 'recommend'],
         /**
          * @this {void}
          *
          * @param {string[]} argv
          *  Command-line arguments
          * @return {ParseCaseHooks}
-         *  Parse test case hooks
+         *  Test case hooks
          */
         function context(this: void, argv: string[]): ParseCaseHooks {
           return {
@@ -394,30 +369,31 @@ describe('functional:lib/Command', () => {
              *
              * @param {TestSubject} subject
              *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
              * @return {undefined}
              */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.eq(subject)
-              expect(result.args).to.eql(result.argv).and.eql(argv.slice(1))
-
-              expect(opts).to.eql({})
-              expect(optsWithGlobals).to.eql(opts)
-
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[1]!)!
+              ok(subcommand, 'expected `subcommand`')
+              subcommand = subcommand.commands().get(argv.at(-1)!)!
+              ok(subcommand, 'expected `subcommand`')
               return void this
-            },
-
+            }
+          }
+        }
+      ],
+      [
+        grease,
+        ['ch', '-wr=0', '-t$(jq .version package.json -r)'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  Command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
             /**
              * @this {void}
              *
@@ -426,1231 +402,128 @@ describe('functional:lib/Command', () => {
              * @return {undefined}
              */
             before(this: void, subject: TestSubject): undefined {
-              return action = act(subject), done = dn(subject), void this
+              subcommand = subject.findCommand(argv[0])
+              return void ok(subcommand, 'expected `subcommand`')
             }
           }
         }
       ],
       [
-        clamp,
+        grease,
+        ['changelog', '-wo$NOTES_FILE'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  Command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[0]!)!
+              return void ok(subcommand, 'expected `subcommand`')
+            }
+          }
+        }
+      ],
+      [
+        grease,
+        [grease.name, 'pack', '-o', '%s-%v.tgz'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  Command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[1]!)!
+              return void ok(subcommand, 'expected `subcommand`')
+            }
+          }
+        }
+      ],
+      [
+        grease,
+        [
+          grease.name,
+          'tag',
+          'create',
+          '-p',
+          '-s',
+          '-m=release: {tag}',
+          grease.version
+        ],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  Command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[1]!)!
+              ok(subcommand, 'expected `subcommand`')
+              subcommand = subcommand.commands().get(argv[2]!)!
+              ok(subcommand, 'expected `subcommand`')
+              return void this
+            }
+          }
+        }
+      ],
+      [
+        Object.assign({}, mlly, { actionOverride: true as const }),
         ['--version'],
         /**
          * @this {void}
          *
          * @return {ParseCaseHooks}
-         *  Parse test case hooks
-         */
-        function context(this: void): ParseCaseHooks {
-          ok(typeof clamp.version, 'expected `clamp.version` to be a string')
-
-          /**
-           * Command logger spy.
-           *
-           * @var {MockInstance<Logger['log']>}
-           */
-          let log!: MockInstance<Logger['log']>
-
-          return {
-            /**
-             * Action event test marker.
-             */
-            actionEvent: true,
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.eq(subject)
-              expect(result.args).to.be.of.length(0)
-              expect(result.argv).to.eql([])
-
-              expect(opts).to.have.keys(['debug', 'max', 'min', 'version'])
-              expect(opts).to.have.property('debug', false)
-              expect(opts).to.have.property('max', Number.MAX_SAFE_INTEGER)
-              expect(opts).to.have.property('min', +chars.digit0)
-              expect(opts).to.have.property('version', clamp.version)
-
-              expect(optsWithGlobals).to.eql(opts)
-
-              expect(log).toHaveBeenCalledExactlyOnceWith(clamp.version)
-
-              return void this
-            },
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              action = act(subject)
-              done = dn(subject)
-              log = vi.spyOn(subject.logger, 'log')
-              return void this
-            }
-          }
-        }
-      ],
-      [
-        clamp,
-        [clamp.name, '--version'],
-        /**
-         * @this {void}
-         *
-         * @return {ParseCaseHooks}
-         *  Parse test case hooks
-         */
-        function context(this: void): ParseCaseHooks {
-          return {
-            /**
-             * Action event test marker.
-             */
-            actionEvent: true,
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.eq(subject)
-              expect(result.args).to.be.of.length(0)
-              expect(result.argv).to.eql([])
-
-              expect(opts).to.have.keys(['debug', 'max', 'min', 'version'])
-              expect(opts).to.have.property('debug', false)
-              expect(opts).to.have.property('max', Number.MAX_SAFE_INTEGER)
-              expect(opts).to.have.property('min', +chars.digit0)
-              expect(opts).to.have.property('version', clamp.version)
-
-              expect(optsWithGlobals).to.eql(opts)
-
-              return void this
-            },
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              return action = act(subject), done = dn(subject), void this
-            }
-          }
-        }
-      ],
-      [
-        clamp,
-        [clamp.name, chars.digit3],
-        /**
-         * @this {void}
-         *
-         * @param {string[]} argv
-         *  Command-line arguments
-         * @return {ParseCaseHooks}
-         *  Parse test case hooks
-         */
-        function context(this: void, argv: string[]): ParseCaseHooks {
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.eq(subject)
-              expect(result.args).to.be.of.length(1).and.each.be.a('number')
-              expect(result.argv).to.eql(argv.slice(-1))
-
-              expect(opts).to.have.keys(['debug', 'max', 'min', 'version'])
-              expect(opts).to.have.property('debug', false)
-              expect(opts).to.have.property('max', Number.MAX_SAFE_INTEGER)
-              expect(opts).to.have.property('min', +chars.digit0)
-              expect(opts).to.have.property('version', undefined)
-
-              expect(optsWithGlobals).to.eql(opts)
-
-              return void this
-            },
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              return action = act(subject), done = dn(subject), void this
-            }
-          }
-        }
-      ],
-      [
-        clamp,
-        [clamp.name, '--debug', chars.digit3],
-        /**
-         * @this {void}
-         *
-         * @param {string[]} argv
-         *  Command-line arguments
-         * @return {ParseCaseHooks}
-         *  Parse test case hooks
-         */
-        function context(this: void, argv: string[]): ParseCaseHooks {
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.eq(subject)
-              expect(result.args).to.be.of.length(1).and.each.be.a('number')
-              expect(result.argv).to.eql(argv.slice(-1))
-
-              expect(opts).to.have.keys(['debug', 'max', 'min', 'version'])
-              expect(opts).to.have.property('debug', true)
-              expect(opts).to.have.property('max', Number.MAX_SAFE_INTEGER)
-              expect(opts).to.have.property('min', +chars.digit0)
-              expect(opts).to.have.property('version', undefined)
-
-              expect(optsWithGlobals).to.eql(opts)
-
-              return void this
-            },
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              return action = act(subject), done = dn(subject), void this
-            }
-          }
-        }
-      ],
-      [
-        clamp,
-        [chars.digit3, '--max', chars.digit3],
-        /**
-         * @this {void}
-         *
-         * @param {string[]} argv
-         *  Command-line arguments
-         * @return {ParseCaseHooks}
-         *  Parse test case hooks
-         */
-        function context(this: void, argv: string[]): ParseCaseHooks {
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.eq(subject)
-              expect(result.args).to.be.of.length(1).and.each.be.a('number')
-              expect(result.argv).to.eql([argv[0]])
-
-              expect(opts).to.have.keys(['debug', 'max', 'min', 'version'])
-              expect(opts).to.have.property('debug', false)
-              expect(opts).to.have.property('max', +chars.digit3)
-              expect(opts).to.have.property('min', +chars.digit0)
-              expect(opts).to.have.property('version', undefined)
-
-              expect(optsWithGlobals).to.eql(opts)
-
-              return void this
-            },
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              return action = act(subject), done = dn(subject), void this
-            }
-          }
-        }
-      ],
-      [
-        clamp,
-        ['39', '-M=26'],
-        /**
-         * @this {void}
-         *
-         * @param {string[]} argv
-         *  Command-line arguments
-         * @return {ParseCaseHooks}
-         *  Parse test case hooks
-         */
-        function context(this: void, argv: string[]): ParseCaseHooks {
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.eq(subject)
-              expect(result.args).to.be.of.length(1).and.each.be.a('number')
-              expect(result.argv).to.eql([argv[0]])
-
-              expect(opts).to.have.keys(['debug', 'max', 'min', 'version'])
-              expect(opts).to.have.property('debug', false)
-              expect(opts).to.have.property('max', 26)
-              expect(opts).to.have.property('min', +chars.digit0)
-              expect(opts).to.have.property('version', undefined)
-
-              expect(optsWithGlobals).to.eql(opts)
-
-              return void this
-            },
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              return action = act(subject), done = dn(subject), void this
-            }
-          }
-        }
-      ],
-      [
-        clamp,
-        ['-M3', '-m-1', chars.delimiter, '-13'],
-        /**
-         * @this {void}
-         *
-         * @param {string[]} argv
-         *  Command-line arguments
-         * @return {ParseCaseHooks}
-         *  Parse test case hooks
-         */
-        function context(this: void, argv: string[]): ParseCaseHooks {
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.eq(subject)
-              expect(result.args).to.be.of.length(1).and.each.be.a('number')
-              expect(result.argv).to.eql(argv.slice(-1))
-
-              expect(opts).to.have.keys(['debug', 'max', 'min', 'version'])
-              expect(opts).to.have.property('debug', false)
-              expect(opts).to.have.property('max', +chars.digit3)
-              expect(opts).to.have.property('min', -1)
-              expect(opts).to.have.property('version', undefined)
-
-              expect(optsWithGlobals).to.eql(opts)
-
-              return void this
-            },
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              return action = act(subject), done = dn(subject), void this
-            }
-          }
-        }
-      ],
-      [
-        stringUtil,
-        [],
-        /**
-         * @this {void}
-         *
-         * @param {string[]} argv
-         *  Command-line arguments
-         * @return {ParseCaseHooks}
-         *  Parse test case hooks
-         */
-        function context(this: void, argv: string[]): ParseCaseHooks {
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.eq(subject)
-              expect(result.args).to.eql(result.argv).and.eql(argv)
-
-              expect(opts).to.have.keys(['separator'])
-              expect(opts).to.have.property('separator', chars.comma)
-
-              expect(optsWithGlobals).to.eql(opts)
-
-              return void this
-            },
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              return action = act(subject), done = dn(subject), void this
-            }
-          }
-        }
-      ],
-      [
-        stringUtil,
-        ['join', chars.digit1, chars.digit3],
-        /**
-         * @this {void}
-         *
-         * @param {string[]} argv
-         *  Command-line arguments
-         * @return {ParseCaseHooks}
-         *  Parse test case hooks
-         */
-        function context(this: void, argv: string[]): ParseCaseHooks {
-          ok(argv.length, 'expected command-line arguments')
-
-          /**
-           * Subcommand name.
-           *
-           * @const {string} subcmd
-           */
-          const subcmd: string = argv[0]!
-
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.not.eq(subject)
-              expect(result.args).to.eql(result.argv).and.eql(argv.slice(1))
-              expect(result.id()).to.eq(subcmd)
-
-              expect(opts).to.eql({})
-
-              expect(optsWithGlobals).to.have.keys(['separator'])
-              expect(optsWithGlobals).to.have.property('separator', chars.comma)
-
-              return void this
-            },
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              /**
-               * The subcommand under test.
-               *
-               * @const {TestSubject} subcommand
-               */
-              const subcommand: TestSubject = findCommand(subject, subcmd)!
-
-              ok(subcommand, 'expected `subcommand`')
-              action = act(subcommand)
-              done = dn(subcommand)
-
-              return void subcommand
-            }
-          }
-        }
-      ],
-      [
-        tribonacci,
-        ['-n', chars.digit3, chars.digit0, chars.digit0, chars.digit1],
-        /**
-         * @this {void}
-         *
-         * @param {string[]} argv
-         *  Command-line arguments
-         * @return {ParseCaseHooks}
-         *  Parse test case hooks
-         */
-        function context(this: void, argv: string[]): ParseCaseHooks {
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.not.eq(subject)
-              expect(result.args).to.eql(result.argv).and.eql(argv.slice(2))
-              expect(result.id()).to.be.null
-
-              expect(opts).to.have.keys(['debug', 'n'])
-              expect(opts).to.have.property('debug', undefined)
-              expect(opts).to.have.property('n', chars.digit3)
-
-              expect(optsWithGlobals).to.eql(opts)
-
-              return void this
-            },
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              /**
-               * The subcommand under test.
-               *
-               * @const {TestSubject} subcommand
-               */
-              const subcommand: TestSubject = findCommand(subject, null)!
-
-              ok(subcommand, 'expected `subcommand`')
-              action = act(subcommand)
-              done = dn(subcommand)
-
-              return void subcommand
-            }
-          }
-        }
-      ],
-      [
-        tribonacci,
-        ['-n=' + chars.digit3, chars.digit1, chars.digit1, chars.digit2],
-        /**
-         * @this {void}
-         *
-         * @param {string[]} argv
-         *  Command-line arguments
-         * @return {ParseCaseHooks}
-         *  Parse test case hooks
-         */
-        function context(this: void, argv: string[]): ParseCaseHooks {
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.not.eq(subject)
-              expect(result.args).to.eql(result.argv).and.eql(argv.slice(1))
-              expect(result.id()).to.be.null
-
-              expect(opts).to.have.keys(['debug', 'n'])
-              expect(opts).to.have.property('debug', undefined)
-              expect(opts).to.have.property('n', chars.digit3)
-
-              expect(optsWithGlobals).to.eql(opts)
-
-              return void this
-            },
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              /**
-               * The subcommand under test.
-               *
-               * @const {TestSubject} subcommand
-               */
-              const subcommand: TestSubject = findCommand(subject, null)!
-
-              ok(subcommand, 'expected `subcommand`')
-              action = act(subcommand)
-              done = dn(subcommand)
-
-              return void subcommand
-            }
-          }
-        }
-      ],
-      [
-        tribonacci,
-        ['-dn' + chars.digit3, chars.digit2, chars.digit2, chars.digit3],
-        /**
-         * @this {void}
-         *
-         * @param {string[]} argv
-         *  Command-line arguments
-         * @return {ParseCaseHooks}
-         *  Parse test case hooks
-         */
-        function context(this: void, argv: string[]): ParseCaseHooks {
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.not.eq(subject)
-              expect(result.args).to.eql(result.argv).and.eql(argv.slice(1))
-              expect(result.id()).to.be.null
-
-              expect(opts).to.have.keys(['debug', 'n'])
-              expect(opts).to.have.property('debug', true)
-              expect(opts).to.have.property('n', chars.digit3)
-
-              expect(optsWithGlobals).to.eql(opts)
-
-              return void this
-            },
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              /**
-               * The subcommand under test.
-               *
-               * @const {TestSubject} subcommand
-               */
-              const subcommand: TestSubject = findCommand(subject, null)!
-
-              ok(subcommand, 'expected `subcommand`')
-              action = act(subcommand)
-              done = dn(subcommand)
-
-              return void subcommand
-            }
-          }
-        }
-      ]
-    ])('should run command (%#)', (info, argv, hooks) => {
-      const { actionEvent, after, before } = hooks(argv)
-
-      // Arrange
-      const subject: TestSubject = new TestSubject({ ...info, process })
-      let opts: OptionValues
-      let optsWithGlobals: OptionValues
-      let result: TestSubject
-
-      // Act
-      before(subject)
-      result = subject.parse(argv, { from: 'user' })
-      opts = result.opts()
-      optsWithGlobals = result.optsWithGlobals()
-
-      // Expect (conditional)
-      if (actionEvent) {
-        expect(action).toHaveBeenCalledTimes(0)
-      } else {
-        expect(action).toHaveBeenCalledOnce()
-        expect(action.mock.contexts[0]).to.eq(result)
-        expect(action.mock.lastCall).to.eql([opts, ...result.args])
-        expect(done).toHaveBeenCalledAfter(action)
-      }
-
-      // Expect
-      expect(done).toHaveBeenCalledOnce()
-      expect(done.mock.contexts[0]).to.eq(result)
-      expect(done.mock.lastCall).to.eql([optsWithGlobals, ...result.args])
-      expect.hasAssertions(), after(subject, result, opts, optsWithGlobals)
-    })
-  })
-
-  describe('#parseAsync', () => {
-    let action: MockInstance<Action<any, any>>
-    let cwd: URL
-    let done: MockInstance<Action<any, any>>
-    let parent: URL
-
-    ok(mlly.name, 'expected `mlly.name`')
-    ok(Array.isArray(smallest.aliases), 'expected `smallest.aliases`')
-
-    ok(!dateformat.name, 'expected no `dateformat.name`')
-    ok(dateformat.subcommands, 'expected `dateformat.subcommands`')
-    ok(!TestSubject.isCommand(dateformat.subcommands))
-    ok(!isList(dateformat.subcommands))
-    ok(typeof dateformat.subcommands === 'object')
-    ok(typeof dateformat.subcommands.aliases === 'string')
-
-    beforeAll(() => {
-      cwd = pathe.pathToFileURL(pathe.cwd())
-      parent = new URL(import.meta.url)
-    })
-
-    it.each<ParseCase>([
-      [
-        dateformat,
-        [],
-        /**
-         * @this {void}
-         *
-         * @param {string[]} argv
-         *  Command-line arguments
-         * @return {ParseCaseHooks}
-         *  Parse test case hooks
-         */
-        function context(this: void, argv: string[]): ParseCaseHooks {
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.eq(subject)
-              expect(result.args).to.eql(result.argv).and.eql(argv)
-              expect(result.id()).to.be.null
-
-              expect(opts).to.have.keys(['gmt', 'mask', 'utc'])
-              expect(opts).to.have.property('gmt', false)
-              expect(opts).to.have.property('mask', masks.default)
-              expect(opts).to.have.property('utc', false)
-
-              expect(optsWithGlobals).to.eql(opts)
-
-              return void this
-            },
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              return action = act(subject), done = dn(subject), void this
-            }
-          }
-        }
-      ],
-      [
-        dateformat,
-        ['--mask', 'isoDate'],
-        /**
-         * @this {void}
-         *
-         * @return {ParseCaseHooks}
-         *  Parse test case hooks
+         *  Test case hooks
          */
         function context(this: void): ParseCaseHooks {
           return {
             /**
              * @this {void}
              *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
              * @return {undefined}
              */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.eq(subject)
-              expect(result.args).to.eql(result.argv).and.eql([])
-              expect(result.id()).to.be.null
-
-              expect(opts).to.have.keys(['gmt', 'mask', 'utc'])
-              expect(opts).to.have.property('gmt', false)
-              expect(opts).to.have.property('mask', masks.isoDate)
-              expect(opts).to.have.property('utc', false)
-
-              expect(optsWithGlobals).to.eql(opts)
-
-              return void this
-            },
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              return action = act(subject), done = dn(subject), void this
+            before(this: void): undefined {
+              return message = mlly.version, void this
             }
           }
         }
       ],
       [
-        dateformat,
-        ['-gm' + 'isoDate', date.toString()],
-        /**
-         * @this {void}
-         *
-         * @param {string[]} argv
-         *  Command-line arguments
-         * @return {ParseCaseHooks}
-         *  Parse test case hooks
-         */
-        function context(this: void, argv: string[]): ParseCaseHooks {
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.eq(subject)
-              expect(result.args).to.eql(result.argv).and.eql([argv[1]])
-              expect(result.id()).to.be.null
-
-              expect(opts).to.have.keys(['gmt', 'mask', 'utc'])
-              expect(opts).to.have.property('gmt', true)
-              expect(opts).to.have.property('mask', masks.isoDate)
-              expect(opts).to.have.property('utc', false)
-
-              expect(optsWithGlobals).to.eql(opts)
-
-              return void this
-            },
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              return action = act(subject), done = dn(subject), void this
-            }
-          }
-        }
-      ],
-      [
-        dateformat,
-        ['-um' + chars.equal + 'isoTime', date.toString()],
-        /**
-         * @this {void}
-         *
-         * @param {string[]} argv
-         *  Command-line arguments
-         * @return {ParseCaseHooks}
-         *  Parse test case hooks
-         */
-        function context(this: void, argv: string[]): ParseCaseHooks {
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.eq(subject)
-              expect(result.args).to.eql(result.argv).and.eql([argv[1]])
-              expect(result.id()).to.be.null
-
-              expect(opts).to.have.keys(['gmt', 'mask', 'utc'])
-              expect(opts).to.have.property('gmt', false)
-              expect(opts).to.have.property('mask', masks.isoTime)
-              expect(opts).to.have.property('utc', true)
-
-              expect(optsWithGlobals).to.eql(opts)
-
-              return void this
-            },
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              return action = act(subject), done = dn(subject), void this
-            }
-          }
-        }
-      ],
-      [
-        dateformat,
-        [dateformat.subcommands.aliases, date.toString()],
-        /**
-         * @this {void}
-         *
-         * @param {string[]} argv
-         *  Command-line arguments
-         * @return {ParseCaseHooks}
-         *  Parse test case hooks
-         */
-        function context(this: void, argv: string[]): ParseCaseHooks {
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              ok(dateformat.subcommands, 'expected `dateformat.subcommands`')
-              ok(!TestSubject.isCommand(dateformat.subcommands))
-              ok(!isList(dateformat.subcommands))
-              ok(typeof dateformat.subcommands === 'object')
-
-              expect(result).to.not.eq(subject)
-              expect(result.args).to.eql(result.argv).and.eql(argv.slice(1))
-              expect(result.id()).to.eq(dateformat.subcommands.name)
-
-              expect(opts).to.eql({})
-
-              expect(optsWithGlobals).to.have.keys(['gmt', 'mask', 'utc'])
-              expect(optsWithGlobals).to.have.property('gmt', false)
-              expect(optsWithGlobals).to.have.property('mask', masks.default)
-              expect(optsWithGlobals).to.have.property('utc', false)
-
-              return void this
-            },
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              /**
-               * The subcommand under test.
-               *
-               * @const {TestSubject} subcommand
-               */
-              const subcommand: TestSubject = findCommand(subject, argv[0]!)!
-
-              ok(subcommand, 'expected `subcommand`')
-              action = act(subcommand)
-              done = dn(subcommand)
-
-              return void subcommand
-            }
-          }
-        }
-      ],
-      [
-        mlly,
-        ['--parent' + chars.equal + import.meta.url],
-        /**
-         * @this {void}
-         *
-         * @return {ParseCaseHooks}
-         *  Parse test case hooks
-         */
-        function context(this: void): ParseCaseHooks {
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.eq(subject)
-              expect(result.args).to.eql(result.argv).and.eql([])
-
-              expect(opts).to.have.keys(['cwd', 'debug', 'parent'])
-              expect(opts).to.have.property('cwd').eql(cwd)
-              expect(opts).to.have.property('debug', false)
-              expect(opts).to.have.property('parent').eql(parent)
-
-              expect(optsWithGlobals).to.eql(opts)
-
-              return void this
-            },
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              return action = act(subject), done = dn(subject), void this
-            }
-          }
-        }
-      ],
-      [
-        mlly,
+        Object.assign({}, mlly, { actionOverride: true as const }),
         [mlly.name, 'resolve', '--version'],
         /**
          * @this {void}
@@ -1658,97 +531,10 @@ describe('functional:lib/Command', () => {
          * @param {string[]} argv
          *  Command-line arguments
          * @return {ParseCaseHooks}
-         *  Parse test case hooks
+         *  Test case hooks
          */
         function context(this: void, argv: string[]): ParseCaseHooks {
-          const { subcommands } = mlly as { subcommands: [CommandInfo] }
-
-          ok(Array.isArray(subcommands), 'expected subcommands array')
-          ok(subcommands.length, 'expected at least one subcommand')
-
-          /**
-           * Expected option keys.
-           *
-           * @const {string[]} keys
-           */
-          const keys: string[] = ['conditions', 'preserveSymlinks', 'version']
-
-          /**
-           * Expected global option keys.
-           *
-           * @const {string[]} keysWithGlobals
-           */
-          const keysWithGlobals: string[] = [...keys, 'cwd', 'debug', 'parent']
-
-          /**
-           * Subcommand name.
-           *
-           * @const {string} subcmd
-           */
-          const subcmd: string = argv.at(-2)!
-
-          /**
-           * Subcommand version.
-           *
-           * @const {string} version
-           */
-          const version: string = String(subcommands[0].version)
-
-          /**
-           * Command logger spy.
-           *
-           * @var {MockInstance<Logger['log']>}
-           */
-          let log!: MockInstance<Logger['log']>
-
           return {
-            /**
-             * Action event test marker.
-             */
-            actionEvent: true,
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.not.eq(subject)
-              expect(result.args).to.eql(result.argv).and.eql([])
-              expect(result.id()).to.eq(subcmd)
-
-              expect(opts).to.have.keys(keys)
-              expect(opts).to.have.property('conditions').eql(mConditions)
-              expect(opts).to.have.property('preserveSymlinks', false)
-              expect(opts).to.have.property('version').be.a('string')
-              expect(opts).to.have.property('version', version)
-
-              expect(optsWithGlobals).to.have.keys(keysWithGlobals)
-              expect(optsWithGlobals).to.have.property('cwd').eql(cwd)
-              expect(optsWithGlobals).to.have.property('debug', false)
-              expect(optsWithGlobals).to.have.property('parent', undefined)
-              expect(optsWithGlobals).to.have.property('version').be.a('string')
-              expect(optsWithGlobals).to.have.property('version', version)
-
-              expect(log).toHaveBeenCalledExactlyOnceWith(version)
-
-              return void this
-            },
-
             /**
              * @this {void}
              *
@@ -1757,95 +543,30 @@ describe('functional:lib/Command', () => {
              * @return {undefined}
              */
             before(this: void, subject: TestSubject): undefined {
-              /**
-               * The subcommand under test.
-               *
-               * @const {TestSubject} subcommand
-               */
-              const subcommand: TestSubject = findCommand(subject, subcmd)!
-
+              subcommand = subject.commands().get(argv[1]!)!
               ok(subcommand, 'expected `subcommand`')
-              action = act(subcommand)
-              done = dn(subcommand)
-              log = vi.spyOn(subcommand.logger, 'log')
 
-              return void subcommand
+              message = subcommand.version()!
+              ok(message, 'expected `subcommand` version')
+
+              return void this
             }
           }
         }
       ],
       [
         mlly,
-        [mlly.name, '-p' + import.meta.url, 'resolve', chars.dot],
+        ['resolve', '#internal/tokenize', `--parent=${chars.dot}`],
         /**
          * @this {void}
          *
          * @param {string[]} argv
          *  Command-line arguments
          * @return {ParseCaseHooks}
-         *  Parse test case hooks
+         *  Test case hooks
          */
         function context(this: void, argv: string[]): ParseCaseHooks {
-          /**
-           * Expected option keys.
-           *
-           * @const {string[]} keys
-           */
-          const keys: string[] = ['conditions', 'preserveSymlinks', 'version']
-
-          /**
-           * Expected global option keys.
-           *
-           * @const {string[]} keysWithGlobals
-           */
-          const keysWithGlobals: string[] = [...keys, 'cwd', 'debug', 'parent']
-
-          /**
-           * Subcommand name.
-           *
-           * @const {string} subcmd
-           */
-          const subcmd: string = argv.at(-2)!
-
           return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.not.eq(subject)
-              expect(result.args).to.eql(result.argv).and.eql(argv.slice(-1))
-              expect(result.id()).to.eq(subcmd)
-
-              expect(opts).to.have.keys(keys)
-              expect(opts).to.have.property('conditions').eql(mConditions)
-              expect(opts).to.have.property('preserveSymlinks', false)
-              expect(opts).to.have.property('version', undefined)
-
-              expect(optsWithGlobals).to.have.keys(keysWithGlobals)
-              expect(optsWithGlobals).to.have.property('cwd').eql(cwd)
-              expect(optsWithGlobals).to.have.property('debug', false)
-              expect(optsWithGlobals).to.have.property('parent').eql(parent)
-              expect(optsWithGlobals).to.have.property('version', undefined)
-
-              return void this
-            },
-
             /**
              * @this {void}
              *
@@ -1854,114 +575,8 @@ describe('functional:lib/Command', () => {
              * @return {undefined}
              */
             before(this: void, subject: TestSubject): undefined {
-              /**
-               * The subcommand under test.
-               *
-               * @const {TestSubject} subcommand
-               */
-              const subcommand: TestSubject = findCommand(subject, subcmd)!
-
-              ok(subcommand, 'expected `subcommand`')
-              action = act(subcommand)
-              done = dn(subcommand)
-
-              return void subcommand
-            }
-          }
-        }
-      ],
-      [
-        mlly,
-        ['resolve', '--parent', import.meta.url, '#lib/command'],
-        /**
-         * @this {void}
-         *
-         * @param {string[]} argv
-         *  Command-line arguments
-         * @return {ParseCaseHooks}
-         *  Parse test case hooks
-         */
-        function context(this: void, argv: string[]): ParseCaseHooks {
-          /**
-           * Expected option keys.
-           *
-           * @const {string[]} keys
-           */
-          const keys: string[] = ['conditions', 'preserveSymlinks', 'version']
-
-          /**
-           * Expected global option keys.
-           *
-           * @const {string[]} keysWithGlobals
-           */
-          const keysWithGlobals: string[] = [...keys, 'cwd', 'debug', 'parent']
-
-          /**
-           * Subcommand name.
-           *
-           * @const {string} subcmd
-           */
-          const subcmd: string = argv[0]!
-
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.not.eq(subject)
-              expect(result.args).to.eql(result.argv).and.eql(argv.slice(-1))
-              expect(result.id()).to.eq(subcmd)
-
-              expect(opts).to.have.keys(keys)
-              expect(opts).to.have.property('conditions').eql(mConditions)
-              expect(opts).to.have.property('preserveSymlinks', false)
-              expect(opts).to.have.property('version', undefined)
-
-              expect(optsWithGlobals).to.have.keys(keysWithGlobals)
-              expect(optsWithGlobals).to.have.property('cwd').eql(cwd)
-              expect(optsWithGlobals).to.have.property('debug', false)
-              expect(optsWithGlobals).to.have.property('parent').eql(parent)
-              expect(optsWithGlobals).to.have.property('version', undefined)
-
-              return void this
-            },
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              /**
-               * The subcommand under test.
-               *
-               * @const {TestSubject} subcommand
-               */
-              const subcommand: TestSubject = findCommand(subject, subcmd)!
-
-              ok(subcommand, 'expected `subcommand`')
-              action = act(subcommand)
-              done = dn(subcommand)
-
-              return void subcommand
+              subcommand = subject.commands().get(argv[0]!)!
+              return void ok(subcommand, 'expected `subcommand`')
             }
           }
         }
@@ -1969,12 +584,15 @@ describe('functional:lib/Command', () => {
       [
         mlly,
         [
-          '-p' + import.meta.url,
+          mlly.name,
+          '-p' + chars.dot,
           'resolve',
-          '#lib/option',
+          '#lib/command',
           '--conditions=kronk',
-          '-c=development',
-          '--ps'
+          '-c',
+          'development',
+          '--ps',
+          '-c' + 'node'
         ],
         /**
          * @this {void}
@@ -1982,76 +600,10 @@ describe('functional:lib/Command', () => {
          * @param {string[]} argv
          *  Command-line arguments
          * @return {ParseCaseHooks}
-         *  Parse test case hooks
+         *  Test case hooks
          */
         function context(this: void, argv: string[]): ParseCaseHooks {
-          /**
-           * Expected list of export/import conditions.
-           *
-           * @const {Set<string>} conditions
-           */
-          const conditions: Set<string> = new Set(['kronk', 'development'])
-
-          /**
-           * Expected option keys.
-           *
-           * @const {string[]} keys
-           */
-          const keys: string[] = ['conditions', 'preserveSymlinks', 'version']
-
-          /**
-           * Expected global option keys.
-           *
-           * @const {string[]} keysWithGlobals
-           */
-          const keysWithGlobals: string[] = [...keys, 'cwd', 'debug', 'parent']
-
-          /**
-           * Subcommand name.
-           *
-           * @const {string} subcmd
-           */
-          const subcmd: string = argv[1]!
-
           return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.not.eq(subject)
-              expect(result.args).to.eql(result.argv).and.eql([argv[2]])
-              expect(result.id()).to.eq(subcmd)
-
-              expect(opts).to.have.keys(keys)
-              expect(opts).to.have.property('conditions').eql(conditions)
-              expect(opts).to.have.property('preserveSymlinks', true)
-              expect(opts).to.have.property('version', undefined)
-
-              expect(optsWithGlobals).to.have.keys(keysWithGlobals)
-              expect(optsWithGlobals).to.have.property('cwd').eql(cwd)
-              expect(optsWithGlobals).to.have.property('debug', false)
-              expect(optsWithGlobals).to.have.property('parent').eql(parent)
-              expect(optsWithGlobals).to.have.property('version', undefined)
-
-              return void this
-            },
-
             /**
              * @this {void}
              *
@@ -2060,172 +612,28 @@ describe('functional:lib/Command', () => {
              * @return {undefined}
              */
             before(this: void, subject: TestSubject): undefined {
-              /**
-               * The subcommand under test.
-               *
-               * @const {TestSubject} subcommand
-               */
-              const subcommand: TestSubject = findCommand(subject, subcmd)!
-
-              ok(subcommand, 'expected `subcommand`')
-              action = act(subcommand)
-              done = dn(subcommand)
-
-              return void subcommand
+              subcommand = subject.commands().get(argv[2]!)!
+              return void ok(subcommand, 'expected `subcommand`')
             }
           }
         }
       ],
       [
-        smallest,
-        [smallest.aliases[0]!, chars.digit1, chars.digit3],
-        /**
-         * @this {void}
-         *
-         * @param {string[]} argv
-         *  Command-line arguments
-         * @return {ParseCaseHooks}
-         *  Parse test case hooks
-         */
-        function context(this: void, argv: string[]): ParseCaseHooks {
-          /**
-           * Expected parsed command-argument.
-           *
-           * @const {Set<number>} arg
-           */
-          const arg: Set<number> = new Set([+chars.digit1, +chars.digit3])
-
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.eq(subject)
-              expect(result.args).to.eql([arg])
-              expect(result.argv).to.eql(argv.slice(1))
-              expect(result.id()).to.eq(smallest.name)
-
-              expect(opts).to.eql({})
-
-              expect(optsWithGlobals).to.eql(opts)
-
-              return void this
-            },
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              return action = act(subject), done = dn(subject), void subject
-            }
-          }
-        }
-      ],
-      [
-        stringUtil,
-        ['split', chars.lowercaseA + chars.slash + chars.lowercaseB],
-        /**
-         * @this {void}
-         *
-         * @param {string[]} argv
-         *  Command-line arguments
-         * @return {ParseCaseHooks}
-         *  Parse test case hooks
-         */
-        function context(this: void, argv: string[]): ParseCaseHooks {
-          /**
-           * Subcommand name.
-           *
-           * @const {string} subcmd
-           */
-          const subcmd: string = argv[0]!
-
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWithGlobals
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWithGlobals: OptionValues
-            ): undefined {
-              expect(result).to.not.eq(subject)
-              expect(result.args).to.eql(result.argv).and.eql(argv.slice(1))
-              expect(result.id()).to.eq(subcmd)
-
-              expect(opts).to.have.keys(['limit'])
-              expect(opts).to.have.property('limit', undefined)
-
-              expect(optsWithGlobals).to.have.keys(['limit', 'separator'])
-              expect(optsWithGlobals).to.have.property('limit', undefined)
-              expect(optsWithGlobals).to.have.property('separator', chars.comma)
-
-              return void this
-            },
-
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              /**
-               * The subcommand under test.
-               *
-               * @const {TestSubject} subcommand
-               */
-              const subcommand: TestSubject = findCommand(subject, subcmd)!
-
-              ok(subcommand, 'expected `subcommand`')
-              action = act(subcommand)
-              done = dn(subcommand)
-
-              return void subcommand
-            }
-          }
-        }
+        smallestNum,
+        [
+          smallestNum.aliases,
+          chars.digit0,
+          chars.digit0,
+          chars.digit3,
+          chars.digit5
+        ]
       ],
       [
         stringUtil,
         [
-          'split',
-          chars.lowercaseA + chars.ellipsis + chars.lowercaseZ,
-          chars.hyphen + chars.lowercaseS + chars.ellipsis,
-          '--limit' + chars.equal + chars.digit1
+          'join',
+          '-s' + chars.slash,
+          chars.lowercaseA + chars.slash + chars.lowercaseZ
         ],
         /**
          * @this {void}
@@ -2233,51 +641,10 @@ describe('functional:lib/Command', () => {
          * @param {string[]} argv
          *  Command-line arguments
          * @return {ParseCaseHooks}
-         *  Parse test case hooks
+         *  Test case hooks
          */
         function context(this: void, argv: string[]): ParseCaseHooks {
-          /**
-           * Subcommand name.
-           *
-           * @const {string} subcmd
-           */
-          const subcmd: string = argv[0]!
-
           return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @param {TestSubject} result
-             *  The command that was run
-             * @param {OptionValues} opts
-             *  Parsed command options
-             * @param {OptionValues} optsWG
-             *  Parsed command options (with globals)
-             * @return {undefined}
-             */
-            after(
-              this: void,
-              subject: TestSubject,
-              result: TestSubject,
-              opts: OptionValues,
-              optsWG: OptionValues
-            ): undefined {
-              expect(result).to.not.eq(subject)
-              expect(result.args).to.eql(result.argv).and.eql([argv[1]])
-              expect(result.id()).to.eq(subcmd)
-
-              expect(opts).to.have.keys(['limit'])
-              expect(opts).to.have.property('limit', chars.digit1)
-
-              expect(optsWG).to.have.keys(['limit', 'separator'])
-              expect(optsWG).to.have.property('limit', chars.digit1)
-              expect(optsWG).to.have.property('separator', chars.ellipsis)
-
-              return void this
-            },
-
             /**
              * @this {void}
              *
@@ -2286,40 +653,41 @@ describe('functional:lib/Command', () => {
              * @return {undefined}
              */
             before(this: void, subject: TestSubject): undefined {
-              /**
-               * The subcommand under test.
-               *
-               * @const {TestSubject} subcommand
-               */
-              const subcommand: TestSubject = findCommand(subject, subcmd)!
-
-              ok(subcommand, 'expected `subcommand`')
-              action = act(subcommand)
-              done = dn(subcommand)
-
-              return void subcommand
+              subcommand = subject.commands().get(argv[0]!)!
+              return void ok(subcommand, 'expected `subcommand`')
             }
           }
         }
+      ],
+      [
+        tribonacci,
+        [chars.digit3, chars.digit3, '-n' + chars.digit3, chars.digit9]
       ]
     ])('should run command (%#)', async (info, argv, hooks) => {
-      const { actionEvent, after, before } = hooks(argv)
+      const { after, before } = hooks?.(argv) ?? {}
 
       // Arrange
       const subject: TestSubject = new TestSubject({ ...info, process })
+      let command: TestSubject
       let opts: OptionValues
       let optsWithGlobals: OptionValues
       let result: TestSubject
 
       // Act
-      before(subject)
-      result = await subject.parseAsync(argv, { from: 'user' })
+      before?.(subject)
+      command = subcommand ?? subject
+      command.action(vi.fn().mockName('action')).done(vi.fn().mockName('done'))
+      action ??= act(command)
+      done ??= dn(command)
+      log = vi.spyOn(command.logger, 'log')
+      result = await subject[info.async ? 'parseAsync' : 'parse'](argv, options)
       opts = result.opts()
       optsWithGlobals = result.optsWithGlobals()
 
       // Expect (conditional)
-      if (actionEvent) {
-        expect(action).toHaveBeenCalledTimes(0)
+      if (info.actionOverride) {
+        expect(action).not.toHaveBeenCalled()
+        expect(log).toHaveBeenCalledExactlyOnceWith(message)
       } else {
         expect(action).toHaveBeenCalledOnce()
         expect(action.mock.contexts[0]).to.eq(result)
@@ -2331,119 +699,18 @@ describe('functional:lib/Command', () => {
       expect(done).toHaveBeenCalledOnce()
       expect(done.mock.contexts[0]).to.eq(result)
       expect(done.mock.lastCall).to.eql([optsWithGlobals, ...result.args])
-      expect.hasAssertions(), after(subject, result, opts, optsWithGlobals)
-    })
-  })
 
-  describe('#prepareCommand', () => {
-    let error: unknown
-    let fatal: Fatal
-    let id: string
-    let subject: TestSubject
-
-    afterEach(() => {
-      error = undefined
-    })
-
-    beforeAll(() => {
-      id = 'kronk/invalid-argument'
-    })
-
-    it.each<FatalCase>([
-      [mlly, ['--parent', import.meta.url, '--debug', chars.digit1]],
-      [mlly, ['--parent', import.meta.url, '-d', chars.digit2]]
-    ])('should error on extra option-argument (%#)', async (info, argv) => {
-      // Arrange
-      subject = new TestSubject({ ...info, process })
-      fatal = vi.spyOn(subject.logger, 'fatal')
-
-      // Act
-      try {
-        await subject.parseAsync([...nodeArgv, ...argv])
-      } catch (e: unknown) {
-        error = e
+      // Expect (conditional)
+      if (after) {
+        expect.hasAssertions(), after(subject, result)
+      } else if (subcommand) {
+        expect(result).to.eq(subcommand).and.not.eq(subject)
+      } else {
+        expect(result).to.eq(subject)
       }
 
-      // Expect
-      expect(error).to.satisfy(isCommandError)
-      expect(error).to.have.property('id', id)
-      expect(fatal).toHaveBeenCalledOnce()
-      expect(fatal.mock.lastCall).to.have.property('length', 1)
-      expect(fatalSnapshot(fatal.mock.lastCall![0])).toMatchSnapshot()
-    })
-
-    it.each<FatalCase>([
-      [mlly, ['--parent', import.meta.url, '--debug', chars.digit1]],
-      [mlly, ['-p', import.meta.url, '-d', chars.digit2]]
-    ])('should error on extra option-argument (%#)', async (info, argv) => {
-      // Arrange
-      subject = new TestSubject({ ...info, process })
-      fatal = vi.spyOn(subject.logger, 'fatal')
-
-      // Act
-      try {
-        await subject.parseAsync([...nodeArgv, ...argv])
-      } catch (e: unknown) {
-        error = e
-      }
-
-      // Expect
-      expect(error).to.satisfy(isCommandError)
-      expect(error).to.have.property('id', id)
-      expect(fatal).toHaveBeenCalledOnce()
-      expect(fatal.mock.lastCall).to.have.property('length', 1)
-      expect(fatalSnapshot(fatal.mock.lastCall![0])).toMatchSnapshot()
-    })
-
-    it.each<FatalCase>([
-      [dateformat, ['--gmt' + chars.equal + chars.digit1]],
-      [dateformat, ['-u' + chars.equal]],
-      [mlly, ['--parent', import.meta.url, '--debug' + chars.equal]],
-      [mlly, ['-p', import.meta.url, '-d' + chars.equal + chars.digit1]]
-    ])('should error on extra option-argument (attached) (%#)', async (
-      info,
-      argv
-    ) => {
-      // Arrange
-      subject = new TestSubject({ ...info, process })
-      fatal = vi.spyOn(subject.logger, 'fatal')
-
-      // Act
-      try {
-        await subject.parseAsync([...nodeArgv, ...argv])
-      } catch (e: unknown) {
-        error = e
-      }
-
-      // Expect
-      expect(error).to.satisfy(isCommandError)
-      expect(error).to.have.property('id', id)
-      expect(fatal).toHaveBeenCalledOnce()
-      expect(fatal.mock.lastCall).to.have.property('length', 1)
-      expect(fatalSnapshot(fatal.mock.lastCall![0])).toMatchSnapshot()
-    })
-
-    it.each<FatalCase>([
-      [dateformat, ['--mask']],
-      [mlly, ['resolve', '-p' + import.meta.url, '-c']]
-    ])('should error on missing option-argument (%#)', async (info, argv) => {
-      // Arrange
-      subject = new TestSubject({ ...info, process })
-      fatal = vi.spyOn(subject.logger, 'fatal')
-
-      // Act
-      try {
-        await subject.parseAsync([...nodeArgv, ...argv])
-      } catch (e: unknown) {
-        error = e
-      }
-
-      // Expect
-      expect(error).to.satisfy(isCommandError)
-      expect(error).to.have.property('id', id)
-      expect(fatal).toHaveBeenCalledOnce()
-      expect(fatal.mock.lastCall).to.have.property('length', 1)
-      expect(fatalSnapshot(fatal.mock.lastCall![0])).toMatchSnapshot()
+      // Expect (snapshot)
+      expect(result.snapshot()).toMatchSnapshot()
     })
   })
 })

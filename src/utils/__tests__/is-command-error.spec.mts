@@ -3,6 +3,7 @@
  * @module kronk/utils/tests/unit/isCommandError
  */
 
+import keid from '#enums/keid'
 import CommandError from '#errors/command.error'
 import KronkError from '#errors/kronk.error'
 import date from '#fixtures/date'
@@ -28,7 +29,7 @@ describe('unit:utils/isCommandError', () => {
         [kKronkError]: { value: true }
       })
     ],
-    [new CommandError('', import.meta.url)]
+    [new CommandError({ id: keid.error, reason: import.meta.url })]
   ])('should return `true` if `value` looks like `CommandError` (%#)', v => {
     expect(testSubject(v)).to.be.true
   })

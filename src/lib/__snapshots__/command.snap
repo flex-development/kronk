@@ -2,65 +2,65 @@
 
 exports[`unit:lib/Command > #addArgument > should throw if argument is added after variadic argument 1`] = `
 {
+  "code": 1,
+  "id": "kronk/argument-after-variadic",
+  "message": "Cannot have argument after variadic argument ([num...])",
   "additional": [],
   "cause": {
     "argument": "<...>",
     "last": "[num...]",
   },
-  "code": 1,
-  "id": "kronk/argument-after-variadic",
-  "message": "Cannot have argument after variadic argument ([num...])",
 }
 `;
 
 exports[`unit:lib/Command > #addCommand > should throw on \`command\` alias conflict 1`] = `
 {
-  "additional": [],
   "code": 1,
   "id": "kronk/duplicate-subcommand",
   "message": "Subcommand with name or alias 'tz' already exists",
+  "additional": [],
 }
 `;
 
 exports[`unit:lib/Command > #addCommand > should throw on \`command\` name conflict 1`] = `
 {
-  "additional": [],
   "code": 1,
   "id": "kronk/duplicate-subcommand",
   "message": "Subcommand with name or alias 'timezone' already exists",
+  "additional": [],
 }
 `;
 
-exports[`unit:lib/Command > #addCommand > should throw on non-default \`command\` without \`id\` 1`] = `
+exports[`unit:lib/Command > #addCommand > should throw on invalid \`command\` name 1`] = `
 {
-  "additional": [],
   "code": 1,
-  "id": "kronk/no-subcommand-id",
-  "message": "Subcommand must have name if not the default subcommand",
+  "id": "kronk/invalid-subcommand-name",
+  "message": "Invalid subcommand name",
+  "additional": [],
 }
 `;
 
 exports[`unit:lib/Command > #addOption > should throw on long flag conflict 1`] = `
 {
-  "additional": [],
   "code": 1,
   "id": "kronk/duplicate-option",
   "message": "Option with flag '--max' already exists",
+  "additional": [],
 }
 `;
 
 exports[`unit:lib/Command > #addOption > should throw on short flag conflict 1`] = `
 {
-  "additional": [],
   "code": 1,
   "id": "kronk/duplicate-option",
   "message": "Option with flag '-M' already exists",
+  "additional": [],
 }
 `;
 
 exports[`unit:lib/Command > #usage > should return command usage (0) 1`] = `
 {
-  "arguments": null,
+  "arguments": undefined,
   "options": "[options]",
   "subcommand": "[command]",
 }
@@ -68,7 +68,7 @@ exports[`unit:lib/Command > #usage > should return command usage (0) 1`] = `
 
 exports[`unit:lib/Command > #usage > should return command usage (1) 1`] = `
 {
-  "arguments": "<a> <b> <c>",
+  "arguments": "<x> <y> <z>",
   "options": "[options]",
   "subcommand": "[command]",
 }

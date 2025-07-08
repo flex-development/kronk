@@ -4,8 +4,8 @@
  */
 
 import chars from '#enums/chars'
+import KronkError from '#errors/kronk.error'
 import average from '#fixtures/commands/average'
-import clamp from '#fixtures/commands/clamp'
 import tribonacci from '#fixtures/commands/tribonacci'
 import date from '#fixtures/date'
 import kCommand from '#internal/k-command'
@@ -13,34 +13,17 @@ import noop from '#internal/noop'
 import Argument from '#lib/argument'
 import TestSubject from '#lib/command'
 import Option from '#lib/option'
+import errorSnapshot from '#tests/utils/error-snapshot'
 import sfmt from '#tests/utils/sfmt'
-import isArgument from '#utils/is-argument'
-import isKronkError from '#utils/is-kronk-error'
-import isOption from '#utils/is-option'
 import type {
   Action,
-  ArgumentInfo,
-  ArgumentSyntax,
-  CommandData,
   CommandInfo,
   CommandName,
   CommandUsageData,
-  Exit,
-  Flags,
-  KronkError,
-  List,
-  OptionData,
-  OptionInfo
+  Exit
 } from '@flex-development/kronk'
-import { omit } from '@flex-development/tutils'
 
 describe('unit:lib/Command', () => {
-  let isCommand: typeof TestSubject['isCommand']
-
-  beforeAll(() => {
-    isCommand = TestSubject.isCommand
-  })
-
   describe('.isCommand', () => {
     it.each<Parameters<typeof TestSubject['isCommand']>>([
       [chars.digit3],
@@ -48,15 +31,15 @@ describe('unit:lib/Command', () => {
       [new Argument('[]')],
       [new Option('--command')],
       [null]
-    ])('should return `false` if `value` is not `Command` (%#)', value => {
-      expect(isCommand(value)).to.be.false
+    ])('should return `false` if `value` is not `Command`-like (%#)', value => {
+      expect(TestSubject.isCommand(value)).to.be.false
     })
 
     it.each<Parameters<typeof TestSubject['isCommand']>>([
       [{ [kCommand]: true }],
       [new TestSubject()]
     ])('should return `true` if `value` looks like `Command` (%#)', value => {
-      expect(isCommand(value)).to.be.true
+      expect(TestSubject.isCommand(value)).to.be.true
     })
   })
 
@@ -64,7 +47,7 @@ describe('unit:lib/Command', () => {
     let subject: TestSubject
 
     beforeEach(() => {
-      subject = new TestSubject(average.name)
+      subject = new TestSubject()
     })
 
     it('should return command action callback', () => {
@@ -85,14 +68,9 @@ describe('unit:lib/Command', () => {
   })
 
   describe('#addArgument', () => {
-    let subject: TestSubject
-
-    beforeEach(() => {
-      subject = new TestSubject(average)
-    })
-
     it('should throw if argument is added after variadic argument', () => {
       // Arrange
+      const subject: TestSubject = new TestSubject(average)
       let error!: KronkError
 
       // Act
@@ -103,22 +81,24 @@ describe('unit:lib/Command', () => {
       }
 
       // Expect
-      expect(error).to.satisfy(isKronkError)
-      expect(error).to.have.property('id', 'kronk/argument-after-variadic')
-      expect(error).to.have.property('message').be.a('string').and.not.empty
-      expect(error).to.have.property('name', 'KronkError')
+      expect(error).to.be.instanceof(KronkError)
       expect(error).to.have.property('stack').match(/addArgument/)
-      expect(omit(error.toJSON(), ['stack'])).toMatchSnapshot()
+      expect(errorSnapshot(error)).toMatchSnapshot()
     })
   })
 
   describe('#addCommand', () => {
+    let alias: string
+    let cmd: string
     let subject: TestSubject
 
     beforeAll(() => {
-      subject = new TestSubject()
+      alias = 'tz'
+      cmd = 'timezone'
 
-      // @ts-expect-error [2445] testing.
+      subject = new TestSubject({ aliases: alias, name: cmd })
+
+      // @ts-expect-error testing (2445).
       subject.info.subcommands = [
         new TestSubject({ aliases: 'tz', name: 'timezone' })
       ]
@@ -130,18 +110,15 @@ describe('unit:lib/Command', () => {
 
       // Act
       try {
-        subject.addCommand(new TestSubject('timezones', { aliases: 'tz' }))
+        subject.addCommand(new TestSubject('timezones', { aliases: alias }))
       } catch (e: unknown) {
         error = e as typeof error
       }
 
       // Expect
-      expect(error).to.satisfy(isKronkError)
-      expect(error).to.have.property('id', 'kronk/duplicate-subcommand')
-      expect(error).to.have.property('message').be.a('string').and.not.empty
-      expect(error).to.have.property('name', 'KronkError')
+      expect(error).to.be.instanceof(KronkError)
       expect(error).to.have.property('stack').match(/addCommand/)
-      expect(omit(error.toJSON(), ['stack'])).toMatchSnapshot()
+      expect(errorSnapshot(error)).toMatchSnapshot()
     })
 
     it('should throw on `command` name conflict', () => {
@@ -150,21 +127,18 @@ describe('unit:lib/Command', () => {
 
       // Act
       try {
-        subject.addCommand(new TestSubject('timezone'))
+        subject.addCommand(new TestSubject(cmd))
       } catch (e: unknown) {
         error = e as typeof error
       }
 
       // Expect
-      expect(error).to.satisfy(isKronkError)
-      expect(error).to.have.property('id', 'kronk/duplicate-subcommand')
-      expect(error).to.have.property('message').be.a('string').and.not.empty
-      expect(error).to.have.property('name', 'KronkError')
+      expect(error).to.be.instanceof(KronkError)
       expect(error).to.have.property('stack').match(/addCommand/)
-      expect(omit(error.toJSON(), ['stack'])).toMatchSnapshot()
+      expect(errorSnapshot(error)).toMatchSnapshot()
     })
 
-    it('should throw on non-default `command` without `id`', () => {
+    it('should throw on invalid `command` name', () => {
       // Arrange
       let error!: KronkError
 
@@ -176,12 +150,9 @@ describe('unit:lib/Command', () => {
       }
 
       // Expect
-      expect(error).to.satisfy(isKronkError)
-      expect(error).to.have.property('id', 'kronk/no-subcommand-id')
-      expect(error).to.have.property('message').be.a('string').and.not.empty
-      expect(error).to.have.property('name', 'KronkError')
+      expect(error).to.be.instanceof(KronkError)
       expect(error).to.have.property('stack').match(/addCommand/)
-      expect(omit(error.toJSON(), ['stack'])).toMatchSnapshot()
+      expect(errorSnapshot(error)).toMatchSnapshot()
     })
   })
 
@@ -193,7 +164,7 @@ describe('unit:lib/Command', () => {
       option = new Option('-M | --max <n>')
       subject = new TestSubject()
 
-      // @ts-expect-error [2445] testing.
+      // @ts-expect-error testing (2445).
       subject.info.options = new Map([
         [option.long!, option],
         [option.short!, option]
@@ -212,12 +183,9 @@ describe('unit:lib/Command', () => {
       }
 
       // Expect
-      expect(error).to.satisfy(isKronkError)
-      expect(error).to.have.property('id', 'kronk/duplicate-option')
-      expect(error).to.have.property('message').be.a('string').and.not.empty
-      expect(error).to.have.property('name', 'KronkError')
+      expect(error).to.be.instanceof(KronkError)
       expect(error).to.have.property('stack').match(/addOption/)
-      expect(omit(error.toJSON(), ['stack'])).toMatchSnapshot()
+      expect(errorSnapshot(error)).toMatchSnapshot()
     })
 
     it('should throw on short flag conflict', () => {
@@ -232,12 +200,9 @@ describe('unit:lib/Command', () => {
       }
 
       // Expect
-      expect(error).to.satisfy(isKronkError)
-      expect(error).to.have.property('id', 'kronk/duplicate-option')
-      expect(error).to.have.property('message').be.a('string').and.not.empty
-      expect(error).to.have.property('name', 'KronkError')
+      expect(error).to.be.instanceof(KronkError)
       expect(error).to.have.property('stack').match(/addOption/)
-      expect(omit(error.toJSON(), ['stack'])).toMatchSnapshot()
+      expect(errorSnapshot(error)).toMatchSnapshot()
     })
   })
 
@@ -282,176 +247,28 @@ describe('unit:lib/Command', () => {
 
   describe('#aliases', () => {
     it('should return list of command aliases', () => {
-      expect(new TestSubject().aliases()).to.be.instanceof(Set).and.empty
+      // Act
+      const result = new TestSubject().aliases()
+
+      // Expect
+      expect(result).to.be.instanceof(Set).and.empty
+      expect(result).to.not.be.frozen
     })
 
     it('should set command aliases and return `this`', () => {
       // Arrange
-      const alias: string = 'tz'
-      const aliases: Set<string> = new Set([alias])
+      const aliases: Set<string> = new Set(['tz'])
+      const property: string = 'info.aliases'
       const subject: TestSubject = new TestSubject('timezone', { aliases: 't' })
 
       // Act
-      const result = subject.aliases(alias)
+      const result = subject.aliases(aliases)
 
       // Expect
       expect(result).to.eq(subject)
-      expect(result).to.have.nested.property('info.aliases').be.instanceof(Set)
-      expect(result).to.have.nested.property('info.aliases').eql(aliases)
-    })
-  })
-
-  describe('#argument', () => {
-    let subject: TestSubject
-
-    beforeEach(() => {
-      subject = new TestSubject(clamp.name)
-    })
-
-    it.each<[Argument | ArgumentSyntax]>([
-      [sfmt.required({ id: chars.lowercaseK })],
-      [new Argument(sfmt.required({ id: chars.lowercaseN }))]
-    ])('should add new argument and return `this` (%#)', info => {
-      // Arrange
-      const property: string = 'info.arguments'
-
-      // Act
-      const result = subject.argument(info)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property(property).be.an('array')
-      expect(result).to.have.nested.property(property).be.of.length(1)
-      expect(result).to.have.nested.property(property).each.satisfy(isArgument)
-    })
-  })
-
-  describe('#arguments', () => {
-    it.each<[List<Argument | ArgumentInfo | string> | string]>([
-      [
-        [
-          new Argument(sfmt.required({ id: chars.lowercaseA })),
-          sfmt.required({ id: chars.lowercaseB }),
-          { syntax: sfmt.required({ id: chars.lowercaseC }) }
-        ]
-      ],
-      [
-        chars.space +
-        sfmt.required({ id: chars.lowercaseA }) +
-        chars.ht +
-        sfmt.required({ id: chars.lowercaseB }) +
-        chars.ht +
-        sfmt.required({ id: chars.lowercaseC }) +
-        chars.lf
-      ]
-    ])('should add new arguments and return `this` (%#)', infos => {
-      // Arrange
-      const property: string = 'info.arguments'
-      const subject: TestSubject = new TestSubject()
-
-      // Act
-      const result = subject.arguments(infos)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property(property).be.an('array')
-      expect(result).to.have.nested.property(property).be.of.length(3)
-      expect(result).to.have.nested.property(property).each.satisfy(isArgument)
-    })
-
-    it('should return list of `Argument` instances', () => {
-      // Arrange
-      const subject: TestSubject = new TestSubject()
-
-      // Act
-      const result = subject.arguments()
-
-      // Expect
-      expect(result).to.be.an('array').that.is.empty
-      expect(subject).to.have.nested.property('info.arguments').not.eq(result)
-    })
-  })
-
-  describe('#command', () => {
-    type Parameters =
-      | [info: CommandInfo | CommandName | TestSubject]
-      | [syntax: CommandName, info?: CommandData | null | undefined]
-
-    const data: CommandData = { description: 'split a string into substrings' }
-    const name: string = 'split'
-    let subject: TestSubject
-
-    beforeEach(() => {
-      subject = new TestSubject()
-    })
-
-    it.each<Parameters>([
-      [average.name!],
-      [average],
-      [new TestSubject(name + chars.space + '<string>', data)]
-    ])('should add new subcommand and return subcommand (%#)', (...params) => {
-      // Arrange
-      const property: string = 'info.subcommands'
-
-      // Act
-      const result = subject.command(params[0] as never, params[1])
-
-      // Expect
-      expect(result).to.satisfy(isCommand).and.not.eq(subject)
-      expect(subject).to.have.nested.property(property).be.an('array')
-      expect(subject).to.have.nested.property(property).be.of.length(1)
-      expect(subject).to.have.nested.property(property).each.satisfy(isCommand)
-    })
-  })
-
-  describe('#createArgument', () => {
-    let subject: TestSubject
-
-    beforeAll(() => {
-      subject = new TestSubject()
-    })
-
-    it('should return new `Argument` instance', () => {
-      expect(subject.createArgument('<...>')).to.satisfy(isArgument)
-    })
-  })
-
-  describe('#createCommand', () => {
-    let subject: TestSubject
-
-    beforeAll(() => {
-      subject = new TestSubject()
-    })
-
-    it('should return new `Command` instance', () => {
-      expect(subject.createCommand('changelog')).to.satisfy(isCommand)
-    })
-  })
-
-  describe('#createOption', () => {
-    let subject: TestSubject
-
-    beforeAll(() => {
-      subject = new TestSubject()
-    })
-
-    it('should return new `Option` instance', () => {
-      expect(subject.createOption('--flag []')).to.satisfy(isOption)
-    })
-  })
-
-  describe('#default', () => {
-    it('should be `false` if command is not default subcommand', () => {
-      expect(new TestSubject()).to.have.property('default', false)
-    })
-
-    it('should be `true` if command is default subcommand', () => {
-      // Arrange
-      const isDefault: boolean = true
-      const subject: TestSubject = new TestSubject({ default: isDefault })
-
-      // Expect
-      expect(subject).to.have.property('default', isDefault)
+      expect(result).to.have.nested.property(property).be.instanceof(Set)
+      expect(result).to.have.nested.property(property).eql(aliases)
+      expect(result).to.have.nested.property(property).not.eq(aliases)
     })
   })
 
@@ -482,13 +299,32 @@ describe('unit:lib/Command', () => {
     })
   })
 
-  describe('#exiter', () => {
-    let exit: Exit
+  describe('#done', () => {
     let subject: TestSubject
 
-    beforeAll(() => {
-      exit = vi.fn().mockName('exit')
+    beforeEach(() => {
+      subject = new TestSubject()
     })
+
+    it('should return command done callback', () => {
+      expect(subject.done()).to.eq(noop)
+    })
+
+    it('should set command done callback and return `this`', () => {
+      // Arrange
+      const done: Action = vi.fn().mockName('done')
+
+      // Act
+      const result = subject.done(done)
+
+      // Expect
+      expect(result).to.eq(subject)
+      expect(result).to.have.nested.property('info.done', done)
+    })
+  })
+
+  describe('#exiter', () => {
+    let subject: TestSubject
 
     beforeEach(() => {
       subject = new TestSubject()
@@ -499,6 +335,9 @@ describe('unit:lib/Command', () => {
     })
 
     it('should set command exit callback and return `this`', () => {
+      // Arrange
+      const exit: Exit = vi.fn().mockName('exit')
+
       // Act
       const result = subject.exiter(exit)
 
@@ -580,64 +419,6 @@ describe('unit:lib/Command', () => {
 
       // Expect
       expect(result).to.eq(subject).and.have.nested.property('info.name', name)
-    })
-  })
-
-  describe('#option', () => {
-    type Parameters =
-      | [info: Flags | Option | OptionInfo]
-      | [flags: Flags, info?: OptionData | null | undefined]
-
-    const data: OptionData = { default: { value: ',' } }
-    const flags: Flags = '-s | --separator <char>'
-
-    let subject: TestSubject
-
-    beforeEach(() => {
-      subject = new TestSubject('join')
-    })
-
-    it.each<Parameters>([
-      [flags, data],
-      [{ flags, ...data }],
-      [new Option(flags, data)]
-    ])('should add new option and return `this` (%#)', (...params) => {
-      // Arrange
-      const property: string = 'info.options'
-
-      // Act
-      const result = subject.option(params[0] as never, params[1])
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property(property).be.instanceof(Map)
-      expect(result).to.have.nested.property(property + '.size', 2)
-      expect(result.options()).to.each.satisfy(isOption)
-    })
-  })
-
-  describe('#options', () => {
-    const max: Flags = '-M | --max <>'
-    const min: Flags = '-m | --min <>'
-
-    it.each<[List<Flags | Option | OptionInfo>]>([
-      [[max, min]],
-      [[{ flags: max }, new Option(min)]]
-    ])('should add new options and return `this` (%#)', infos => {
-      // Arrange
-      const subject: TestSubject = new TestSubject()
-
-      // Act
-      const result = subject.options(infos)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(result.options()).to.be.an('array').of.length(2)
-      expect(result.options()).to.each.satisfy(isOption)
-    })
-
-    it('should return list of `Option` instances', () => {
-      expect(new TestSubject().options()).to.be.an('array').that.is.empty
     })
   })
 

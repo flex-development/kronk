@@ -1,5 +1,6 @@
 attw
 cefc
+commitish
 commitlintrc
 dedupe
 devlop
@@ -8,10 +9,13 @@ fbca
 ggshield
 gpgsign
 hmarr
+infile
 jchen
 kaisugi
+keid
 kronk
 ksort
+napi
 nvmrc
 pkgs
 sarif

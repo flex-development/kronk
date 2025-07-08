@@ -52,6 +52,10 @@
       "default": "./dist/events/index.mjs"
     },
     "./package.json": "./package.json",
+    "./parsers": {
+      "kronk": "./src/parsers/index.mts",
+      "default": "./dist/parsers/index.mjs"
+    },
     "./utils": {
       "kronk": "./src/utils/index.mts",
       "default": "./dist/utils/index.mjs"
@@ -86,6 +90,10 @@
     "#lib/*": {
       "kronk": "./src/lib/*.mts",
       "default": "./dist/lib/*.mjs"
+    },
+    "#parsers/*": {
+      "kronk": "./src/parsers/*.mts",
+      "default": "./dist/parsers/*.mjs"
     },
     "#tests/*": "./__tests__/*.mts",
     "#types/*": {
@@ -162,6 +170,7 @@
     "@flex-development/grease": "3.0.0-alpha.9",
     "@flex-development/mlly": "1.0.0-alpha.20",
     "@flex-development/pathe": "4.0.2",
+    "@flex-development/pkg-types": "4.1.0",
     "@flex-development/remark-preset": "1.0.0",
     "@tsconfig/strictest": "2.0.5",
     "@types/chai": "5.2.2",

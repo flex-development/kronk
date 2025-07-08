@@ -4,6 +4,7 @@
  */
 
 import chars from '#enums/chars'
+import keid from '#enums/keid'
 import TestSubject from '#errors/kronk.error'
 import formatList from '#internal/format-list'
 import isKronkError from '#utils/is-kronk-error'
@@ -124,7 +125,7 @@ describe('unit:errors/KronkError', () => {
   describe('#toString', () => {
     it('should return error as human-readable string', () => {
       // Arrange
-      const subject: TestSubject = new TestSubject(reason, 'kronk/invalid-flag')
+      const subject: TestSubject = new TestSubject(reason, keid.invalid_flags)
 
       // Act
       const result = subject.toString()

@@ -14,6 +14,9 @@ export type {
   default as CommandErrorInfo
 } from '#interfaces/command-error.info'
 export type {
+  default as CommandErrorSnapshot
+} from '#interfaces/command-error.snapshot'
+export type {
   default as CommandUsageData
 } from '#interfaces/command-usage.data'
 export type {
@@ -22,10 +25,12 @@ export type {
 export type { default as CommandData } from '#interfaces/command.data'
 export type { default as CommandInfo } from '#interfaces/command.info'
 export type { default as CommandMetadata } from '#interfaces/command.metadata'
+export type { default as CommandSnapshot } from '#interfaces/command.snapshot'
 export type { default as DefaultInfo } from '#interfaces/default.info'
 export type { default as KronkErrorCause } from '#interfaces/kronk-error.cause'
 export type { default as KronkErrorInfo } from '#interfaces/kronk-error.info'
 export type { default as KronkErrorJson } from '#interfaces/kronk-error.json'
+export type { default as KronkErrorMap } from '#interfaces/kronk-error.map'
 export type {
   default as KronkEventNameMap
 } from '#interfaces/kronk-event-name.map'
@@ -41,6 +46,7 @@ export type { default as OptionMetadata } from '#interfaces/option.metadata'
 export type { default as ParseOptions } from '#interfaces/parse-options'
 export type { default as Process } from '#interfaces/process'
 export type { default as ProcessEnv } from '#interfaces/process-env'
+export type { default as SubcommandInfo } from '#interfaces/subcommand.info'
 export type {
   default as VersionOptionInfo
 } from '#interfaces/version-option.info'

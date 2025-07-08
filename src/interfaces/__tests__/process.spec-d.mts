@@ -50,8 +50,8 @@ describe('unit-d:interfaces/Process', () => {
     })
 
     describe('returns', () => {
-      it('should return never', () => {
-        expectTypeOf<Subject>().returns.toEqualTypeOf<never>()
+      it('should return undefined', () => {
+        expectTypeOf<Subject>().returns.toEqualTypeOf<undefined>()
       })
     })
   })

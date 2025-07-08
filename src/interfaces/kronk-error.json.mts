@@ -3,7 +3,7 @@
  * @module kronk/interfaces/KronkErrorJson
  */
 
-import type { KronkErrorCause } from '@flex-development/kronk'
+import type { KronkErrorCause, KronkErrorId } from '@flex-development/kronk'
 
 /**
  * JSON representation of an error.
@@ -22,14 +22,16 @@ interface KronkErrorJson {
   cause?: KronkErrorCause | null
 
   /**
-   * Suggested exit code to use with {@linkcode process.exit}.
+   * The suggested exit code to use with {@linkcode process.exit}.
    */
   code: number
 
   /**
    * Unique id representing the error.
+   *
+   * @see {@linkcode KronkErrorId}
    */
-  id: string
+  id: KronkErrorId
 
   /**
    * Human-readable description of the error.

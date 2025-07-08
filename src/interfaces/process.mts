@@ -24,6 +24,7 @@ interface Process {
 
   /**
    * Terminate the process synchronously with an exit status of `code`.
+   *
    * If `code` is omitted, `exit` uses either the 'success' code `0` or the
    * value of {@linkcode exitCode} if it has been set.
    *
@@ -31,9 +32,9 @@ interface Process {
    *
    * @param {ExitCode | null | undefined} [code]
    *  Exit status code
-   * @return {never}
+   * @return {undefined}
    */
-  exit(code?: ExitCode | null | undefined): never
+  exit(code?: ExitCode | null | undefined): undefined
 
   /**
    * The exit code to use when the process exits gracefully, or is exited via

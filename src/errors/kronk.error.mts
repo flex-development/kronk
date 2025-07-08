@@ -3,11 +3,14 @@
  * @module kronk/errors/KronkError
  */
 
+import keid from '#enums/keid'
 import kKronkError from '#internal/k-kronk-error'
 import toList from '#internal/to-list'
 import type {
+  EmptyString,
   ExitCode,
   KronkErrorCause,
+  KronkErrorId,
   KronkErrorInfo,
   KronkErrorJson
 } from '@flex-development/kronk'
@@ -56,17 +59,21 @@ class KronkError extends Error {
   /**
    * Unique id representing the error.
    *
+   * @see {@linkcode KronkErrorId}
+   *
    * @public
    * @instance
-   * @member {string} id
+   * @member {KronkErrorId} id
    */
-  public id: string
+  public id: KronkErrorId
 
   /**
    * Create a new kronk error.
    *
+   * @see {@linkcode EmptyString}
    * @see {@linkcode ExitCode}
    * @see {@linkcode KronkErrorCause}
+   * @see {@linkcode KronkErrorId}
    * @see {@linkcode KronkErrorInfo}
    *
    * @param {KronkErrorInfo} info
@@ -77,7 +84,7 @@ class KronkError extends Error {
    *  Info about the cause of the error
    * @param {ExitCode | null | undefined} [info.code]
    *  Suggested exit code to use with {@linkcode process.exit}
-   * @param {string | null | undefined} [info.id]
+   * @param {EmptyString | KronkErrorId | null | undefined} [info.id]
    *  Unique id representing the error
    * @param {string} info.reason
    *  Human-readable description of the error
@@ -87,37 +94,41 @@ class KronkError extends Error {
   /**
    * Create a new kronk error.
    *
+   * @see {@linkcode EmptyString}
    * @see {@linkcode ExitCode}
+   * @see {@linkcode KronkErrorId}
    *
    * @param {string} reason
    *  Human-readable description of the error
-   * @param {string | null | undefined} [id]
+   * @param {EmptyString | KronkErrorId | null | undefined} [id]
    *  Unique id representing the error
    * @param {ExitCode | null | undefined} [code]
    *  Suggested exit code to use with {@linkcode process.exit}
    */
   constructor(
     reason: string,
-    id?: string | null | undefined,
+    id?: EmptyString | KronkErrorId | null | undefined,
     code?: ExitCode | null | undefined
   )
 
   /**
    * Create a new kronk error.
    *
+   * @see {@linkcode EmptyString}
    * @see {@linkcode ExitCode}
+   * @see {@linkcode KronkErrorId}
    * @see {@linkcode KronkErrorInfo}
    *
    * @param {KronkErrorInfo | string} info
    *  Error info or human-readable description of the error
-   * @param {string | null | undefined} [id]
+   * @param {EmptyString | KronkErrorId | null | undefined} [id]
    *  Unique id representing the error
    * @param {ExitCode | null | undefined} [code]
    *  Suggested exit code to use with {@linkcode process.exit}
    */
   constructor(
     info: KronkErrorInfo | string,
-    id?: string | null | undefined,
+    id?: EmptyString | KronkErrorId | null | undefined,
     code?: ExitCode | null | undefined
   ) {
     if (typeof info === 'string') info = { code, id, reason: info }
@@ -128,7 +139,7 @@ class KronkError extends Error {
     this.additional = info.additional ? toList(info.additional) : []
     this.cause = info.cause
     this.code = isNIL(info.code) ? 1 : +info.code
-    this.id = info.id || 'kronk/error'
+    this.id = info.id || keid.error
     this.name = 'KronkError'
 
     Object.defineProperty(this, kKronkError, {
@@ -152,11 +163,11 @@ class KronkError extends Error {
    */
   public toJSON(): KronkErrorJson {
     return shake({
-      additional: this.additional,
-      cause: this.cause,
       code: this.code,
       id: this.id,
-      message: this.message,
+      message: this.message, // eslint-disable-next-line sort-keys
+      additional: this.additional,
+      cause: this.cause,
       stack: this.stack
     })
   }

@@ -2,6 +2,9 @@
 
 exports[`unit:errors/KronkError > #toJSON > should return error as json object 1`] = `
 {
+  "code": 1,
+  "id": "kronk/invalid-argument",
+  "message": "\`Option(-m --mask <mask>)\` does not allow \`h\`",
   "additional": [
     "Choices: 'default', 'expiresHeaderFormat', 'fullDate', 'isoDate', 'isoDateTime', 'isoTime', 'isoUtcDateTime', 'longDate', 'longTime', 'mediumDate', 'mediumTime', 'paddedShortDate', 'shortDate', and 'shortTime'",
   ],
@@ -24,11 +27,8 @@ exports[`unit:errors/KronkError > #toJSON > should return error as json object 1
       "shortTime",
     ],
   },
-  "code": 1,
-  "id": "kronk/invalid-argument",
-  "message": "\`Option(-m --mask <mask>)\` does not allow \`h\`",
-  "stack": KronkError: \`Option(-m --mask <mask>)\` does not allow \`h\`
-    at \${process.cwd()}/src/errors/__tests__/kronk.error.spec.mts:120:14
+  "stack": "KronkError: \`Option(-m --mask <mask>)\` does not allow \`h\`
+    at \${process.cwd()}/src/errors/__tests__/kronk.error.spec.mts:121:14
     at file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
     at file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
     at file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:1894:20
@@ -37,8 +37,8 @@ exports[`unit:errors/KronkError > #toJSON > should return error as json object 1
     at runTest (file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:1571:12)
     at runSuite (file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:1726:8)
     at runSuite (file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:1726:8)
-    at runSuite (file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:1726:8),
+    at runSuite (file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:1726:8)",
 }
 `;
 
-exports[`unit:errors/KronkError > #toString > should return error as human-readable string 1`] = `"[kronk/invalid-flag] Option(-ws, --workspace) failed due to '-ws'"`;
+exports[`unit:errors/KronkError > #toString > should return error as human-readable string 1`] = `"[kronk/invalid-flags] Option(-ws, --workspace) failed due to '-ws'"`;
