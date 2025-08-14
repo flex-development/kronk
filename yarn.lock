@@ -1709,7 +1709,7 @@ __metadata:
     "@flex-development/eslint-config": "npm:1.1.1"
     "@flex-development/fsm-tokenizer": "npm:1.0.0-alpha.1"
     "@flex-development/grease": "npm:3.0.0-alpha.9"
-    "@flex-development/log": "npm:5.0.0-alpha.3"
+    "@flex-development/log": "npm:5.0.0-alpha.4"
     "@flex-development/mlly": "npm:1.0.0-alpha.20"
     "@flex-development/pathe": "npm:4.0.2"
     "@flex-development/pkg-types": "npm:4.1.0"
@@ -1756,18 +1756,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@flex-development/log@npm:5.0.0-alpha.3":
-  version: 5.0.0-alpha.3
-  resolution: "@flex-development/log@npm:5.0.0-alpha.3"
+"@flex-development/log@npm:5.0.0-alpha.4":
+  version: 5.0.0-alpha.4
+  resolution: "@flex-development/log@npm:5.0.0-alpha.4"
   dependencies:
     "@flex-development/colors": "npm:1.0.2"
     "@flex-development/is-unicode-supported": "npm:1.0.1"
     "@flex-development/pathe": "npm:4.0.2"
     "@flex-development/tutils": "npm:6.0.0-alpha.25"
     devlop: "npm:1.1.0"
-    node-inspect-extracted: "npm:3.1.0"
+    node-inspect-extracted: "npm:3.2.0"
     string-width: "npm:7.2.0"
-  checksum: 10/eba8958983dc0eb8066f09b2c1b226fd2f6f62eed2b3499537e5e0a4a02cdabd0ed5dee2d3112b2dafe572104ddf7d90588c970524f7e74c6bda605b0031a9eb
+  checksum: 10/6e7f0ff0cb131818db9a7c8d399109275aa1e3f5881455ee9ae2d4333921ad799f12948adef8e1917a2d2e6b464e0ab761533170ce6de1b6172e00f10e4803a9
   languageName: node
   linkType: hard
 
@@ -8440,10 +8440,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-inspect-extracted@npm:3.1.0":
-  version: 3.1.0
-  resolution: "node-inspect-extracted@npm:3.1.0"
-  checksum: 10/ffe9a0285f3f65d787dba2c44676c585e76881765fc9b49b39255dab045188fc7f827c97860a44ce96ad1b9d8c560c5170740938a66fe8d26150f0951c4effba
+"node-inspect-extracted@npm:3.2.0":
+  version: 3.2.0
+  resolution: "node-inspect-extracted@npm:3.2.0"
+  checksum: 10/7ac450f45805f2ea50c2f1bca6ca0e79b0f06550ebf92ad642886851703687abd00816d90c1f7b8cc4e7c3ad2ffcb96832cb9b23cc0c0fb843a1d983fb4456d1
   languageName: node
   linkType: hard
 
