@@ -1725,7 +1725,7 @@ __metadata:
     "@vates/toggle-scripts": "npm:1.0.0"
     "@vitest/coverage-v8": "npm:3.2.3"
     "@vitest/ui": "npm:3.2.3"
-    chai: "npm:5.3.1"
+    chai: "npm:6.0.1"
     commander: "npm:14.0.0"
     cross-env: "npm:10.0.0"
     cspell: "npm:9.2.0"
@@ -3896,7 +3896,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chai@npm:5.3.1, chai@npm:^5.2.0":
+"chai@npm:6.0.1":
+  version: 6.0.1
+  resolution: "chai@npm:6.0.1"
+  checksum: 10/cd95aee5f98cdeaea3e24c21dcf1786d9eaf515d571861106a2378589cf5ef1ed3ddd223ca1121552656ffd744e4acd051f8881c1a9729c71551776db55fb2cb
+  languageName: node
+  linkType: hard
+
+"chai@npm:^5.2.0":
   version: 5.3.1
   resolution: "chai@npm:5.3.1"
   dependencies:
