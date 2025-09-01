@@ -1709,7 +1709,7 @@ __metadata:
     "@flex-development/eslint-config": "npm:1.1.1"
     "@flex-development/fsm-tokenizer": "npm:1.0.0-alpha.1"
     "@flex-development/grease": "npm:3.0.0-alpha.9"
-    "@flex-development/log": "npm:5.0.0-alpha.5"
+    "@flex-development/log": "npm:5.0.0"
     "@flex-development/mlly": "npm:1.0.0-alpha.20"
     "@flex-development/pathe": "npm:4.0.2"
     "@flex-development/pkg-types": "npm:4.1.0"
@@ -1756,9 +1756,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@flex-development/log@npm:5.0.0-alpha.5":
-  version: 5.0.0-alpha.5
-  resolution: "@flex-development/log@npm:5.0.0-alpha.5"
+"@flex-development/log@npm:5.0.0":
+  version: 5.0.0
+  resolution: "@flex-development/log@npm:5.0.0"
   dependencies:
     "@flex-development/colors": "npm:1.0.2"
     "@flex-development/is-unicode-supported": "npm:1.0.1"
@@ -1767,7 +1767,7 @@ __metadata:
     devlop: "npm:1.1.0"
     node-inspect-extracted: "npm:3.2.0"
     string-width: "npm:8.0.0"
-  checksum: 10/7e24f2c97682d209dc36cfd4b24b9f68114decc8fc3ad120cfd5e8387ae80c96020adc9abac66a6bee97a0d5a7ef6ecf66d5a74440cf13dec75a1b134e1dac3d
+  checksum: 10/8c5bfc7c240afc44a4718b968ca03d2e975042310005c064dea7e5ee7113dea642a90e596245a999a27ec8bcc252949c9deba1516731cd8047a578e41a9ee319
   languageName: node
   linkType: hard
 
