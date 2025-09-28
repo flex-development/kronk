@@ -28,7 +28,6 @@ branches:
           - context: commitlint
           - context: dependabot-dedupe
           - context: format
-          - context: gitguardian
           - context: lint
           - context: spelling
           - context: test (24)
