@@ -27,7 +27,7 @@ on:
       - synchronize
 jobs:
   auto-merge:
-    if: github.event.pull_request.auto_merge == null && !github.event.pull_request.draft
+    if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     steps:
       - id: debug
