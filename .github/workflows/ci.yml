@@ -289,13 +289,13 @@ jobs:
         name: Upload report
         uses: actions/upload-artifact@v4.6.2
         with:
-          name: ${{ format('{0}.{1}.blob.json', env.SHA, matrix.node-version) }}
+          name: ${{ format('{0}.node{1}.blob.json', env.SHA, matrix.node-version) }}
           path: ./.vitest-reports/test.blob.json
       - id: coverage-summary
         name: Upload coverage summary
         uses: actions/upload-artifact@v4.6.2
         with:
-          name: ${{ format('{0}.{1}.coverage.json', env.SHA, matrix.node-version) }}
+          name: ${{ format('{0}.node{1}.coverage.json', env.SHA, matrix.node-version) }}
           path: ${{ env.COVERAGE_SUMMARY }}
       - id: codecov-results
         if: ${{ !cancelled() }}
