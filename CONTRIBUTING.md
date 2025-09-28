@@ -372,7 +372,6 @@ e.g:
    2. [`release`](.github/workflows/release.yml)
       - create and push new tag
       - create and publish github release
-      - ensure all relevant issues are closed
    3. [`publish`](.github/workflows/publish.yml)
       - publish package to [github package registry][gpr]
       - publish package to [npm][]
