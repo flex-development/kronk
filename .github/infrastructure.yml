@@ -75,6 +75,9 @@ labels:
   - name: scope:ts
     description: typescript support
     color: 74cefc
+  - name: scope:utils
+    description: utilities
+    color: 74cefc
   - name: status:awaiting-answers
     description: needs clarification or more information from author
     color: e7034b
