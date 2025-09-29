@@ -28,7 +28,7 @@ a command line builder
 
 This package is [ESM only][esm].
 
-In Node.js with [yarn][]:
+With [yarn][]:
 
 ```sh
 yarn add @flex-development/kronk
@@ -37,7 +37,19 @@ yarn add @flex-development/kronk
 <blockquote>
   <small>
     See <a href='https://yarnpkg.com/protocol/git'>Git - Protocols | Yarn</a>
-    &nbsp;for details regarding installing from Git.
+    &nbsp;for info regarding installing from Git.
+  </small>
+</blockquote>
+
+With [bun][]:
+
+```sh
+bun add @flex-development/kronk
+```
+
+<blockquote>
+  <small>
+    See <a href='https://bun.com/docs/cli/add'><code>bun add</code></a> for more details.
   </small>
 </blockquote>
 
@@ -55,6 +67,8 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 This project has a [code of conduct](./CODE_OF_CONDUCT.md). By interacting with this repository, organization, or
 community you agree to abide by its terms.
+
+[bun]: https://bun.sh
 
 [esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
 
