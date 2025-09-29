@@ -13,6 +13,7 @@ import {
   type ConfigEnv,
   type ViteUserConfig
 } from 'vitest/config'
+import pkg from './package.json' with { type: 'json' }
 import tsconfig from './tsconfig.json' with { type: 'json' }
 
 export default defineConfig(config)
@@ -73,7 +74,8 @@ function config(this: void, env: ConfigEnv): ViteUserConfig {
       mockReset: true,
       outputFile: {
         blob: pathe.join('.vitest-reports', env.mode + '.blob.json'),
-        json: pathe.join('__tests__', 'reports', env.mode + '.json')
+        json: pathe.join('__tests__', 'reports', env.mode + '.json'),
+        junit: pathe.join('__tests__', 'reports', 'junit.xml')
       },
       passWithNoTests: true,
       reporters: JSON.parse(process.env['VITEST_UI'] ?? '0')
@@ -84,6 +86,7 @@ function config(this: void, env: ConfigEnv): ViteUserConfig {
           ci ? 'github-actions' : new Notifier(),
           'blob',
           'json',
+          ['junit', { suiteName: pkg.name }],
           new VerboseReporter()
         ],
       /**
