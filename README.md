@@ -13,7 +13,7 @@
 [![vitest](https://img.shields.io/badge/-vitest-6e9f18?style=flat\&logo=vitest\&logoColor=ffffff)](https://vitest.dev)
 [![yarn](https://img.shields.io/badge/-yarn-2c8ebb?style=flat\&logo=yarn\&logoColor=ffffff)](https://yarnpkg.com)
 
-a command line builder
+\:sparkles: a command line builder \:sparkles:
 
 ## Contents
 
@@ -22,6 +22,8 @@ a command line builder
 - [Use](#use)
 - [Types](#types)
 - [Contribute](#contribute)
+
+![run-the-command-kronk](./run-the-command-kronk.jpg)
 
 ## What is this?
 
