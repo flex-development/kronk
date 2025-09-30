@@ -3,7 +3,7 @@
  * @module kronk/interfaces/Process
  */
 
-import type { ExitCode, ProcessEnv } from '@flex-development/kronk'
+import type { ExitCode, ExitProcess, ProcessEnv } from '@flex-development/kronk'
 import type { WriteStream } from '@flex-development/log'
 
 /**
@@ -28,13 +28,9 @@ interface Process {
    * If `code` is omitted, `exit` uses either the 'success' code `0` or the
    * value of {@linkcode exitCode} if it has been set.
    *
-   * @see {@linkcode ExitCode}
-   *
-   * @param {ExitCode | null | undefined} [code]
-   *  Exit status code
-   * @return {undefined}
+   * @see {@linkcode ExitProcess}
    */
-  exit(code?: ExitCode | null | undefined): undefined
+  exit: ExitProcess
 
   /**
    * The exit code to use when the process exits gracefully, or is exited via

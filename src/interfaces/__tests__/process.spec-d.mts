@@ -4,7 +4,7 @@
  */
 
 import type TestSubject from '#interfaces/process'
-import type { ExitCode, ProcessEnv } from '@flex-development/kronk'
+import type { ExitCode, ExitProcess, ProcessEnv } from '@flex-development/kronk'
 import type { WriteStream } from '@flex-development/log'
 import type { Nilable } from '@flex-development/tutils'
 
@@ -17,6 +17,12 @@ describe('unit-d:interfaces/Process', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('env')
       .toEqualTypeOf<ProcessEnv>()
+  })
+
+  it('should match [exit: ExitProcess]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('exit')
+      .toEqualTypeOf<ExitProcess>()
   })
 
   it('should match [exitCode?: ExitCode | null | undefined]', () => {
