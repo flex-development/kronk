@@ -1715,7 +1715,7 @@ __metadata:
     "@flex-development/pkg-types": "npm:4.1.0"
     "@flex-development/remark-preset": "npm:1.0.0"
     "@flex-development/tutils": "npm:6.0.0-alpha.25"
-    "@tsconfig/strictest": "npm:2.0.5"
+    "@tsconfig/strictest": "npm:2.0.6"
     "@types/chai": "npm:5.2.2"
     "@types/dateformat": "npm:5.0.3"
     "@types/is-ci": "npm:3.0.4"
@@ -2699,10 +2699,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/strictest@npm:2.0.5":
-  version: 2.0.5
-  resolution: "@tsconfig/strictest@npm:2.0.5"
-  checksum: 10/c1dfc581c6b46218034aa05a0ea2d0284ae8dc3508a38bee7014dd6868ed681e6b88d4d13a8e1b7f35221e84cd020ffab18f3991bc9e652ce441775e2fcbad57
+"@tsconfig/strictest@npm:2.0.6":
+  version: 2.0.6
+  resolution: "@tsconfig/strictest@npm:2.0.6"
+  checksum: 10/2d51922b7be2bc57cfedd651d01430bffc2329508e1d8ebf7b16be27f9e05151d3cca52f03a2f9ca949cb0c11db4800494432fcad8da1d718e977712f557d244
   languageName: node
   linkType: hard
 
