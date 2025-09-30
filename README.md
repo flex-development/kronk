@@ -1,5 +1,6 @@
 # kronk
 
+[![ci](https://github.com/flex-development/kronk/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/flex-development/kronk/actions/workflows/ci.yml)
 [![github release](https://img.shields.io/github/v/release/flex-development/kronk.svg?include_prereleases\&sort=semver)](https://github.com/flex-development/kronk/releases/latest)
 [![npm](https://img.shields.io/npm/v/@flex-development/kronk.svg)](https://npmjs.com/package/@flex-development/kronk)
 [![codecov](https://codecov.io/gh/flex-development/kronk/graph/badge.svg?token=hddIvRiqq3)](https://codecov.io/gh/flex-development/kronk)
