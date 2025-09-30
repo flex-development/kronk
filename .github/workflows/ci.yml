@@ -247,6 +247,10 @@ jobs:
       matrix:
         node-version:
           - 24
+          - 23
+          - 22
+          - 21
+          - 20
     env:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       COVERAGE_SUMMARY: ./coverage/coverage-summary.json

@@ -31,6 +31,10 @@ branches:
           - context: lint
           - context: spelling
           - context: test (24)
+          - context: test (23)
+          - context: test (22)
+          - context: test (21)
+          - context: test (20)
           - context: typescript
         strict: true
       restrictions: null
@@ -186,4 +190,5 @@ repository:
     - program
   visibility: public
   vulnerability_alerts: true
+  web_commit_signoff_required: true
 teams: []
