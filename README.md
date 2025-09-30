@@ -3,6 +3,8 @@
 [![ci](https://github.com/flex-development/kronk/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/flex-development/kronk/actions/workflows/ci.yml)
 [![github release](https://img.shields.io/github/v/release/flex-development/kronk.svg?include_prereleases\&sort=semver)](https://github.com/flex-development/kronk/releases/latest)
 [![npm](https://img.shields.io/npm/v/@flex-development/kronk.svg)](https://npmjs.com/package/@flex-development/kronk)
+[![npm downloads](https://img.shields.io/npm/dm/@flex-development/kronk.svg)](https://www.npmcharts.com/compare/@flex-development/kronk?interval=30)
+[![install size](https://packagephobia.now.sh/badge?p=@flex-development/kronk)](https://packagephobia.now.sh/result?p=@flex-development/kronk)
 [![codecov](https://codecov.io/gh/flex-development/kronk/graph/badge.svg?token=hddIvRiqq3)](https://codecov.io/gh/flex-development/kronk)
 [![module type: esm](https://img.shields.io/badge/module%20type-esm-brightgreen)](https://github.com/voxpelli/badges-cjs-esm)
 [![license](https://img.shields.io/github/license/flex-development/kronk.svg)](LICENSE.md)
