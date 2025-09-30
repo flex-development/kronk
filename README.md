@@ -27,7 +27,7 @@
 
 ## What is this?
 
-`kronk` is a utility for building command-line applications.
+`kronk` is a utility for building command-line applications in [node.js][nodejs] and [bun][].
 
 ## Install
 
@@ -76,6 +76,8 @@ community you agree to abide by its terms.
 [bun]: https://bun.sh
 
 [esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
+
+[nodejs]: https://nodejs.org
 
 [typescript]: https://www.typescriptlang.org
 

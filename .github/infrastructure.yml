@@ -35,6 +35,9 @@ branches:
           - context: test (22)
           - context: test (21)
           - context: test (20)
+          - context: test-bun (canary)
+          - context: test-bun (latest)
+          - context: test-bun (1.2.0)
           - context: typescript
         strict: true
       restrictions: null
