@@ -20,6 +20,7 @@
 - [What is this?](#what-is-this)
 - [Install](#install)
 - [Use](#use)
+  - [Creating a *program*](#creating-a-program)
 - [Types](#types)
 - [Contribute](#contribute)
 
@@ -61,6 +62,23 @@ bun add @flex-development/kronk
 ## Use
 
 **TODO**: use
+
+### Creating a *program*
+
+kronk exports a global `program` object convenient for quick programs.
+This is used in the examples throughout this `README` for brevity.
+
+```js
+import { program } from '@flex-development/kronk'
+```
+
+For larger programs using kronk in multiple ways, including unit testing, a `Command` should be created.
+
+```ts
+import { Command } from '@flex-development/kronk'
+
+const program: Command = new Command()
+```
 
 ## Types
 
