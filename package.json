@@ -95,6 +95,10 @@
       "kronk": "./src/parsers/*.mts",
       "default": "./dist/parsers/*.mjs"
     },
+    "#program": {
+      "kronk": "./src/program.mts",
+      "default": "./dist/program.mjs"
+    },
     "#tests/*": "./__tests__/*.mts",
     "#types/*": {
       "kronk": "./src/types/*.mts",
