@@ -35,8 +35,6 @@ import type {
   CommandMetadata,
   CommandName,
   CommandSnapshot,
-  CommandUsageData,
-  CommandUsageInfo,
   DefaultInfo,
   Exit,
   Flags,
@@ -54,6 +52,8 @@ import type {
   SubcommandInfo,
   SubcommandsInfo,
   UnknownStrategy,
+  UsageData,
+  UsageInfo,
   Version,
   VersionOptionInfo
 } from '@flex-development/kronk'
@@ -2779,48 +2779,46 @@ class Command {
   /**
    * Set the command `usage` description.
    *
-   * @see {@linkcode CommandUsageData}
+   * @see {@linkcode UsageData}
    *
    * @public
    * @instance
    *
-   * @param {CommandUsageData | null | undefined} usage
+   * @param {UsageData | null | undefined} usage
    *  Command usage data
    * @return {this}
    *  `this` command
    */
-  public usage(usage: CommandUsageData | null | undefined): this
+  public usage(usage: UsageData | null | undefined): this
 
   /**
    * Get the command usage description.
    *
-   * @see {@linkcode CommandUsageInfo}
+   * @see {@linkcode UsageInfo}
    *
    * @public
    * @instance
    *
-   * @return {CommandUsageInfo}
+   * @return {UsageInfo}
    *  Command usage info
    */
-  public usage(): CommandUsageInfo
+  public usage(): UsageInfo
 
   /**
    * Get or set command usage.
    *
-   * @see {@linkcode CommandUsageInfo}
-   * @see {@linkcode CommandUsageData}
+   * @see {@linkcode UsageInfo}
+   * @see {@linkcode UsageData}
    *
    * @public
    * @instance
    *
-   * @param {CommandUsageData | null | undefined} [usage]
+   * @param {UsageData | null | undefined} [usage]
    *  Command usage data
-   * @return {CommandUsageInfo | this}
+   * @return {UsageInfo | this}
    *  Command usage info or `this` command
    */
-  public usage(
-    usage?: CommandUsageData | null | undefined
-  ): CommandUsageInfo | this {
+  public usage(usage?: UsageData | null | undefined): UsageInfo | this {
     if (!arguments.length) {
       return {
         arguments: orNIL(this.info.usage?.arguments),

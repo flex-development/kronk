@@ -8,13 +8,13 @@ import type {
   Action,
   ArgumentsData,
   Command,
-  CommandUsageData,
   Exit,
   List,
   OptionPriority,
   OptionsData,
   SubcommandsData,
   UnknownStrategy,
+  UsageData,
   VersionData
 } from '@flex-development/kronk'
 import type { Nilable, OptionalKeys } from '@flex-development/tutils'
@@ -108,10 +108,10 @@ describe('unit-d:interfaces/CommandData', () => {
       .toEqualTypeOf<Nilable<UnknownStrategy>>()
   })
 
-  it('should match [usage?: CommandUsageData | null | undefined]', () => {
+  it('should match [usage?: UsageData | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('usage')
-      .toEqualTypeOf<Nilable<CommandUsageData>>()
+      .toEqualTypeOf<Nilable<UsageData>>()
   })
 
   it('should match [version?: VersionData | null | undefined]', () => {

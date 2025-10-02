@@ -1,12 +1,18 @@
 /**
- * @file Interfaces - CommandUsageData
- * @module kronk/interfaces/CommandUsageData
+ * @file Interfaces - UsageInfo
+ * @module kronk/interfaces/UsageInfo
  */
 
+import type { UsageData } from '@flex-development/kronk'
+
 /**
- * An object describing command usage.
+ * Command usage info.
+ *
+ * @see {@linkcode UsageData}
+ *
+ * @extends {UsageData}
  */
-interface CommandUsageData {
+interface UsageInfo extends UsageData {
   /**
    * Command arguments descriptor.
    *
@@ -24,9 +30,11 @@ interface CommandUsageData {
    * > 👉 **Note**: Displayed in auto-generated help text **only** when a
    * > command has at least one visible command option.
    *
+   * @override
+   *
    * @default '[options]'
    */
-  options?: string | null | undefined
+  options: string
 
   /**
    * Subcommands descriptor.
@@ -34,9 +42,11 @@ interface CommandUsageData {
    * > 👉 **Note**: Displayed in auto-generated help text **only** when a
    * > subcommand has at least one visible subcommand.
    *
+   * @override
+   *
    * @default '[command]'
    */
-  subcommand?: string | null | undefined
+  subcommand: string
 }
 
-export type { CommandUsageData as default }
+export type { UsageInfo as default }

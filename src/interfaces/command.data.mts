@@ -7,13 +7,13 @@ import type {
   Action,
   ArgumentsData,
   Command,
-  CommandUsageData,
   Exit,
   List,
   OptionPriority,
   OptionsData,
   SubcommandsData,
   UnknownStrategy,
+  UsageData,
   VersionData
 } from '@flex-development/kronk'
 
@@ -118,12 +118,12 @@ interface CommandData {
   /**
    * An object describing how the command is used.
    *
-   * @see {@linkcode CommandUsageData}
+   * @see {@linkcode UsageData}
    *
    * @default
    *  { arguments: null, options: '[options]', subcommand: '[command]' }
    */
-  usage?: CommandUsageData | null | undefined
+  usage?: UsageData | null | undefined
 
   /**
    * Command version configuration.

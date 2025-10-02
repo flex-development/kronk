@@ -19,8 +19,8 @@ import type {
   Action,
   CommandInfo,
   CommandName,
-  CommandUsageData,
-  Exit
+  Exit,
+  UsageData
 } from '@flex-development/kronk'
 
 describe('unit:lib/Command', () => {
@@ -500,7 +500,7 @@ describe('unit:lib/Command', () => {
     it('should set command usage and return `this`', () => {
       // Arrange
       const subject: TestSubject = new TestSubject()
-      const usage: CommandUsageData = { options: '[opts]' }
+      const usage: UsageData = { options: '[opts]' }
 
       // Act
       const result = subject.usage(usage)
