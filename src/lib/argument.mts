@@ -32,6 +32,9 @@ import { ok } from 'devlop'
 /**
  * A command-argument.
  *
+ * Command arguments use the {@linkcode initialArgument} construct to tokenize
+ * argument syntax.
+ *
  * @class
  */
 class Argument {

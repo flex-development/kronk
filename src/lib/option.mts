@@ -43,6 +43,9 @@ import { ok } from 'devlop'
 /**
  * A command option.
  *
+ * Command options use the {@linkcode initialOption} construct to tokenize
+ * option flags and argument syntax.
+ *
  * @class
  */
 class Option {

@@ -4,11 +4,11 @@
  */
 
 /**
- * A string containing option flags.
+ * A string comprised of option flags.
  *
  * The flags string can contain at most 2 flags, typically one long flag and one
  * short or shortish (e.g. `--ws`) flag. Flags are separated by commas (`,`),
- * pipes (`|`), or spaces.`
+ * pipes (`|`), or spaces.
  *
  * A short flag is a hyphen — specifically [HYPHEN-MINUS `U+002D`][hyphen] —
  * followed by one case-insensitive alphanumeric character.
@@ -28,14 +28,12 @@
  *
  * Variadic arguments are specified with an ellipsis wrapped in brackets (e.g.
  * `<...>`, `[...]`) or by appending the ellipsis to the end of the argument id
- * (`<value...>`, `[value...]`).
- *
- * Option-arguments can also be marked as mandatory by appending an exclamation
- * mark to the end of the argument id: (`<!>`, `<id!>`, `<value!...>`).
+ * (`<value...>`, `[value...]`). Option-arguments can also be marked as
+ * mandatory by appending an exclamation mark to the end of the argument id:
+ * (`<!>`, `<id!>`, `<value!...>`).
  *
  * [full-stop]: https://www.fileformat.info/info/unicode/char/002e/index.htm
  * [hyphen]: https://www.fileformat.info/info/unicode/char/002d/index.htm
- * [lowline]: https://www.fileformat.info/info/unicode/char/005f/index.htm
  * [meanings]: http://www.catb.org/~esr/writings/taoup/html/ch10s05.html
  *
  * @example

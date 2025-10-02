@@ -27,14 +27,14 @@ interface KronkErrorJson {
   code: number
 
   /**
-   * Unique id representing the error.
+   * The unique id representing the error.
    *
    * @see {@linkcode KronkErrorId}
    */
   id: KronkErrorId
 
   /**
-   * Human-readable description of the error.
+   * The human-readable description of the error.
    */
   message: string
 

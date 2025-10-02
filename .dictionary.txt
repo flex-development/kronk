@@ -22,6 +22,7 @@ sarif
 sfmt
 shfmt
 tribonacci
+unscopables
 unstub
 variadics
 vates

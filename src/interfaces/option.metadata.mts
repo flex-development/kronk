@@ -31,8 +31,8 @@ interface OptionMetadata extends OptionInfo {
   /**
    * Short (or shortish, e.g. `--ws`) flag.
    *
-   * > 👉 **Note**: If `null` or `undefined`, {@linkcode long} will be a
-   * > non-empty string.
+   * > 👉 **Note**: If `null` or `undefined`, the {@linkcode long} flag will be
+   * > a non-empty string.
    */
   short: string | null | undefined
 

@@ -77,8 +77,8 @@ interface OptionData {
   preset?: string | null | undefined
 
   /**
-   * Whether to use snake_case format when converting the option name to an
-   * object property key. By default, camelCase format is used.
+   * Whether to use `snake_case` format when converting the option name to an
+   * object property key.
    */
   snakecase?: boolean | null | undefined
 }

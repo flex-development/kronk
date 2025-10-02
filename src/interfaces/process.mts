@@ -7,7 +7,7 @@ import type { ExitCode, ExitProcess, ProcessEnv } from '@flex-development/kronk'
 import type { WriteStream } from '@flex-development/log'
 
 /**
- * Object containing information about the current process.
+ * Information about the current process.
  */
 interface Process {
   /**

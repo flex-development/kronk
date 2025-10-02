@@ -15,7 +15,7 @@ import type { OptionEventNameMap } from '@flex-development/kronk'
  * @example
  *  declare module '@flex-development/kronk' {
  *    interface KronkEventNameMap {
- *      custom: `command:custom`
+ *      custom: 'command:custom'
  *    }
  *  }
  *

@@ -17,12 +17,14 @@ import type { Awaitable, Command, OptionValues } from '@flex-development/kronk'
  *  Command arguments
  *
  * @this {Command}
+ *  The command or subcommand being executed
  *
  * @param {Opts} options
  *  Parsed command options
  * @param {Args} args
  *  Parsed command arguments
  * @return {Awaitable<null | undefined | void>}
+ *  Nothing
  */
 type Action<
   Opts extends OptionValues = OptionValues,

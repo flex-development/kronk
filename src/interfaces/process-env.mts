@@ -4,7 +4,7 @@
  */
 
 /**
- * Object containing information about the user environment.
+ * Information about the current user environment.
  *
  * > 👉 **Note**: On Windows operating systems, environment variables are
  * > case-insensitive.

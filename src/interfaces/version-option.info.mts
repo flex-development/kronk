@@ -6,7 +6,7 @@
 import type { Flags, OptionData, Version } from '@flex-development/kronk'
 
 /**
- * Data used to create a version (i.e. `-v | --version`) command option.
+ * Data used to create command version options (i.e. `-v | --version`).
  *
  * @see {@linkcode OptionData}
  *

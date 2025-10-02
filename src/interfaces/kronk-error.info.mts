@@ -27,7 +27,7 @@ interface KronkErrorInfo {
   cause?: KronkErrorCause | null | undefined
 
   /**
-   * Suggested exit code to use with {@linkcode process.exit}.
+   * The suggested exit code to use with {@linkcode process.exit}.
    *
    * @see {@linkcode ExitCode}
    *
@@ -36,7 +36,7 @@ interface KronkErrorInfo {
   code?: ExitCode | null | undefined
 
   /**
-   * Unique id representing the error.
+   * The unique id representing the error.
    *
    * @see {@linkcode EmptyString}
    * @see {@linkcode KronkErrorId}
@@ -46,7 +46,7 @@ interface KronkErrorInfo {
   id?: EmptyString | KronkErrorId | null | undefined
 
   /**
-   * Human-readable description of the error.
+   * A human-readable description of the error.
    */
   reason: string
 }

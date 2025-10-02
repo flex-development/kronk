@@ -6,7 +6,8 @@
 import type { CommandInfo } from '@flex-development/kronk'
 
 /**
- * Record, where each key is a subcommand name and each value is an info object.
+ * Record, where each key is the name of a subcommand and each value is an info
+ * object.
  *
  * @see {@linkcode CommandInfo}
  */

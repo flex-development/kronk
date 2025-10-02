@@ -13,9 +13,10 @@ import type { Command, CommandError, KronkError } from '@flex-development/kronk'
  * @see {@linkcode KronkError}
  *
  * @this {Command}
+ *  The current command or subcommand
  *
  * @param {CommandError | KronkError | null | undefined} [e]
- *  The error to handle
+ *  The error to handle (if any)
  * @return {undefined}
  */
 type Exit = (

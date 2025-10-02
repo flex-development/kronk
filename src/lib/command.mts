@@ -80,6 +80,9 @@ import plur from 'plur'
 /**
  * A command.
  *
+ * Commands use the {@linkcode initialCommand} construct to tokenize arguments,
+ * delimiters, operands, option flags, and subcommand names.
+ *
  * @class
  */
 class Command {

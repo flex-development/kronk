@@ -14,25 +14,12 @@ import type { UsageData } from '@flex-development/kronk'
  */
 interface UsageInfo extends UsageData {
   /**
-   * Command arguments descriptor.
-   *
-   * > 👉 **Note**: Displayed in auto-generated help text **only** when a
-   * > command has at least one visible command argument.
-   *
-   * @default
-   *  generated using visible command arguments
-   */
-  arguments?: string | null | undefined
-
-  /**
    * Command options descriptor.
    *
    * > 👉 **Note**: Displayed in auto-generated help text **only** when a
    * > command has at least one visible command option.
    *
    * @override
-   *
-   * @default '[options]'
    */
   options: string
 
@@ -43,8 +30,6 @@ interface UsageInfo extends UsageData {
    * > subcommand has at least one visible subcommand.
    *
    * @override
-   *
-   * @default '[command]'
    */
   subcommand: string
 }

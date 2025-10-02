@@ -11,7 +11,7 @@ interface UsageData {
    * Command arguments descriptor.
    *
    * > 👉 **Note**: Displayed in auto-generated help text **only** when a
-   * > command has at least one visible command argument.
+   * > command has at least one visible argument.
    *
    * @default
    *  generated using visible command arguments
@@ -22,7 +22,7 @@ interface UsageData {
    * Command options descriptor.
    *
    * > 👉 **Note**: Displayed in auto-generated help text **only** when a
-   * > command has at least one visible command option.
+   * > command has at least one visible option.
    *
    * @default '[options]'
    */
@@ -32,7 +32,7 @@ interface UsageData {
    * Subcommands descriptor.
    *
    * > 👉 **Note**: Displayed in auto-generated help text **only** when a
-   * > subcommand has at least one visible subcommand.
+   * > command has at least one visible subcommand.
    *
    * @default '[command]'
    */
