@@ -6,17 +6,14 @@
 import type TestSubject from '#interfaces/command.data'
 import type {
   Action,
-  ArgumentInfo,
-  ArgumentSyntax,
+  ArgumentsData,
   Command,
   CommandUsageData,
   Exit,
-  Flags,
   List,
-  OptionInfo,
   OptionPriority,
-  SubcommandInfo,
-  SubcommandsInfo,
+  OptionsData,
+  SubcommandsData,
   UnknownStrategy,
   Version,
   VersionOption,
@@ -41,19 +38,10 @@ describe('unit-d:interfaces/CommandData', () => {
       .toEqualTypeOf<Nilable<List<string> | string>>()
   })
 
-  it('should match [arguments?: ArgumentInfo | List<ArgumentInfo | ArgumentSyntax> | string | null | undefined]', () => {
-    // Arrange
-    type Expect =
-      | ArgumentInfo
-      | List<ArgumentInfo | ArgumentSyntax>
-      | string
-      | null
-      | undefined
-
-    // Expect
+  it('should match [arguments?: ArgumentsData | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('arguments')
-      .toEqualTypeOf<Nilable<Expect>>()
+      .toEqualTypeOf<Nilable<ArgumentsData>>()
   })
 
   it('should match [default?: boolean | null | undefined]', () => {
@@ -92,19 +80,10 @@ describe('unit-d:interfaces/CommandData', () => {
       .toEqualTypeOf<Nilable<OptionPriority>>()
   })
 
-  it('should match [options?: Flags | List<Flags | OptionInfo> | OptionInfo | null | undefined]', () => {
-    // Arrange
-    type Expect =
-      | Flags
-      | List<Flags | OptionInfo>
-      | OptionInfo
-      | null
-      | undefined
-
-    // Expect
+  it('should match [options?: OptionsData | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('options')
-      .toEqualTypeOf<Nilable<Expect>>()
+      .toEqualTypeOf<Nilable<OptionsData>>()
   })
 
   it('should match [parent?: Command | null | undefined]', () => {
@@ -113,10 +92,10 @@ describe('unit-d:interfaces/CommandData', () => {
       .toEqualTypeOf<Nilable<Command>>()
   })
 
-  it('should match [subcommands?: SubcommandInfo | SubcommandsInfo | null | undefined]', () => {
+  it('should match [subcommands?: SubcommandsData | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('subcommands')
-      .toEqualTypeOf<Nilable<SubcommandInfo | SubcommandsInfo>>()
+      .toEqualTypeOf<Nilable<SubcommandsData>>()
   })
 
   it('should match [summary?: string | null | undefined]', () => {

@@ -5,17 +5,14 @@
 
 import type {
   Action,
-  ArgumentInfo,
-  ArgumentSyntax,
+  ArgumentsData,
   Command,
   CommandUsageData,
   Exit,
-  Flags,
   List,
-  OptionInfo,
   OptionPriority,
-  SubcommandInfo,
-  SubcommandsInfo,
+  OptionsData,
+  SubcommandsData,
   UnknownStrategy,
   Version,
   VersionOption,
@@ -43,16 +40,9 @@ interface CommandData {
   /**
    * Arguments for the command.
    *
-   * @see {@linkcode ArgumentInfo}
-   * @see {@linkcode ArgumentSyntax}
-   * @see {@linkcode List}
+   * @see {@linkcode ArgumentsData}
    */
-  arguments?:
-    | ArgumentInfo
-    | List<ArgumentInfo | ArgumentSyntax>
-    | string
-    | null
-    | undefined
+  arguments?: ArgumentsData | null | undefined
 
   /**
    * Whether this is the default command.
@@ -95,16 +85,9 @@ interface CommandData {
   /**
    * Options for the command.
    *
-   * @see {@linkcode Flags}
-   * @see {@linkcode List}
-   * @see {@linkcode OptionInfo}
+   * @see {@linkcode OptionsData}
    */
-  options?:
-    | Flags
-    | List<Flags | OptionInfo>
-    | OptionInfo
-    | null
-    | undefined
+  options?: OptionsData | null | undefined
 
   /**
    * The parent command.
@@ -116,14 +99,9 @@ interface CommandData {
   /**
    * Subcommands for the command.
    *
-   * @see {@linkcode SubcommandInfo}
-   * @see {@linkcode SubcommandsInfo}
+   * @see {@linkcode SubcommandsData}
    */
-  subcommands?:
-    | SubcommandInfo
-    | SubcommandsInfo
-    | null
-    | undefined
+  subcommands?: SubcommandsData | null | undefined
 
   /**
    * A summary of the command.
