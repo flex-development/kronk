@@ -14,9 +14,7 @@ import type {
   OptionsData,
   SubcommandsData,
   UnknownStrategy,
-  Version,
-  VersionOption,
-  VersionOptionInfo
+  VersionData
 } from '@flex-development/kronk'
 
 /**
@@ -74,7 +72,7 @@ interface CommandData {
   hidden?: boolean | null | undefined
 
   /**
-   * Merge strategy to use when merging global and local options.
+   * The strategy to use when merging global and local options.
    *
    * @see {@linkcode OptionPriority}
    *
@@ -128,13 +126,11 @@ interface CommandData {
   usage?: CommandUsageData | null | undefined
 
   /**
-   * The version of the command.
+   * Command version configuration.
    *
-   * @see {@linkcode Version}
-   * @see {@linkcode VersionOption}
-   * @see {@linkcode VersionOptionInfo}
+   * @see {@linkcode VersionData}
    */
-  version?: Version | VersionOption | VersionOptionInfo | null | undefined
+  version?: VersionData | null | undefined
 }
 
 export type { CommandData as default }
