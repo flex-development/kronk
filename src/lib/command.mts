@@ -54,7 +54,7 @@ import type {
   UnknownStrategy,
   UsageData,
   UsageInfo,
-  Version,
+  VersionData,
   VersionOptionInfo
 } from '@flex-development/kronk'
 import { CommandError, KronkError } from '@flex-development/kronk/errors'
@@ -2840,21 +2840,17 @@ class Command {
    * > the flags `-v | --version`. No cleanup is performed when this method is
    * > called with different flags (i.e. `info` as a string or `info.flags`).
    *
-   * @see {@linkcode Version}
-   * @see {@linkcode VersionOption}
-   * @see {@linkcode VersionOptionInfo}
+   * @see {@linkcode VersionData}
    *
    * @public
    * @instance
    *
-   * @param {Version | VersionOption | VersionOptionInfo | null | undefined} v
+   * @param {VersionData | null | undefined} version
    *  Version, version option instance, or version option info
    * @return {this}
    *  `this` command
    */
-  public version(
-    v: Version | VersionOption | VersionOptionInfo | null | undefined
-  ): this
+  public version(version: VersionData | null | undefined): this
 
   /**
    * Get the command version.
@@ -2870,30 +2866,30 @@ class Command {
   /**
    * Get or set the command version.
    *
-   * @see {@linkcode Version}
-   * @see {@linkcode VersionOption}
-   * @see {@linkcode VersionOptionInfo}
+   * @see {@linkcode VersionData}
    *
    * @public
    * @instance
    *
-   * @param {Version | VersionOption | VersionOptionInfo | null | undefined} [v]
+   * @param {VersionData | null | undefined} [version]
    *  Version, version option instance, or version option info
    * @return {string | this | null}
    *  Command version or `this` command
    */
   public version(
-    v?: Version | VersionOption | VersionOptionInfo | null | undefined
+    version?: VersionData | null | undefined
   ): string | this | null {
     if (arguments.length) {
-      this.info.version = v as VersionOption | null | undefined
+      this.info.version = version as VersionOption | null | undefined
 
-      if (v !== null && v !== undefined) {
-        if (typeof v === 'string' || 'compare' in v) v = { version: v }
+      if (version !== null && version !== undefined) {
+        if (typeof version === 'string' || 'compare' in version) {
+          version = { version }
+        }
 
         // create version option.
-        this.info.version = v as VersionOption
-        if (!isOption(v)) this.info.version = this.createOption(v)
+        this.info.version = version as VersionOption
+        if (!isOption(version)) this.info.version = this.createOption(version)
 
         // add version option and register parsed option listeners.
         this.addOption(this.info.version)

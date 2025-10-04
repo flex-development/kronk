@@ -22,43 +22,136 @@
 - [Use](#use)
   - [Creating a *program*](#creating-a-program)
 - [API](#api)
-  - [`Argument`](#argument)
-  - [`Command`](#command)
-  - [`Option`](#option)
-  - [`VersionOption`](#versionoption)
-  - Events
-    - [`KronkEvent`](#kronkevent)
-    - [`OptionEvent`](#optionevent)
-  - Errors
-    - [`CommandError`](#commanderror)
-    - [`KronkError`](#kronkerror)
+  - [`Argument(info)`](#argumentinfo)
+    - [`Argument#choices([choices])`](#argumentchoiceschoices)
+    - [`Argument#default([info])`](#argumentdefaultinfo)
+    - [`Argument#description([description])`](#argumentdescriptiondescription)
+    - [`Argument#id`](#argumentid)
+    - [`Argument#parser([parser])`](#argumentparserparser)
+    - [`Argument#required`](#argumentrequired)
+    - [`Argument#syntax`](#argumentsyntax)
+    - [`Argument#toString()`](#argumenttostring)
+    - [`Argument#variadic`](#argumentvariadic)
+  - [`Command(info)`](#commandinfo)
+    - [`Command#action([action])`](#commandactionaction)
+    - [`Command#addArgument(argument)`](#commandaddargumentargument)
+    - [`Command#addCommand(subcommand)`](#commandaddcommandsubcommand)
+    - [`Command#addOption(option)`](#commandaddoptionoption)
+    - [`Command#alias([alias])`](#commandaliasalias)
+    - [`Command#aliases([aliases])`](#commandaliasesaliases)
+    - [`Command#ancestors()`](#commandancestors)
+    - [`Command#args`](#commandargs)
+    - [`Command#argument(info[, data])`](#commandargumentinfo-data)
+    - [`Command#arguments([infos])`](#commandargumentsinfos)
+    - [`Command#argv`](#commandargv)
+    - [`Command#command(info[, data])`](#commandcommandinfo-data)
+    - [`Command#commands([infos])`](#commandcommandsinfos)
+    - [`Command#copyInheritedSettings(parent)`](#commandcopyinheritedsettingsparent)
+    - [`Command#createArgument(info[, data])`](#commandcreateargumentinfo-data)
+    - [`Command#createCommand(info[, data])`](#commandcreatecommandinfo-data)
+    - [`Command#createOption(info[, data])`](#commandcreateoptioninfo-data)
+    - [`Command#default`](#commanddefault)
+    - [`Command#defaultCommand`](#commanddefaultcommand)
+    - [`Command#description([description])`](#commanddescriptiondescription)
+    - [`Command#done([done])`](#commanddonedone)
+    - [`Command#emit(event)`](#commandemitevent)
+    - [`Command#emitOption(option, value, source[, flags])`](#commandemitoptionoption-value-source-flags)
+    - [`Command#error(info)`](#commanderrorinfo)
+    - [`Command#exit([e])`](#commandexite)
+    - [`Command#exiter([exit])`](#commandexiterexit)
+    - [`Command#findCommand(x)`](#commandfindcommandx)
+    - [`Command#findOption(flag[, direction])`](#commandfindoptionflag-direction)
+    - [`Command#hidden`](#commandhidden)
+    - [`Command#hide([hidden])`](#commandhidehidden)
+    - [`Command#id([name])`](#commandidname)
+    - [`Command#logger`](#commandlogger)
+    - [`Command#on<T>(event, listener[, options])`](#commandontevent-listener-options)
+    - [`Command#option(info[, data])`](#commandoptioninfo-data)
+    - [`Command#optionValue(key[, value][, source])`](#commandoptionvaluekey-value-source)
+    - [`Command#optionValueSource(key[, source])`](#commandoptionvaluesourcekey-source)
+    - [`Command#options([infos])`](#commandoptionsinfos)
+    - [`Command#opts<T>()`](#commandoptst)
+    - [`Command#optsWithGlobals<T>()`](#commandoptswithglobalst)
+    - [`Command#parent`](#commandparent)
+    - [`Command#parse([argv][, options])`](#commandparseargv-options)
+    - [`Command#parseAsync([argv][, options])`](#commandparseasyncargv-options)
+    - [`Command#process`](#commandprocess)
+    - [`Command#snapshot()`](#commandsnapshot)
+    - [`Command#summary([summary])`](#commandsummarysummary)
+    - [`Command#toString()`](#commandtostring)
+    - [`Command#unknown`](#commandunknown)
+    - [`Command#unknowns(strategy)`](#commandunknownsstrategy)
+    - [`Command#usage([usage])`](#commandusageusage)
+    - [`Command#version([version])`](#commandversionversion)
+  - [`CommandError(info)`](#commanderrorinfo-1)
+    - [`CommandError#command`](#commanderrorcommand)
+    - [`CommandError#snapshot()`](#commanderrorsnapshot)
+  - [`KronkError(info)`](#kronkerrorinfo)
+    - [`KronkError#additional`](#kronkerroradditional)
+    - [`KronkError#cause`](#kronkerrorcause)
+    - [`KronkError#id`](#kronkerrorid)
+    - [`KronkError#code`](#kronkerrorcode)
+    - [`KronkError#toJSON()`](#kronkerrortojson)
+    - [`KronkError#toString()`](#kronkerrortostring)
+  - [`KronkEvent(id)`](#kronkeventid)
+    - [`KronkEvent#id`](#kronkeventid-1)
+    - [`KronkEvent#toString()`](#kronkeventtostring)
+  - [`Option(info)`](#optioninfo)
+    - [`Option#boolean`](#optionboolean)
+    - [`Option#choices([choices])`](#optionchoiceschoices)
+    - [`Option#default([info])`](#optiondefaultinfo)
+    - [`Option#description([description])`](#optiondescriptiondescription)
+    - [`Option#env([env])`](#optionenvenv)
+    - [`Option#event`](#optionevent)
+    - [`Option#flags`](#optionflags)
+    - [`Option#hidden`](#optionhidden)
+    - [`Option#hide([hidden])`](#optionhidehidden)
+    - [`Option#id`](#optionid)
+    - [`Option#key`](#optionkey)
+    - [`Option#long`](#optionlong)
+    - [`Option#mandatory`](#optionmandatory)
+    - [`Option#optional`](#optionoptional)
+    - [`Option#parser([parser])`](#optionparserparser)
+    - [`Option#preset([preset])`](#optionpresetpreset)
+    - [`Option#required`](#optionrequired)
+    - [`Option#short`](#optionshort)
+    - [`Option#toString()`](#optiontostring)
+    - [`Option#variadic`](#optionvariadic)
+  - [`OptionEvent<T>(option, value, source[, flag])`](#optioneventtoption-value-source-flag)
+    - [`OptionEvent#flag`](#optioneventflag)
+    - [`OptionEvent#id`](#optioneventid)
+    - [`OptionEvent#option`](#optioneventoption)
+    - [`OptionEvent#source`](#optioneventsource)
+    - [`OptionEvent#value`](#optioneventvalue)
+  - [`VersionOption(info)`](#versionoptioninfo)
+    - [`VersionOption#version`](#versionoptionversion)
 - [Types](#types)
   - [`Action`](#action)
   - [`ArgumentData`](#argumentdata)
-  - [`ArgumentInfo`](#argumentinfo)
+  - [`ArgumentInfo`](#argumentinfo-1)
   - [`ArgumentMetadata`](#argumentmetadata)
   - [`ArgumentSyntaxMap`](#argumentsyntaxmap)
-  - [`ArgumentSyntax`](#argumentsyntax)
+  - [`ArgumentSyntax`](#argumentsyntax-1)
   - [`ArgumentsData`](#argumentsdata)
   - [`ArgvSourceMap`](#argvsourcemap)
   - [`ArgvSource`](#argvsource)
   - [`Awaitable`](#awaitable)
   - [`CommandData`](#commanddata)
-  - [`CommandErrorInfo`](#commanderrorinfo)
-  - [`CommandErrorSnapshot`](#commanderrorsnapshot)
-  - [`CommandInfo`](#commandinfo)
+  - [`CommandErrorInfo`](#commanderrorinfo-2)
+  - [`CommandErrorSnapshot`](#commanderrorsnapshot-1)
+  - [`CommandInfo`](#commandinfo-1)
   - [`CommandMetadata`](#commandmetadata)
   - [`CommandName`](#commandname)
-  - [`CommandSnapshot`](#commandsnapshot)
+  - [`CommandSnapshot`](#commandsnapshot-1)
   - [`DefaultInfo`](#defaultinfo)
   - [`EmptyString`](#emptystring)
   - [`ExitCode`](#exitcode)
   - [`ExitProcess`](#exitprocess)
   - [`Exit`](#exit)
   - [`Flags`](#flags)
-  - [`KronkErrorCause`](#kronkerrorcause)
-  - [`KronkErrorId`](#kronkerrorid)
-  - [`KronkErrorInfo`](#kronkerrorinfo)
+  - [`KronkErrorCause`](#kronkerrorcause-1)
+  - [`KronkErrorId`](#kronkerrorid-1)
+  - [`KronkErrorInfo`](#kronkerrorinfo-1)
   - [`KronkErrorJson`](#kronkerrorjson)
   - [`KronkErrorMap`](#kronkerrormap)
   - [`KronkEventListener`](#kronkeventlistener)
@@ -68,7 +161,7 @@
   - [`OptionEventListener`](#optioneventlistener)
   - [`OptionEventNameMap`](#optioneventnamemap)
   - [`OptionEventName`](#optioneventname)
-  - [`OptionInfo`](#optioninfo)
+  - [`OptionInfo`](#optioninfo-1)
   - [`OptionMetadata`](#optionmetadata)
   - [`OptionPriority`](#optionpriority)
   - [`OptionValueSourceMap`](#optionvaluesourcemap)
@@ -87,7 +180,7 @@
   - [`UsageData`](#usagedata)
   - [`UsageInfo`](#usageinfo)
   - [`VersionData`](#versiondata)
-  - [`VersionOptionInfo`](#versionoptioninfo)
+  - [`VersionOptionInfo`](#versionoptioninfo-1)
   - [`Version`](#version)
 - [Contribute](#contribute)
 
@@ -149,41 +242,702 @@ const program: Command = new Command()
 
 ## API
 
-### `Argument`
+### `Argument(info)`
 
-**TODO**: `Argument`
+A command argument (class).
 
-### `Command`
+#### Signatures
 
-**TODO**: `Command`
+- `constructor(info: ArgumentInfo | string)`
+- `constructor(info: string, data?: ArgumentData | null | undefined)`
 
-### `Option`
+#### Parameters
 
-**TODO**: `Option`
+- `info` ([`ArgumentInfo`](#argumentinfo-1) | `string`)
+  — argument info or syntax
+- `data?` ([`ArgumentData`](#argumentdata), optional)
+  — additional argument info
 
-### `VersionOption`
+#### `Argument#id`
 
-**TODO**: `VersionOption`
+`string`
 
-### Events
+The argument syntax id.
 
-#### `KronkEvent`
+#### `Argument#required`
 
-**TODO**: `KronkEvent`
+`boolean`
 
-#### `OptionEvent`
+Whether the argument must have a value after parsing.
 
-**TODO**: `OptionEvent`
+#### `Argument#syntax`
 
-### Errors
+[`ArgumentSyntax`](#argumentsyntax-1)
 
-#### `CommandError`
+The normalized argument syntax string.
 
-**TODO**: `CommandError`
+#### `Argument#choices([choices])`
 
-#### `KronkError`
+Get or set argument choices.
 
-**TODO**: `KronkError`
+##### Overloads
+
+- `choices(): Set<string>`
+- `choices(choices: List<string> | null | undefined): this`
+
+##### Parameters
+
+- `choices` ([`List<string>`](#list), optional)
+  — list of argument choices
+
+##### Returns
+
+(`Set<string>` | [`this`](#argumentinfo)) List of argument choices or `this` argument
+
+#### `Argument#default([info])`
+
+Get or set the default value configuration.
+
+##### Overloads
+
+- `default<T>(): DefaultInfo<T>`
+- `default(info: DefaultInfo | null | undefined): this`
+
+##### Type Parameters
+
+- `T` (`any`)
+  — default value type
+
+##### Parameters
+
+- `info` ([`DefaultInfo`](#defaultinfo), optional)
+  — default value info
+
+##### Returns
+
+([`DefaultInfo<T>`](#defaultinfo) | `this`) Default value info or `this` argument
+
+#### `Argument#description([description])`
+
+Get or set the argument description.
+
+Pass `null`, `undefined`, or an empty string to remove the argument from the auto-generated help text.
+
+##### Overloads
+
+- `description(): string`
+- `description(description: URL | string | null | undefined): this`
+
+##### Parameters
+
+- `description` (`URL | string`, optional)
+  — the argument description
+
+##### Returns
+
+(`string` | [`this`](#argumentinfo)) Description of `this` argument or `this` argument
+
+#### `Argument#parser([parser])`
+
+Get or set the handler used to parse command-arguments.
+
+##### Overloads
+
+- `parser<T, V extends string | string[] = string | string[]>(): ParseArg<T, V>`
+- `parser(parser: ParseArg<any, any> | null | undefined): this`
+
+##### Type Parameters
+
+- `T` (`any`)
+  — parse result
+- `V` (`string | string[]`, optional)
+  — the argument or arguments to parse
+
+##### Parameters
+
+- `parser` ([`ParseArg<any, any>`](#parsearg) | `null | undefined`)
+  — the command-argument parser
+
+##### Returns
+
+([`ParseArg<T, V>`](#parsearg) | `this`) The command-argument parser or `this` argument
+
+#### `Argument#toString()`
+
+Get the human readable equivalent of the argument.
+
+##### Returns
+
+(`string`) String representation of `this` argument
+
+#### `Argument#variadic`
+
+`boolean`
+
+Whether the argument can be specified multiple times.
+
+### `Command(info)`
+
+#### Signatures
+
+**TODO**: `Command` signatures
+
+#### Parameters
+
+**TODO**: `Command` parameters
+
+#### `Command#action([action])`
+
+**TODO**: `Command#action([action])`
+
+#### `Command#addArgument(argument)`
+
+**TODO**: `Command#addArgument(argument)`
+
+#### `Command#addCommand(subcommand)`
+
+**TODO**: `Command#addCommand(subcommand)`
+
+#### `Command#addOption(option)`
+
+**TODO**: `Command#addOption(option)`
+
+#### `Command#alias([alias])`
+
+**TODO**: `Command#alias([alias])`
+
+#### `Command#aliases([aliases])`
+
+**TODO**: `Command#aliases([aliases])`
+
+#### `Command#ancestors()`
+
+**TODO**: `Command#ancestors()`
+
+#### `Command#args`
+
+**TODO**: `Command#args`
+
+#### `Command#argument(info[, data])`
+
+**TODO**: `Command#argument(info[, data])`
+
+#### `Command#arguments([infos])`
+
+**TODO**: `Command#arguments([infos])`
+
+#### `Command#argv`
+
+**TODO**: `Command#argv`
+
+#### `Command#command(info[, data])`
+
+**TODO**: `Command#command(info[, data])`
+
+#### `Command#commands([infos])`
+
+**TODO**: `Command#commands([infos])`
+
+#### `Command#copyInheritedSettings(parent)`
+
+**TODO**: `Command#copyInheritedSettings(parent)`
+
+#### `Command#createArgument(info[, data])`
+
+**TODO**: `Command#createArgument(info[, data])`
+
+#### `Command#createCommand(info[, data])`
+
+**TODO**: `Command#createCommand(info[, data])`
+
+#### `Command#createOption(info[, data])`
+
+**TODO**: `Command#createOption(info[, data])`
+
+#### `Command#default`
+
+**TODO**: `Command#default`
+
+#### `Command#defaultCommand`
+
+**TODO**: `Command#defaultCommand`
+
+#### `Command#description([description])`
+
+**TODO**: `Command#description([description])`
+
+#### `Command#done([done])`
+
+**TODO**: `Command#done([done])`
+
+#### `Command#emit(event)`
+
+**TODO**: `Command#emit(event)`
+
+#### `Command#emitOption(option, value, source[, flags])`
+
+**TODO**: `Command#emitOption(option, value, source[, flags])`
+
+#### `Command#error(info)`
+
+**TODO**: `Command#error(info)`
+
+#### `Command#exit([e])`
+
+**TODO**: `Command#exit([e])`
+
+#### `Command#exiter([exit])`
+
+**TODO**: `Command#exiter([exit])`
+
+#### `Command#findCommand(x)`
+
+**TODO**: `Command#findCommand(x)`
+
+#### `Command#findOption(flag[, direction])`
+
+**TODO**: `Command#findOption(flag[, direction])`
+
+#### `Command#hidden`
+
+**TODO**: `Command#hidden`
+
+#### `Command#hide([hidden])`
+
+**TODO**: `Command#hide([hidden])`
+
+#### `Command#id([name])`
+
+**TODO**: `Command#id([name])`
+
+#### `Command#logger`
+
+**TODO**: `Command#logger`
+
+#### `Command#on<T>(event, listener[, options])`
+
+**TODO**: `Command#on<T>(event, listener[, options])`
+
+#### `Command#option(info[, data])`
+
+**TODO**: `Command#option(info[, data])`
+
+#### `Command#optionValue(key[, value][, source])`
+
+**TODO**: `Command#optionValue(key[, value][, source])`
+
+#### `Command#optionValueSource(key[, source])`
+
+**TODO**: `Command#optionValueSource(key[, source])`
+
+#### `Command#options([infos])`
+
+**TODO**: `Command#options([infos])`
+
+#### `Command#opts<T>()`
+
+**TODO**: `Command#opts<T>()`
+
+#### `Command#optsWithGlobals<T>()`
+
+**TODO**: `Command#optsWithGlobals<T>()`
+
+#### `Command#parent`
+
+**TODO**: `Command#parent`
+
+#### `Command#parse([argv][, options])`
+
+**TODO**: `Command#parse([argv][, options])`
+
+#### `Command#parseAsync([argv][, options])`
+
+**TODO**: `Command#parseAsync([argv][, options])`
+
+#### `Command#process`
+
+**TODO**: `Command#process`
+
+#### `Command#snapshot()`
+
+**TODO**: `Command#snapshot()`
+
+#### `Command#summary([summary])`
+
+**TODO**: `Command#summary([summary])`
+
+#### `Command#toString()`
+
+**TODO**: `Command#toString()`
+
+#### `Command#unknown`
+
+**TODO**: `Command#unknown`
+
+#### `Command#unknowns(strategy)`
+
+**TODO**: `Command#unknowns(strategy)`
+
+#### `Command#usage([usage])`
+
+**TODO**: `Command#usage([usage])`
+
+#### `Command#version([version])`
+
+**TODO**: `Command#version([version])`
+
+### `CommandError(info)`
+
+#### Extends
+
+- [`KronkError`](#kronkerrorinfo)
+
+#### Parameters
+
+- `info` ([`CommandErrorInfo`](#commanderrorinfo-2))
+  — info about the error
+
+#### `CommandError#command`
+
+**TODO**: `CommandError#command`
+
+#### `CommandError#snapshot()`
+
+**TODO**: `CommandError#snapshot()`
+
+### `KronkError(info)`
+
+#### Extends
+
+- `Error`
+
+#### Signatures
+
+**TODO**: `KronkError` signatures
+
+#### Parameters
+
+**TODO**: `KronkError` parameters
+
+#### `KronkError#additional`
+
+**TODO**: `KronkError#additional`
+
+#### `KronkError#cause`
+
+**TODO**: `KronkError#cause`
+
+#### `KronkError#code`
+
+**TODO**: `KronkError#code`
+
+#### `KronkError#id`
+
+**TODO**: `KronkError#id`
+
+#### `KronkError#toJSON()`
+
+**TODO**: `KronkError#toJSON()`
+
+#### `KronkError#toString()`
+
+**TODO**: `KronkError#toString()`
+
+### `KronkEvent(id)`
+
+#### Parameters
+
+**TODO**: `KronkEvent` parameters
+
+#### `KronkEvent#id`
+
+**TODO**: `KronkEvent#id`
+
+#### `KronkEvent#toString()`
+
+**TODO**: `KronkEvent#toString()`
+
+### `Option(info)`
+
+A command option (class).
+
+#### Signatures
+
+- `constructor(info: Flags | OptionInfo)`
+- `constructor(info: Flags, data?: OptionData | null | undefined)`
+
+#### Parameters
+
+- `info` ([`Flags`](#flags) | [`OptionInfo`](#optioninfo-1))
+  — option flags or info
+- `data?` ([`OptionData`](#optiondata), optional)
+  — additional option info
+
+#### `Option#boolean`
+
+`boolean`
+
+Whether the option is a boolean option.
+Boolean options are options that do not take any option-arguments.
+
+#### `Option#choices([choices])`
+
+Get or set option choices.
+
+##### Overloads
+
+- `choices(): Set<string>`
+- `choices(choices: List<string> | null | undefined): this`
+
+##### Parameters
+
+- `choices` ([`List<string>`](#list), optional)
+  — list of option choices
+
+##### Returns
+
+(`Set<string>` | [`this`](#optioninfo)) List of option choices or `this` option
+
+#### `Option#default([info])`
+
+Get or set the default value configuration.
+
+##### Overloads
+
+- `default<T>(): DefaultInfo<T>`
+- `default(info: DefaultInfo | null | undefined): this`
+
+##### Type Parameters
+
+- `T` (`any`)
+  — default value type
+
+##### Parameters
+
+- `info` ([`DefaultInfo`](#defaultinfo), optional)
+  — default value info
+
+##### Returns
+
+([`DefaultInfo<T>`](#defaultinfo) | `this`) Default value info or `this` option
+
+#### `Option#description([description])`
+
+Get or set the option description.
+
+##### Overloads
+
+- `description(): string`
+- `description(description: URL | string | null | undefined): this`
+
+##### Parameters
+
+- `description` (`URL | string`)
+  — the option description
+
+##### Returns
+
+(`string` | [`this`](#optioninfo)) Description of `this` option or `this` option
+
+#### `Option#env([env])`
+
+Get or set the environment variables to check for the value of the option.
+
+##### Overloads
+
+- `env(): Set<string>`
+- `env(env: List<string> | string | null | undefined): this`
+
+##### Parameters
+
+- `env` ([`List<string>`](#list) | `string | null | undefined`)
+  — the name of the environment variable to check, or a list of names, in order of priority, to check
+
+##### Returns
+
+(`string` | [`this`](#optioninfo)) Environment variable names or `this` option
+
+#### `Option#event`
+
+[`OptionEventName`](#optioneventname)
+
+The event name for the option.
+
+#### `Option#flags`
+
+[`Flags`](#flags)
+
+The normalized option flags string.
+
+#### `Option#hidden`
+
+`boolean`
+
+Whether the option should **not** be displayed in help text.
+
+#### `Option#hide([hidden])`
+
+Remove the option from help text.
+
+##### Parameters
+
+- `hidden` (`boolean | null | undefined`, optional)
+  — whether the option should be hidden
+  - default: `true`
+
+##### Returns
+
+([`this`](#optioninfo)) `this` option
+
+#### `Option#id`
+
+`string`
+
+The option id.
+
+#### `Option#key`
+
+`string`
+
+The option [`id`](#optionid) in a format that can be used an object property key.
+
+#### `Option#long`
+
+`string | null`
+
+The long flag for the option.
+If `null`, the [`short`](#optionshort) flag will be a non-empty string.
+
+#### `Option#mandatory`
+
+`boolean`
+
+Whether the option must have a value after parsing.
+
+#### `Option#optional`
+
+`boolean`
+
+Whether a value is optional when the option is specified.
+
+#### `Option#parser([parser])`
+
+Get or set the handler used to parse option-arguments.
+
+##### Overloads
+
+- `parser<T, V extends string | string[] = string | string[]>(): ParseArg<T, V>`
+- `parser(parser: ParseArg<any, any> | null | undefined): this`
+
+##### Type Parameters
+
+- `T` (`any`)
+  — parse result
+- `V` (`string | string[]`, optional)
+  — the argument or arguments to parse
+
+##### Parameters
+
+- `parser` ([`ParseArg<any, any>`](#parsearg) | `null | undefined`)
+  — the option-argument parser
+
+##### Returns
+
+([`ParseArg<T, V>`](#parsearg) | `this`) The option-argument parser or `this` option
+
+#### `Option#preset([preset])`
+
+Get or set the preset to use when the option is specified without an argument.
+
+The option-argument [`parser`](#optionparserparser) will be called.
+
+##### Overloads
+
+- `preset(): string | null`
+- `preset(preset: string | null | undefined): this`
+
+##### Parameters
+
+- `preset` (`string | null | undefined`)
+  — the option-argument preset
+
+##### Returns
+
+(`string | this | null`) The option-argument preset or `this` option
+
+#### `Option#required`
+
+`boolean`
+
+Whether a value must be supplied when the option is specified.
+
+#### `Option#short`
+
+`string | null`
+
+The short flag for the option.
+If `null`, the [`long`](#optionlong) flag will be a non-empty string.
+
+#### `Option#toString()`
+
+Get the option as a human-readable string.
+
+##### Returns
+
+(`string`) String representation of `this` option
+
+#### `Option#variadic`
+
+`boolean`
+
+Whether the option can be specified multiple times.
+
+### `OptionEvent<T>(option, value, source[, flag])`
+
+**TODO**: `OptionEvent<T>(option, value, source[, flag])`
+
+#### Extends
+
+- [`KronkEvent`](#kronkeventid)
+
+#### `OptionEvent#flag`
+
+**TODO**: `OptionEvent#flag`
+
+#### `OptionEvent#id`
+
+**TODO**: `OptionEvent#id`
+
+#### `OptionEvent#option`
+
+**TODO**: `OptionEvent#option`
+
+#### `OptionEvent#source`
+
+**TODO**: `OptionEvent#source`
+
+#### `OptionEvent#value`
+
+**TODO**: `OptionEvent#value`
+
+### `VersionOption(info)`
+
+A command version option (class).
+
+#### Extends
+
+- [`Option`](#optioninfo)
+
+#### Parameters
+
+- `info` ([`Version`](#version) | [`VersionOptionInfo`](#versionoptioninfo-1))
+  — command version or option info
+
+#### `VersionOption#version`
+
+`string`
+
+The version of the command.
 
 ## Types
 
@@ -213,7 +967,7 @@ type Action<
 
 #### Parameters
 
-- **`this`** ([`Command`](#command))
+- **`this`** ([`Command`](#commandinfo))
   — the current command or subcommand being executed
 - `options` (`Opts`)
   — parsed command options
@@ -251,7 +1005,7 @@ Data used to create command-arguments (TypeScript interface).
 
 #### Properties
 
-- `syntax` ([`ArgumentSyntax`](#argumentsyntax) | `string`)
+- `syntax` ([`ArgumentSyntax`](#argumentsyntax-1) | `string`)
   — argument syntax
 
 ### `ArgumentMetadata`
@@ -260,7 +1014,7 @@ Command-argument metadata (TypeScript interface).
 
 #### Extends
 
-- [`ArgumentInfo`](#argumentinfo)
+- [`ArgumentInfo`](#argumentinfo-1)
 
 #### Properties
 
@@ -380,7 +1134,7 @@ Data transfer object for commands (TypeScript interface).
   - default: `'local'`
 - `options?` ([`OptionsData`](#optionsdata), optional)
   — options for the command
-- `parent?` ([`Command`](#command), optional)
+- `parent?` ([`Command`](#commandinfo), optional)
   — the parent command
 - `subcommands?` ([`SubcommandsData`](#subcommandsdata), optional)
   — subcommands for the command
@@ -401,13 +1155,13 @@ Data used to create command errors (TypeScript interface).
 
 #### Extends
 
-- [`KronkErrorInfo`](#kronkerrorinfo)
+- [`KronkErrorInfo`](#kronkerrorinfo-1)
 
 #### Properties
 
-- `command?` ([`Command`](#command), optional)
+- `command?` ([`Command`](#commandinfo), optional)
   — the command where the error originated
-- `id` ([`KronkErrorId`](#kronkerrorid))
+- `id` ([`KronkErrorId`](#kronkerrorid-1))
   — unique id representing the error
 
 ### `CommandErrorSnapshot`
@@ -442,19 +1196,19 @@ Command metadata (TypeScript interface).
 
 #### Extends
 
-- [`Omit<CommandInfo, 'arguments' | 'options' | 'subcommands'>`](#commandinfo)
+- [`Omit<CommandInfo, 'arguments' | 'options' | 'subcommands'>`](#commandinfo-1)
 
 #### Properties
 
-- `arguments` ([`Argument[]`](#argument))
+- `arguments` ([`Argument[]`](#argumentinfo))
   — list of command arguments
-- `options` ([`Map<string, Option>`](#option))
+- `options` ([`Map<string, Option>`](#optioninfo))
   — map, where each key is a long or short flag and each value is the command option instance registered for that flag
 - `parent?` (`null | undefined`)
   — the parent command
-- `subcommands` ([`Map<string, Command>`](#command))
+- `subcommands` ([`Map<string, Command>`](#commandinfo))
   — map, where each key is the name of a subcommand each value is a subcommand
-- `version` ([`VersionOption`](#versionoption) | `null | undefined`)
+- `version` ([`VersionOption`](#versionoptioninfo) | `null | undefined`)
   — command version option
 
 ### `CommandName`
@@ -555,9 +1309,9 @@ type Exit = (
 
 #### Parameters
 
-- **`this`** ([`Command`](#command))
+- **`this`** ([`Command`](#commandinfo))
   — the current command or subcommand being executed
-- `e?` ([`CommandError`](#commanderror) | [`KronkError`](#kronkerror), optional)
+- `e?` ([`CommandError`](#commanderrorinfo) | [`KronkError`](#kronkerrorinfo), optional)
   — the error to handle (if any)
 
 #### Returns
@@ -624,12 +1378,12 @@ Data used to create errors (TypeScript interface).
 
 - `additional?` (`string | string[]`, optional)
   — additional lines to be logged with the error
-- `cause?` ([`KronkErrorCause`](#kronkerrorcause), optional)
+- `cause?` ([`KronkErrorCause`](#kronkerrorcause-1), optional)
   — info about the cause of the error
 - `code?` ([`ExitCode`](#exitcode), optional)
   — the suggested exit code to use with `process.exit`
   - default: `1`
-- `id?` ([`EmptyString`](#emptystring) | [`KronkErrorId`](#kronkerrorid), optional)
+- `id?` ([`EmptyString`](#emptystring) | [`KronkErrorId`](#kronkerrorid-1), optional)
   — the unique id representing the error
   - default: `'kronk/error'`
 - `reason` (`string`)
@@ -643,11 +1397,11 @@ JSON representation of an error (TypeScript interface).
 
 - `additional` (`string[]`)
   — additional lines to be logged with the error
-- `cause?` ([`KronkErrorCause`](#kronkerrorcause), optional)
+- `cause?` ([`KronkErrorCause`](#kronkerrorcause-1), optional)
   — info about the cause of the error
 - `code` (`number`)
   — the suggested exit code to use with `process.exit`
-- `id` ([`KronkErrorId`](#kronkerrorid))
+- `id` ([`KronkErrorId`](#kronkerrorid-1))
   — the unique id representing the error
 - `message` (`string`)
   — the human-readable description of the error
@@ -658,7 +1412,7 @@ JSON representation of an error (TypeScript interface).
 
 Registry of errors (TypeScript interface).
 
-Each key is the **suffix** of an error id and each value is a [`KronkError`](#kronkerror).
+Each key is the **suffix** of an error id and each value is a [`KronkError`](#kronkerrorinfo).
 
 ```ts
 interface KronkErrorMap {/* see code */}
@@ -687,7 +1441,7 @@ type KronkEventListener<T extends KronkEvent = KronkEvent> = (
 
 #### Type Parameters
 
-- `T` ([`KronkEvent`](#kronkevent), optional)
+- `T` ([`KronkEvent`](#kronkeventid), optional)
   — the emitted event
 
 #### Parameters
@@ -772,7 +1526,7 @@ Data transfer object for command options (TypeScript interface).
   — for boolean and optional options, the preset to use when the option is specified without an option-argument.
   > 👉 **note**: the option-argument `parser` will be called.
 - `snakecase?` (`boolean`, optional)
-  — whether to use `snake_case` format when converting the option name to an object property key
+  — whether to use `snake_case` format when converting the option id to an object property key
 
 ### `OptionEventListener`
 
@@ -786,12 +1540,12 @@ type OptionEventListener<T extends Option = Option> = (
 
 #### Type Parameters
 
-- `T` ([`Option`](#option), optional)
+- `T` ([`Option`](#optioninfo), optional)
   — the parsed command option
 
 #### Parameters
 
-- `event` ([`OptionEvent<T>`](#optionevent))
+- `event` ([`OptionEvent<T>`](#optioneventtoption-value-source-flag))
   — the emitted parsed option event
 
 #### Returns
@@ -846,7 +1600,7 @@ Command option metadata (TypeScript interface).
 
 #### Extends
 
-- [`OptionInfo`](#optioninfo)
+- [`OptionInfo`](#optioninfo-1)
 
 #### Properties
 
@@ -904,7 +1658,7 @@ type OptionValueSource = OptionValueSourceMap[keyof OptionValueSourceMap]
 
 ### `OptionValueSources`
 
-Record, where each key is an option key ([`Option.key`](#option))
+Record, where each key is an option key ([`Option.key`](#optioninfo))
 and each value is an [`OptionValueSource`](#optionvaluesource) (TypeScript type).
 
 ```ts
@@ -915,7 +1669,7 @@ type OptionValueSources = {
 
 ### `OptionValues`
 
-Record, where each key is an option key ([`Option.key`](#option))
+Record, where each key is an option key ([`Option.key`](#optioninfo))
 and each value is a parsed option value (TypeScript type).
 
 #### Type Parameters
@@ -959,7 +1713,7 @@ type ParseArg<T = any, Value extends string | string[] = string | string[]> = (
 
 #### Parameters
 
-- **`this`** ([`Command`](#command))
+- **`this`** ([`Command`](#commandinfo))
   — the current command or subcommand being executed
 - `value` (`Value`)
   — the raw argument or arguments to parse
@@ -1022,7 +1776,7 @@ Data used to create subcommands (TypeScript interface).
 
 #### Extends
 
-- [`CommandInfo`](#commandinfo)
+- [`CommandInfo`](#commandinfo-1)
 
 #### Properties
 
@@ -1039,7 +1793,7 @@ type SubcommandsData = SubcommandInfo | SubcommandsInfo
 
 ### `SubcommandsInfo`
 
-Record, where each key is the name of a subcommand and each value is an [info object](#commandinfo).
+Record, where each key is the name of a subcommand and each value is an [info object](#commandinfo-1).
 
 ```ts
 type SubcommandsInfo = { [subcommand: string]: CommandInfo }
@@ -1096,7 +1850,7 @@ Command usage info (TypeScript interface).
 
 ### `VersionData`
 
-Union of types used to configure the version of a [`Command`](#command) (TypeScript type).
+Union of types used to configure the version of a [`Command`](#commandinfo) (TypeScript type).
 
 ```ts
 type VersionData = Version | VersionOption | VersionOptionInfo

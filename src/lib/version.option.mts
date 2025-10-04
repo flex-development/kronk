@@ -7,7 +7,7 @@ import Option from '#lib/option'
 import type { Version, VersionOptionInfo } from '@flex-development/kronk'
 
 /**
- * Version command option model.
+ * A command version option (i.e. `-v | --version`).
  *
  * @see {@linkcode Option}
  *
@@ -16,7 +16,7 @@ import type { Version, VersionOptionInfo } from '@flex-development/kronk'
  */
 class VersionOption extends Option {
   /**
-   * The version of the parent command.
+   * The version of the command.
    *
    * @public
    * @instance

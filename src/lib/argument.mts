@@ -80,7 +80,7 @@ class Argument {
    * @param {ArgumentInfo | string} info
    *  Argument info or syntax
    * @param {ArgumentData | null | undefined} [data]
-   *  Argument data
+   *  Additional argument data
    */
   constructor(
     info: ArgumentInfo | string,
@@ -112,7 +112,7 @@ class Argument {
   }
 
   /**
-   * Get the argument syntax id.
+   * The argument syntax id.
    *
    * @public
    * @instance
@@ -125,7 +125,7 @@ class Argument {
   }
 
   /**
-   * Get a boolean indicating if the argument must have a value after parsing.
+   * Whether the argument must have a value after parsing.
    *
    * @public
    * @instance
@@ -138,7 +138,7 @@ class Argument {
   }
 
   /**
-   * Get the syntax for the argument.
+   * The normalized argument syntax string.
    *
    * @see {@linkcode ArgumentSyntax}
    *
@@ -153,7 +153,7 @@ class Argument {
   }
 
   /**
-   * Get a boolean indicating if the argument can be specified multiple times.
+   * Whether the argument can be specified multiple times.
    *
    * @public
    * @instance
@@ -272,7 +272,7 @@ class Argument {
    * @instance
    *
    * @param {URL | string | null | undefined} description
-   *  Description of argument
+   *  The argument description
    * @return {this}
    *  `this` argument
    */
@@ -285,7 +285,7 @@ class Argument {
    * @instance
    *
    * @return {string}
-   *  Description of `this` argument
+   *  The argument description
    */
   public description(): string
 
@@ -296,7 +296,7 @@ class Argument {
    * @instance
    *
    * @param {URL | string | null | undefined} [description]
-   *  Description of argument
+   *  The argument description
    * @return {string | this}
    *  Description of `this` argument or `this` argument
    */
@@ -315,11 +315,8 @@ class Argument {
    * @public
    * @instance
    *
-   * @template {any} [T=unknown]
-   *  Parsed argument
-   *
-   * @param {ParseArg<T> | null | undefined} parser
-   *  Command-argument parser
+   * @param {ParseArg<any, any> | null | undefined} parser
+   *  The command-argument parser
    * @return {this}
    *  `this` argument
    */
@@ -339,7 +336,7 @@ class Argument {
    *  The argument or arguments to parse
    *
    * @return {ParseArg<T, V>}
-   *  Command-argument parser
+   *  The command-argument parser
    */
   public parser<
     T,
@@ -355,9 +352,9 @@ class Argument {
    * @instance
    *
    * @param {ParseArg | null | undefined} [parser]
-   *  Command-argument parser
+   *  The command-argument parser
    * @return {ParseArg | null | this}
-   *  Command-argument parser or `this` argument
+   *  The command-argument parser or `this` argument
    */
   public parser(parser?: ParseArg | null | undefined): ParseArg | this {
     if (!arguments.length) return fallback(this.info.parser, identity, isNIL)
@@ -365,7 +362,7 @@ class Argument {
   }
 
   /**
-   * Get the human readable equivalent of the argument.
+   * Get the argument as a human-readable string.
    *
    * @public
    * @instance

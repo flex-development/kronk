@@ -77,7 +77,7 @@ interface OptionData {
   preset?: string | null | undefined
 
   /**
-   * Whether to use `snake_case` format when converting the option name to an
+   * Whether to use `snake_case` format when converting the option id to an
    * object property key.
    */
   snakecase?: boolean | null | undefined

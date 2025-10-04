@@ -131,8 +131,8 @@ class Option {
   }
 
   /**
-   * Get a boolean indicating if `this` option is a boolean option. Boolean
-   * options are options that do not take any option-arguments.
+   * Whether the option is a boolean option.
+   * Boolean options are options that do not take any option-arguments.
    *
    * > 👉 **Note**: Options are either boolean, optional, or required.
    *
@@ -147,7 +147,7 @@ class Option {
   }
 
   /**
-   * Get the event name for the option.
+   * The event name for the option.
    *
    * @see {@linkcode OptionEventName}
    *
@@ -162,7 +162,7 @@ class Option {
   }
 
   /**
-   * Get option flags.
+   * The normalized option flags.
    *
    * @see {@linkcode Flags}
    *
@@ -191,7 +191,7 @@ class Option {
   }
 
   /**
-   * Get the option id.
+   * The option id.
    *
    * @public
    * @instance
@@ -206,21 +206,21 @@ class Option {
   }
 
   /**
-   * Get the name of the option in a format that can be used an object property
+   * The option {@linkcode id} in a format that can be used an object property
    * key.
    *
    * @public
    * @instance
    *
    * @return {string}
-   *  Property key
+   *  Object property key
    */
   public get key(): string {
     return ifelse(this.info.snakecase, snakecase, camelcase)(this.id)
   }
 
   /**
-   * Get the long flag for the option.
+   * The long flag for the option.
    *
    * > 👉 **Note**: If `null`, {@linkcode short} will be a non-empty string.
    *
@@ -235,7 +235,7 @@ class Option {
   }
 
   /**
-   * Get a boolean indicating if the option must have a value after parsing.
+   * Whether the option must have a value after parsing.
    *
    * @public
    * @instance
@@ -248,8 +248,7 @@ class Option {
   }
 
   /**
-   * Get a boolean indicating if a value is optional when the option is
-   * specified.
+   * Whether a value is optional when the option is specified.
    *
    * @public
    * @instance
@@ -262,8 +261,7 @@ class Option {
   }
 
   /**
-   * Get a boolean indicating if a value must be supplied when the option is
-   * specified.
+   * Whether a value must be supplied when the option is specified.
    *
    * @public
    * @instance
@@ -276,7 +274,7 @@ class Option {
   }
 
   /**
-   * Get the short flag for the option.
+   * The short flag for the option.
    *
    * > 👉 **Note**: If `null`, {@linkcode long} will be a non-empty string.
    *
@@ -291,7 +289,7 @@ class Option {
   }
 
   /**
-   * Get a boolean indicating if the option can be specified multiple times.
+   * Whether the option can be specified multiple times.
    *
    * @public
    * @instance
@@ -407,7 +405,7 @@ class Option {
    * @instance
    *
    * @param {URL | string | null | undefined} description
-   *  Description of option
+   *  The option description
    * @return {this}
    *  `this` option
    */
@@ -420,7 +418,7 @@ class Option {
    * @instance
    *
    * @return {string}
-   *  Description of `this` option
+   *  The option description
    */
   public description(): string
 
@@ -431,7 +429,7 @@ class Option {
    * @instance
    *
    * @param {URL | string | null | undefined} [description]
-   *  Description of option
+   *  The option description
    * @return {string | this}
    *  Description of `this` option or `this` option
    */
@@ -451,7 +449,7 @@ class Option {
    * @instance
    *
    * @param {List<string> | string | null | undefined} env
-   *  The name of the environment variable to check
+   *  The name of the environment variable to check,
    *  or a list of names, in order of priority, to check
    * @return {this}
    *  `this` option
@@ -476,7 +474,7 @@ class Option {
    * @instance
    *
    * @param {List<string> | string | null | undefined} [env]
-   *  The name of the environment variable to check
+   *  The name of the environment variable to check,
    *  or a list of names, in order of priority, to check
    * @return {Set<string> | this}
    *  Environment variable names or `this` option
@@ -512,7 +510,7 @@ class Option {
    * @instance
    *
    * @param {ParseArg<any, any> | null | undefined} parser
-   *  Option-argument parser
+   *  The option-argument parser
    * @return {this}
    *  `this` option
    */
@@ -532,7 +530,7 @@ class Option {
    *  The argument or arguments to parse
    *
    * @return {ParseArg<T, V>}
-   *  Option-argument parser
+   *  The option-argument parser
    */
   public parser<
     T,
@@ -548,9 +546,9 @@ class Option {
    * @instance
    *
    * @param {ParseArg | null | undefined} [parser]
-   *  Option-argument parser
+   *  The option-argument parser
    * @return {ParseArg | this}
-   *  Option-argument parser or `this` option
+   *  The option-argument parser or `this` option
    */
   public parser(parser?: ParseArg | null | undefined): ParseArg | this {
     if (arguments.length) return this.info.parser = parser, this
@@ -567,7 +565,7 @@ class Option {
    * @instance
    *
    * @param {string | null | undefined} preset
-   *  Option-argument preset
+   *  The option-argument preset
    * @return {this}
    *  `this` option
    */
@@ -580,7 +578,7 @@ class Option {
    * @instance
    *
    * @return {string | null}
-   *  Option-argument preset
+   *  The option-argument preset
    */
   public preset(): string | null
 
@@ -588,8 +586,7 @@ class Option {
    * Get or set the preset to use when the option is specified without an
    * argument.
    *
-   * The handler used to parse option-arguments, {@linkcode ParseArg}, will be
-   * called.
+   * The option-argument {@linkcode parser} will be called.
    *
    * @public
    * @instance
@@ -597,7 +594,7 @@ class Option {
    * @param {string | null | undefined} [preset]
    *  Preset to use when option is specified without an option-argument
    * @return {string | this | null}
-   *  Option-argument preset or `this` option
+   *  The option-argument preset or `this` option
    */
   public preset(preset?: string | null | undefined): string | this | null {
     if (!arguments.length) return fallback(this.info.preset, null)
