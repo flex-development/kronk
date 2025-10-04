@@ -7,7 +7,7 @@ import kKronkEvent from '#internal/k-kronk-event'
 import type { KronkEventName } from '@flex-development/kronk'
 
 /**
- * Kronk event model.
+ * An event.
  *
  * @category
  *  events
@@ -21,7 +21,7 @@ class KronkEvent {
    * @see {@linkcode KronkEventName}
    *
    * @param {KronkEventName} id
-   *  Unique id representing the event
+   *  The unique id representing the event
    */
   constructor(public id: KronkEventName) {
     Object.defineProperty(this, kKronkEvent, {

@@ -12,7 +12,7 @@ import type {
 } from '@flex-development/kronk'
 
 /**
- * Parsed option event model.
+ * A parsed option event.
  *
  * @see {@linkcode KronkEvent}
  * @see {@linkcode Option}
@@ -28,7 +28,7 @@ import type {
  */
 class OptionEvent<T extends Option = Option> extends KronkEvent {
   /**
-   * Unique id representing the event.
+   * The option event name.
    *
    * @see {@linkcode Option.event}
    *

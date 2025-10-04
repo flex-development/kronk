@@ -645,17 +645,26 @@ Whether the argument can be specified multiple times.
 
 ### `KronkEvent(id)`
 
+An event (class).
+
 #### Parameters
 
-**TODO**: `KronkEvent` parameters
+- `id` ([`KronkEventName`](#kronkeventname))
+  — the unique id representing the event
 
 #### `KronkEvent#id`
 
-**TODO**: `KronkEvent#id`
+[`KronkEventName`](#kronkeventname)
+
+The unique id representing the event.
 
 #### `KronkEvent#toString()`
 
-**TODO**: `KronkEvent#toString()`
+Get the event as a human-readable string.
+
+##### Returns
+
+(`string`) String representation of `this` event
 
 ### `Option(info)`
 
@@ -894,31 +903,57 @@ Whether the option can be specified multiple times.
 
 ### `OptionEvent<T>(option, value, source[, flag])`
 
-**TODO**: `OptionEvent<T>(option, value, source[, flag])`
+A parsed option event (class).
 
 #### Extends
 
 - [`KronkEvent`](#kronkeventid)
 
+##### Type Parameters
+
+- `T` ([`Option`](#optioninfo), optional)
+  — Parsed command option
+
+##### Parameters
+
+- `option` (`T`)
+  — the command option instance
+- `value` ([`RawOptionValue`](#rawoptionvalue))
+  — the raw `option` value
+- `source` ([`OptionValueSource`](#optionvaluesource))
+  — the source of the raw option `value`
+- `flag` ([`Flags`](#flags), optional)
+  — the parsed `option` flag
+
 #### `OptionEvent#flag`
 
-**TODO**: `OptionEvent#flag`
+[`Flags | null | undefined`](#flags)
+
+The parsed command [`option`](#optioninfo) flag.
 
 #### `OptionEvent#id`
 
-**TODO**: `OptionEvent#id`
+[`Option['event']`](#optionevent)
+
+The option event name.
 
 #### `OptionEvent#option`
 
-**TODO**: `OptionEvent#option`
+`T`
+
+The command [`option`](#optioninfo) instance.
 
 #### `OptionEvent#source`
 
-**TODO**: `OptionEvent#source`
+[`OptionValueSource`](#optionvaluesource)
+
+The source of the raw option [`value`](#optioneventvalue).
 
 #### `OptionEvent#value`
 
-**TODO**: `OptionEvent#value`
+[`RawOptionValue`](#rawoptionvalue)
+
+The raw [`option`](#optioninfo) value.
 
 ### `VersionOption(info)`
 
