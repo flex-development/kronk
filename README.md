@@ -315,7 +315,7 @@ Get or set the default value configuration.
 
 ##### Returns
 
-([`DefaultInfo<T>`](#defaultinfo) | `this`) Default value info or `this` argument
+([`DefaultInfo<T>`](#defaultinfo) | [`this`](#argumentinfo)) Default value info or `this` argument
 
 #### `Argument#description([description])`
 
@@ -355,12 +355,12 @@ Get or set the handler used to parse command-arguments.
 
 ##### Parameters
 
-- `parser` ([`ParseArg<any, any>`](#parsearg) | `null | undefined`)
+- `parser` ([`ParseArg<any, any>`](#parsearg) | `null` | `undefined`)
   — the command-argument parser
 
 ##### Returns
 
-([`ParseArg<T, V>`](#parsearg) | `this`) The command-argument parser or `this` argument
+([`ParseArg<T, V>`](#parsearg) | [`this`](#argumentinfo)) The command-argument parser or `this` argument
 
 #### `Argument#toString()`
 
@@ -588,6 +588,8 @@ Whether the argument can be specified multiple times.
 
 ### `CommandError(info)`
 
+A command error (class).
+
 #### Extends
 
 - [`KronkError`](#kronkerrorinfo)
@@ -599,13 +601,21 @@ Whether the argument can be specified multiple times.
 
 #### `CommandError#command`
 
-**TODO**: `CommandError#command`
+[`Command`](#commandinfo) | `null`
+
+The command where the error originated.
 
 #### `CommandError#snapshot()`
 
-**TODO**: `CommandError#snapshot()`
+Get a snapshot of the error.
+
+##### Returns
+
+([`CommandErrorSnapshot`](#commanderrorsnapshot-1)) Error snapshot object
 
 ### `KronkError(info)`
+
+A command-line error (class).
 
 #### Extends
 
@@ -613,35 +623,57 @@ Whether the argument can be specified multiple times.
 
 #### Signatures
 
-**TODO**: `KronkError` signatures
+- `constructor(info: KronkErrorInfo)`
+- `constructor(info: string, id?: EmptyString | KronkErrorId | null | undefined, code?: ExitCode | null | undefined)`
 
 #### Parameters
 
-**TODO**: `KronkError` parameters
+- `info` ([`KronkErrorInfo`](#kronkerrorinfo-1) | `string`)
+  — error info or human-readable description of the error
+- `id` ([`EmptyString`](#emptystring) | [`KronkErrorId`](#kronkerrorid-1), optional)
+  — unique id representing the error
+- `code` ([`ExitCode`](#exitcode), optional)
+  — suggested exit code to use with `process.exit`
 
 #### `KronkError#additional`
 
-**TODO**: `KronkError#additional`
+`string[]`
+
+Additional lines to be logged with the error.
 
 #### `KronkError#cause`
 
-**TODO**: `KronkError#cause`
+[`KronkErrorCause`](#kronkerrorcause-1) | `null` | `undefined`
+
+Info about the cause of the error.
 
 #### `KronkError#code`
 
-**TODO**: `KronkError#code`
+`number`
+
+The suggested exit code to use with `process.exit`.
 
 #### `KronkError#id`
 
-**TODO**: `KronkError#id`
+[`KronkErrorId`](#kronkerrorid-1)
+
+Unique id representing the error.
 
 #### `KronkError#toJSON()`
 
-**TODO**: `KronkError#toJSON()`
+Get the error as a JSON object.
+
+##### Returns
+
+([`KronkErrorJson`](#kronkerrorjson)) JSON representation of `this` error
 
 #### `KronkError#toString()`
 
-**TODO**: `KronkError#toString()`
+Get the error as a human-readable string.
+
+##### Returns
+
+(`string`) String representation of `this` error
 
 ### `KronkEvent(id)`
 
@@ -728,7 +760,7 @@ Get or set the default value configuration.
 
 ##### Returns
 
-([`DefaultInfo<T>`](#defaultinfo) | `this`) Default value info or `this` option
+([`DefaultInfo<T>`](#defaultinfo) | [`this`](#optioninfo)) Default value info or `this` option
 
 #### `Option#description([description])`
 
@@ -759,7 +791,7 @@ Get or set the environment variables to check for the value of the option.
 
 ##### Parameters
 
-- `env` ([`List<string>`](#list) | `string | null | undefined`)
+- `env` ([`List<string>`](#list) | `string` | `null` | `undefined`)
   — the name of the environment variable to check, or a list of names, in order of priority, to check
 
 ##### Returns
@@ -790,7 +822,7 @@ Remove the option from help text.
 
 ##### Parameters
 
-- `hidden` (`boolean | null | undefined`, optional)
+- `hidden` (`boolean` | `null` | `undefined`, optional)
   — whether the option should be hidden
   - default: `true`
 
@@ -812,7 +844,7 @@ The option [`id`](#optionid) in a format that can be used an object property key
 
 #### `Option#long`
 
-`string | null`
+`string` | `null`
 
 The long flag for the option.
 If `null`, the [`short`](#optionshort) flag will be a non-empty string.
@@ -847,12 +879,12 @@ Get or set the handler used to parse option-arguments.
 
 ##### Parameters
 
-- `parser` ([`ParseArg<any, any>`](#parsearg) | `null | undefined`)
+- `parser` ([`ParseArg<any, any>`](#parsearg) | `null` | `undefined`)
   — the option-argument parser
 
 ##### Returns
 
-([`ParseArg<T, V>`](#parsearg) | `this`) The option-argument parser or `this` option
+([`ParseArg<T, V>`](#parsearg) | [`this`](#optioninfo)) The option-argument parser or `this` option
 
 #### `Option#preset([preset])`
 
@@ -867,12 +899,12 @@ The option-argument [`parser`](#optionparserparser) will be called.
 
 ##### Parameters
 
-- `preset` (`string | null | undefined`)
+- `preset` (`string` | `null` | `undefined`)
   — the option-argument preset
 
 ##### Returns
 
-(`string | this | null`) The option-argument preset or `this` option
+(`string` | [`this`](#optioninfo) | `null`) The option-argument preset or `this` option
 
 #### `Option#required`
 
@@ -882,7 +914,7 @@ Whether a value must be supplied when the option is specified.
 
 #### `Option#short`
 
-`string | null`
+`string` | `null`
 
 The short flag for the option.
 If `null`, the [`long`](#optionlong) flag will be a non-empty string.
@@ -927,7 +959,7 @@ A parsed option event (class).
 
 #### `OptionEvent#flag`
 
-[`Flags | null | undefined`](#flags)
+[`Flags`](#flags) | `null` | `undefined`
 
 The parsed command [`option`](#optioninfo) flag.
 
@@ -1239,11 +1271,11 @@ Command metadata (TypeScript interface).
   — list of command arguments
 - `options` ([`Map<string, Option>`](#optioninfo))
   — map, where each key is a long or short flag and each value is the command option instance registered for that flag
-- `parent?` (`null | undefined`)
+- `parent?` (`null` | `undefined`)
   — the parent command
 - `subcommands` ([`Map<string, Command>`](#commandinfo))
   — map, where each key is the name of a subcommand each value is a subcommand
-- `version` ([`VersionOption`](#versionoptioninfo) | `null | undefined`)
+- `version` ([`VersionOption`](#versionoptioninfo) | `null` | `undefined`)
   — command version option
 
 ### `CommandName`
@@ -1639,13 +1671,13 @@ Command option metadata (TypeScript interface).
 
 #### Properties
 
-- `long` (`string | null | undefined`)
+- `long` (`string` | `null` | `undefined`)
   — long flag
 - `optional` (`boolean`)
   — whether a value is optional when the option is specified
 - `required` (`boolean`)
   — whether a value must be supplied when the option is specified
-- `short` (`string | null | undefined`)
+- `short` (`string` | `null` | `undefined`)
   — short (or shortish, e.g. `--ws`) flag
   > 👉 **note**: if `null` or `undefined`, the `long` flag will be a non-empty string
 - `variadic` (`boolean`)
@@ -1752,7 +1784,7 @@ type ParseArg<T = any, Value extends string | string[] = string | string[]> = (
   — the current command or subcommand being executed
 - `value` (`Value`)
   — the raw argument or arguments to parse
-- `previous` (`T | undefined`)
+- `previous` (`T` | `undefined`)
   — the default argument value
 
 #### Returns

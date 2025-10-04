@@ -17,7 +17,7 @@ import type {
 import { isNIL, shake } from '@flex-development/tutils'
 
 /**
- * Kronk error model.
+ * A command-line error.
  *
  * @category
  *  errors
@@ -48,7 +48,7 @@ class KronkError extends Error {
   public override cause?: KronkErrorCause | null | undefined
 
   /**
-   * Suggested exit code to use with {@linkcode process.exit}.
+   * The suggested exit code to use with {@linkcode process.exit}.
    *
    * @public
    * @instance
@@ -159,7 +159,7 @@ class KronkError extends Error {
    * @instance
    *
    * @return {KronkErrorJson}
-   *  JSON representation of `this` object
+   *  JSON representation of `this` error
    */
   public toJSON(): KronkErrorJson {
     return shake({

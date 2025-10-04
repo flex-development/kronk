@@ -16,7 +16,7 @@ import type {
 import { shake } from '@flex-development/tutils'
 
 /**
- * Command error model.
+ * A command error.
  *
  * @see {@linkcode KronkError}
  *
