@@ -20,6 +20,7 @@
     "rewrap.wrappingColumn": 130
   },
   "[markdown]": {
+    "editor.defaultFormatter": "unifiedjs.vscode-remark",
     "editor.formatOnSave": true,
     "editor.rulers": [
       {

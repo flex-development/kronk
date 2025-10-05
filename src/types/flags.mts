@@ -8,7 +8,7 @@
  *
  * The flags string can contain at most 2 flags, typically one long flag and one
  * short or shortish (e.g. `--ws`) flag. Flags are separated by commas (`,`),
- * pipes (`|`), or spaces.
+ * pipes (`|`), or spaces (` `).
  *
  * A short flag is a hyphen — specifically [HYPHEN-MINUS `U+002D`][hyphen] —
  * followed by one case-insensitive alphanumeric character.

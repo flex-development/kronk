@@ -21,6 +21,7 @@
 - [Install](#install)
 - [Use](#use)
   - [Creating a *program*](#creating-a-program)
+  - [Options](#options)
 - [API](#api)
   - [`Argument(info)`](#argumentinfo)
     - [`Argument#choices([choices])`](#argumentchoiceschoices)
@@ -239,6 +240,48 @@ import { Command } from '@flex-development/kronk'
 
 const program: Command = new Command()
 ```
+
+### Options
+
+Options are defined with the [`.option()`](#commandoptioninfo-data) and [`.options()`](#commandoptionsinfos) methods,
+which also serve as documentation for the options. Each option can have at most 2 flags, typically one long flag and one
+short or shortish (e.g. `--ws`) flag. Flags can be separated by commas (`,`), pipes (`|`), or spaces (` `).
+
+An option and its option-argument can be separated by an equal sign (`=`) or spaces (` `).
+A short option (i.e. `-p`) and its option-argument can also be combined.
+
+```sh
+serve --port 80
+serve --port=80
+serve -p 80
+serve -p80
+serve -p=80
+```
+
+Options on the command line are not positional, and can be specified before or after command-arguments.
+
+```sh
+serve --port=80 ./server.mts
+serve ./src/main.mts -p8080
+```
+
+If a non-option (i.e. `-13`) looks like an option because it starts with a hyphen (`-`), a delimiter (`--`) can be used
+to demarcate the command-argument from an option.
+
+```sh
+clamp -M3 -m-1 -- -13
+```
+
+Parsed options can be accessed by calling [`.opts<T>()`](#commandoptst) on a [`Command`](#commandinfo) object, and are
+passed to the command's [`action`](#commandactionaction) handler.
+Multi-word options such as `--template-engine` are camelCased, becoming `program.opts().templateEngine`, or can be
+configured to be converted using snake\_case, becoming `program.opts().template_engine`.
+
+There are additional, related routines for when `.opts<T>()` is not enough:
+
+- [`.optionValue(key[, value][, source])`](#commandoptionvaluekey-value-source)
+- [`.optionValueSource(key[, source])`](#commandoptionvaluesourcekey-source)
+- [`.optsWithGlobals<T>()`](#commandoptswithglobalst)
 
 ## API
 
