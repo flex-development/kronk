@@ -1721,7 +1721,7 @@ __metadata:
     "@types/chai": "npm:5.2.2"
     "@types/dateformat": "npm:5.0.3"
     "@types/is-ci": "npm:3.0.4"
-    "@types/node": "npm:24.7.0"
+    "@types/node": "npm:24.7.1"
     "@types/node-notifier": "npm:8.0.5"
     "@types/semver": "npm:7.7.1"
     "@vates/toggle-scripts": "npm:1.0.0"
@@ -2909,12 +2909,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:24.7.0":
-  version: 24.7.0
-  resolution: "@types/node@npm:24.7.0"
+"@types/node@npm:*, @types/node@npm:24.7.1":
+  version: 24.7.1
+  resolution: "@types/node@npm:24.7.1"
   dependencies:
     undici-types: "npm:~7.14.0"
-  checksum: 10/db0b77e9b132906cdf0350661df660c970e924093ccaa781472d61bc5c448f3d15514b15f55b4df6827254a041aad2418339fe00d45ef10687557ffc0f026d47
+  checksum: 10/b1796fa90ab360d6ca5a85457a3b6a70ac53ba75e29e36f1bae1b22d4fd5883277a2ee08475d24c29061474207b132a82d7490180e2c508ee8b081179923dd55
   languageName: node
   linkType: hard
 
