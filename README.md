@@ -421,13 +421,19 @@ Whether the argument can be specified multiple times.
 
 ### `Command(info)`
 
+A command (class).
+
 #### Signatures
 
-**TODO**: `Command` signatures
+- `constructor(info: CommandInfo | string)`
+- `constructor(info: string, data?: CommandData | null | undefined)`
 
 #### Parameters
 
-**TODO**: `Command` parameters
+- `info` ([`CommandInfo`](#commandinfo-1) | `string`)
+  — command info or name
+- `data?` ([`CommandData`](#commanddata), optional)
+  — additional command info
 
 #### `Command#action([action])`
 
@@ -459,7 +465,9 @@ Whether the argument can be specified multiple times.
 
 #### `Command#args`
 
-**TODO**: `Command#args`
+`any[]`
+
+Parsed command-line arguments.
 
 #### `Command#argument(info[, data])`
 
@@ -471,7 +479,9 @@ Whether the argument can be specified multiple times.
 
 #### `Command#argv`
 
-**TODO**: `Command#argv`
+`string[]`
+
+Raw command-line arguments.
 
 #### `Command#command(info[, data])`
 
@@ -499,11 +509,15 @@ Whether the argument can be specified multiple times.
 
 #### `Command#default`
 
-**TODO**: `Command#default`
+`boolean`
+
+Whether the command is the default subcommand of its [`parent`](#commandparent).
 
 #### `Command#defaultCommand`
 
-**TODO**: `Command#defaultCommand`
+[`Command`](#commandinfo) | `null` | `undefined`
+
+The default command.
 
 #### `Command#description([description])`
 
@@ -543,7 +557,9 @@ Whether the argument can be specified multiple times.
 
 #### `Command#hidden`
 
-**TODO**: `Command#hidden`
+`boolean`
+
+Whether the command should **not** be displayed in help text.
 
 #### `Command#hide([hidden])`
 
@@ -555,7 +571,9 @@ Whether the argument can be specified multiple times.
 
 #### `Command#logger`
 
-**TODO**: `Command#logger`
+[`Logger`][logger]
+
+Logger instance.
 
 #### `Command#on<T>(event, listener[, options])`
 
@@ -587,7 +605,9 @@ Whether the argument can be specified multiple times.
 
 #### `Command#parent`
 
-**TODO**: `Command#parent`
+[`Command`](#commandinfo) | `null` | `undefined`
+
+The parent command.
 
 #### `Command#parse([argv][, options])`
 
@@ -599,7 +619,9 @@ Whether the argument can be specified multiple times.
 
 #### `Command#process`
 
-**TODO**: `Command#process`
+[`Process`](#process)
+
+Information about the current process.
 
 #### `Command#snapshot()`
 
@@ -615,7 +637,9 @@ Whether the argument can be specified multiple times.
 
 #### `Command#unknown`
 
-**TODO**: `Command#unknown`
+[`UnknownStrategy`](#unknownstrategy)
+
+The strategy for handling unknown command-line arguments.
 
 #### `Command#unknowns(strategy)`
 
@@ -2004,6 +2028,8 @@ community you agree to abide by its terms.
 [full-stop]: https://www.fileformat.info/info/unicode/char/002e/index.htm
 
 [hyphen]: https://www.fileformat.info/info/unicode/char/002d/index.htm
+
+[logger]: https://github.com/flex-development/log#logger-1
 
 [meanings]: http://www.catb.org/~esr/writings/taoup/html/ch10s05.html
 

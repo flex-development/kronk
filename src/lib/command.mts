@@ -99,7 +99,7 @@ class Command {
   protected actionEvent: KronkEvent | null
 
   /**
-   * Parsed arguments.
+   * Parsed command-line arguments.
    *
    * @public
    * @instance
@@ -108,7 +108,7 @@ class Command {
   public args: any[]
 
   /**
-   * Raw arguments.
+   * Raw command-line arguments.
    *
    * @public
    * @instance
@@ -149,7 +149,7 @@ class Command {
   protected info: CommandMetadata
 
   /**
-   * Command logger.
+   * Logger instance.
    *
    * @see {@linkcode Logger}
    *
@@ -184,7 +184,7 @@ class Command {
   protected optionValues: OptionValues
 
   /**
-   * Parent command.
+   * The parent command.
    *
    * @public
    * @instance
@@ -357,7 +357,7 @@ class Command {
   }
 
   /**
-   * Whether the command is the default subcommand.
+   * Whether the command is the default subcommand of its {@linkcode parent}.
    *
    * @public
    * @instance
