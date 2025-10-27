@@ -409,7 +409,7 @@ class Command {
    * @instance
    *
    * @param {Action<any> | null | undefined} action
-   *  Callback to fire when command is executed
+   *  The callback to fire when the command is ran
    * @return {this}
    *  `this` command
    */
@@ -430,7 +430,7 @@ class Command {
    *  Parsed command arguments
    *
    * @return {Action<Opts, Args>}
-   *  Callback to fire when command is executed
+   *  The callback to fire when the command is ran
    */
   public action<
     Opts extends OptionValues = OptionValues,
@@ -446,9 +446,9 @@ class Command {
    * @instance
    *
    * @param {Action | null | undefined} [action]
-   *  Callback to fire when command is executed
+   *  The callback to fire when the command is ran
    * @return {Action | this}
-   *  Command action or `this` command
+   *  The command action callback or `this` command
    */
   public action(
     action?: Action | null | undefined
@@ -495,8 +495,8 @@ class Command {
   /**
    * Add a prepared `subcommand`.
    *
-   * See {@linkcode command} for creating an attached subcommand that inherits
-   * settings from its {@linkcode parent}.
+   * > 👉 **Note**: See {@linkcode command} for creating an attached subcommand
+   * > that inherits settings from its {@linkcode parent}.
    *
    * @see {@linkcode Command}
    * @see {@linkcode KronkError}
@@ -691,7 +691,7 @@ class Command {
    * @param {List<string> | string | null | undefined} [aliases]
    *  An alias, or list of aliases, for the command
    * @return {Set<string> | this}
-   *  List of aliases or `this` command
+   *  List of command aliases or `this` command
    */
   public aliases(
     aliases?: List<string> | string | null | undefined
@@ -783,7 +783,7 @@ class Command {
   }
 
   /**
-   * Define arguments for the command.
+   * Batch define arguments for the command.
    *
    * @see {@linkcode ArgumentInfo}
    * @see {@linkcode List}
@@ -813,7 +813,7 @@ class Command {
   public arguments(): Argument[]
 
   /**
-   * Get a list of command arguments or define arguments for the command.
+   * Get a list of command arguments or batch define arguments for the command.
    *
    * @see {@linkcode Argument}
    * @see {@linkcode ArgumentInfo}
@@ -1083,7 +1083,7 @@ class Command {
   public commands(): Map<string, Command>
 
   /**
-   * Get a list of subcommands or define subcommands for the command.
+   * Get a subcommand map or batch define subcommands for the command.
    *
    * @see {@linkcode SubcommandsInfo}
    *
@@ -1093,7 +1093,7 @@ class Command {
    * @param {SubcommandsInfo} [infos]
    *  Subcommands info
    * @return {Map<string, Command> | this}
-   *  Subcommands map or `this` command
+   *  Subcommand map or `this` command
    */
   public commands(infos?: SubcommandsInfo): Map<string, Command> | this {
     if (infos) {
@@ -1144,9 +1144,7 @@ class Command {
    * @instance
    *
    * @param {ArgumentInfo | ArgumentSyntax} info
-   *  Argument info or name
-   * @return {Argument}
-   *  New argument instance
+   *  Argument info or syntax
    * @return {Argument}
    *  New argument instance
    */
@@ -1162,15 +1160,15 @@ class Command {
    * @public
    * @instance
    *
-   * @param {ArgumentSyntax} name
-   *  Name of the argument
+   * @param {ArgumentSyntax} syntax
+   *  The argument syntax
    * @param {ArgumentData | null | undefined} [info]
-   *  Argument info
+   *  Additional argument info
    * @return {Argument}
    *  New argument instance
    */
   public createArgument(
-    name: ArgumentSyntax,
+    syntax: ArgumentSyntax,
     info?: ArgumentData | null | undefined
   ): Argument
 
@@ -1186,9 +1184,9 @@ class Command {
    * @instance
    *
    * @param {ArgumentInfo | ArgumentSyntax} info
-   *  Argument info or name
+   *  Argument info or syntax
    * @param {ArgumentData | null | undefined} [data]
-   *  Argument data
+   *  Additional argument info
    * @return {Argument}
    *  New argument instance
    */
@@ -1329,7 +1327,7 @@ class Command {
    * @param {Flags | OptionInfo | VersionOptionInfo} info
    *  Option info or flags
    * @param {OptionData | null | undefined} [data]
-   *  Option data
+   *  Additional option info
    * @return {Option | VersionOption}
    *  New option instance
    */
@@ -1349,7 +1347,7 @@ class Command {
    * @instance
    *
    * @param {URL | string | null | undefined} description
-   *  Description of command
+   *  The command description
    * @return {this}
    *  `this` command
    */
@@ -1362,7 +1360,7 @@ class Command {
    * @instance
    *
    * @return {string}
-   *  Description of `this` command
+   *  The command description
    */
   public description(): string
 
@@ -1373,7 +1371,7 @@ class Command {
    * @instance
    *
    * @param {URL | string | null | undefined} [description]
-   *  Description of command
+   *  The command description
    * @return {string | this}
    *  Description of `this` command or `this` command
    */
@@ -1393,7 +1391,7 @@ class Command {
    * @instance
    *
    * @param {Action<any> | null | undefined} done
-   *  Callback to fire after command is executed
+   *  The callback to fire after the command is ran
    * @return {this}
    *  `this` command
    */
@@ -1409,12 +1407,12 @@ class Command {
    * @instance
    *
    * @template {OptionValues} [Opts=OptionValues]
-   *  Command options with globals
+   *  Parsed command options with globals
    * @template {any[]} [Args=any[]]
-   *  Command arguments
+   *  Parsed command arguments
    *
    * @return {Action<Opts, Args>}
-   *  Callback to fire after command is executed
+   *  The callback to fire after the command is ran
    */
   public done<
     Opts extends OptionValues = OptionValues,
@@ -1430,7 +1428,7 @@ class Command {
    * @instance
    *
    * @param {Action | null | undefined} [done]
-   *  Callback to fire after command is executed
+   *  The callback to fire after the command is ran
    * @return {Action | this}
    *  Command done callback or `this` command
    */
@@ -1497,9 +1495,9 @@ class Command {
    * @instance
    *
    * @param {CommandErrorInfo | KronkError} info
-   *  The error to display or info about the error
+   *  Info about the error or the error to display
    * @return {never}
-   *  Exits by throwing
+   *  Never, exits erroneously
    */
   public error(info: CommandErrorInfo | KronkError): never {
     /**
@@ -1519,8 +1517,7 @@ class Command {
   /**
    * Exit the process.
    *
-   * > 👉 **Note**: The command process is "exited" by setting the exit code
-   * > ({@linkcode process.exitCode}) and throwing `e`.
+   * > 👉 **Note**: The exit code ({@linkcode process.exitCode}) is set, but
    * > {@linkcode process.exit} is **not** called. To change this behavior,
    * > override the exit callback using {@linkcode exiter}.
    *
@@ -1534,14 +1531,17 @@ class Command {
    *  The error to handle
    * @return {never}
    *  Never
+   * @throws {KronkError}
+   *  If `e` is an unhandled error after calling the command exit callback
    */
   public exit(e: CommandError | KronkError): never
 
   /**
    * Exit the process.
    *
-   * > 👉 **Note**: {@linkcode process.exit} is **not** called. To change this
-   * > behavior, override the exit callback using {@linkcode exiter}.
+   * > 👉 **Note**: The exit code ({@linkcode process.exitCode}) is set, but
+   * > {@linkcode process.exit} is **not** called. To change this behavior,
+   * > override the exit callback using {@linkcode exiter}.
    *
    * @see {@linkcode CommandError}
    * @see {@linkcode KronkError}
@@ -1549,27 +1549,28 @@ class Command {
    * @public
    * @instance
    *
-   * @param {CommandError | KronkError | null | undefined} [e]
+   * @param {null | undefined} [e]
    *  The error to handle
    * @return {undefined}
    */
-  public exit(e?: CommandError | KronkError | null | undefined): undefined
+  public exit(e?: null | undefined): undefined
 
   /**
    * Exit the process.
    *
-   * @see {@linkcode CommandError}
    * @see {@linkcode KronkError}
    *
    * @public
    * @instance
    *
-   * @param {CommandError | KronkError | null | undefined} [e]
+   * @param {KronkError | null | undefined} [e]
    *  The error to handle
-   * @return {undefined}
+   * @return {never | undefined}
+   *  Nothing
    * @throws {KronkError}
+   *  If `e` is an unhandled error after calling the command exit callback
    */
-  public exit(e?: CommandError | KronkError | null | undefined): undefined {
+  public exit(e?: KronkError | null | undefined): never | undefined {
     this.process.exitCode = e?.code
     this.exiter().call(this, e)
     if (e) throw e
@@ -1585,7 +1586,7 @@ class Command {
    * @instance
    *
    * @param {Exit | null | undefined} exit
-   *  Callback to fire when process is exited
+   *  The callback to fire on process exit
    * @return {this}
    *  `this` command
    */
@@ -1600,7 +1601,7 @@ class Command {
    * @instance
    *
    * @return {Exit}
-   *  Callback to fire when process is exited
+   *  The callback to fire on process exit
    */
   public exiter(): Exit
 
@@ -1613,7 +1614,7 @@ class Command {
    * @instance
    *
    * @param {Exit | null | undefined} [exit]
-   *  Callback to fire when process is exited
+   *  The callback to fire on process exit
    * @return {Exit | this}
    *  Command exit callback or `this` command
    */
@@ -1623,7 +1624,7 @@ class Command {
   }
 
   /**
-   * Find a command with a name or alias matching `x`.
+   * Find a command with a name or alias matching `ref`.
    *
    * @see {@linkcode CommandName}
    * @see {@linkcode List}
@@ -1631,28 +1632,33 @@ class Command {
    * @public
    * @instance
    *
-   * @param {CommandName | List<CommandName> | undefined} x
-   *  Command name, command alias, or list of names and/or aliases
+   * @param {CommandName | List<CommandName> | undefined} ref
+   *  A command name, command alias, or list of such references
    * @return {Command | this | undefined}
-   *  Command with name or alias matching `x`
+   *  Command with a name or alias matching `ref`
    */
   public findCommand(
-    x: CommandName | List<CommandName> | undefined
+    ref: CommandName | List<CommandName> | undefined
   ): Command | this | undefined {
-    if (typeof x === 'string' && (this.id() === x || this.aliases().has(x))) {
+    if (
+      typeof ref === 'string' &&
+      (this.id() === ref || this.aliases().has(ref))
+    ) {
       return this
     }
 
-    if (x !== undefined && this.info.subcommands.size) {
+    if (ref && this.info.subcommands.size) {
+      /**
+       * List of command names and/or aliases.
+       *
+       * @const {List<CommandName>} references
+       */
+      const references: List<CommandName> = toList(ref)
+
+      // search for a matching subcommand.
       for (const [, cmd] of this.commands()) {
-        for (const id of toList(x)) {
-          switch (true) {
-            case id === cmd.id():
-            case typeof id === 'string' && cmd.aliases().has(id):
-              return cmd
-            default:
-              continue
-          }
+        for (const ref of references) {
+          if (cmd.findCommand(ref)) return cmd
         }
       }
     }
@@ -1663,10 +1669,9 @@ class Command {
   /**
    * Find an option with a flag matching `flag`.
    *
-   * By default, only options known to `this` command and the default command
-   * ({@linkcode defaultCommand}) can be searched.\
-   * Pass `-1` to search for only global options, or `0` to only search for
-   * options known to `this` command.
+   * Options known to `this` command and its ({@linkcode defaultCommand}) are
+   * searched by default. Set `direction` to `0` to only search for options
+   * known to the current command.
    *
    * @see {@linkcode Option}
    *
@@ -1754,7 +1759,7 @@ class Command {
    * @param {CommandName | undefined} [name]
    *  The name of the command
    * @return {CommandName | this}
-   *  Name of `this` command or `this` command
+   *  The name of `this` command or `this` command
    */
   public id(name?: CommandName | undefined): CommandName | this {
     if (!arguments.length) return this.info.name?.trim() || null
@@ -1924,7 +1929,7 @@ class Command {
    * @param {Flags} flags
    *  Option flags
    * @param {OptionData | null | undefined} [info]
-   *  Option info
+   *  Additional option info
    * @return {this}
    *  `this` command
    */
@@ -1943,7 +1948,7 @@ class Command {
    * @param {Flags | OptionInfo} info
    *  Option flags or info
    * @param {OptionData | null | undefined} [data]
-   *  Option data
+   *  Additional option data
    * @return {this}
    *  `this` command
    */
@@ -2056,7 +2061,7 @@ class Command {
    * @param {Option['key']} key
    *  Option key
    * @return {OptionValueSource | null | undefined}
-   *  Option value source
+   *  The source of the option value for `key`
    */
   public optionValueSource(
     key: Option['key']
@@ -2076,7 +2081,7 @@ class Command {
    * @param {OptionValueSource | null | undefined} [source]
    *  The source of the option value
    * @return {OptionValueSource | this | null | undefined}
-   *  Option value source or `this` command
+   *  Option value source for `key` or `this` command
    */
   public optionValueSource(
     key: Option['key'],
@@ -2118,7 +2123,7 @@ class Command {
   public options(): Option[]
 
   /**
-   * Get a list of command options or define options for the command.
+   * Get a list of command options or batch define options for the command.
    *
    * @see {@linkcode Flags}
    * @see {@linkcode List}
@@ -2147,8 +2152,8 @@ class Command {
    * @public
    * @instance
    *
-   * @template {c} T
-   *  Option values type
+   * @template {OptionValues} T
+   *  Local option values type
    *
    * @return {T}
    *  Local option values
@@ -2160,9 +2165,9 @@ class Command {
   /**
    * Get a record of global and local option values.
    *
-   * > 👉 **Note**: By default, local options overwrite global options. To
-   * > change this behavior, `info.optionPriority`
-   * > ({@linkcode CommandInfo.optionPriority}) should be set to `'global'`.
+   * > 👉 **Note**: Local options overwrite global options by default.
+   * > Prioritize global options (i.e. `cmd.optionPriority('global')`) to change
+   * > this behavior.
    *
    * @see {@linkcode OptionValues}
    *
@@ -2170,7 +2175,7 @@ class Command {
    * @instance
    *
    * @template {OptionValues} T
-   *  Option values type
+   *  Merged option values type
    *
    * @return {T}
    *  Merged option values
@@ -2687,7 +2692,7 @@ class Command {
   }
 
   /**
-   * Get a snapshot of the command.
+   * Get a snapshot of `this` command.
    *
    * @see {@linkcode CommandSnapshot}
    *
@@ -2716,7 +2721,7 @@ class Command {
    * @instance
    *
    * @param {string | null | undefined} summary
-   *  Summary of command
+   *  The command summary
    * @return {this}
    *  `this` command
    */
@@ -2740,8 +2745,8 @@ class Command {
    * @instance
    *
    * @param {string | null | undefined} [summary]
-   *  Summary of command
-   * @return {string | this| null}
+   *  The command summary
+   * @return {string | this | null}
    *  Summary of `this` command or `this` command
    */
   public summary(summary?: string | null | undefined): string | this | null {
@@ -2750,7 +2755,7 @@ class Command {
   }
 
   /**
-   * Get `this` command as a human-readable string.
+   * Get the command as a human-readable string.
    *
    * @public
    * @instance
@@ -2808,7 +2813,7 @@ class Command {
   public usage(): UsageInfo
 
   /**
-   * Get or set command usage.
+   * Get or set the command usage description.
    *
    * @see {@linkcode UsageInfo}
    * @see {@linkcode UsageData}
@@ -2858,10 +2863,13 @@ class Command {
    * @public
    * @instance
    *
-   * @return {string | null}
+   * @template {string} [T=string]
+   *  Command version type
+   *
+   * @return {T | null}
    *  Command version
    */
-  public version(): string | null
+  public version<T extends string = string>(): T | null
 
   /**
    * Get or set the command version.

@@ -67,7 +67,7 @@ interface CommandData {
   exit?: Exit | null | undefined
 
   /**
-   * Whether the command should be not displayed in help text.
+   * Whether the command should **not** be displayed in help text.
    */
   hidden?: boolean | null | undefined
 

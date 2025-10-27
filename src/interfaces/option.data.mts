@@ -41,7 +41,7 @@ interface OptionData {
   env?: List<string> | string | null | undefined
 
   /**
-   * Whether the option should be not displayed in help text.
+   * Whether the option should **not** be displayed in help text.
    *
    * @default false
    */

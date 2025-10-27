@@ -56,11 +56,11 @@
     - [`Command#description([description])`](#commanddescriptiondescription)
     - [`Command#done([done])`](#commanddonedone)
     - [`Command#emit(event)`](#commandemitevent)
-    - [`Command#emitOption(option, value, source[, flags])`](#commandemitoptionoption-value-source-flags)
+    - [`Command#emitOption(option, value, source[, flags])`](#commandemitoptionoption-value-source-flag)
     - [`Command#error(info)`](#commanderrorinfo)
     - [`Command#exit([e])`](#commandexite)
     - [`Command#exiter([exit])`](#commandexiterexit)
-    - [`Command#findCommand(x)`](#commandfindcommandx)
+    - [`Command#findCommand(ref)`](#commandfindcommandref)
     - [`Command#findOption(flag[, direction])`](#commandfindoptionflag-direction)
     - [`Command#hidden`](#commandhidden)
     - [`Command#hide([hidden])`](#commandhidehidden)
@@ -68,6 +68,7 @@
     - [`Command#logger`](#commandlogger)
     - [`Command#on<T>(event, listener[, options])`](#commandontevent-listener-options)
     - [`Command#option(info[, data])`](#commandoptioninfo-data)
+    - [`Command#optionPriority([priority])`](#commandoptionprioritypriority)
     - [`Command#optionValue(key[, value][, source])`](#commandoptionvaluekey-value-source)
     - [`Command#optionValueSource(key[, source])`](#commandoptionvaluesourcekey-source)
     - [`Command#options([infos])`](#commandoptionsinfos)
@@ -81,7 +82,7 @@
     - [`Command#summary([summary])`](#commandsummarysummary)
     - [`Command#toString()`](#commandtostring)
     - [`Command#unknown`](#commandunknown)
-    - [`Command#unknowns(strategy)`](#commandunknownsstrategy)
+    - [`Command#unknowns([strategy])`](#commandunknownsstrategy)
     - [`Command#usage([usage])`](#commandusageusage)
     - [`Command#version([version])`](#commandversionversion)
   - [`CommandError(info)`](#commanderrorinfo-1)
@@ -274,8 +275,8 @@ clamp -M3 -m-1 -- -13
 
 Parsed options can be accessed by calling [`.opts<T>()`](#commandoptst) on a [`Command`](#commandinfo) object, and are
 passed to the command's [`action`](#commandactionaction) handler.
-Multi-word options such as `--template-engine` are camelCased, becoming `program.opts().templateEngine`, or can be
-configured to be converted using snake\_case, becoming `program.opts().template_engine`.
+Multi-word options such as `--template-engine` are `camelCased`, becoming `program.opts().templateEngine`, or can be
+configured to be converted using `snake_case`, becoming `program.opts().template_engine`.
 
 There are additional, related routines for when `.opts<T>()` is not enough:
 
@@ -298,7 +299,7 @@ A command argument (class).
 
 - `info` ([`ArgumentInfo`](#argumentinfo-1) | `string`)
   — argument info or syntax
-- `data?` ([`ArgumentData`](#argumentdata), optional)
+- `data` ([`ArgumentData`](#argumentdata))
   — additional argument info
 
 #### `Argument#id`
@@ -325,12 +326,12 @@ Get or set argument choices.
 
 ##### Overloads
 
-- `choices(): Set<string>`
 - `choices(choices: List<string> | null | undefined): this`
+- `choices(): Set<string>`
 
 ##### Parameters
 
-- `choices` ([`List<string>`](#list), optional)
+- `choices` ([`List<string>`](#list))
   — list of argument choices
 
 ##### Returns
@@ -343,8 +344,8 @@ Get or set the default value configuration.
 
 ##### Overloads
 
-- `default<T>(): DefaultInfo<T>`
 - `default(info: DefaultInfo | null | undefined): this`
+- `default<T>(): DefaultInfo<T>`
 
 ##### Type Parameters
 
@@ -353,7 +354,7 @@ Get or set the default value configuration.
 
 ##### Parameters
 
-- `info` ([`DefaultInfo`](#defaultinfo), optional)
+- `info` ([`DefaultInfo`](#defaultinfo))
   — default value info
 
 ##### Returns
@@ -368,12 +369,12 @@ Pass `null`, `undefined`, or an empty string to remove the argument from the aut
 
 ##### Overloads
 
-- `description(): string`
 - `description(description: URL | string | null | undefined): this`
+- `description(): string`
 
 ##### Parameters
 
-- `description` (`URL | string`, optional)
+- `description` (`URL | string`)
   — the argument description
 
 ##### Returns
@@ -386,8 +387,8 @@ Get or set the handler used to parse command-arguments.
 
 ##### Overloads
 
-- `parser<T, V extends string | string[] = string | string[]>(): ParseArg<T, V>`
 - `parser(parser: ParseArg<any, any> | null | undefined): this`
+- `parser<T, V extends string | string[] = string | string[]>(): ParseArg<T, V>`
 
 ##### Type Parameters
 
@@ -407,7 +408,7 @@ Get or set the handler used to parse command-arguments.
 
 #### `Argument#toString()`
 
-Get the human readable equivalent of the argument.
+Get the argument as a human-readable string.
 
 ##### Returns
 
@@ -419,7 +420,7 @@ Get the human readable equivalent of the argument.
 
 Whether the argument can be specified multiple times.
 
-### `Command(info)`
+### `Command([info])`
 
 A command (class).
 
@@ -432,36 +433,136 @@ A command (class).
 
 - `info` ([`CommandInfo`](#commandinfo-1) | `string`)
   — command info or name
-- `data?` ([`CommandData`](#commanddata), optional)
+- `data` ([`CommandData`](#commanddata))
   — additional command info
 
 #### `Command#action([action])`
 
-**TODO**: `Command#action([action])`
+Get or set the command action callback.
+
+##### Overloads
+
+- `action(action: Action<any> | null | undefined): this`
+- `action<Opts extends OptionValues = OptionValues, Args extends any[] = any[]>(): Action<Opts, Args>`
+
+##### Type Parameters
+
+- `Opts` ([`OptionValues`](#optionvalues), optional)
+  — parsed command options
+- `Args` (`any[]`, optional)
+  — parsed command arguments
+
+##### Parameters
+
+- `action` ([`Action<any>`](#action) | `null` | `undefined`)
+  — the callback to fire when the command is ran
+
+##### Returns
+
+([`Action<Opts, Args>`](#action) | [`this`](#commandinfo)) The command action callback or `this` command
 
 #### `Command#addArgument(argument)`
 
-**TODO**: `Command#addArgument(argument)`
+Add a prepared `argument`.
+
+##### Parameters
+
+- `argument` ([`Argument`](#argumentinfo))
+  — the argument instance to add
+
+##### Returns
+
+(`never` | [`this`](#commandinfo)) `this` command
+
+##### Throws
+
+([`KronkError`](#kronkerrorinfo)) If the last registered argument is variadic
 
 #### `Command#addCommand(subcommand)`
 
-**TODO**: `Command#addCommand(subcommand)`
+Add a prepared `subcommand`.
+
+> 👉 **Note**: See [`command`](#commandcommandinfo-data) for creating an attached subcommand
+> that inherits settings from its [`parent`](#commandparent).
+
+##### Parameters
+
+- `subcommand` ([`Command`](#commandinfo))
+  — the command instance to add
+
+##### Returns
+
+(`never` | [`this`](#commandinfo)) `this` command
+
+##### Throws
+
+([`KronkError`](#kronkerrorinfo)) If `subcommand` does not have a valid name
+or a subcommand with the same name or alias as `subcommand` already exists
 
 #### `Command#addOption(option)`
 
-**TODO**: `Command#addOption(option)`
+Add a prepared `option`.
+
+##### Parameters
+
+- `option` ([`Option`](#optioninfo))
+  — the option instance to add
+
+##### Returns
+
+(`never` | [`this`](#commandinfo)) `this` command
+
+##### Throws
+
+([`KronkError`](#kronkerrorinfo)) If an option with the same long or short flag as `option` already exists
 
 #### `Command#alias([alias])`
 
-**TODO**: `Command#alias([alias])`
+Get an alias for the command or add command aliases.
+
+> 👉 **Note**: This method can be called more than once to add multiple aliases.
+
+##### Overloads
+
+- `alias(alias: List<string> | string): this`
+- `alias(): CommandName`
+
+##### Parameters
+
+- `alias` ([`List<string>`](#list) | `string`)
+  — an alias, or list of aliases, for the command
+
+##### Returns
+
+([`CommandName`](#commandname) | [`this`](#commandinfo)) Command alias or `this` command
 
 #### `Command#aliases([aliases])`
 
-**TODO**: `Command#aliases([aliases])`
+Get or set aliases for the command.
+
+##### Overloads
+
+- `aliases(aliases: List<string> | string | null | undefined): this`
+- `aliases(): Set<string>`
+
+##### Parameters
+
+- `aliases` ([`List<string>`](#list) | `string` | `null` | `undefined`)
+  — an alias, or list of aliases, for the command
+
+##### Returns
+
+(`Set<string>` | [`this`](#commandinfo)) List of command aliases or `this` command
 
 #### `Command#ancestors()`
 
-**TODO**: `Command#ancestors()`
+Get a list of ancestor commands.
+
+The first command is the parent of `this` command, and the last is the greatest grandparent of `this` command.
+
+##### Returns
+
+([`Command[]`](#commandinfo)) List of ancestor commands
 
 #### `Command#args`
 
@@ -471,11 +572,41 @@ Parsed command-line arguments.
 
 #### `Command#argument(info[, data])`
 
-**TODO**: `Command#argument(info[, data])`
+Define an argument for the command.
+
+##### Overloads
+
+- `argument(info: ArgumentInfo | string): this`
+- `argument(info: string, data?: ArgumentData | null | undefined): this`
+
+##### Parameters
+
+- `info` ([`ArgumentInfo`](#argumentinfo-1) | `string`)
+  — argument info or syntax
+- `data` ([`ArgumentData`](#argumentdata), optional)
+  — additional argument info
+
+##### Returns
+
+([`this`](#commandinfo)) `this` command
 
 #### `Command#arguments([infos])`
 
-**TODO**: `Command#arguments([infos])`
+Get a list of command arguments or batch define arguments for the command.
+
+##### Overloads
+
+- `arguments(infos: List<ArgumentInfo | string> | string): this`
+- `arguments(): Argument[]`
+
+##### Parameters
+
+- `infos` ([`List<ArgumentInfo | string>`](#list) | `string`)
+  — list of [argument info](#argumentinfo-1) and/or syntaxes, or a string containing argument syntaxes
+
+##### Returns
+
+([`Argument[]`](#argumentinfo) | [`this`](#commandinfo)) List of command arguments or `this` command
 
 #### `Command#argv`
 
@@ -485,27 +616,118 @@ Raw command-line arguments.
 
 #### `Command#command(info[, data])`
 
-**TODO**: `Command#command(info[, data])`
+Define a subcommand.
+
+##### Overloads
+
+- `command(info: SubcommandInfo | string): Command`
+- `command(info: string, data?: CommandData | null | undefined): Command`
+
+##### Parameters
+
+- `info` ([`SubcommandInfo`](#subcommandinfo) | `string`)
+  — subcommand info or name
+- `data` ([`CommandData`](#commanddata))
+  — additional subcommand info
+
+##### Returns
+
+([`Command`](#commandinfo)) Subcommand instance
 
 #### `Command#commands([infos])`
 
-**TODO**: `Command#commands([infos])`
+Get a subcommand map or batch define subcommands for the command.
+
+##### Overloads
+
+- `commands(infos: SubcommandsInfo): this`
+- `commands(): Map<string, Command>`
+
+##### Parameters
+
+- `infos` ([`SubcommandsInfo`](#subcommandsinfo))
+  — subcommands info
+
+##### Returns
+
+([`Map<string, Command> | this`](#commandinfo)) Subcommand map or `this` command
 
 #### `Command#copyInheritedSettings(parent)`
 
-**TODO**: `Command#copyInheritedSettings(parent)`
+Copy settings that are useful to have in common across `parent` and its subcommands.
+
+> 👉 **Note**: This method is used internally via [`command`](#commandcommandinfo-data)
+> so subcommands can inherit parent settings.
+
+##### Parameters
+
+- `parent` ([`Command`](#commandinfo))
+  — the parent command to copy settings from
+
+##### Returns
+
+([`this`](#commandinfo)) `this` command
 
 #### `Command#createArgument(info[, data])`
 
-**TODO**: `Command#createArgument(info[, data])`
+Create a new unattached argument.
 
-#### `Command#createCommand(info[, data])`
+##### Overloads
 
-**TODO**: `Command#createCommand(info[, data])`
+- `createArgument(info: ArgumentInfo | ArgumentSyntax): Argument`
+- `createArgument(info: ArgumentSyntax, data?: ArgumentData | null | undefined): Argument`
+
+##### Parameters
+
+- `info` ([`ArgumentInfo`](#argumentinfo-1) | [`ArgumentSyntax`](#argumentsyntax-1))
+  — argument info or syntax
+- `data` ([`ArgumentData`](#argumentdata))
+  — additional argument info
+
+##### Returns
+
+([`Argument`](#argumentinfo)) New argument instance
+
+#### `Command#createCommand([info][, data])`
+
+Create a new unattached command.
+
+##### Overloads
+
+- `createCommand(info?: CommandInfo | string | null | undefined): Command`
+- `createCommand(info: string, data?: CommandData | null | undefined): Command`
+
+##### Parameters
+
+- `info` ([`CommandInfo`](#commandinfo-1) | `string`)
+  — command info or name
+- `data` ([`CommandData`](#commanddata))
+  — additional command info
+
+##### Returns
+
+([`Command`](#commandinfo)) New command instance
 
 #### `Command#createOption(info[, data])`
 
-**TODO**: `Command#createOption(info[, data])`
+Create a new unattached option.
+
+##### Overloads
+
+- `createOption(info: Flags | OptionInfo): Option`
+- `createOption(info: VersionOptionInfo): VersionOption`
+- `createOption(info: Flags, data?: OptionData | null | undefined): Option`
+
+##### Parameters
+
+- `info` ([`Flags`](#flags) | [`OptionInfo`](#optioninfo-1) | [`VersionOptionInfo`](#versionoptioninfo-1))
+  — option info or flags
+- `data` ([`OptionData`](#optiondata))
+  — additional option info
+
+##### Returns
+
+([`Option`](#optioninfo) | [`VersionOption`](#versionoptioninfo)) New option instance
 
 #### `Command#default`
 
@@ -521,39 +743,165 @@ The default command.
 
 #### `Command#description([description])`
 
-**TODO**: `Command#description([description])`
+Get or set the command description.
+
+##### Overloads
+
+- `description(description: URL | string | null | undefined): this`
+- `description(): string`
+
+##### Parameters
+
+- `description` (`URL` | `string`)
+  — the command description
+
+##### Returns
+
+(`string` | [`this`](#commandinfo)) Description of `this` command or `this` command
 
 #### `Command#done([done])`
 
-**TODO**: `Command#done([done])`
+Get or set the command done callback.
+
+##### Overloads
+
+- `done(done: Action<any> | null | undefined): this`
+- `done<Opts extends OptionValues = OptionValues, Args extends any[] = any[]>(): Action<Opts, Args>`
+
+##### Type Parameters
+
+- `Opts` ([`OptionValues`](#optionvalues), optional)
+  — parsed command options with globals
+- `Args` (`any[]`, optional)
+  — parsed command arguments
+
+##### Parameters
+
+- `done` ([`Action<any>`](#action) | `null` | `undefined`)
+  — the callback to fire after the command is ran
+
+##### Returns
+
+([`Action<Opts, Args>`](#action) | [`this`](#commandinfo)) The command done callback or `this` command
 
 #### `Command#emit(event)`
 
-**TODO**: `Command#emit(event)`
+Emit an `event`.
 
-#### `Command#emitOption(option, value, source[, flags])`
+##### Parameters
 
-**TODO**: `Command#emitOption(option, value, source[, flags])`
+- `event` ([`KronkEvent`](#kronkeventid))
+  — the event to emit
+
+##### Returns
+
+(`boolean`) `true` if event has listeners, `false` otherwise
+
+#### `Command#emitOption(option, value, source[, flag])`
+
+Emit a parsed `option` event.
+
+##### Parameters
+
+- `option` ([`Option`](#optioninfo))
+  — the command option instance
+- `value` ([`RawOptionValue`](#rawoptionvalue))
+  — the raw `option` value
+- `source` ([`OptionValueSource`](#optionvaluesource))
+  — the source of the raw option `value`
+- `flag?` ([`Flags`](#flags), optional)
+  — the parsed `option` flag
+
+##### Returns
+
+(`boolean`) `true` if event has listeners, `false` otherwise
 
 #### `Command#error(info)`
 
-**TODO**: `Command#error(info)`
+Display an error message and exit.
+
+##### Parameters
+
+- `info` ([`CommandErrorInfo`](#commanderrorinfo-2) | [`KronkError`](#kronkerrorinfo))
+  — info about the error or the error to display
+
+##### Returns
+
+(`never`) Never, exits erroneously
 
 #### `Command#exit([e])`
 
-**TODO**: `Command#exit([e])`
+Exit the process.
+
+> 👉 **Note**: The exit code (`process.exitCode`) is set, but `process.exit` is **not** called.
+> To change this behavior, override the exit callback using [`exiter`](#commandexiterexit).
+
+##### Overloads
+
+- `exit(e: CommandError | KronkError): never`
+- `exit(e?: null | undefined): undefined`
+
+##### Parameters
+
+- `e` ([`CommandError`](#commanderrorinfo-1) | [`KronkError`](#kronkerrorinfo) | `null` | `undefined`)
+  — the error to handle
+
+##### Returns
+
+(`never` | `undefined`) Nothing
+
+##### Throws
+
+([`KronkError`](#kronkerrorinfo)) If `e` is an unhandled error after calling the command exit callback
 
 #### `Command#exiter([exit])`
 
-**TODO**: `Command#exiter([exit])`
+Get or set the exit callback.
 
-#### `Command#findCommand(x)`
+##### Overloads
 
-**TODO**: `Command#findCommand(x)`
+- `exiter(exit: Exit | null | undefined): this`
+- `exiter(): Exit`
+
+##### Parameters
+
+- `exit` ([`Exit`](#exit) | `null` | `undefined`)
+  — the callback to fire on process exit
+
+##### Returns
+
+([`Exit`](#exit) | [`this`](#commandinfo)) Command exit callback or `this` command
+
+#### `Command#findCommand(ref)`
+
+Find a command with a name or alias matching `ref`.
+
+##### Parameters
+
+- `ref` ([`CommandName`](#commandname) | [`List<CommandName>`](#list) | `undefined`)
+  — a command name, command alias, or list of such references
+
+##### Returns
+
+([`Command`](#commandinfo) | [`this`](#commandinfo) | `undefined`) Command with a name or alias matching `ref`
 
 #### `Command#findOption(flag[, direction])`
 
-**TODO**: `Command#findOption(flag[, direction])`
+Find an option with a flag matching `flag`.
+
+Options known to [`this`](#commandinfo) command and its ([`defaultCommand`](#commanddefaultcommand)) are searched by
+default. Set `direction` to `0` to only search for options known to the current command.
+
+##### Parameters
+
+- `flag` (`string` | `null` | `undefined`)
+  — the option flag to match
+- `direction` (`0` | `null` | `undefined`, optional)
+  — the direction to search for options
+
+##### Returns
+
+([`Option`](#optioninfo) | `undefined`) Option with the long or short flag `flag`
 
 #### `Command#hidden`
 
@@ -563,11 +911,35 @@ Whether the command should **not** be displayed in help text.
 
 #### `Command#hide([hidden])`
 
-**TODO**: `Command#hide([hidden])`
+Remove the command from help text.
+
+##### Parameters
+
+- `hidden` (`boolean` | `null` | `undefined`)
+  — whether the command should be hidden
+  - default: `true`
+
+##### Returns
+
+([`this`](#commandinfo)) `this` command
 
 #### `Command#id([name])`
 
-**TODO**: `Command#id([name])`
+Get or set the name of the command.
+
+##### Overloads
+
+- `id(name: CommandName | undefined): this`
+- `id(): CommandName`
+
+##### Parameters
+
+- `name` ([`CommandName`](#commandname) | `undefined`)
+  — the name of the command
+
+##### Returns
+
+([`CommandName`](#commandname) | [`this`](#commandinfo)) The name of `this` command or `this` command
 
 #### `Command#logger`
 
@@ -577,31 +949,158 @@ Logger instance.
 
 #### `Command#on<T>(event, listener[, options])`
 
-**TODO**: `Command#on<T>(event, listener[, options])`
+Register an `event` listener.
+
+##### Type Parameters
+
+- `T` ([`KronkEvent`](#kronkeventid))
+  — the event being listened for
+
+##### Parameters
+
+- `event` ([`T['id']`](#kronkeventid-1))
+  — the name of the event being listened for
+- `listener` ([`KronkEventListener<T>`](#kronkeventlistener))
+  — the event listener
+- `options` ([`OnOptions`][onoptions], optional)
+  — event listening options
+
+##### Returns
+
+(`undefined`) Nothing
 
 #### `Command#option(info[, data])`
 
-**TODO**: `Command#option(info[, data])`
+Define an option for the command.
+
+##### Overloads
+
+- `option(info: Flags | OptionInfo): this`
+- `option(info: Flags, data?: OptionData | null | undefined): this`
+
+##### Parameters
+
+- `info` ([`Flags`](#flags) | [`OptionInfo`](#optioninfo-1))
+  — option flags or info
+- `data` ([`OptionData`](#optiondata), optional)
+  — additional argument info
+
+##### Returns
+
+([`this`](#commandinfo)) `this` command
+
+#### `Command#optionPriority([priority])`
+
+Get or set the strategy to use when merging global and local options.
+
+##### Overloads
+
+- `optionPriority(priority: OptionPriority | null | undefined): this`
+- `optionPriority(): OptionPriority`
+
+##### Parameters
+
+- `priority` ([`OptionPriority`](#optionpriority) | `null`| `undefined`)
+  — the strategy to use when merging global and local options
+
+##### Returns
+
+([`OptionPriority`](#optionpriority) | [`this`](#commandinfo)) Option merge strategy or `this` command
 
 #### `Command#optionValue(key[, value][, source])`
 
-**TODO**: `Command#optionValue(key[, value][, source])`
+Get or set an option value.
+
+##### Overloads
+
+- `optionValue(key: Option['key'], value: unknown, source?: OptionValueSource | null | undefined): this`
+- `optionValue<T>(key: Option['key']): T`
+
+##### Type Parameters
+
+- `T` (`any`)
+  — parsed option value type
+
+##### Parameters
+
+- `key` ([`Option['key']`](#optionkey))
+  — option key
+- `value` (`unknown`)
+  — the parsed option value to store
+- `source` ([`OptionValueSource`](#optionvaluesource) | `null` | `undefined`)
+  — the source of the original option value
+
+##### Returns
+
+(`T` | [`this`](#commandinfo)) Stored option value or `this` command
 
 #### `Command#optionValueSource(key[, source])`
 
-**TODO**: `Command#optionValueSource(key[, source])`
+Get or set an option value source.
+
+##### Overloads
+
+- `optionValueSource(key: Option['key'], source: OptionValueSource | null | undefined): this`
+- `optionValueSource(key: Option['key']): OptionValueSource | null | undefined`
+
+##### Parameters
+
+- `key` ([`Option['key']`](#optionkey))
+  — option key
+- `source` ([`OptionValueSource`](#optionvaluesource) | `null` | `undefined`, optional)
+  — the source of the option value
+
+##### Returns
+
+([`OptionValueSource`](#optionvaluesource) | [`this`](#commandinfo) | `null` | `undefined`)
+Option value source for `key` or `this` command
 
 #### `Command#options([infos])`
 
-**TODO**: `Command#options([infos])`
+Get a list of command options or batch define options for the command.
+
+##### Overloads
+
+- `options(infos: List<Flags | OptionInfo>): this`
+- `options(): Option[]`
+
+##### Parameters
+
+- `infos` ([`List<Flags | OptionInfo>`](#list))
+  — list of option [flags](#flags) and/or [info](#optioninfo-1)
+
+##### Returns
+
+([`Option[]`](#optioninfo) | [`this`](#commandinfo)) List of command options or `this` command
 
 #### `Command#opts<T>()`
 
-**TODO**: `Command#opts<T>()`
+Get a record of local option values.
+
+##### Type Parameters
+
+- `T` ([`OptionValues`](#optionvalues))
+  — local option values type
+
+##### Returns
+
+(`T`) Local option values
 
 #### `Command#optsWithGlobals<T>()`
 
-**TODO**: `Command#optsWithGlobals<T>()`
+Get a record of global and local option values.
+
+> 👉 **Note**: Local options overwrite global options by default.
+> Prioritize global options (i.e. `cmd.optionPriority('global')`) to change this behavior.
+
+##### Type Parameters
+
+- `T` ([`OptionValues`](#optionvalues))
+  — merged option values type
+
+##### Returns
+
+(`T`) Merged option values
 
 #### `Command#parent`
 
@@ -625,15 +1124,37 @@ Information about the current process.
 
 #### `Command#snapshot()`
 
-**TODO**: `Command#snapshot()`
+Get a snapshot of `this` command.
+
+##### Returns
+
+([`CommandSnapshot`](#commandsnapshot-1)) Command snapshot object
 
 #### `Command#summary([summary])`
 
-**TODO**: `Command#summary([summary])`
+Get or set the command summary.
+
+##### Overloads
+
+- `summary(summary: string | null | undefined): this`
+- `summary(): string | null`
+
+##### Parameters
+
+- `summary` (`string` | `null`| `undefined`)
+  — the command summary
+
+##### Returns
+
+(`string` | [`this`](#commandinfo) | `null`) Summary of `this` command or `this` command
 
 #### `Command#toString()`
 
-**TODO**: `Command#toString()`
+Get the command as a human-readable string.
+
+##### Returns
+
+(`string`) String representation of `this` argument
 
 #### `Command#unknown`
 
@@ -641,17 +1162,70 @@ Information about the current process.
 
 The strategy for handling unknown command-line arguments.
 
-#### `Command#unknowns(strategy)`
+#### `Command#unknowns([strategy])`
 
-**TODO**: `Command#unknowns(strategy)`
+Get or set the strategy for handling unknown command-line arguments.
+
+##### Overloads
+
+- `unknowns(strategy: UnknownStrategy | null | undefined): this`
+- `unknowns(): UnknownStrategy`
+
+##### Parameters
+
+- `strategy` ([`UnknownStrategy`](#unknownstrategy) | `null`| `undefined`)
+  — the strategy for handling unknown command-line arguments
+
+##### Returns
+
+([`UnknownStrategy`](#unknownstrategy) | [`this`](#commandinfo))
+Unknown command-line argument strategy or `this` command
 
 #### `Command#usage([usage])`
 
-**TODO**: `Command#usage([usage])`
+Get or set the command usage description.
+
+##### Overloads
+
+- `usage(usage: UsageData | null | undefined): this`
+- `usage(): UsageInfo`
+
+##### Parameters
+
+- `usage` ([`UsageData`](#usagedata) | `null`| `undefined`)
+  — command usage data
+
+##### Returns
+
+([`UsageInfo`](#usageinfo) | [`this`](#commandinfo)) Command usage info or `this` command
 
 #### `Command#version([version])`
 
-**TODO**: `Command#version([version])`
+Get or set the command version.
+
+> 👉 **Note**: When setting the command version, this method auto-registers
+> the version option with the flags `-v | --version`.
+> No cleanup is performed when this method
+> is called with different flags (i.e. `info` as a string or `info.flags`).
+
+##### Overloads
+
+- `version(version: VersionData | null | undefined): this`
+- `version<T extends string = string>(): T | null`
+
+##### Type Parameters
+
+- `T` (`string`, optional)
+  — command version type
+
+##### Parameters
+
+- `version` ([`VersionData`](#versiondata) | `null`| `undefined`)
+  — command version, version option instance, or version option info
+
+##### Returns
+
+(`T` | [`this`](#commandinfo) | `null`) Command version or `this` command
 
 ### `CommandError(info)`
 
@@ -690,16 +1264,16 @@ A command-line error (class).
 
 #### Signatures
 
-- `constructor(info: KronkErrorInfo)`
+- `constructor(info: KronkErrorInfo | string)`
 - `constructor(info: string, id?: EmptyString | KronkErrorId | null | undefined, code?: ExitCode | null | undefined)`
 
 #### Parameters
 
 - `info` ([`KronkErrorInfo`](#kronkerrorinfo-1) | `string`)
   — error info or human-readable description of the error
-- `id` ([`EmptyString`](#emptystring) | [`KronkErrorId`](#kronkerrorid-1), optional)
+- `id` ([`EmptyString`](#emptystring) | [`KronkErrorId`](#kronkerrorid-1))
   — unique id representing the error
-- `code` ([`ExitCode`](#exitcode), optional)
+- `code` ([`ExitCode`](#exitcode))
   — suggested exit code to use with `process.exit`
 
 #### `KronkError#additional`
@@ -778,7 +1352,7 @@ A command option (class).
 
 - `info` ([`Flags`](#flags) | [`OptionInfo`](#optioninfo-1))
   — option flags or info
-- `data?` ([`OptionData`](#optiondata), optional)
+- `data` ([`OptionData`](#optiondata))
   — additional option info
 
 #### `Option#boolean`
@@ -794,12 +1368,12 @@ Get or set option choices.
 
 ##### Overloads
 
-- `choices(): Set<string>`
 - `choices(choices: List<string> | null | undefined): this`
+- `choices(): Set<string>`
 
 ##### Parameters
 
-- `choices` ([`List<string>`](#list), optional)
+- `choices` ([`List<string>`](#list))
   — list of option choices
 
 ##### Returns
@@ -812,8 +1386,8 @@ Get or set the default value configuration.
 
 ##### Overloads
 
-- `default<T>(): DefaultInfo<T>`
 - `default(info: DefaultInfo | null | undefined): this`
+- `default<T>(): DefaultInfo<T>`
 
 ##### Type Parameters
 
@@ -822,7 +1396,7 @@ Get or set the default value configuration.
 
 ##### Parameters
 
-- `info` ([`DefaultInfo`](#defaultinfo), optional)
+- `info` ([`DefaultInfo`](#defaultinfo))
   — default value info
 
 ##### Returns
@@ -835,8 +1409,8 @@ Get or set the option description.
 
 ##### Overloads
 
-- `description(): string`
 - `description(description: URL | string | null | undefined): this`
+- `description(): string`
 
 ##### Parameters
 
@@ -853,8 +1427,8 @@ Get or set the environment variables to check for the value of the option.
 
 ##### Overloads
 
-- `env(): Set<string>`
 - `env(env: List<string> | string | null | undefined): this`
+- `env(): Set<string>`
 
 ##### Parameters
 
@@ -934,8 +1508,8 @@ Get or set the handler used to parse option-arguments.
 
 ##### Overloads
 
-- `parser<T, V extends string | string[] = string | string[]>(): ParseArg<T, V>`
 - `parser(parser: ParseArg<any, any> | null | undefined): this`
+- `parser<T, V extends string | string[] = string | string[]>(): ParseArg<T, V>`
 
 ##### Type Parameters
 
@@ -961,8 +1535,8 @@ The option-argument [`parser`](#optionparserparser) will be called.
 
 ##### Overloads
 
-- `preset(): string | null`
 - `preset(preset: string | null | undefined): this`
+- `preset(): string | null`
 
 ##### Parameters
 
@@ -1102,7 +1676,7 @@ type Action<
 #### Parameters
 
 - **`this`** ([`Command`](#commandinfo))
-  — the current command or subcommand being executed
+  — the command or subcommand being executed
 - `options` (`Opts`)
   — parsed command options
 - `...args` (`Args`)
@@ -2034,6 +2608,8 @@ community you agree to abide by its terms.
 [meanings]: http://www.catb.org/~esr/writings/taoup/html/ch10s05.html
 
 [nodejs]: https://nodejs.org
+
+[onoptions]: https://github.com/EventEmitter2/EventEmitter2#emitteronevent-listener-options-objectboolean
 
 [typescript]: https://www.typescriptlang.org
 

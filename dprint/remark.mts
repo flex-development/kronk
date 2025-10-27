@@ -8,6 +8,7 @@ import { ok } from 'devlop'
 import { Transform } from 'node:stream'
 import remarkParse from 'remark-parse'
 import remarkStringify from 'remark-stringify'
+import { read } from 'to-vfile'
 import { unified } from 'unified'
 import { VFile } from 'vfile'
 
@@ -19,20 +20,16 @@ process.stdin.pipe(new Transform({
    *
    * @async
    *
-   * @param {Buffer} buffer
-   *  Data buffer
    * @return {Promise<string>}
    *  Formatted file content
    */
-  async transform(buffer: Buffer): Promise<string> {
+  async transform(): Promise<string> {
     /**
      * Virtual file.
      *
      * @const {VFile} file
      */
-    const file: VFile = new VFile(buffer.toString())
-
-    file.path = process.argv.slice(2)[0]!
+    const file: VFile = await read(process.argv.slice(2)[0]!)
 
     await unified()
       .use(remarkParse)

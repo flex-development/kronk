@@ -70,26 +70,12 @@ class KronkError extends Error {
   /**
    * Create a new kronk error.
    *
-   * @see {@linkcode EmptyString}
-   * @see {@linkcode ExitCode}
-   * @see {@linkcode KronkErrorCause}
-   * @see {@linkcode KronkErrorId}
    * @see {@linkcode KronkErrorInfo}
    *
-   * @param {KronkErrorInfo} info
-   *  Info about the error
-   * @param {string | string[] | null | undefined} [info.additional]
-   *  Additional lines to be logged with the error
-   * @param {KronkErrorCause | null | undefined} [info.cause]
-   *  Info about the cause of the error
-   * @param {ExitCode | null | undefined} [info.code]
-   *  Suggested exit code to use with {@linkcode process.exit}
-   * @param {EmptyString | KronkErrorId | null | undefined} [info.id]
-   *  Unique id representing the error
-   * @param {string} info.reason
-   *  Human-readable description of the error
+   * @param {KronkErrorInfo | string} info
+   *  Info about the error or a human-readable description of the error
    */
-  constructor(info: KronkErrorInfo)
+  constructor(info: KronkErrorInfo | string)
 
   /**
    * Create a new kronk error.
