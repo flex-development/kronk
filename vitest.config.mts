@@ -45,7 +45,6 @@ function config(this: void, env: ConfigEnv): ViteUserConfig {
       },
       clearMocks: true,
       coverage: {
-        all: true,
         clean: true,
         cleanOnRerun: true,
         exclude: [
@@ -56,9 +55,8 @@ function config(this: void, env: ConfigEnv): ViteUserConfig {
           '**/interfaces/',
           '**/types/'
         ],
-        extension: ['.mts'],
         ignoreClassMethods: [],
-        include: ['src'],
+        include: ['src/**/**/*.mts'],
         provider: 'v8',
         reportOnFailure: !ci,
         reporter: env.mode === 'reports'
