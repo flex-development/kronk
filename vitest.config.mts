@@ -50,12 +50,14 @@ function config(this: void, env: ConfigEnv): ViteUserConfig {
         cleanOnRerun: true,
         exclude: [
           '**/*.d.mts',
+          '**/__fixtures__/',
           '**/__mocks__/',
           '**/__tests__/',
           '**/interfaces/',
           '**/types/'
         ],
         extension: ['.mts'],
+        ignoreClassMethods: [],
         include: ['src'],
         provider: 'v8',
         reportOnFailure: !ci,

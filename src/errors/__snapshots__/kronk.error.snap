@@ -27,17 +27,6 @@ exports[`unit:errors/KronkError > #toJSON > should return error as json object 1
       "shortTime",
     ],
   },
-  "stack": "KronkError: \`Option(-m --mask <mask>)\` does not allow \`h\`
-    at \${process.cwd()}/src/errors/__tests__/kronk.error.spec.mts:121:14
-    at file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
-    at file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
-    at file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
-    at new Promise (<anonymous>)
-    at runWithTimeout (file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
-    at runTest (file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
-    at runSuite (file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
-    at runSuite (file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
-    at runSuite (file://\${process.cwd()}/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)",
 }
 `;
 

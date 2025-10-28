@@ -9,6 +9,7 @@ import TestSubject from '#errors/kronk.error'
 import formatList from '#internal/format-list'
 import isKronkError from '#utils/is-kronk-error'
 import type { KronkErrorInfo } from '@flex-development/kronk'
+import { omit } from '@flex-development/tutils'
 import { masks } from 'dateformat'
 import { ok } from 'devlop'
 
@@ -112,13 +113,23 @@ describe('unit:errors/KronkError', () => {
     })
 
     it('should set #stack', () => {
+      // Arrange
+      const start: string = subject.name + ': ' + subject.message + '\n'
+
+      // Expect
       expect(subject).to.have.property('stack').be.a('string').that.is.not.empty
+      expect(subject.stack).to.startWith(start)
     })
   })
 
   describe('#toJSON', () => {
     it('should return error as json object', () => {
-      expect(new TestSubject(info).toJSON()).toMatchSnapshot()
+      // Act
+      const result = new TestSubject(info).toJSON()
+
+      // Expect
+      expect(result).to.have.property('stack').be.a('string').that.is.not.empty
+      expect(omit(result, ['stack'])).toMatchSnapshot()
     })
   })
 
