@@ -4,12 +4,12 @@
 ---
 codecov:
   notify:
-    after_n_builds: 5
+    after_n_builds: 7
     wait_for_ci: true
   require_ci_to_pass: true
 
 comment:
-  after_n_builds: 5
+  after_n_builds: 7
   behavior: default
   layout: header,diff,flags,components,tree,footer
   require_base: false
@@ -32,6 +32,10 @@ component_management:
       name: errors
       paths:
         - src/errors/*.mts
+    - component_id: events
+      name: events
+      paths:
+        - src/events/*.mts
     - component_id: internal
       name: internal
       paths:
@@ -40,6 +44,10 @@ component_management:
       name: lib
       paths:
         - src/lib/*.mts
+    - component_id: parsers
+      name: parsers
+      paths:
+        - src/parsers/*.mts
     - component_id: utils
       name: utils
       paths:
@@ -92,6 +100,14 @@ coverage:
         threshold: 0%
 
 flags:
+  bun-canary:
+    carryforward: false
+    paths:
+      - src/
+  bun-latest:
+    carryforward: false
+    paths:
+      - src/
   node24:
     carryforward: false
     paths:

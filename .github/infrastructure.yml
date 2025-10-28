@@ -25,6 +25,16 @@ branches:
           - context: artifacts
           - context: auto-merge
           - context: auto-review
+          - context: codecov/changes
+          - context: codecov/patch
+          - context: codecov/project
+          - context: codecov/project/constructs
+          - context: codecov/project/errors
+          - context: codecov/project/events
+          - context: codecov/project/internal
+          - context: codecov/project/lib
+          - context: codecov/project/parsers
+          - context: codecov/project/utils
           - context: commitlint
           - context: dependabot-dedupe
           - context: format
@@ -37,7 +47,6 @@ branches:
           - context: test (20)
           - context: test-bun (canary)
           - context: test-bun (latest)
-          - context: test-bun (1.2.0)
           - context: typescript
         strict: true
       restrictions: null

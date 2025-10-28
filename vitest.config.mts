@@ -75,7 +75,7 @@ function config(this: void, env: ConfigEnv): ViteUserConfig {
       outputFile: {
         blob: pathe.join('.vitest-reports', env.mode + '.blob.json'),
         json: pathe.join('__tests__', 'reports', env.mode + '.json'),
-        junit: pathe.join('__tests__', 'reports', 'junit.xml')
+        junit: pathe.join('__tests__', 'reports', env.mode + '.junit.xml')
       },
       passWithNoTests: true,
       reporters: JSON.parse(process.env['VITEST_UI'] ?? '0')
