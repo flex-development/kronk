@@ -4,6 +4,8 @@
  */
 
 import chars from '#enums/chars'
+import eid from '#enums/keid'
+import CommandError from '#errors/command.error'
 import KronkError from '#errors/kronk.error'
 import average from '#fixtures/commands/average'
 import tribonacci from '#fixtures/commands/tribonacci'
@@ -22,6 +24,7 @@ import type {
   Exit,
   UsageData
 } from '@flex-development/kronk'
+import type { MockInstance } from 'vitest'
 
 describe('unit:lib/Command', () => {
   describe('.isCommand', () => {
@@ -320,6 +323,41 @@ describe('unit:lib/Command', () => {
       // Expect
       expect(result).to.eq(subject)
       expect(result).to.have.nested.property('info.done', done)
+    })
+  })
+
+  describe('#error', () => {
+    let exit: MockInstance<TestSubject['exit']>
+    let info: KronkError
+    let subject: TestSubject
+
+    beforeEach(() => {
+      subject = new TestSubject()
+
+      info = new CommandError({
+        code: 112,
+        command: subject,
+        id: eid.argument_after_variadic,
+        reason: 'Cannot have argument after variadic argument'
+      })
+
+      exit = vi.spyOn(subject, 'exit')
+    })
+
+    it('should handle error object', () => {
+      // Arrange
+      let error!: KronkError
+
+      // Act
+      try {
+        subject.error(info)
+      } catch (e: unknown) {
+        error = e as typeof error
+      }
+
+      // Expect
+      expect(error).to.eq(info)
+      expect(exit).toHaveBeenCalledExactlyOnceWith(info)
     })
   })
 

@@ -27,6 +27,15 @@ describe('integration:constructs/initialCommand', () => {
     [average, [average.name, chars.digit0, chars.digit1, chars.digit2]],
     [bun, [bun.name, 'run', '--watch', './src/main.mts']],
     [bun, [bun.name, '--tsconfig-override=tsconfig.prod.json', 'src/main.mts']],
+    [
+      bun,
+      [
+        './scratch.mts',
+        '--conditions',
+        'development',
+        '--conditions=kronk'
+      ]
+    ],
     [clamp, ['-M3', '-m-1', chars.delimiter, '-13']],
     [clamp, ['-M=26', chars.digit9]],
     [clamp, [chars.digit1, '--max', '26', '--min=13']],

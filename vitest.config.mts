@@ -5,7 +5,6 @@
  */
 
 import Notifier from '#tests/reporters/notifier'
-import VerboseReporter from '#tests/reporters/verbose'
 import pathe from '@flex-development/pathe'
 import ci from 'is-ci'
 import {
@@ -14,7 +13,7 @@ import {
   type ViteUserConfig
 } from 'vitest/config'
 import pkg from './package.json' with { type: 'json' }
-import tsconfig from './tsconfig.json' with { type: 'json' }
+import tsconfig from './tsconfig.test.json' with { type: 'json' }
 
 export default defineConfig(config)
 
@@ -79,15 +78,15 @@ function config(this: void, env: ConfigEnv): ViteUserConfig {
       },
       passWithNoTests: true,
       reporters: JSON.parse(process.env['VITEST_UI'] ?? '0')
-        ? [new Notifier(), new VerboseReporter()]
+        ? [new Notifier(), ['tree']]
         : env.mode === 'reports'
-        ? [new VerboseReporter()]
+        ? [['tree']]
         : [
           ci ? 'github-actions' : new Notifier(),
           'blob',
           'json',
           ['junit', { suiteName: pkg.name }],
-          new VerboseReporter()
+          ['tree']
         ],
       /**
        * Store snapshots next to the directory of `file`.
@@ -108,6 +107,16 @@ function config(this: void, env: ConfigEnv): ViteUserConfig {
         )
       },
       restoreMocks: true,
+      server: {
+        deps: {
+          // required to apply custom conditions to external deps.
+          inline: [
+            '@flex-development/fsm-tokenizer',
+            '@flex-development/log',
+            'devlop'
+          ]
+        }
+      },
       setupFiles: ['./__tests__/setup/chai.mts', './__tests__/setup/faker.mts'],
       snapshotFormat: {
         callToJSON: true,

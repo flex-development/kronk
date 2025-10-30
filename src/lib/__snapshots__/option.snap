@@ -23,3 +23,5 @@ exports[`unit:lib/Option > should throw if no flags are found 1`] = `"No flags f
 exports[`unit:lib/Option > should throw on invalid flags string part (0) 1`] = `"Option(-p [] | --parent <>) failed due to '[]'"`;
 
 exports[`unit:lib/Option > should throw on invalid flags string part (1) 1`] = `"Option(-ws, --workspace) failed due to '-ws'"`;
+
+exports[`unit:lib/Option > should throw on invalid flags string part (2) 1`] = `"Option(-w --workspace --ws) failed due to '--ws'"`;

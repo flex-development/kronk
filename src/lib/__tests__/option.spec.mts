@@ -40,7 +40,8 @@ describe('unit:lib/Option', () => {
 
   it.each<[Flags]>([
     ['-p [] | --parent <>'],
-    ['-ws, --workspace']
+    ['-ws, --workspace'],
+    ['-w --workspace --ws']
   ])('should throw on invalid flags string part (%#)', flags => {
     // Arrange
     let error!: Error

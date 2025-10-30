@@ -8,6 +8,7 @@ import atBreak from '#internal/at-break'
 import kArgument from '#internal/k-argument'
 import kCommand from '#internal/k-command'
 import kOption from '#internal/k-option'
+import toList from '#internal/to-list'
 import {
   codes,
   ev,
@@ -99,20 +100,19 @@ function resolveOperand(
     assert(events[index], 'expected event')
     const [event, token] = events[index]!
 
-    if (event === ev.enter) {
-      assert(token.type === tt.operand, 'expected `operand` token')
+    assert(event === ev.enter, 'expected `enter` event')
+    assert(token.type === tt.operand, 'expected `operand` token')
 
-      token.value = context.sliceSerialize(token)
-      token.command = context.command.findCommand(token.value)
+    token.value = context.sliceSerialize(token)
+    token.command = context.command.findCommand(token.value)
 
-      // refine command context to subcommand.
-      if (token.command) {
-        context.command = token.command
-        delete token.attached
-      }
-
-      index++
+    // refine command context to subcommand.
+    if (token.command) {
+      context.command = token.command
+      delete token.attached
     }
+
+    index++
   }
 
   return events
@@ -183,7 +183,7 @@ function resolveAllOperand(
       option?.variadic
     ) {
       assert(token.value !== undefined, 'expected token value')
-      if (typeof token.value === 'string') token.value = [token.value]
+      token.value = toList(token.value)
 
       /**
        * Previous event.
@@ -202,14 +202,16 @@ function resolveAllOperand(
 
         assert(operand.type === tt.operand, 'expected operand token')
         assert(Array.isArray(operand.value), 'expected array token value')
+        assert(previous, 'expected `previous` event')
+
         operand.value.push(...token.value)
 
-        if (previous) {
-          const [pe, pt] = previous
-
-          if (pe === ev.exit && pt.type === tt.flag && pt.option?.variadic) {
-            index -= events.splice(index - 2, 2).length
-          }
+        if (
+          previous[0] === ev.exit &&
+          previous[1].type === tt.flag &&
+          previous[1].option?.variadic
+        ) {
+          index -= events.splice(index - 2, 2).length
         }
 
         events.splice(index, 2)

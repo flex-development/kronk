@@ -673,16 +673,16 @@ class Option {
           ok(token.long || token.short, 'expected long or short flag')
           ok(typeof token.value === 'string', 'expected string token value')
 
-          // capture flag.
-          if (!this.info.long || !this.info.short) {
-            if (token.long && !this.info.long) {
-              this.info.long = token.value
-            } else if (!this.info.short) {
-              this.info.short = token.value
-            }
-
-            // mark flag as processed.
-            chunks[token.start._index] = null
+          // capture flags.
+          if (token.long && !this.info.long) {
+            this.info.long = token.value // capture long flag
+            chunks[token.start._index] = null // mark flag as processed
+          } else if (!this.info.short) {
+            this.info.short = token.value // capture short flag
+            chunks[token.start._index] = null // mark flag as processed
+          } else {
+            // do nothing.
+            // a long flag and short flag were already found.
           }
 
           // skip flag exit event.

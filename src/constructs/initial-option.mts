@@ -15,6 +15,8 @@ import {
 /**
  * Initial construct for `Option` instances.
  *
+ * Tokenizes option flags and option-argument syntax.
+ *
  * @internal
  *
  * @const {InitialConstruct} initialOption

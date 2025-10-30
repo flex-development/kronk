@@ -13,6 +13,8 @@ import {
 /**
  * Initial construct for `Argument` instances.
  *
+ * Tokenizes command-argument syntax.
+ *
  * @internal
  *
  * @const {InitialConstruct} initialArgument

@@ -81,31 +81,31 @@ function resolveFlag(
         ok(context.command, 'expected `context.command`')
 
         // find option associated with flag.
-        if (!token.option) {
-          token.option = context.command.findOption(token.value, 0)
+        token.option = context.command.findOption(token.value, 0)
 
+        // capture current command or continue looking for option and command.
+        if (token.option) {
+          token.command = context.command
+        } else {
+          token.option = context.command.findOption(token.value)
+
+          // capture command or look for global option and command.
           if (token.option) {
-            token.command = context.command
-          } else { // look for default command option or global option.
-            token.option = context.command.findOption(token.value)
+            token.command = context.command.defaultCommand
+          } else {
+            for (const ancestor of context.command.ancestors()) {
+              /**
+               * Ancestor option with the flag `token.value`.
+               *
+               * @var {Option | undefined} option
+               */
+              let option: Option | undefined
 
-            if (token.option) {
-              token.command = context.command.defaultCommand
-            } else { // look for global option.
-              for (const ancestor of context.command.ancestors()) {
-                /**
-                 * Ancestor option with the flag `token.value`.
-                 *
-                 * @var {Option | undefined} option
-                 */
-                let option: Option | undefined
-
-                if ((option = ancestor.findOption(token.value, 0))) {
-                  token.command = ancestor
-                  token.global = true
-                  token.option = option
-                  break
-                }
+              if ((option = ancestor.findOption(token.value, 0))) {
+                token.command = ancestor
+                token.global = true
+                token.option = option
+                break
               }
             }
           }
