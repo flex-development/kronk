@@ -7,17 +7,28 @@ import eid from '#enums/keid'
 import TestSubject from '#errors/command.error'
 import KronkError from '#errors/kronk.error'
 import isCommandError from '#utils/is-command-error'
-import type { KronkErrorCause, KronkErrorId } from '@flex-development/kronk'
+import type {
+  CommandErrorInfo,
+  KronkErrorCause,
+  KronkErrorId
+} from '@flex-development/kronk'
 
 describe('unit:errors/CommandError', () => {
   let code: number
   let id: KronkErrorId
+  let info: CommandErrorInfo
   let reason: string
+
+  afterEach(() => {
+    delete info.cause
+  })
 
   beforeAll(() => {
     code = 112
     id = eid.argument_after_variadic
     reason = 'Cannot have argument after variadic argument'
+
+    info = { code, id, reason }
   })
 
   describe('constructor(info)', () => {
@@ -25,8 +36,8 @@ describe('unit:errors/CommandError', () => {
     let subject: TestSubject
 
     beforeEach(() => {
-      cause = {}
-      subject = new TestSubject({ cause, code, id, reason })
+      info.cause = cause = {}
+      subject = new TestSubject(info)
     })
 
     it('should be instanceof `KronkError`', () => {
@@ -63,6 +74,25 @@ describe('unit:errors/CommandError', () => {
 
     it('should set #stack', () => {
       expect(subject).to.have.property('stack').be.a('string').and.not.empty
+    })
+  })
+
+  describe('#snapshot', () => {
+    let subject: TestSubject
+
+    beforeEach(() => {
+      subject = new TestSubject(info)
+    })
+
+    it('should return command snapshot object', () => {
+      expect(subject.snapshot()).to.eql({
+        additional: subject.additional,
+        code: subject.code,
+        command: subject.command,
+        id: subject.id,
+        message: subject.message,
+        stack: subject.stack
+      })
     })
   })
 })

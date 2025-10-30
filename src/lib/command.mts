@@ -868,9 +868,7 @@ class Command {
     const choices: string[] = [...candidate.choices()]
 
     if (choices.length) {
-      if (typeof choice === 'string') choice = [choice]
-
-      for (const value of choice) {
+      for (const value of toList(choice)) {
         if (!choices.includes(value)) {
           this.error({
             additional: [`Choices: ${formatList(choices.map(c => `'${c}'`))}`],
@@ -1821,6 +1819,7 @@ class Command {
    * @return {undefined}
    */
   protected onOption<T extends Option>(event: OptionEvent<T>): undefined {
+    /* v8 ignore else -- @preserve */
     if (this.info.version === event.option as Option) {
       ok('version' in event.option, 'expected `event.option.version`')
       this.optionValue(event.option.key, event.option.version, event.source)
@@ -2188,6 +2187,7 @@ class Command {
      */
     let merger: typeof reduce = reduce
 
+    /* v8 ignore file -- @preserve */
     if (this.info.optionPriority !== 'global') merger = reduceRight
 
     return merger([this, ...this.ancestors()], reducer, {} as T)
@@ -2435,106 +2435,108 @@ class Command {
         continue
       }
 
+      // there should be only `flag` events at this point.
+      // only `delimiter`, `flag`, and `operand` events are produced.
+      ok(token.type === tt.flag, 'expected `flag` token')
+
+      // should be entering a flag event by indexing accordingly.
+      ok(event === ev.enter, 'expected flag enter event')
+
+      // token value should be an option flag.
+      ok(typeof token.value === 'string', 'expected string token value')
+
       // any option flags passed by the user are represented as flag tokens.
       // if an option-argument was passed, the event after the flag exit event
       // will be an option-argument event. the option-argument token value is
       // the raw option-argument value, or a list of raw option-argument values
       // for variadic options.
-      if (token.type === tt.flag) {
-        ok(event === ev.enter, 'expected flag enter event')
-        ok(events[index + 1], 'expected event after flag enter event')
-        ok(events[index + 1]![0] === ev.exit, 'expected exit event')
-        ok(events[index + 1]![1].type === tt.flag, 'expected flag exit event')
-        ok(typeof token.value === 'string', 'expected string token value')
+      if (token.option && token.command === this) {
+        /**
+         * Index of event after flag exit event.
+         *
+         * @const {number} afterIndex
+         */
+        const afterIndex: number = index + 2
 
-        if (token.option && token.command === this) {
-          /**
-           * Index of event after flag exit event.
-           *
-           * @const {number} afterIndex
-           */
-          const afterIndex: number = index + 2
+        /**
+         * Event after flag exit event.
+         *
+         * @const {Event | undefined} after
+         */
+        const after: Event | undefined = events[afterIndex]
 
-          /**
-           * Event after flag exit event.
-           *
-           * @const {Event | undefined} after
-           */
-          const after: Event | undefined = events[afterIndex]
+        /**
+         * Raw option-argument value.
+         *
+         * @var {RawOptionValue} value
+         */
+        let value!: RawOptionValue
 
-          /**
-           * Raw option-argument value.
-           *
-           * @var {RawOptionValue} value
-           */
-          let value!: RawOptionValue
+        if (after && after[1].type === tt.operand && !after[1].command) {
+          ok(after[0] === ev.enter, 'expected option-argument enter event')
+          const [, operand] = after
 
-          if (after && after[1].type === tt.operand && !after[1].command) {
-            ok(after[0] === ev.enter, 'expected option-argument enter event')
-            const [, operand] = after
-
-            // operand was passed by user, but may not be allowed.
-            if (token.option.boolean) {
-              // check if the operand was attached to the flag or if the command
-              // doesn't accept any arguments to allow boolean flags to be
-              // specified before command-arguments. otherwise, consider the
-              // operand an option-argument and error accordingly.
-              if (operand.attached || !this.info.arguments.length) {
-                this.error({
-                  cause: { argument: operand.value },
-                  id: keid.excess_arguments,
-                  reason: `${String(token.option)} does not allow an argument`
-                })
-              }
-            } else { // use option-argument passed by user.
-              ok(operand.value !== undefined, 'expected operand token value')
-              value = operand.value
+          // operand was passed by user, but may not be allowed.
+          if (token.option.boolean) {
+            // check if the operand was attached to the flag or if the command
+            // doesn't accept any arguments to allow boolean flags to be
+            // specified before command-arguments. otherwise, consider the
+            // operand an option-argument and error accordingly.
+            if (operand.attached || !this.info.arguments.length) {
+              this.error({
+                cause: { argument: operand.value },
+                id: keid.excess_arguments,
+                reason: `${String(token.option)} does not allow an argument`
+              })
             }
-
-            // remove operand tokens.
-            // tokens are removed outside of the if statement so the `splice`
-            // call functions as cleanup when `error` does not exit the process.
-            events.splice(afterIndex, 2)
-          } else if (token.option.required) { // option-argument not passed.
-            this.error({
-              id: keid.missing_argument,
-              reason: `${String(token.option)} requires an argument`
-            })
-          } else { // use option-argument preset.
-            value = token.option.preset()
+          } else { // use option-argument passed by user.
+            ok(operand.value !== undefined, 'expected operand token value')
+            value = operand.value
           }
 
-          // set fallback option-argument for user if boolean flag was passed.
-          if (token.option.boolean) value = value ??= true
-
-          // emit option event.
-          // the option event handler will parse the option-argument, as well as
-          // store the option value and source.
-          this.emitOption(
-            token.option,
-            value,
-            optionValueSource.cli,
-            token.value
-          )
-
-          // remove flag events.
-          events.splice(index, 2)
-
-          index--
-          continue
+          // remove operand tokens.
+          // tokens are removed outside of the if statement so the `splice`
+          // call functions as cleanup when `error` does not exit the process.
+          events.splice(afterIndex, 2)
+        } else if (token.option.required) { // option-argument not passed.
+          this.error({
+            id: keid.missing_argument,
+            reason: `${String(token.option)} requires an argument`
+          })
+        } else { // use option-argument preset.
+          value = token.option.preset()
         }
 
-        // not an option recognized by `this` command. this means the option
-        // might be a subcommand option or an option unknown to all commands.
+        // set fallback option-argument for user if boolean flag was passed.
+        if (token.option.boolean) value = value ??= true
 
-        // an unknown option means further arguments are classified as unknown
-        // so those arguments can be reprocessed by subcommands.
-        dest = result.unknown
-        dest.push(token.value)
+        // emit option event.
+        // the option event handler will parse the option-argument, as well as
+        // store the option value and source.
+        this.emitOption(
+          token.option,
+          value,
+          optionValueSource.cli,
+          token.value
+        )
 
-        index++
+        // remove flag events.
+        events.splice(index, 2)
+
+        index--
         continue
       }
+
+      // not an option recognized by `this` command. this means the option
+      // might be a subcommand option or an option unknown to all commands.
+
+      // an unknown option means further arguments are classified as unknown
+      // so those arguments can be reprocessed by subcommands.
+      dest = result.unknown
+      dest.push(token.value)
+
+      index++
+      continue
     }
 
     // apply any option-related environment variables if option does not have a

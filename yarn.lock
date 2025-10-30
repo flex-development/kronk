@@ -1696,7 +1696,6 @@ __metadata:
     "@commitlint/cli": "npm:20.1.0"
     "@commitlint/types": "npm:20.0.0"
     "@faker-js/faker": "npm:10.1.0"
-    "@flex-development/colors": "npm:1.0.2"
     "@flex-development/commitlint-config": "npm:1.0.1"
     "@flex-development/eslint-config": "npm:1.1.1"
     "@flex-development/fsm-tokenizer": "npm:1.0.0-alpha.1"

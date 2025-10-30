@@ -16,12 +16,21 @@ import {
 /**
  * Initial construct for `Command` instances.
  *
+ * Tokenizes option flags, operands, and delimiters.
+ *
  * @internal
  *
  * @const {InitialConstruct} initialCommand
  */
 const initialCommand: InitialConstruct = initialize({
+  /**
+   * Tokenize option flags and delimiters.
+   */
   [codes.hyphen]: [delimiter, longFlag, shortFlag],
+
+  /**
+   * Tokenize command-arguments, option-arguments, and subcommand names.
+   */
   null: operand
 })
 

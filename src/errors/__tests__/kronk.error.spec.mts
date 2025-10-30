@@ -117,18 +117,20 @@ describe('unit:errors/KronkError', () => {
       const start: string = subject.name + ': ' + subject.message + '\n'
 
       // Expect
-      expect(subject).to.have.property('stack').be.a('string').that.is.not.empty
-      expect(subject.stack).to.startWith(start)
+      expect(subject).to.have.property('stack').startWith(start)
     })
   })
 
   describe('#toJSON', () => {
     it('should return error as json object', () => {
+      // Arrange
+      const subject = new TestSubject(info)
+
       // Act
-      const result = new TestSubject(info).toJSON()
+      const result = subject.toJSON()
 
       // Expect
-      expect(result).to.have.property('stack').be.a('string').that.is.not.empty
+      expect(result).to.have.property('stack', subject.stack)
       expect(omit(result, ['stack'])).toMatchSnapshot()
     })
   })
