@@ -1733,7 +1733,7 @@ __metadata:
     is-ci: "npm:4.1.0"
     micromark-util-character: "npm:2.1.1"
     node-notifier: "npm:10.0.1"
-    plur: "npm:5.1.0"
+    plur: "npm:6.0.0"
     prettier: "npm:3.6.2"
     remark: "npm:15.0.1"
     remark-cli: "npm:12.0.1"
@@ -6365,10 +6365,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"irregular-plurals@npm:^3.3.0":
-  version: 3.5.0
-  resolution: "irregular-plurals@npm:3.5.0"
-  checksum: 10/27f04e66402264b78251c03973dd4866aba58b851579b2f1870f3610494a163c20c5161a3eae8fdd49a61a5379ee611460a1781aadc891ce0203bcd7a52e4850
+"irregular-plurals@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "irregular-plurals@npm:4.2.0"
+  checksum: 10/42b3c2e9290ee2b6a3237aa5a2dbf5308f2814ad01c3012832d999eedac05a3901dfdf2a9c5d60d637f2d56b017865b8ad5c58a078911489871d85ff36a4c867
   languageName: node
   linkType: hard
 
@@ -8839,12 +8839,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"plur@npm:5.1.0":
-  version: 5.1.0
-  resolution: "plur@npm:5.1.0"
+"plur@npm:6.0.0":
+  version: 6.0.0
+  resolution: "plur@npm:6.0.0"
   dependencies:
-    irregular-plurals: "npm:^3.3.0"
-  checksum: 10/57e400dc4b926768fb0abab7f8688fe17e85673712134546e7beaaee188bae7e0504976e847d7e41d0d6103ff2fd61204095f03c2a45de19a8bad15aecb45cc1
+    irregular-plurals: "npm:^4.2.0"
+  checksum: 10/034b4a25ba7653316f1c8ea4ad6ede844760e664ab58b39e238f73e1b89fedacc46de63ea3e55c709a97497bd4c02cd5f3608a0f2137afe06220f5b4cc982473
   languageName: node
   linkType: hard
 
