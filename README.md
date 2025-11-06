@@ -1001,7 +1001,7 @@ Get or set the strategy to use when merging global and local options.
 ##### Parameters
 
 - `priority` ([`OptionPriority`](#optionpriority) | `null`| `undefined`)
-  — the strategy to use when merging global and local options
+  — the strategy to use when merging options
 
 ##### Returns
 

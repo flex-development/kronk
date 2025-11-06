@@ -42,6 +42,7 @@ import type {
   List,
   OptionData,
   OptionInfo,
+  OptionPriority,
   OptionValues,
   OptionValueSource,
   OptionValueSources,
@@ -301,6 +302,7 @@ class Command {
     this.exiter(this.info.exit)
     this.hide(!!this.info.hidden)
     this.id(this.info.name)
+    this.optionPriority(this.info.optionPriority)
     this.summary(this.info.summary)
     this.unknowns(this.info.unknown)
     this.usage(this.info.usage)
@@ -1959,6 +1961,62 @@ class Command {
   }
 
   /**
+   * Set the strategy to use when merging global and local options.
+   *
+   * @see {@linkcode OptionPriority}
+   *
+   * @public
+   * @instance
+   *
+   * @param {OptionPriority | null | undefined} [priority='local']
+   *  The strategy to use when merging options
+   * @return {this}
+   *  `this` command
+   */
+  public optionPriority(priority: OptionPriority | null | undefined): this
+
+  /**
+   * Get the strategy to use when merging global and local options.
+   *
+   * @see {@linkcode OptionPriority}
+   *
+   * @public
+   * @instance
+   *
+   * @return {OptionPriority}
+   *  Option merge strategy
+   */
+  public optionPriority(): OptionPriority
+
+  /**
+   * Get or set the strategy to use when merging global and local options.
+   *
+   * @see {@linkcode OptionPriority}
+   *
+   * @public
+   * @instance
+   *
+   * @param {OptionPriority | null | undefined} [priority]
+   *  The strategy to use when merging options
+   * @return {OptionPriority | this}
+   *  Option merge strategy or `this` command
+   */
+  public optionPriority(
+    priority?: OptionPriority | null | undefined
+  ): OptionPriority | this {
+    if (!arguments.length) {
+      const { optionPriority } = this.info
+
+      ok(optionPriority !== null, 'expected `info.optionPriority !== null`')
+      ok(optionPriority !== undefined, 'expected `info.optionPriority`')
+
+      return optionPriority
+    }
+
+    return this.info.optionPriority = priority ?? 'local', this
+  }
+
+  /**
    * Set an option value.
    *
    * @see {@linkcode Option.key}
@@ -2188,7 +2246,7 @@ class Command {
     let merger: typeof reduce = reduce
 
     /* v8 ignore file -- @preserve */
-    if (this.info.optionPriority !== 'global') merger = reduceRight
+    if (this.optionPriority() !== 'global') merger = reduceRight
 
     return merger([this, ...this.ancestors()], reducer, {} as T)
 

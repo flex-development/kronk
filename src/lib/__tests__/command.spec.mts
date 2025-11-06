@@ -22,6 +22,7 @@ import type {
   CommandInfo,
   CommandName,
   Exit,
+  OptionPriority,
   UsageData
 } from '@flex-development/kronk'
 import type { MockInstance } from 'vitest'
@@ -457,6 +458,30 @@ describe('unit:lib/Command', () => {
 
       // Expect
       expect(result).to.eq(subject).and.have.nested.property('info.name', name)
+    })
+  })
+
+  describe('#optionPriority', () => {
+    let subject: TestSubject
+
+    beforeEach(() => {
+      subject = new TestSubject()
+    })
+
+    it('should return option merge strategy', () => {
+      expect(subject.optionPriority()).to.eq('local')
+    })
+
+    it('should set option merge strategy and return `this`', () => {
+      // Arrange
+      const priority: OptionPriority = 'global'
+
+      // Act
+      const result = subject.optionPriority(priority)
+
+      // Expect
+      expect(result).to.eq(subject)
+      expect(result).to.have.nested.property('info.optionPriority', priority)
     })
   })
 
