@@ -29,12 +29,12 @@ process.stdin.pipe(new Transform({
    *
    * @async
    *
-   * @param {Buffer} buffer
-   *  Data buffer
+   * @param {Buffer} chunk
+   *  The file content to format
    * @return {Promise<string>}
    *  Formatted file content
    */
-  async transform(buffer: Buffer): Promise<string> {
+  async transform(chunk: Buffer): Promise<string> {
     const [filepath] = process.argv.slice(2)
     ok(typeof filepath === 'string', 'expected `filepath`')
 
@@ -76,7 +76,7 @@ process.stdin.pipe(new Transform({
      *
      * @const {string} originalText
      */
-    const originalText: string = buffer.toString()
+    const originalText: string = String(chunk)
 
     /**
      * Formatted text AST.
