@@ -43,8 +43,10 @@ import { ok } from 'devlop'
 /**
  * A command option.
  *
- * Command options use the {@linkcode initialOption} construct to tokenize
- * option flags and argument syntax.
+ * The `Option` model is used to define the expected options of a command.
+ *
+ * Option flags and argument syntax are tokenized
+ * using the {@linkcode initialOption} construct.
  *
  * @class
  */
@@ -80,7 +82,7 @@ class Option {
    * @param {Flags} flags
    *  Option flags
    * @param {OptionData | null | undefined} [info]
-   *  Additional option info
+   *  Additional option data
    */
   constructor(flags: Flags, info?: OptionData | null | undefined)
 
@@ -94,7 +96,7 @@ class Option {
    * @param {Flags | OptionInfo} info
    *  Option flags or info
    * @param {OptionData | null | undefined} [data]
-   *  Additional option info
+   *  Additional option data
    */
   constructor(
     info: Flags | OptionInfo,

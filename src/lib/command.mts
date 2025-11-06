@@ -2214,8 +2214,8 @@ class Command {
    * application as `argv[0]` and the script being run in `argv[1]`, with user
    * parameters after that.
    *
-   * > 👉 **Note**: If any action handlers are async, {@linkcode parseAsync}
-   * > should be used instead.
+   * > 👉 **Note**: If the {@linkcode action} handler is async,
+   * > {@linkcode parseAsync} should be used instead.
    *
    * @see {@linkcode List}
    * @see {@linkcode ParseOptions}
@@ -2264,8 +2264,8 @@ class Command {
    * application as `argv[0]` and the script being run in `argv[1]`, with user
    * parameters after that.
    *
-   * > 👉 **Note**: If any action handlers are async, this method should be used
-   * > instead of {@linkcode parse}.
+   * > 👉 **Note**: If the {@linkcode action} handler is async, this method
+   * > should be used instead of {@linkcode parse}.
    *
    * @see {@linkcode List}
    * @see {@linkcode ParseOptions}

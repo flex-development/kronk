@@ -32,8 +32,9 @@ import { ok } from 'devlop'
 /**
  * A command-argument.
  *
- * Command arguments use the {@linkcode initialArgument} construct to tokenize
- * argument syntax.
+ * The `Argument` model is used to define the expected arguments of a command.
+ *
+ * Argument syntax is tokenized using {@linkcode initialArgument} construct.
  *
  * @class
  */
@@ -67,7 +68,7 @@ class Argument {
    * @param {string} syntax
    *  Argument syntax
    * @param {ArgumentData | null | undefined} [info]
-   *  Argument data
+   *  Additional argument data
    */
   constructor(syntax: string, info?: ArgumentData | null | undefined)
 
