@@ -17,11 +17,14 @@ import TestSubject from '#lib/command'
 import Option from '#lib/option'
 import errorSnapshot from '#tests/utils/error-snapshot'
 import sfmt from '#tests/utils/sfmt'
+import isOption from '#utils/is-option'
 import type {
   Action,
   CommandInfo,
   CommandName,
   Exit,
+  HelpCommandData,
+  HelpOptionData,
   OptionPriority,
   UsageData
 } from '@flex-development/kronk'
@@ -383,6 +386,72 @@ describe('unit:lib/Command', () => {
       // Expect
       expect(result).to.eq(subject)
       expect(result).to.have.nested.property('info.exit', exit)
+    })
+  })
+
+  describe('#helpCommand', () => {
+    it('should return help subcommand', () => {
+      expect(new TestSubject().helpCommand()).toMatchSnapshot()
+    })
+
+    it.each<[HelpCommandData]>([
+      [false],
+      ['more'],
+      [new TestSubject('info')],
+      [{ description: 'show help for command', name: 'details' }]
+    ])('should set help subcommand and return `this` (%#)', help => {
+      // Arrange
+      const prop: string = 'info.helpCommand'
+      const subject: TestSubject = new TestSubject()
+
+      // Act
+      const result = subject.helpCommand(help)
+
+      // Expect
+      expect(result).to.eq(subject)
+
+      // Expect (conditional)
+      if (help === false) {
+        expect(result).to.have.nested.property(prop, null)
+      } else if (TestSubject.isCommand(help)) {
+        expect(result).to.have.nested.property(prop, help)
+      } else {
+        expect(result).to.have.nested.property(prop).not.eq(help)
+        expect(result).to.have.nested.property(prop).be.instanceof(TestSubject)
+      }
+    })
+  })
+
+  describe('#helpOption', () => {
+    it('should return help option', () => {
+      expect(new TestSubject().helpOption()).toMatchSnapshot()
+    })
+
+    it.each<[HelpOptionData]>([
+      [false],
+      ['--more'],
+      [new Option('--info')],
+      [{ description: 'show help for command', flags: '--details' }]
+    ])('should set help option and return `this` (%#)', help => {
+      // Arrange
+      const property: string = 'info.helpOption'
+      const subject: TestSubject = new TestSubject()
+
+      // Act
+      const result = subject.helpOption(help)
+
+      // Expect
+      expect(result).to.eq(subject)
+
+      // Expect (conditional)
+      if (help === false) {
+        expect(result).to.have.nested.property(property, null)
+      } else if (isOption(help)) {
+        expect(result).to.have.nested.property(property, help)
+      } else {
+        expect(result).to.have.nested.property(property).not.eq(help)
+        expect(result).to.have.nested.property(property).be.instanceof(Option)
+      }
     })
   })
 

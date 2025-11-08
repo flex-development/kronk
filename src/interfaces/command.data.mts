@@ -8,6 +8,8 @@ import type {
   ArgumentsData,
   Command,
   Exit,
+  HelpCommandData,
+  HelpOptionData,
   List,
   OptionPriority,
   OptionsData,
@@ -65,6 +67,30 @@ interface CommandData {
    * @see {@linkcode Exit}
    */
   exit?: Exit | null | undefined
+
+  /**
+   * Customize the help subcommand, or disable it (`false`).
+   *
+   * > 👉 **Note**: To configure the help subcommand for `helpCommand`,
+   * > a `Command` instance must be used. `helpCommand.helpCommand` is set to
+   * > `false` when `helpCommand` is not a `Command`.
+   *
+   * @see {@linkcode HelpCommandData}
+   *
+   * @default
+   *  { description: 'show help', name: 'help' }
+   */
+  helpCommand?: HelpCommandData | null | undefined
+
+  /**
+   * Customize the help option, or disable it (`false`).
+   *
+   * @see {@linkcode HelpOptionData}
+   *
+   * @default
+   *  { description: 'show help', flags: '-h | --help' }
+   */
+  helpOption?: HelpOptionData | null | undefined
 
   /**
    * Whether the command should **not** be displayed in help text.

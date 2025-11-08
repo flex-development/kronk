@@ -58,6 +58,228 @@ exports[`unit:lib/Command > #addOption > should throw on short flag conflict 1`]
 }
 `;
 
+exports[`unit:lib/Command > #helpCommand > should return help subcommand 1`] = `
+Command {
+  "actionEvent": null,
+  "args": [],
+  "argv": [],
+  "defaultCommand": null,
+  "events": EventEmitter {
+    "_events": {
+      "option:help": [
+        [Function bound onOption],
+        [Function bound onOptionWithAction],
+        [Function bound onOptionHelp],
+      ],
+    },
+    "_newListener": false,
+    "_removeListener": false,
+    "verboseMemoryLeak": false,
+    "_conf": {
+      "delimiter": ":",
+    },
+    "delimiter": ":",
+  },
+  "info": {
+    "description": "show help",
+    "name": "help",
+    "helpCommand": null,
+    "arguments": [],
+    "helpOption": Option {
+      "info": {
+        "description": "show help",
+        "flags": "-h | --help",
+        "long": "--help",
+        "optional": false,
+        "required": false,
+        "short": "-h",
+        "variadic": false,
+        "choices": undefined,
+        "default": undefined,
+        "env": undefined,
+        "hidden": false,
+        "parser": undefined,
+        "preset": undefined,
+      },
+    },
+    "options": Map {
+      "--help" => Option {
+        "info": {
+          "description": "show help",
+          "flags": "-h | --help",
+          "long": "--help",
+          "optional": false,
+          "required": false,
+          "short": "-h",
+          "variadic": false,
+          "choices": undefined,
+          "default": undefined,
+          "env": undefined,
+          "hidden": false,
+          "parser": undefined,
+          "preset": undefined,
+        },
+      },
+      "-h" => Option {
+        "info": {
+          "description": "show help",
+          "flags": "-h | --help",
+          "long": "--help",
+          "optional": false,
+          "required": false,
+          "short": "-h",
+          "variadic": false,
+          "choices": undefined,
+          "default": undefined,
+          "env": undefined,
+          "hidden": false,
+          "parser": undefined,
+          "preset": undefined,
+        },
+      },
+    },
+    "subcommands": Map {},
+    "version": undefined,
+    "action": undefined,
+    "aliases": Set {},
+    "done": undefined,
+    "exit": undefined,
+    "hidden": false,
+    "optionPriority": "local",
+    "summary": undefined,
+    "unknown": false,
+    "usage": undefined,
+  },
+  "optionValueSources": {
+    "help": null,
+  },
+  "optionValues": {
+    "help": false,
+  },
+  "parent": Command {
+    "actionEvent": null,
+    "args": [],
+    "argv": [],
+    "defaultCommand": null,
+    "events": EventEmitter {
+      "_events": {
+        "option:help": [
+          [Function bound onOption],
+          [Function bound onOptionWithAction],
+          [Function bound onOptionHelp],
+        ],
+      },
+      "_newListener": false,
+      "_removeListener": false,
+      "verboseMemoryLeak": false,
+      "_conf": {
+        "delimiter": ":",
+      },
+      "delimiter": ":",
+    },
+    "info": {
+      "name": undefined,
+      "arguments": [],
+      "helpCommand": [Circular],
+      "helpOption": Option {
+        "info": {
+          "description": "show help",
+          "flags": "-h | --help",
+          "long": "--help",
+          "optional": false,
+          "required": false,
+          "short": "-h",
+          "variadic": false,
+          "choices": undefined,
+          "default": undefined,
+          "env": undefined,
+          "hidden": false,
+          "parser": undefined,
+          "preset": undefined,
+        },
+      },
+      "options": Map {
+        "--help" => Option {
+          "info": {
+            "description": "show help",
+            "flags": "-h | --help",
+            "long": "--help",
+            "optional": false,
+            "required": false,
+            "short": "-h",
+            "variadic": false,
+            "choices": undefined,
+            "default": undefined,
+            "env": undefined,
+            "hidden": false,
+            "parser": undefined,
+            "preset": undefined,
+          },
+        },
+        "-h" => Option {
+          "info": {
+            "description": "show help",
+            "flags": "-h | --help",
+            "long": "--help",
+            "optional": false,
+            "required": false,
+            "short": "-h",
+            "variadic": false,
+            "choices": undefined,
+            "default": undefined,
+            "env": undefined,
+            "hidden": false,
+            "parser": undefined,
+            "preset": undefined,
+          },
+        },
+      },
+      "subcommands": Map {
+        "help" => [Circular],
+      },
+      "version": undefined,
+      "action": undefined,
+      "aliases": Set {},
+      "description": undefined,
+      "done": undefined,
+      "exit": undefined,
+      "hidden": false,
+      "optionPriority": "local",
+      "summary": undefined,
+      "unknown": false,
+      "usage": undefined,
+    },
+    "optionValueSources": {
+      "help": null,
+    },
+    "optionValues": {
+      "help": false,
+    },
+    "parent": null,
+  },
+}
+`;
+
+exports[`unit:lib/Command > #helpOption > should return help option 1`] = `
+Option {
+  "info": {
+    "description": "show help",
+    "flags": "-h | --help",
+    "long": "--help",
+    "optional": false,
+    "required": false,
+    "short": "-h",
+    "variadic": false,
+    "choices": undefined,
+    "default": undefined,
+    "env": undefined,
+    "hidden": false,
+    "parser": undefined,
+    "preset": undefined,
+  },
+}
+`;
+
 exports[`unit:lib/Command > #usage > should return command usage (0) 1`] = `
 {
   "arguments": undefined,

@@ -9,6 +9,7 @@ import type {
   ArgumentsData,
   Command,
   Exit,
+  HelpOptionData,
   List,
   OptionPriority,
   OptionsData,
@@ -64,6 +65,12 @@ describe('unit-d:interfaces/CommandData', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('exit')
       .toEqualTypeOf<Nilable<Exit>>()
+  })
+
+  it('should match [helpOption?: HelpOptionData | null | undefined]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('helpOption')
+      .toEqualTypeOf<Nilable<HelpOptionData>>()
   })
 
   it('should match [hidden?: boolean | null | undefined]', () => {

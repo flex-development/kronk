@@ -34,6 +34,24 @@ interface CommandMetadata extends Omit<CommandInfo, Skip> {
   arguments: Argument[]
 
   /**
+   * The help subcommand.
+   *
+   * @see {@linkcode Command}
+   *
+   * @override
+   */
+  helpCommand: Command | null | undefined
+
+  /**
+   * The help option.
+   *
+   * @see {@linkcode Option}
+   *
+   * @override
+   */
+  helpOption: Option | null | undefined
+
+  /**
    * Map, where each key is a long or short flag and each value is the command
    * option instance registered for that flag.
    *
@@ -56,7 +74,7 @@ interface CommandMetadata extends Omit<CommandInfo, Skip> {
   subcommands: Map<string, Command>
 
   /**
-   * Command version option.
+   * The version option.
    *
    * @see {@linkcode VersionOption}
    *

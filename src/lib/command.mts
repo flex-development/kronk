@@ -38,6 +38,8 @@ import type {
   DefaultInfo,
   Exit,
   Flags,
+  HelpCommandData,
+  HelpOptionData,
   KronkEventListener,
   List,
   OptionData,
@@ -253,6 +255,8 @@ class Command {
     this.info = {
       ...info,
       arguments: [],
+      helpCommand: null,
+      helpOption: null,
       options: new Map(),
       parent: undefined,
       subcommands: new Map(),
@@ -300,6 +304,8 @@ class Command {
     this.description(this.info.description)
     this.done(this.info.done)
     this.exiter(this.info.exit)
+    this.helpCommand(data.helpCommand)
+    this.helpOption(data.helpOption)
     this.hide(!!this.info.hidden)
     this.id(this.info.name)
     this.optionPriority(this.info.optionPriority)
@@ -1708,6 +1714,162 @@ class Command {
   }
 
   /**
+   * Configure the help subcommand.
+   *
+   * > 👉 **Note**: This method auto-registers the subcommand with
+   * > the name `help`. No cleanup is performed when this method is
+   * > called with a different name (i.e. `help` as a string or `help.name`).
+   *
+   * @see {@linkcode HelpCommandData}
+   *
+   * @public
+   * @instance
+   *
+   * @param {HelpCommandData | null | undefined} help
+   *  Subcommand instance, subcommand info, `false` to disable the help
+   *  subcommand, or any other allowed value to use the default configuration
+   * @return {this}
+   *  `this` command
+   */
+  public helpCommand(help: HelpCommandData | null | undefined): this
+
+  /**
+   * Get the help subcommand.
+   *
+   * @see {@linkcode Command}
+   *
+   * @template {Command} [T=Command]
+   *  Help subcommand instance
+   *
+   * @public
+   * @instance
+   *
+   * @return {Command | null}
+   *  Help subcommand
+   */
+  public helpCommand<T extends Command = Command>(): T | null
+
+  /**
+   * Get or configure the help subcommand.
+   *
+   * @todo configure subcommand to print help text
+   *
+   * @see {@linkcode Command}
+   * @see {@linkcode HelpCommandData}
+   *
+   * @public
+   * @instance
+   *
+   * @param {HelpCommandData | null | undefined} [help]
+   *  Subcommand instance, subcommand info, `false` to disable the help
+   *  subcommand, or any other allowed value to use the default configuration
+   * @return {Command | null | this}
+   *  Help subcommand or `this` command
+   */
+  public helpCommand(
+    help?: HelpCommandData | null | undefined
+  ): Command | null | this {
+    if (arguments.length) {
+      if (help === false) {
+        this.info.helpCommand = null
+      } else {
+        help ??= { description: 'show help', name: 'help' }
+        if (typeof help === 'string') help = { name: help }
+
+        // define help subcommand.
+        this.info.helpCommand = Command.isCommand(help)
+          ? help
+          : this
+            // prevent `RangeError: Maximum call stack size exceeded`
+            // by disabling help subcommand for current help subcommand.
+            .command({ ...help, helpCommand: false })
+      }
+
+      return this
+    }
+
+    return this.info.helpCommand ?? null
+  }
+
+  /**
+   * Configure the help option.
+   *
+   * > 👉 **Note**: This method auto-registers the help option with the flags
+   * > `-h | --help`. No cleanup is performed when this method is called with
+   * > different flags (i.e. `help` as a string or `help.flags`).
+   *
+   * @see {@linkcode HelpOptionData}
+   *
+   * @public
+   * @instance
+   *
+   * @param {HelpOptionData | null | undefined} help
+   *  Option flags, option instance, option info, `false` to disable the help
+   *  option, or any other allowed value to use the default configuration
+   * @return {this}
+   *  `this` command
+   */
+  public helpOption(help: HelpOptionData | null | undefined): this
+
+  /**
+   * Get the help option.
+   *
+   * @see {@linkcode Option}
+   *
+   * @template {Option} [T=Option]
+   *  Help option instance
+   *
+   * @public
+   * @instance
+   *
+   * @return {Option | null}
+   *  Help option
+   */
+  public helpOption<T extends Option = Option>(): T | null
+
+  /**
+   * Get or configure the help option.
+   *
+   * @see {@linkcode HelpOptionData}
+   * @see {@linkcode Option}
+   *
+   * @public
+   * @instance
+   *
+   * @param {HelpOptionData | null | undefined} [help]
+   *  Option flags, option instance, option info, `false` to disable automated
+   *  help, or any other allowed value to use the default help configuration
+   * @return {Option | null | this}
+   *  Help option or `this` command
+   */
+  public helpOption(
+    help?: HelpOptionData | null | undefined
+  ): Option | null | this {
+    if (arguments.length) {
+      if (help === false) {
+        this.info.helpOption = null
+      } else {
+        help ??= { description: 'show help', flags: '-h | --help' }
+
+        // set help option.
+        this.info.helpOption = isOption(help) ? help : this.createOption(help)
+
+        // add help option.
+        this.addOption(this.info.helpOption)
+        this.optionValue(this.info.helpOption.key, false, null)
+
+        // register parsed option listeners.
+        this.on(this.info.helpOption.event, this.onOptionWithAction.bind(this))
+        this.on(this.info.helpOption.event, this.onOptionHelp.bind(this))
+      }
+
+      return this
+    }
+
+    return this.info.helpOption ?? null
+  }
+
+  /**
    * Remove the command from help text.
    *
    * @public
@@ -1851,6 +2013,25 @@ class Command {
     }
 
     return void this
+  }
+
+  /**
+   * Handle a parsed help option `event`.
+   *
+   * > 👉 **Note**: This event listener is registered each time command help
+   * > is configured (i.e. `command.helpOption(info)`).
+   *
+   * @see {@linkcode OptionEvent}
+   *
+   * @protected
+   * @instance
+   *
+   * @param {OptionEvent} event
+   *  The emitted parsed option event
+   * @return {undefined}
+   */
+  protected onOptionHelp(event: OptionEvent): undefined {
+    return void event
   }
 
   /**

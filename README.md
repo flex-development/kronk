@@ -62,6 +62,8 @@
     - [`Command#exiter([exit])`](#commandexiterexit)
     - [`Command#findCommand(ref)`](#commandfindcommandref)
     - [`Command#findOption(flag[, direction])`](#commandfindoptionflag-direction)
+    - [`Command#helpCommand([help])`](#commandhelpcommandhelp)
+    - [`Command#helpOption([help])`](#commandhelpoptionhelp)
     - [`Command#hidden`](#commandhidden)
     - [`Command#hide([hidden])`](#commandhidehidden)
     - [`Command#id([name])`](#commandidname)
@@ -151,6 +153,8 @@
   - [`ExitProcess`](#exitprocess)
   - [`Exit`](#exit)
   - [`Flags`](#flags)
+  - [`HelpCommandData`](#helpcommanddata)
+  - [`HelpOptionData`](#helpoptiondata)
   - [`KronkErrorCause`](#kronkerrorcause-1)
   - [`KronkErrorId`](#kronkerrorid-1)
   - [`KronkErrorInfo`](#kronkerrorinfo-1)
@@ -902,6 +906,54 @@ default. Set `direction` to `0` to only search for options known to the current 
 ##### Returns
 
 ([`Option`](#optioninfo) | `undefined`) Option with the long or short flag `flag`
+
+#### `Command#helpCommand([help])`
+
+Get or configure the help subcommand.
+
+##### Overloads
+
+- `helpCommand(help: HelpCommandData | null | undefined): this`
+- `helpCommand<T extends Command = Command>(): T | null`
+
+##### Type Parameters
+
+- `T` ([`Command`](#commandinfo))
+  — help subcommand instance
+
+##### Parameters
+
+- `help` ([`HelpCommandData`](#helpcommanddata) | `null`| `undefined`)
+  — subcommand instance, subcommand info, `false` to disable the help subcommand,
+  or any other allowed value to use the default configuration
+
+##### Returns
+
+(`T` | [`this`](#commandinfo) | `null`) Help subcommand or `this` command
+
+#### `Command#helpOption([help])`
+
+Get or configure the help option.
+
+##### Overloads
+
+- `helpOption(help: HelpOptionData | null | undefined): this`
+- `helpOption<T extends Option = Option>(): T | null`
+
+##### Type Parameters
+
+- `T` ([`Option`](#optioninfo))
+  — help option instance
+
+##### Parameters
+
+- `help` ([`HelpOptionData`](#helpoptiondata) | `null`| `undefined`)
+  — option flags, option instance, option info, `false` to disable the help option,
+  or any other allowed value to use the default configuration
+
+##### Returns
+
+(`T` | [`this`](#commandinfo) | `null`) Help option or `this` command
 
 #### `Command#hidden`
 
@@ -1857,6 +1909,14 @@ Data transfer object for commands (TypeScript interface).
   — callback to fire after the command `action` is executed
 - `exit?` ([`Exit`](#exit), optional)
   — callback to fire when the process is exited
+- `helpCommand?` ([`HelpCommandData`](#helpcommanddata), optional)
+  — customize the help subcommand, or disable it (`false`)
+  > 👉 **Note**: to configure the help subcommand for `helpCommand`, a [`Command`](#commandinfo) instance must be used.
+  > `helpCommand.helpCommand` is set to `false` when `helpCommand` is not a `Command`.
+  - default: `{ description: 'show help', name: 'help' }`
+- `helpOption?` ([`HelpOptionData`](#helpoptiondata), optional)
+  — customize the help option, or disable it (`false`)
+  - default: `{ description: 'show help', flags: '-h | --help' }`
 - `hidden?` (`boolean`, optional)
   — whether the command should be not displayed in help text
 - `optionPriority?` ([`OptionPriority`](#optionpriority), optional)
@@ -1932,6 +1992,8 @@ Command metadata (TypeScript interface).
 
 - `arguments` ([`Argument[]`](#argumentinfo))
   — list of command arguments
+- `helpOption` ([`Option`](#optioninfo) | `null` | `undefined`)
+  — the help option
 - `options` ([`Map<string, Option>`](#optioninfo))
   — map, where each key is a long or short flag and each value is the command option instance registered for that flag
 - `parent?` (`null` | `undefined`)
@@ -1939,7 +2001,7 @@ Command metadata (TypeScript interface).
 - `subcommands` ([`Map<string, Command>`](#commandinfo))
   — map, where each key is the name of a subcommand each value is a subcommand
 - `version` ([`VersionOption`](#versionoptioninfo) | `null` | `undefined`)
-  — command version option
+  — the version option
 
 ### `CommandName`
 
@@ -2073,6 +2135,30 @@ appending an exclamation mark to the end of the argument id: (`<!>`, `<id!>`, `<
 
 ```ts
 type Flags = string
+```
+
+### `HelpCommandData`
+
+Union of types used to configure the help subcommand (TypeScript type).
+
+The help subcommand can be customized with
+a [`Command`](#commandinfo) instance, [subcommand info object](#subcommandinfo), or a subcommand name.
+It can also be disabled (`false`).
+
+```ts
+type HelpCommandData = Command | SubcommandInfo | string | false
+```
+
+### `HelpOptionData`
+
+Union of types used to configure the help option (TypeScript type).
+
+The command help option can be customized with
+an [`Option`](#optioninfo) instance, [flags](#flags), or an [info object](#optioninfo-1).
+It can also be disabled (`false`).
+
+```ts
+type HelpOptionData = Flags | Option | OptionInfo | false
 ```
 
 ### `KronkErrorCause`
