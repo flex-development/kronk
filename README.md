@@ -115,6 +115,7 @@
     - [`Option#implies([implies])`](#optionimpliesimplies)
     - [`Option#key`](#optionkey)
     - [`Option#long`](#optionlong)
+    - [`Option#mandate([mandatory])`](#optionmandatemandatory)
     - [`Option#mandatory`](#optionmandatory)
     - [`Option#optional`](#optionoptional)
     - [`Option#parser([parser])`](#optionparserparser)
@@ -1612,6 +1613,24 @@ The option [`id`](#optionid) in a format that can be used an object property key
 
 The long flag for the option.
 If `null`, the [`short`](#optionshort) flag will be a non-empty string.
+
+#### `Option#mandate([mandatory])`
+
+Specify if the option is mandatory.
+
+Mandatory options must have a value after parsing, which usually means the option must be specified on the command line.
+
+> 👉 **Note**: This method is a no-op if mandatory option syntax was used
+> when defining option flags (i.e. `new Option('--token <!>')`).
+
+##### Parameters
+
+- `mandatory` (`boolean` | `null` | `undefined`, optional)
+  — whether the option must have a value after parsing
+
+##### Returns
+
+([`this`](#optioninfo)) `this` option
 
 #### `Option#mandatory`
 

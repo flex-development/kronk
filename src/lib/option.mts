@@ -64,6 +64,15 @@ class Option {
   protected info: OptionMetadata
 
   /**
+   * Whether the option is mandatory.
+   *
+   * @private
+   * @instance
+   * @member {boolean | null | undefined}
+   */
+  #mandatory: boolean | null | undefined
+
+  /**
    * Create a new option.
    *
    * @see {@linkcode Flags}
@@ -104,6 +113,8 @@ class Option {
     data?: OptionData | null | undefined
   ) {
     if (typeof info === 'string') info = { ...data, flags: info }
+
+    this.#mandatory = null
 
     this.info = {
       ...info,
@@ -249,7 +260,7 @@ class Option {
    *  `true` if option must have value after parsing, `false` otherwise
    */
   public get mandatory(): boolean {
-    return !!this.info.mandatory
+    return this.#mandatory || !!this.info.mandatory
   }
 
   /**
@@ -625,6 +636,28 @@ class Option {
   }
 
   /**
+   * Specify if the option is mandatory.
+   *
+   * Mandatory options must have a value after parsing, which usually means the
+   * option must be specified on the command line.
+   *
+   * > 👉 **Note**: This method is a no-op if mandatory option syntax was used
+   * > when defining option flags (i.e. `new Option('--token <!>')`).
+   *
+   * @public
+   * @instance
+   *
+   * @param {boolean | null | undefined} [mandatory=true]
+   *  Whether the option must have a value after parsing
+   * @return {this}
+   *  `this` option
+   */
+  public mandate(mandatory?: boolean | null | undefined): this {
+    mandatory = this.#mandatory || fallback(mandatory, true, isNIL)
+    return this.info.mandatory = mandatory, this
+  }
+
+  /**
    * Set the handler used to parse option-arguments.
    *
    * @see {@linkcode ParseArg}
@@ -830,10 +863,12 @@ class Option {
           this.info.required = token.required
           this.info.variadic = token.variadic
 
-          // mandatory option-argument syntax overrides `info.mandatory` if
-          // both are defined as booleans.
+          // mandatory syntax overrides `info.mandatory` if both are defined.
           if (token.mandatory || typeof this.info.mandatory !== 'boolean') {
             this.info.mandatory = token.mandatory
+
+            // if mandatory option syntax is used, `mandate` is a no-op.
+            if (token.mandatory) this.#mandatory = token.mandatory
           }
 
           // mark option-argument syntax as processed.

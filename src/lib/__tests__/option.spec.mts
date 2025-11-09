@@ -382,12 +382,58 @@ describe('unit:lib/Option', () => {
     })
   })
 
+  describe('#mandate', () => {
+    it('should be no-op if flags use mandatory option syntax', () => {
+      // Arrange
+      const subject: TestSubject = new TestSubject('--token <!>')
+
+      // Act
+      const result = subject.mandate(false)
+
+      // Expect
+      expect(result).to.eq(subject)
+      expect(result).to.have.nested.property('info.mandatory', true)
+    })
+
+    it.each<Parameters<TestSubject['mandate']>>([
+      [],
+      [null],
+      [undefined],
+      [true]
+    ])('should make option mandatory and return `this` (%#)', mandatory => {
+      // Arrange
+      const subject: TestSubject = new TestSubject('--token <>')
+
+      // Act
+      const result = subject.mandate(mandatory)
+
+      // Expect
+      expect(result).to.eq(subject)
+      expect(result).to.have.nested.property('info.mandatory', true)
+    })
+
+    it('should make option not mandatory and return `this`', () => {
+      // Arrange
+      const subject: TestSubject = new TestSubject({
+        flags: '--password <>',
+        mandatory: true
+      })
+
+      // Act
+      const result = subject.mandate(false)
+
+      // Expect
+      expect(result).to.eq(subject)
+      expect(result).to.have.nested.property('info.mandatory', false)
+    })
+  })
+
   describe('#mandatory', () => {
     it.each<[Flags | OptionInfo]>([
       ['--color'],
-      [{ flags: '--token <>' }],
-      [{ flags: '--verbose', mandatory: false }]
-    ])('should be `false` if option value is not mandatory (%#)', info => {
+      [{ flags: '--password <>', mandatory: false }],
+      [{ flags: '--token <>' }]
+    ])('should be `false` if option is not mandatory (%#)', info => {
       expect(new TestSubject(info)).to.have.property('mandatory', false)
     })
 
@@ -395,7 +441,7 @@ describe('unit:lib/Option', () => {
       ['--token <!>'],
       [{ flags: '--token <!>', mandatory: false }],
       [{ flags: '--token <>', mandatory: true }]
-    ])('should be `true` if option value mandatory (%#)', info => {
+    ])('should be `true` if option is mandatory (%#)', info => {
       expect(new TestSubject(info)).to.have.property('mandatory', true)
     })
   })
