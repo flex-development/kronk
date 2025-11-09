@@ -27,6 +27,7 @@ import type {
   OptionEventName,
   OptionInfo,
   OptionMetadata,
+  OptionValues,
   ParseArg
 } from '@flex-development/kronk'
 import { KronkError } from '@flex-development/kronk/errors'
@@ -129,6 +130,7 @@ class Option {
     this.description(this.info.description)
     this.env(this.info.env)
     this.hide(!!this.info.hidden)
+    this.implies(this.info.implies)
     this.parser(this.info.parser)
     this.preset(this.info.preset)
   }
@@ -550,6 +552,76 @@ class Option {
    */
   public hide(hidden?: boolean | null | undefined): this {
     return this.info.hidden = fallback(hidden, true, isNIL), this
+  }
+
+  /**
+   * Set implied option values.
+   *
+   * Implied option values are values that are set on other options when `this`
+   * option is passed, but the implied option is not.
+   *
+   * Lone keys (string `implies`) imply `true`, i.e. `{ [implies]: true }`.
+   *
+   * @see {@linkcode OptionValues}
+   *
+   * @public
+   * @instance
+   *
+   * @param {OptionValues | string | null | undefined} implies
+   *  The key of an implied option, or a map where each key
+   *  is an implied option key and each value is the value to use
+   *  when the option is set but the implied option is not
+   * @return {this}
+   *  `this` option
+   */
+  public implies(implies: OptionValues | string | null | undefined): this
+
+  /**
+   * Get implied option values.
+   *
+   * @see {@linkcode OptionValues}
+   *
+   * @public
+   * @instance
+   *
+   * @template {OptionValues} T
+   *  Implied option values
+   *
+   * @return {T}
+   *  Map of implied option values
+   */
+  public implies<T extends OptionValues>(): T
+
+  /**
+   * Get or set implied option values.
+   *
+   * @see {@linkcode OptionValues}
+   *
+   * @public
+   * @instance
+   *
+   * @param {OptionValues | string | null | undefined} [implies]
+   *  The key of an implied option, or a map where each key
+   *  is an implied option key and each value is the value to use
+   *  when the option is set but the implied option is not
+   * @return {OptionValues | this}
+   *  Map of implied option values or `this` option
+   */
+  public implies(
+    implies?: OptionValues | string | null | undefined
+  ): OptionValues | this {
+    ok(
+      typeof this.info.implies !== 'string',
+      'expected `info.implies` not to be a string'
+    )
+
+    if (arguments.length) {
+      if (typeof implies === 'string') implies = { [implies]: true }
+      this.info.implies = Object.assign(this.info.implies ?? {}, implies)
+      return this
+    }
+
+    return ok(this.info.implies, 'expected `info.implies`'), this.info.implies
   }
 
   /**

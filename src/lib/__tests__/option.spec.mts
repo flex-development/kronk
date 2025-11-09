@@ -14,6 +14,7 @@ import type {
   Flags,
   List,
   OptionInfo,
+  OptionValues,
   ParseArg
 } from '@flex-development/kronk'
 
@@ -325,6 +326,40 @@ describe('unit:lib/Option', () => {
 
       // Expect
       expect(new TestSubject(info)).to.have.property('key', 'assets_dir')
+    })
+  })
+
+  describe('#implies', () => {
+    it('should return map of implied option values', () => {
+      expect(new TestSubject('--dairy').implies()).to.be.eql({})
+    })
+
+    it.each<[OptionValues | string, Flags]>([
+      ['dairy', '-c, --cheese <type>'],
+      [{ log_level: 'verbose' }, '--verbose']
+    ])('should set implied option values and return `this` (%#)', (
+      implies,
+      flags
+    ) => {
+      // Arrange
+      const prop: string = 'info.implies'
+      const subject: TestSubject = new TestSubject(flags)
+
+      // Act
+      const result = subject.implies(implies)
+
+      // Expect
+      expect(result).to.eq(subject)
+
+      // Expect (conditional)
+      if (typeof implies === 'string') {
+        expect(result).to.have.nested.property(prop).eql({ [implies]: true })
+      } else {
+        expect(result).to.have.nested.property(prop).eql(implies)
+      }
+
+      // Expect (snapshot)
+      expect(result).toMatchSnapshot()
     })
   })
 

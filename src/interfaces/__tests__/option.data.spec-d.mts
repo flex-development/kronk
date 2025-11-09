@@ -7,6 +7,7 @@ import type TestSubject from '#interfaces/option.data'
 import type {
   DefaultInfo,
   List,
+  OptionValues,
   ParseArg
 } from '@flex-development/kronk'
 import type { Nilable } from '@flex-development/tutils'
@@ -46,6 +47,12 @@ describe('unit-d:interfaces/OptionData', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('hidden')
       .toEqualTypeOf<Nilable<boolean>>()
+  })
+
+  it('should match [implies?: OptionValues | string | null | undefined]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('implies')
+      .toEqualTypeOf<Nilable<OptionValues | string>>()
   })
 
   it('should match [mandatory?: boolean | null | undefined]', () => {

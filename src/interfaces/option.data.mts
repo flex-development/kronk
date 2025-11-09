@@ -3,7 +3,12 @@
  * @module kronk/interfaces/OptionData
  */
 
-import type { DefaultInfo, List, ParseArg } from '@flex-development/kronk'
+import type {
+  DefaultInfo,
+  List,
+  OptionValues,
+  ParseArg
+} from '@flex-development/kronk'
 
 /**
  * Data transfer object for command options.
@@ -54,6 +59,16 @@ interface OptionData {
    * @default false
    */
   hidden?: boolean | null | undefined
+
+  /**
+   * The key of an implied option, or a map where each key is an implied option
+   * key and each value is the value to use when the option is set but the
+   * implied option is not.\
+   * Lone keys imply (string `implies`) `true`, i.e. `{ [implies]: true }`.
+   *
+   * @see {@linkcode OptionValues}
+   */
+  implies?: OptionValues | string | null | undefined
 
   /**
    * Whether the option is mandatory.

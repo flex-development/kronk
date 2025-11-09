@@ -112,6 +112,7 @@
     - [`Option#hidden`](#optionhidden)
     - [`Option#hide([hidden])`](#optionhidehidden)
     - [`Option#id`](#optionid)
+    - [`Option#implies([implies])`](#optionimpliesimplies)
     - [`Option#key`](#optionkey)
     - [`Option#long`](#optionlong)
     - [`Option#mandatory`](#optionmandatory)
@@ -1569,6 +1570,35 @@ Remove the option from help text.
 `string`
 
 The option id.
+
+#### `Option#implies([implies])`
+
+Get or set implied option values.
+
+Implied option values are values that are set on other options
+when `this` option is passed, but the implied option is not.
+
+Lone keys (string `implies`) imply `true`, i.e. `{ [implies]: true }`.
+
+##### Overloads
+
+- `implies(implies: OptionValues | string | null | undefined): this`
+- `implies<T extends OptionValues>(): T`
+
+##### Type Parameters
+
+- `T` ([`OptionValues`](#optionvalues))
+  — implied option values
+
+##### Parameters
+
+- `implies` ([`OptionValues`](#optionvalues) | `string` | `null` | `undefined`)
+  — the key of an implied option, or a map where each key is an implied option key and each value is the value to use
+  when the option is set but the implied option is not
+
+##### Returns
+
+(`T` | [`this`](#optioninfo)) Map of implied option values or `this` option
 
 #### `Option#key`
 
