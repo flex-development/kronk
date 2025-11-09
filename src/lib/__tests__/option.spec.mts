@@ -115,6 +115,33 @@ describe('unit:lib/Option', () => {
     })
   })
 
+  describe('#conflicts', () => {
+    it('should return list of conflicting option names', () => {
+      // Arrange
+      const subject: TestSubject = new TestSubject('--log-level')
+
+      // Act
+      const result = subject.conflicts()
+
+      // Expect
+      expect(result).to.be.instanceof(Set).and.empty
+      expect(result).to.not.be.frozen
+    })
+
+    it('should set conflicting option names and return `this`', () => {
+      // Arrange
+      const conflicts: List<string> | string = '--cmyk'
+      const subject: TestSubject = new TestSubject('--rgb')
+
+      // Act
+      const result = subject.conflicts(conflicts)
+
+      // Expect
+      expect(result).to.eq(subject)
+      expect(result).to.have.nested.property('info.conflicts', conflicts)
+    })
+  })
+
   describe('#default', () => {
     let subject: TestSubject
 

@@ -17,6 +17,14 @@ interface OptionData {
   choices?: List<string> | null | undefined
 
   /**
+   * An option name, or list of option names, that conflict with the option.\
+   * An error will be displayed if conflicting options are found during parsing.
+   *
+   * @see {@linkcode List}
+   */
+  conflicts?: List<string> | string | null | undefined
+
+  /**
    * Default value configuration.
    *
    * > 👉 **Note**: The option-argument {@linkcode parser} will not be called.

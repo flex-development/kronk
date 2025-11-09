@@ -18,6 +18,12 @@ describe('unit-d:interfaces/OptionData', () => {
       .toEqualTypeOf<Nilable<List<string>>>()
   })
 
+  it('should match [conflicts?: List<string> | string | null | undefined]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('conflicts')
+      .toEqualTypeOf<Nilable<List<string> | string>>()
+  })
+
   it('should match [default?: DefaultInfo | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('default')

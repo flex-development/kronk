@@ -124,6 +124,7 @@ class Option {
     void this.tokenizeFlags()
 
     this.choices(this.info.choices)
+    this.conflicts(this.info.conflicts)
     this.default(this.info.default)
     this.description(this.info.description)
     this.env(this.info.env)
@@ -350,6 +351,52 @@ class Option {
   }
 
   /**
+   * Set option names that conflict with this option.
+   *
+   * @see {@linkcode List}
+   *
+   * @public
+   * @instance
+   *
+   * @param {List<string> | string | null | undefined} conflicts
+   *  An option name, or list of option names, that conflict with the option
+   * @return {this}
+   *  `this` option
+   */
+  public conflicts(conflicts: List<string> | string | null | undefined): this
+
+  /**
+   * Get a list of option names that conflict with this option.
+   *
+   * @public
+   * @instance
+   *
+   * @return {Set<string>}
+   *  List of conflicting option names
+   */
+  public conflicts(): Set<string>
+
+  /**
+   * Get or set option names that conflict with the option.
+   *
+   * @see {@linkcode List}
+   *
+   * @public
+   * @instance
+   *
+   * @param {List<string> | string | null | undefined} [conflicts]
+   *  An option name, or list of option names, that conflict with the option
+   * @return {Set<string> | this}
+   *  List of conflicting option names or `this` option
+   */
+  public conflicts(
+    conflicts?: List<string> | string | null | undefined
+  ): Set<string> | this {
+    if (arguments.length) return this.info.conflicts = conflicts, this
+    return new Set(toList(this.info.conflicts))
+  }
+
+  /**
    * Set the default value configuration.
    *
    * @see {@linkcode DefaultInfo}
@@ -471,6 +518,8 @@ class Option {
 
   /**
    * Get or set the environment variables to check for the value of the option.
+   *
+   * @see {@linkcode List}
    *
    * @public
    * @instance

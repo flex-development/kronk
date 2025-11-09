@@ -103,6 +103,7 @@
   - [`Option(info)`](#optioninfo)
     - [`Option#boolean`](#optionboolean)
     - [`Option#choices([choices])`](#optionchoiceschoices)
+    - [`Option#conflicts([conflicts])`](#optionconflictsconflicts)
     - [`Option#default([info])`](#optiondefaultinfo)
     - [`Option#description([description])`](#optiondescriptiondescription)
     - [`Option#env([env])`](#optionenvenv)
@@ -1447,12 +1448,30 @@ Get or set option choices.
 
 ##### Parameters
 
-- `choices` ([`List<string>`](#list))
+- `choices` ([`List<string>`](#list) | `null` | `undefined`)
   — list of option choices
 
 ##### Returns
 
 (`Set<string>` | [`this`](#optioninfo)) List of option choices or `this` option
+
+#### `Option#conflicts([conflicts])`
+
+Get or set option names that conflict with the option.
+
+##### Overloads
+
+- `conflicts(conflicts: List<string> | string | null | undefined): this`
+- `conflicts(): Set<string>`
+
+##### Parameters
+
+- `conflicts` ([`List<string>`](#list) | `string` | `null` | `undefined`)
+  — an option name, or list of option names, that conflict with the option
+
+##### Returns
+
+(`Set<string>` | [`this`](#optioninfo)) List of conflicting option names or `this` option
 
 #### `Option#default([info])`
 
