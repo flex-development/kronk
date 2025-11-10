@@ -4,31 +4,15 @@
  */
 
 import type TestSubject from '#interfaces/argument.data'
-import type { DefaultInfo, List, ParseArg } from '@flex-development/kronk'
-import type { Nilable } from '@flex-development/tutils'
+import type { ParseableInfo } from '@flex-development/kronk'
+import type { OptionalKeys } from '@flex-development/tutils'
 
 describe('unit-d:interfaces/ArgumentData', () => {
-  it('should match [choices?: List<string> | null | undefined]', () => {
-    expectTypeOf<TestSubject>()
-      .toHaveProperty('choices')
-      .toEqualTypeOf<Nilable<List<string>>>()
+  it('should have all optional keys', () => {
+    expectTypeOf<OptionalKeys<TestSubject>>().toEqualTypeOf<keyof TestSubject>()
   })
 
-  it('should match [default?: DefaultInfo | null | undefined]', () => {
-    expectTypeOf<TestSubject>()
-      .toHaveProperty('default')
-      .toEqualTypeOf<Nilable<DefaultInfo>>()
-  })
-
-  it('should match [description?: URL | string | null | undefined]', () => {
-    expectTypeOf<TestSubject>()
-      .toHaveProperty('description')
-      .toEqualTypeOf<Nilable<URL | string>>()
-  })
-
-  it('should match [parser?: ParseArg<any, any> | null | undefined]', () => {
-    expectTypeOf<TestSubject>()
-      .toHaveProperty('parser')
-      .toEqualTypeOf<Nilable<ParseArg<any, any>>>()
+  it('should extend ParseableInfo', () => {
+    expectTypeOf<TestSubject>().toExtend<ParseableInfo>()
   })
 })

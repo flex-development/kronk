@@ -16,6 +16,7 @@ import orNIL from '#internal/or-nil'
 import toChunks from '#internal/to-chunks'
 import toList from '#internal/to-list'
 import Argument from '#lib/argument'
+import Helpable from '#lib/helpable.abstract'
 import Option from '#lib/option'
 import VersionOption from '#lib/version.option'
 import {
@@ -86,9 +87,12 @@ import plur from 'plur'
  * Commands use the {@linkcode initialCommand} construct to tokenize arguments,
  * delimiters, operands, option flags, and subcommand names.
  *
+ * @see {@linkcode Helpable}
+ *
  * @class
+ * @extends {Helpable}
  */
-class Command {
+class Command extends Helpable {
   /**
    * The event whose listener overrides the command action handler and any
    * parsing checks (i.e. mandatory options, required arguments).
@@ -147,9 +151,10 @@ class Command {
    *
    * @protected
    * @instance
+   * @override
    * @member {CommandMetadata} info
    */
-  protected info: CommandMetadata
+  declare protected info: CommandMetadata
 
   /**
    * Logger instance.
@@ -252,8 +257,10 @@ class Command {
       info = { ...data = { ...data }, name: info }
     }
 
+    super(info)
+
     this.info = {
-      ...info,
+      ...this.info,
       arguments: [],
       helpCommand: null,
       helpOption: null,
@@ -301,12 +308,10 @@ class Command {
 
     this.action(this.info.action)
     this.aliases(this.info.aliases)
-    this.description(this.info.description)
     this.done(this.info.done)
     this.exiter(this.info.exit)
     this.helpCommand(data.helpCommand)
     this.helpOption(data.helpOption)
-    this.hide(!!this.info.hidden)
     this.id(this.info.name)
     this.optionPriority(this.info.optionPriority)
     this.summary(this.info.summary)
@@ -375,20 +380,6 @@ class Command {
    */
   public get default(): boolean {
     return !!this.info.default
-  }
-
-  /**
-   * Whether the command should **not** be displayed in help text.
-   *
-   * @public
-   * @instance
-   *
-   * @return {boolean}
-   *  `true` if command should not be displayed in help text, `false` otherwise
-   */
-  public get hidden(): boolean {
-    ok(typeof this.info.hidden === 'boolean', 'expected `info.hidden`')
-    return this.info.hidden
   }
 
   /**
@@ -1347,48 +1338,6 @@ class Command {
   }
 
   /**
-   * Set the command description.
-   *
-   * @public
-   * @instance
-   *
-   * @param {URL | string | null | undefined} description
-   *  The command description
-   * @return {this}
-   *  `this` command
-   */
-  public description(description: URL | string | null | undefined): this
-
-  /**
-   * Get the command description.
-   *
-   * @public
-   * @instance
-   *
-   * @return {string}
-   *  The command description
-   */
-  public description(): string
-
-  /**
-   * Get or set the command description.
-   *
-   * @public
-   * @instance
-   *
-   * @param {URL | string | null | undefined} [description]
-   *  The command description
-   * @return {string | this}
-   *  Description of `this` command or `this` command
-   */
-  public description(
-    description?: URL | string | null | undefined
-  ): string | this {
-    if (!arguments.length) return String(this.info.description ?? chars.empty)
-    return this.info.description = orNIL(description), this
-  }
-
-  /**
    * Set the command done callback.
    *
    * @see {@linkcode Action}
@@ -1867,21 +1816,6 @@ class Command {
     }
 
     return this.info.helpOption ?? null
-  }
-
-  /**
-   * Remove the command from help text.
-   *
-   * @public
-   * @instance
-   *
-   * @param {boolean | null | undefined} [hidden=true]
-   *  Whether the command should be hidden
-   * @return {this}
-   *  `this` command
-   */
-  public hide(hidden?: boolean | null | undefined): this {
-    return this.info.hidden = fallback(hidden, true, isNIL), this
   }
 
   /**
@@ -3000,11 +2934,12 @@ class Command {
    *
    * @public
    * @instance
+   * @override
    *
    * @return {string}
    *  String representation of `this` command
    */
-  public toString(): string {
+  public override toString(): string {
     return `Command(${this.id() ?? ''})`
   }
 

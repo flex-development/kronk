@@ -20,7 +20,7 @@ import { ifelse, isNIL } from '@flex-development/tutils'
  * @param {T} value
  *  The thing to check
  * @return {T | null | undefined}
- *  `value` if `value` is not truthy, `null` or `undefined` sotherwise
+ *  `value` if `value` is not truthy, `null` or `undefined` otherwise
  */
 function orNIL<T = unknown>(this: void, value: T): T | null | undefined {
   if (typeof value === 'string') return value.trim() as T || null

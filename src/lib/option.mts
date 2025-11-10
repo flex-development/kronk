@@ -9,10 +9,10 @@ import keid from '#enums/keid'
 import tt from '#enums/tt'
 import camelcase from '#internal/camelcase'
 import kOption from '#internal/k-option'
-import orNIL from '#internal/or-nil'
 import snakecase from '#internal/snakecase'
 import toChunks from '#internal/to-chunks'
 import toList from '#internal/to-list'
+import Parseable from '#lib/parseable.abstract'
 import {
   ev,
   tokenize,
@@ -20,7 +20,6 @@ import {
   type TokenizeContext
 } from '@flex-development/fsm-tokenizer'
 import type {
-  DefaultInfo,
   Flags,
   List,
   OptionData,
@@ -33,7 +32,6 @@ import type {
 import { KronkError } from '@flex-development/kronk/errors'
 import {
   fallback,
-  identity,
   ifelse,
   isFalsy,
   isNIL,
@@ -49,9 +47,12 @@ import { ok } from 'devlop'
  * Option flags and argument syntax are tokenized
  * using the {@linkcode initialOption} construct.
  *
+ * @see {@linkcode Parseable}
+ *
  * @class
+ * @extends {Parseable}
  */
-class Option {
+class Option extends Parseable {
   /**
    * Option metadata.
    *
@@ -59,9 +60,10 @@ class Option {
    *
    * @protected
    * @instance
+   * @override
    * @member {OptionMetadata} info
    */
-  protected info: OptionMetadata
+  declare protected info: OptionMetadata
 
   /**
    * Whether the option is mandatory.
@@ -114,17 +116,7 @@ class Option {
   ) {
     if (typeof info === 'string') info = { ...data, flags: info }
 
-    this.#mandatory = null
-
-    this.info = {
-      ...info,
-      flags: info.flags.trim(),
-      long: undefined,
-      optional: false,
-      required: false,
-      short: undefined,
-      variadic: false
-    }
+    super(info)
 
     Object.defineProperty(this, kOption, {
       configurable: false,
@@ -133,16 +125,14 @@ class Option {
       writable: false
     })
 
+    this.#mandatory = null
+    this.info.flags = info.flags.trim()
+
     void this.tokenizeFlags()
 
-    this.choices(this.info.choices)
     this.conflicts(this.info.conflicts)
-    this.default(this.info.default)
-    this.description(this.info.description)
     this.env(this.info.env)
-    this.hide(!!this.info.hidden)
     this.implies(this.info.implies)
-    this.parser(this.info.parser)
     this.preset(this.info.preset)
   }
 
@@ -193,20 +183,6 @@ class Option {
   }
 
   /**
-   * Whether the option should **not** be displayed in help text.
-   *
-   * @public
-   * @instance
-   *
-   * @return {boolean}
-   *  `true` if option should not be displayed in help text, `false` otherwise
-   */
-  public get hidden(): boolean {
-    ok(typeof this.info.hidden === 'boolean', 'expected `info.hidden`')
-    return this.info.hidden
-  }
-
-  /**
    * The option id.
    *
    * @public
@@ -222,8 +198,8 @@ class Option {
   }
 
   /**
-   * The option {@linkcode id} in a format that can be used an object property
-   * key.
+   * The option {@linkcode id} in a format
+   * that can be used an object property key.
    *
    * @public
    * @instance
@@ -277,19 +253,6 @@ class Option {
   }
 
   /**
-   * Whether a value must be supplied when the option is specified.
-   *
-   * @public
-   * @instance
-   *
-   * @return {boolean}
-   *  `true` if option-argument is required, `false` otherwise
-   */
-  public get required(): boolean {
-    return this.info.required
-  }
-
-  /**
    * The short flag for the option.
    *
    * > 👉 **Note**: If `null`, {@linkcode long} will be a non-empty string.
@@ -302,65 +265,6 @@ class Option {
    */
   public get short(): string | null {
     return fallback(this.info.short, null, isFalsy)
-  }
-
-  /**
-   * Whether the option can be specified multiple times.
-   *
-   * @public
-   * @instance
-   *
-   * @return {boolean}
-   *  `true` if option can be specified multiple times, `false` otherwise
-   */
-  public get variadic(): boolean {
-    return this.info.variadic
-  }
-
-  /**
-   * Set option choices.
-   *
-   * @see {@linkcode List}
-   *
-   * @public
-   * @instance
-   *
-   * @param {List<string> | null | undefined} choices
-   *  List of option choices
-   * @return {this}
-   *  `this` option
-   */
-  public choices(choices: List<string> | null | undefined): this
-
-  /**
-   * Get option choices.
-   *
-   * @public
-   * @instance
-   *
-   * @return {Set<string>}
-   *  List of option choices
-   */
-  public choices(): Set<string>
-
-  /**
-   * Get or set option choices.
-   *
-   * @see {@linkcode List}
-   *
-   * @public
-   * @instance
-   *
-   * @param {List<string> | null | undefined} [choices]
-   *  List of option choices
-   * @return {Set<string> | this}
-   *  List of option choices or `this` option
-   */
-  public choices(
-    choices?: List<string> | null | undefined
-  ): Set<string> | this {
-    if (arguments.length) return this.info.choices = choices, this
-    return new Set(this.info.choices)
   }
 
   /**
@@ -410,99 +314,6 @@ class Option {
   }
 
   /**
-   * Set the default value configuration.
-   *
-   * @see {@linkcode DefaultInfo}
-   *
-   * @public
-   * @instance
-   *
-   * @param {DefaultInfo | null | undefined} info
-   *  Default value info
-   * @return {this}
-   *  `this` option
-   */
-  public default(info: DefaultInfo | null | undefined): this
-
-  /**
-   * Get the default value configuration.
-   *
-   * @see {@linkcode DefaultInfo}
-   *
-   * @template {any} T
-   *  Default value type
-   *
-   * @public
-   * @instance
-   *
-   * @return {DefaultInfo<T>}
-   *  Default value info
-   */
-  public default<T>(): DefaultInfo<T>
-
-  /**
-   * Get or set the default value configuration.
-   *
-   * @see {@linkcode DefaultInfo}
-   *
-   * @public
-   * @instance
-   *
-   * @param {DefaultInfo | null | undefined} [info]
-   *  Default value info
-   * @return {DefaultInfo | this}
-   *  Default value info or `this` option
-   */
-  public default(
-    info?: DefaultInfo | null | undefined
-  ): DefaultInfo | this {
-    if (arguments.length) return this.info.default = info, this
-    return fallback(this.info.default, { value: undefined }, isNIL)
-  }
-
-  /**
-   * Set the option description.
-   *
-   * @public
-   * @instance
-   *
-   * @param {URL | string | null | undefined} description
-   *  The option description
-   * @return {this}
-   *  `this` option
-   */
-  public description(description: URL | string | null | undefined): this
-
-  /**
-   * Get the option description.
-   *
-   * @public
-   * @instance
-   *
-   * @return {string}
-   *  The option description
-   */
-  public description(): string
-
-  /**
-   * Get or set the option description.
-   *
-   * @public
-   * @instance
-   *
-   * @param {URL | string | null | undefined} [description]
-   *  The option description
-   * @return {string | this}
-   *  Description of `this` option or `this` option
-   */
-  public description(
-    description?: URL | string | null | undefined
-  ): string | this {
-    if (!arguments.length) return String(this.info.description ?? chars.empty)
-    return this.info.description = orNIL(description), this
-  }
-
-  /**
    * Set the environment variables to check for the value of the option.
    *
    * @see {@linkcode List}
@@ -548,21 +359,6 @@ class Option {
   ): Set<string> | this {
     if (arguments.length) return this.info.env = env, this
     return new Set(toList(this.info.env))
-  }
-
-  /**
-   * Remove the option from help text.
-   *
-   * @public
-   * @instance
-   *
-   * @param {boolean | null | undefined} [hidden=true]
-   *  Whether the option should be hidden
-   * @return {this}
-   *  `this` option
-   */
-  public hide(hidden?: boolean | null | undefined): this {
-    return this.info.hidden = fallback(hidden, true, isNIL), this
   }
 
   /**
@@ -658,60 +454,6 @@ class Option {
   }
 
   /**
-   * Set the handler used to parse option-arguments.
-   *
-   * @see {@linkcode ParseArg}
-   *
-   * @public
-   * @instance
-   *
-   * @param {ParseArg<any, any> | null | undefined} parser
-   *  The option-argument parser
-   * @return {this}
-   *  `this` option
-   */
-  public parser(parser: ParseArg<any, any> | null | undefined): this
-
-  /**
-   * Get the handler used to parse option-arguments.
-   *
-   * @see {@linkcode ParseArg}
-   *
-   * @public
-   * @instance
-   *
-   * @template {any} T
-   *  Parse result
-   * @template {string | string[]} [V=string|string[]]
-   *  The argument or arguments to parse
-   *
-   * @return {ParseArg<T, V>}
-   *  The option-argument parser
-   */
-  public parser<
-    T,
-    V extends string | string[] = string | string[]
-  >(): ParseArg<T, V>
-
-  /**
-   * Get or set the handler used to parse option-arguments.
-   *
-   * @see {@linkcode ParseArg}
-   *
-   * @public
-   * @instance
-   *
-   * @param {ParseArg | null | undefined} [parser]
-   *  The option-argument parser
-   * @return {ParseArg | this}
-   *  The option-argument parser or `this` option
-   */
-  public parser(parser?: ParseArg | null | undefined): ParseArg | this {
-    if (arguments.length) return this.info.parser = parser, this
-    return fallback(this.info.parser as ParseArg, identity, isNIL)
-  }
-
-  /**
    * Set the preset to use when the option is specified without an argument.
    *
    * The handler used to parse option-arguments, {@linkcode ParseArg}, will be
@@ -733,10 +475,13 @@ class Option {
    * @public
    * @instance
    *
+   * @template {string} T
+   *  Option-argument preset
+   *
    * @return {string | null}
    *  The option-argument preset
    */
-  public preset(): string | null
+  public preset<T extends string>(): T | null
 
   /**
    * Get or set the preset to use when the option is specified without an

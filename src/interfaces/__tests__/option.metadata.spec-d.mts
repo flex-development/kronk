@@ -4,12 +4,16 @@
  */
 
 import type TestSubject from '#interfaces/option.metadata'
-import type { OptionInfo } from '@flex-development/kronk'
+import type { OptionInfo, ParseableMetadata } from '@flex-development/kronk'
 import type { Nilable } from '@flex-development/tutils'
 
 describe('unit-d:interfaces/OptionMetadata', () => {
   it('should extend OptionInfo', () => {
     expectTypeOf<TestSubject>().toExtend<OptionInfo>()
+  })
+
+  it('should extend ParseableMetadata', () => {
+    expectTypeOf<TestSubject>().toExtend<ParseableMetadata>()
   })
 
   it('should match [long: string | null | undefined]', () => {

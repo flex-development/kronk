@@ -3,24 +3,16 @@
  * @module kronk/interfaces/OptionData
  */
 
-import type {
-  DefaultInfo,
-  List,
-  OptionValues,
-  ParseArg
-} from '@flex-development/kronk'
+import type { List, OptionValues, ParseableInfo } from '@flex-development/kronk'
 
 /**
  * Data transfer object for command options.
+ *
+ * @see {@linkcode ParseableInfo}
+ *
+ * @extends {ParseableInfo}
  */
-interface OptionData {
-  /**
-   * List of option choices.
-   *
-   * @see {@linkcode List}
-   */
-  choices?: List<string> | null | undefined
-
+interface OptionData extends ParseableInfo {
   /**
    * An option name, or list of option names, that conflict with the option.\
    * An error will be displayed if conflicting options are found during parsing.
@@ -30,35 +22,12 @@ interface OptionData {
   conflicts?: List<string> | string | null | undefined
 
   /**
-   * Default value configuration.
-   *
-   * > 👉 **Note**: The option-argument {@linkcode parser} will not be called.
-   *
-   * @see {@linkcode DefaultInfo}
-   */
-  default?: DefaultInfo | null | undefined
-
-  /**
-   * Description of the option.
-   *
-   * @default ''
-   */
-  description?: URL | string | null | undefined
-
-  /**
    * The name of the environment variable to check for option value, or a list
    * of names, in order of priority, to check.
    *
    * @see {@linkcode List}
    */
   env?: List<string> | string | null | undefined
-
-  /**
-   * Whether the option should **not** be displayed in help text.
-   *
-   * @default false
-   */
-  hidden?: boolean | null | undefined
 
   /**
    * The key of an implied option, or a map where each key is an implied option
@@ -79,17 +48,6 @@ interface OptionData {
    * @default false
    */
   mandatory?: boolean | null | undefined
-
-  /**
-   * Handler used to parse option-arguments.
-   *
-   * The handler receives two parameters, the raw, unparsed option-argument (or
-   * *option-arguments* for variadic options), and the previous (default) value
-   * for the argument. It should return the new value for the argument.
-   *
-   * @see {@linkcode ParseArg}
-   */
-  parser?: ParseArg<any, string> | ParseArg<any, string[]> | null | undefined
 
   /**
    * For boolean and optional options, the preset to use when the option is

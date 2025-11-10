@@ -4,13 +4,11 @@
  */
 
 import initialArgument from '#constructs/initial-argument'
-import chars from '#enums/chars'
 import keid from '#enums/keid'
 import tt from '#enums/tt'
 import KronkError from '#errors/kronk.error'
-import identity from '#internal/identity'
 import kArgument from '#internal/k-argument'
-import orNIL from '#internal/or-nil'
+import Parseable from '#lib/parseable.abstract'
 import {
   ev,
   tokenize,
@@ -21,12 +19,8 @@ import type {
   ArgumentData,
   ArgumentInfo,
   ArgumentMetadata,
-  ArgumentSyntax,
-  DefaultInfo,
-  List,
-  ParseArg
+  ArgumentSyntax
 } from '@flex-development/kronk'
-import { fallback, isNIL } from '@flex-development/tutils'
 import { ok } from 'devlop'
 
 /**
@@ -36,9 +30,12 @@ import { ok } from 'devlop'
  *
  * Argument syntax is tokenized using {@linkcode initialArgument} construct.
  *
+ * @see {@linkcode Parseable}
+ *
  * @class
+ * @extends {Parseable}
  */
-class Argument {
+class Argument extends Parseable {
   /**
    * Argument metadata.
    *
@@ -46,9 +43,10 @@ class Argument {
    *
    * @protected
    * @instance
+   * @override
    * @member {ArgumentMetadata} info
    */
-  protected info: ArgumentMetadata
+  declare protected info: ArgumentMetadata
 
   /**
    * Create a new command-argument.
@@ -89,13 +87,7 @@ class Argument {
   ) {
     if (typeof info === 'string') info = { ...data, syntax: info }
 
-    this.info = {
-      ...info,
-      id: chars.empty,
-      required: false,
-      syntax: info.syntax.trim(),
-      variadic: false
-    }
+    super(info)
 
     Object.defineProperty(this, kArgument, {
       configurable: false,
@@ -104,12 +96,9 @@ class Argument {
       writable: false
     })
 
-    void this.tokenizeSyntax()
+    this.info.syntax = info.syntax.trim()
 
-    this.choices(this.info.choices)
-    this.default(this.info.default)
-    this.description(this.info.description)
-    this.parser(this.info.parser)
+    void this.tokenizeSyntax()
   }
 
   /**
@@ -126,19 +115,6 @@ class Argument {
   }
 
   /**
-   * Whether the argument must have a value after parsing.
-   *
-   * @public
-   * @instance
-   *
-   * @return {string}
-   *  `true` if `this` argument value is required, `false` otherwise
-   */
-  public get required(): boolean {
-    return this.info.required
-  }
-
-  /**
    * The normalized argument syntax string.
    *
    * @see {@linkcode ArgumentSyntax}
@@ -151,215 +127,6 @@ class Argument {
    */
   public get syntax(): ArgumentSyntax {
     return this.info.syntax as ArgumentSyntax
-  }
-
-  /**
-   * Whether the argument can be specified multiple times.
-   *
-   * @public
-   * @instance
-   *
-   * @return {boolean}
-   *  `true` if argument can be specified multiple times, `false` otherwise
-   */
-  public get variadic(): boolean {
-    return this.info.variadic
-  }
-
-  /**
-   * Set argument choices.
-   *
-   * @see {@linkcode List}
-   *
-   * @public
-   * @instance
-   *
-   * @param {List<string> | null | undefined} choices
-   *  List of argument choices
-   * @return {this}
-   *  `this` argument
-   */
-  public choices(choices: List<string> | null | undefined): this
-
-  /**
-   * Get argument choices.
-   *
-   * @public
-   * @instance
-   *
-   * @return {Set<string>}
-   *  List of argument choices
-   */
-  public choices(): Set<string>
-
-  /**
-   * Get or set argument choices.
-   *
-   * @see {@linkcode List}
-   *
-   * @public
-   * @instance
-   *
-   * @param {List<string> | null | undefined} [choices]
-   *  List of argument choices
-   * @return {Set<string> | this}
-   *  List of argument choices or `this` argument
-   */
-  public choices(
-    choices?: List<string> | null | undefined
-  ): Set<string> | this {
-    if (arguments.length) return this.info.choices = choices, this
-    return new Set(this.info.choices)
-  }
-
-  /**
-   * Set the default value configuration.
-   *
-   * @see {@linkcode DefaultInfo}
-   *
-   * @public
-   * @instance
-   *
-   * @param {DefaultInfo | null | undefined} info
-   *  Default value info
-   * @return {this}
-   *  `this` argument
-   */
-  public default(info: DefaultInfo | null | undefined): this
-
-  /**
-   * Get the default value configuration.
-   *
-   * @see {@linkcode DefaultInfo}
-   *
-   * @template {any} T
-   *  Default value type
-   *
-   * @public
-   * @instance
-   *
-   * @return {DefaultInfo<T>}
-   *  Default value info
-   */
-  public default<T>(): DefaultInfo<T>
-
-  /**
-   * Get or set the default value configuration.
-   *
-   * @see {@linkcode DefaultInfo}
-   *
-   * @public
-   * @instance
-   *
-   * @param {DefaultInfo | null | undefined} [info]
-   *  Default value info
-   * @return {DefaultInfo | this}
-   *  Default value info or `this` argument
-   */
-  public default(
-    info?: DefaultInfo | null | undefined
-  ): DefaultInfo | this {
-    if (arguments.length) return this.info.default = info, this
-    return fallback(this.info.default, { value: undefined }, isNIL)
-  }
-
-  /**
-   * Set the argument description.
-   *
-   * Pass `null`, `undefined`, or an empty string to remove the argument from
-   * the auto-generated help text.
-   *
-   * @public
-   * @instance
-   *
-   * @param {URL | string | null | undefined} description
-   *  The argument description
-   * @return {this}
-   *  `this` argument
-   */
-  public description(description: URL | string | null | undefined): this
-
-  /**
-   * Get the argument description.
-   *
-   * @public
-   * @instance
-   *
-   * @return {string}
-   *  The argument description
-   */
-  public description(): string
-
-  /**
-   * Get or set the argument description.
-   *
-   * @public
-   * @instance
-   *
-   * @param {URL | string | null | undefined} [description]
-   *  The argument description
-   * @return {string | this}
-   *  Description of `this` argument or `this` argument
-   */
-  public description(
-    description?: URL | string | null | undefined
-  ): string | this {
-    if (!arguments.length) return String(this.info.description ?? chars.empty)
-    return this.info.description = orNIL(description), this
-  }
-
-  /**
-   * Set the handler used to parse command-arguments.
-   *
-   * @see {@linkcode ParseArg}
-   *
-   * @public
-   * @instance
-   *
-   * @param {ParseArg<any, any> | null | undefined} parser
-   *  The command-argument parser
-   * @return {this}
-   *  `this` argument
-   */
-  public parser(parser: ParseArg<any, any> | null | undefined): this
-
-  /**
-   * Get the handler used to parse command-arguments.
-   *
-   * @see {@linkcode ParseArg}
-   *
-   * @public
-   * @instance
-   *
-   * @template {any} T
-   *  Parse result
-   * @template {string | string[]} [V=string|string[]]
-   *  The argument or arguments to parse
-   *
-   * @return {ParseArg<T, V>}
-   *  The command-argument parser
-   */
-  public parser<
-    T,
-    V extends string | string[] = string | string[]
-  >(): ParseArg<T, V>
-
-  /**
-   * Get or set the handler used to parse command-arguments.
-   *
-   * @see {@linkcode ParseArg}
-   *
-   * @public
-   * @instance
-   *
-   * @param {ParseArg | null | undefined} [parser]
-   *  The command-argument parser
-   * @return {ParseArg | null | this}
-   *  The command-argument parser or `this` argument
-   */
-  public parser(parser?: ParseArg | null | undefined): ParseArg | this {
-    if (!arguments.length) return fallback(this.info.parser, identity, isNIL)
-    return this.info.parser = parser, this
   }
 
   /**

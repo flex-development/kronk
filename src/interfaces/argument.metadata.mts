@@ -3,7 +3,7 @@
  * @module kronk/interfaces/ArgumentMetadata
  */
 
-import type { ArgumentInfo } from '@flex-development/kronk'
+import type { ArgumentInfo, ParseableMetadata } from '@flex-development/kronk'
 
 /**
  * Command-argument metadata.
@@ -11,8 +11,9 @@ import type { ArgumentInfo } from '@flex-development/kronk'
  * @see {@linkcode ArgumentInfo}
  *
  * @extends {ArgumentInfo}
+ * @extends {ParseableMetadata}
  */
-interface ArgumentMetadata extends ArgumentInfo {
+interface ArgumentMetadata extends ArgumentInfo, ParseableMetadata {
   /**
    * Argument syntax id.
    */
@@ -20,11 +21,15 @@ interface ArgumentMetadata extends ArgumentInfo {
 
   /**
    * Whether required syntax was used when defining the argument.
+   *
+   * @override
    */
   required: boolean
 
   /**
    * Whether variadic syntax was used when defining the argument.
+   *
+   * @override
    */
   variadic: boolean
 }

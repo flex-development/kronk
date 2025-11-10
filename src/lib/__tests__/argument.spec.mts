@@ -6,15 +6,11 @@
 import chars from '#enums/chars'
 import keid from '#enums/keid'
 import KronkError from '#errors/kronk.error'
-import identity from '#internal/identity'
 import TestSubject from '#lib/argument'
+import Parseable from '#lib/parseable.abstract'
 import sfmt from '#tests/utils/sfmt'
 import isKronkError from '#utils/is-kronk-error'
-import type {
-  ArgumentSyntax,
-  DefaultInfo,
-  ParseArg
-} from '@flex-development/kronk'
+import type { ArgumentSyntax } from '@flex-development/kronk'
 
 describe('unit:lib/Argument', () => {
   it('should throw if argument syntax is invalid', () => {
@@ -39,80 +35,9 @@ describe('unit:lib/Argument', () => {
     expect(error.message).toMatchSnapshot()
   })
 
-  describe('#choices', () => {
-    let subject: TestSubject
-
-    beforeEach(() => {
-      subject = new TestSubject(sfmt.required())
-    })
-
-    it('should return list of argument choices', () => {
-      // Act
-      const result = subject.choices()
-
-      // Expect
-      expect(result).to.be.instanceof(Set).and.empty
-      expect(result).to.not.be.frozen
-    })
-
-    it('should set list of argument choices and return `this`', () => {
-      // Arrange
-      const choices: Set<string> = new Set(['large', 'medium', 'small'])
-
-      // Act
-      const result = subject.choices(choices)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property('info.choices', choices)
-    })
-  })
-
-  describe('#default', () => {
-    let subject: TestSubject
-
-    beforeEach(() => {
-      subject = new TestSubject(sfmt.optional())
-    })
-
-    it('should return default value configuration', () => {
-      expect(subject.default()).to.eql({ value: undefined })
-    })
-
-    it('should set default value configuration and return `this`', () => {
-      // Arrange
-      const info: DefaultInfo<number> = { value: 0 }
-
-      // Act
-      const result = subject.default(info)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property('info.default', info)
-    })
-  })
-
-  describe('#description', () => {
-    let subject: TestSubject
-
-    beforeEach(() => {
-      subject = new TestSubject(sfmt.required())
-    })
-
-    it('should return argument description', () => {
-      expect(subject.description()).to.eq(chars.empty)
-    })
-
-    it('should set argument description and return `this`', () => {
-      // Arrange
-      const description: string = 'the number to clamp'
-
-      // Act
-      const result = subject.description(description)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property('info.description', description)
+  describe('constructor', () => {
+    it('should be parse candidate', () => {
+      expect(new TestSubject(sfmt.required())).to.be.instanceof(Parseable)
     })
   })
 
@@ -124,36 +49,6 @@ describe('unit:lib/Argument', () => {
 
       // Expect
       expect(new TestSubject(syntax)).to.have.property('id', id)
-    })
-  })
-
-  describe('#parser', () => {
-    let parser: ParseArg<number>
-    let subject: TestSubject
-
-    beforeAll(() => {
-      parser = vi.fn().mockReturnValue(13).mockName('parser')
-    })
-
-    beforeEach(() => {
-      subject = new TestSubject(sfmt.required({ id: chars.lowercaseN }))
-    })
-
-    it('should return command-argument parser', () => {
-      // Act
-      const result = subject.parser()
-
-      // Expect
-      expect(result).to.be.a('function').with.property('name', identity.name)
-    })
-
-    it('should set command-argument parser and return `this`', () => {
-      // Act
-      const result = subject.parser(parser)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property('info.parser', parser)
     })
   })
 

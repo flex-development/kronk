@@ -9,6 +9,7 @@ import type {
   ArgumentsData,
   Command,
   Exit,
+  HelpableInfo,
   HelpOptionData,
   List,
   OptionPriority,
@@ -21,6 +22,10 @@ import type {
 import type { Nilable, OptionalKeys } from '@flex-development/tutils'
 
 describe('unit-d:interfaces/CommandData', () => {
+  it('should extend HelpableInfo', () => {
+    expectTypeOf<TestSubject>().toExtend<HelpableInfo>()
+  })
+
   it('should have all optional keys', () => {
     expectTypeOf<OptionalKeys<TestSubject>>().toEqualTypeOf<keyof TestSubject>()
   })
@@ -49,12 +54,6 @@ describe('unit-d:interfaces/CommandData', () => {
       .toEqualTypeOf<Nilable<boolean>>()
   })
 
-  it('should match [description?: URL | string | null | undefined]', () => {
-    expectTypeOf<TestSubject>()
-      .toHaveProperty('description')
-      .toEqualTypeOf<Nilable<URL | string>>()
-  })
-
   it('should match [done?: Action<any> | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('done')
@@ -71,12 +70,6 @@ describe('unit-d:interfaces/CommandData', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('helpOption')
       .toEqualTypeOf<Nilable<HelpOptionData>>()
-  })
-
-  it('should match [hidden?: boolean | null | undefined]', () => {
-    expectTypeOf<TestSubject>()
-      .toHaveProperty('hidden')
-      .toEqualTypeOf<Nilable<boolean>>()
   })
 
   it('should match [optionPriority?: OptionPriority | null | undefined]', () => {

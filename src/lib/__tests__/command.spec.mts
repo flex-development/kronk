@@ -14,6 +14,7 @@ import kCommand from '#internal/k-command'
 import noop from '#internal/noop'
 import Argument from '#lib/argument'
 import TestSubject from '#lib/command'
+import Helpable from '#lib/helpable.abstract'
 import Option from '#lib/option'
 import errorSnapshot from '#tests/utils/error-snapshot'
 import sfmt from '#tests/utils/sfmt'
@@ -31,6 +32,12 @@ import type {
 import type { MockInstance } from 'vitest'
 
 describe('unit:lib/Command', () => {
+  describe('constructor', () => {
+    it('should be help text candidate', () => {
+      expect(new TestSubject()).to.be.instanceof(Helpable)
+    })
+  })
+
   describe('.isCommand', () => {
     it.each<Parameters<typeof TestSubject['isCommand']>>([
       [chars.digit3],
@@ -279,33 +286,6 @@ describe('unit:lib/Command', () => {
     })
   })
 
-  describe('#description', () => {
-    let description: URL | string
-    let subject: TestSubject
-
-    beforeAll(() => {
-      description = 'release workflow tool'
-      description += '\n  https://github.com/flex-development/grease'
-    })
-
-    beforeEach(() => {
-      subject = new TestSubject('grease')
-    })
-
-    it('should return command description', () => {
-      expect(subject.description()).to.eq(chars.empty)
-    })
-
-    it('should set command description and return `this`', () => {
-      // Act
-      const result = subject.description(description)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property('info.description', description)
-    })
-  })
-
   describe('#done', () => {
     let subject: TestSubject
 
@@ -452,51 +432,6 @@ describe('unit:lib/Command', () => {
         expect(result).to.have.nested.property(property).not.eq(help)
         expect(result).to.have.nested.property(property).be.instanceof(Option)
       }
-    })
-  })
-
-  describe('#hidden', () => {
-    it('should be `false` if command is not hidden in help text', () => {
-      expect(new TestSubject()).to.have.property('hidden', false)
-    })
-
-    it('should be `true` if command is hidden in help text', () => {
-      // Arrange
-      const hidden: boolean = true
-
-      // Expect
-      expect(new TestSubject({ hidden })).to.have.property('hidden', hidden)
-    })
-  })
-
-  describe('#hide', () => {
-    it.each<Parameters<TestSubject['hide']>>([
-      [],
-      [null],
-      [undefined],
-      [true]
-    ])('should remove command from help and return `this` (%#)', (...args) => {
-      // Arrange
-      const subject: TestSubject = new TestSubject()
-
-      // Act
-      const result = subject.hide(...args)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(subject).to.have.nested.property('info.hidden', true)
-    })
-
-    it('should show command in help and return `this`', () => {
-      // Arrange
-      const subject: TestSubject = new TestSubject({ hidden: true })
-
-      // Act
-      const result = subject.hide(false)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property('info.hidden', false)
     })
   })
 

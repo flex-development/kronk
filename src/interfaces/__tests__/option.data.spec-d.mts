@@ -5,18 +5,19 @@
 
 import type TestSubject from '#interfaces/option.data'
 import type {
-  DefaultInfo,
   List,
   OptionValues,
-  ParseArg
+  ParseableInfo
 } from '@flex-development/kronk'
-import type { Nilable } from '@flex-development/tutils'
+import type { Nilable, OptionalKeys } from '@flex-development/tutils'
 
 describe('unit-d:interfaces/OptionData', () => {
-  it('should match [choices?: List<string> | null | undefined]', () => {
-    expectTypeOf<TestSubject>()
-      .toHaveProperty('choices')
-      .toEqualTypeOf<Nilable<List<string>>>()
+  it('should have all optional keys', () => {
+    expectTypeOf<OptionalKeys<TestSubject>>().toEqualTypeOf<keyof TestSubject>()
+  })
+
+  it('should extend ParseableInfo', () => {
+    expectTypeOf<TestSubject>().toExtend<ParseableInfo>()
   })
 
   it('should match [conflicts?: List<string> | string | null | undefined]', () => {
@@ -25,28 +26,10 @@ describe('unit-d:interfaces/OptionData', () => {
       .toEqualTypeOf<Nilable<List<string> | string>>()
   })
 
-  it('should match [default?: DefaultInfo | null | undefined]', () => {
-    expectTypeOf<TestSubject>()
-      .toHaveProperty('default')
-      .toEqualTypeOf<Nilable<DefaultInfo>>()
-  })
-
-  it('should match [description?: URL | string | null | undefined]', () => {
-    expectTypeOf<TestSubject>()
-      .toHaveProperty('description')
-      .toEqualTypeOf<Nilable<URL | string>>()
-  })
-
   it('should match [env?: List<string> | string | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('env')
       .toEqualTypeOf<Nilable<List<string> | string>>()
-  })
-
-  it('should match [hidden?: boolean | null | undefined]', () => {
-    expectTypeOf<TestSubject>()
-      .toHaveProperty('hidden')
-      .toEqualTypeOf<Nilable<boolean>>()
   })
 
   it('should match [implies?: OptionValues | string | null | undefined]', () => {
@@ -59,12 +42,6 @@ describe('unit-d:interfaces/OptionData', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('mandatory')
       .toEqualTypeOf<Nilable<boolean>>()
-  })
-
-  it('should match [parser?: ParseArg<any, string> | ParseArg<any, string[]> | null | undefined]', () => {
-    expectTypeOf<TestSubject>()
-      .toHaveProperty('parser')
-      .toEqualTypeOf<Nilable<ParseArg<any, string> | ParseArg<any, string[]>>>()
   })
 
   it('should match [preset?: string | null | undefined]', () => {

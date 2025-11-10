@@ -6,16 +6,14 @@
 import chars from '#enums/chars'
 import keid from '#enums/keid'
 import KronkError from '#errors/kronk.error'
-import identity from '#internal/identity'
 import TestSubject from '#lib/option'
+import Parseable from '#lib/parseable.abstract'
 import isKronkError from '#utils/is-kronk-error'
 import type {
-  DefaultInfo,
   Flags,
   List,
   OptionInfo,
-  OptionValues,
-  ParseArg
+  OptionValues
 } from '@flex-development/kronk'
 
 describe('unit:lib/Option', () => {
@@ -65,6 +63,12 @@ describe('unit:lib/Option', () => {
     expect(error.message).toMatchSnapshot()
   })
 
+  describe('constructor', () => {
+    it('should be parse candidate', () => {
+      expect(new TestSubject('--loud')).to.be.instanceof(Parseable)
+    })
+  })
+
   describe('#boolean', () => {
     it('should be `false` if option is optional', () => {
       // Arrange
@@ -84,35 +88,6 @@ describe('unit:lib/Option', () => {
 
     it('should be `true` if option is not optional or required', () => {
       expect(new TestSubject('-h | --help')).to.have.property('boolean', true)
-    })
-  })
-
-  describe('#choices', () => {
-    let subject: TestSubject
-
-    beforeEach(() => {
-      subject = new TestSubject('--drink-size <size>')
-    })
-
-    it('should return list of option choices', () => {
-      // Act
-      const result = subject.choices()
-
-      // Expect
-      expect(result).to.be.instanceof(Set).and.empty
-      expect(result).to.not.be.frozen
-    })
-
-    it('should set option choices and return `this`', () => {
-      // Arrange
-      const choices: Set<string> = new Set(['xl', 'l', 'm', 's'])
-
-      // Act
-      const result = subject.choices(choices)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property('info.choices', choices)
     })
   })
 
@@ -140,54 +115,6 @@ describe('unit:lib/Option', () => {
       // Expect
       expect(result).to.eq(subject)
       expect(result).to.have.nested.property('info.conflicts', conflicts)
-    })
-  })
-
-  describe('#default', () => {
-    let subject: TestSubject
-
-    beforeEach(() => {
-      subject = new TestSubject('--timeout [timeout]')
-    })
-
-    it('should return default value configuration', () => {
-      expect(subject.default()).to.eql({ value: undefined })
-    })
-
-    it('should set default value configuration and return `this`', () => {
-      // Arrange
-      const info: DefaultInfo<number> = { value: 0 }
-
-      // Act
-      const result = subject.default(info)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property('info.default', info)
-    })
-  })
-
-  describe('#description', () => {
-    let subject: TestSubject
-
-    beforeEach(() => {
-      subject = new TestSubject('--esbuild.target')
-    })
-
-    it('should return option description', () => {
-      expect(subject.description()).to.eq(chars.empty)
-    })
-
-    it('should set option description and return `this`', () => {
-      // Arrange
-      const description: URL = new URL('https://esbuild.github.io/api/#target')
-
-      // Act
-      const result = subject.description(description)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property('info.description', description)
     })
   })
 
@@ -238,64 +165,6 @@ describe('unit:lib/Option', () => {
 
       // Expect
       expect(new TestSubject(flags)).have.property('flags', flags.trim())
-    })
-  })
-
-  describe('#hidden', () => {
-    let flags: Flags
-
-    beforeAll(() => {
-      flags = '---gnu-style-hidden-option'
-    })
-
-    it('should be `false` if option is not hidden in help text', () => {
-      expect(new TestSubject(flags)).to.have.property('hidden', false)
-    })
-
-    it('should be `true` if option is hidden in help text', () => {
-      // Arrange
-      const hidden: boolean = true
-      const subject: TestSubject = new TestSubject({ flags, hidden })
-
-      // Expect
-      expect(subject).to.have.property('hidden', hidden)
-    })
-  })
-
-  describe('#hide', () => {
-    let flags: Flags
-
-    beforeAll(() => {
-      flags = '---gnu-style-hidden-option'
-    })
-
-    it.each<Parameters<TestSubject['hide']>>([
-      [],
-      [null],
-      [undefined],
-      [true]
-    ])('should remove option from help and return `this` (%#)', hidden => {
-      // Arrange
-      const subject: TestSubject = new TestSubject(flags)
-
-      // Act
-      const result = subject.hide(hidden)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(subject).to.have.nested.property('info.hidden', true)
-    })
-
-    it('should show option in help and return `this`', () => {
-      // Arrange
-      const subject: TestSubject = new TestSubject({ flags, hidden: true })
-
-      // Act
-      const result = subject.hide(false)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property('info.hidden', false)
     })
   })
 
@@ -453,36 +322,6 @@ describe('unit:lib/Option', () => {
 
     it('should be `true` if `flags` uses `[]` syntax', () => {
       expect(new TestSubject('--flag []')).to.have.property('optional', true)
-    })
-  })
-
-  describe('#parser', () => {
-    let parser: ParseArg<number, string>
-    let subject: TestSubject
-
-    beforeAll(() => {
-      parser = vi.fn(Number.parseInt).mockName('parser')
-    })
-
-    beforeEach(() => {
-      subject = new TestSubject('--timeout [timeout]')
-    })
-
-    it('should return option-argument parser', () => {
-      // Act
-      const result = subject.parser()
-
-      // Expect
-      expect(result).to.be.a('function').with.property('name', identity.name)
-    })
-
-    it('should set option-argument parser and return `this`', () => {
-      // Act
-      const result = subject.parser(parser)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property('info.parser', parser)
     })
   })
 

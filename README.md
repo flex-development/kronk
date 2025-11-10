@@ -24,15 +24,9 @@
   - [Options](#options)
 - [API](#api)
   - [`Argument(info)`](#argumentinfo)
-    - [`Argument#choices([choices])`](#argumentchoiceschoices)
-    - [`Argument#default([info])`](#argumentdefaultinfo)
-    - [`Argument#description([description])`](#argumentdescriptiondescription)
     - [`Argument#id`](#argumentid)
-    - [`Argument#parser([parser])`](#argumentparserparser)
-    - [`Argument#required`](#argumentrequired)
     - [`Argument#syntax`](#argumentsyntax)
     - [`Argument#toString()`](#argumenttostring)
-    - [`Argument#variadic`](#argumentvariadic)
   - [`Command(info)`](#commandinfo)
     - [`Command#action([action])`](#commandactionaction)
     - [`Command#addArgument(argument)`](#commandaddargumentargument)
@@ -53,7 +47,6 @@
     - [`Command#createOption(info[, data])`](#commandcreateoptioninfo-data)
     - [`Command#default`](#commanddefault)
     - [`Command#defaultCommand`](#commanddefaultcommand)
-    - [`Command#description([description])`](#commanddescriptiondescription)
     - [`Command#done([done])`](#commanddonedone)
     - [`Command#emit(event)`](#commandemitevent)
     - [`Command#emitOption(option, value, source[, flags])`](#commandemitoptionoption-value-source-flag)
@@ -64,8 +57,6 @@
     - [`Command#findOption(flag[, direction])`](#commandfindoptionflag-direction)
     - [`Command#helpCommand([help])`](#commandhelpcommandhelp)
     - [`Command#helpOption([help])`](#commandhelpoptionhelp)
-    - [`Command#hidden`](#commandhidden)
-    - [`Command#hide([hidden])`](#commandhidehidden)
     - [`Command#id([name])`](#commandidname)
     - [`Command#logger`](#commandlogger)
     - [`Command#on<T>(event, listener[, options])`](#commandontevent-listener-options)
@@ -90,6 +81,10 @@
   - [`CommandError(info)`](#commanderrorinfo-1)
     - [`CommandError#command`](#commanderrorcommand)
     - [`CommandError#snapshot()`](#commanderrorsnapshot)
+  - [`Helpable([info])`](#helpableinfo)
+    - [`Helpable#description([description])`](#helpabledescriptiondescription)
+    - [`Helpable#hidden`](#helpablehidden)
+    - [`Helpable#hide([hidden])`](#helpablehidehidden)
   - [`KronkError(info)`](#kronkerrorinfo)
     - [`KronkError#additional`](#kronkerroradditional)
     - [`KronkError#cause`](#kronkerrorcause)
@@ -102,15 +97,10 @@
     - [`KronkEvent#toString()`](#kronkeventtostring)
   - [`Option(info)`](#optioninfo)
     - [`Option#boolean`](#optionboolean)
-    - [`Option#choices([choices])`](#optionchoiceschoices)
     - [`Option#conflicts([conflicts])`](#optionconflictsconflicts)
-    - [`Option#default([info])`](#optiondefaultinfo)
-    - [`Option#description([description])`](#optiondescriptiondescription)
     - [`Option#env([env])`](#optionenvenv)
     - [`Option#event`](#optionevent)
     - [`Option#flags`](#optionflags)
-    - [`Option#hidden`](#optionhidden)
-    - [`Option#hide([hidden])`](#optionhidehidden)
     - [`Option#id`](#optionid)
     - [`Option#implies([implies])`](#optionimpliesimplies)
     - [`Option#key`](#optionkey)
@@ -118,18 +108,23 @@
     - [`Option#mandate([mandatory])`](#optionmandatemandatory)
     - [`Option#mandatory`](#optionmandatory)
     - [`Option#optional`](#optionoptional)
-    - [`Option#parser([parser])`](#optionparserparser)
     - [`Option#preset([preset])`](#optionpresetpreset)
-    - [`Option#required`](#optionrequired)
     - [`Option#short`](#optionshort)
     - [`Option#toString()`](#optiontostring)
-    - [`Option#variadic`](#optionvariadic)
   - [`OptionEvent<T>(option, value, source[, flag])`](#optioneventtoption-value-source-flag)
     - [`OptionEvent#flag`](#optioneventflag)
     - [`OptionEvent#id`](#optioneventid)
     - [`OptionEvent#option`](#optioneventoption)
     - [`OptionEvent#source`](#optioneventsource)
     - [`OptionEvent#value`](#optioneventvalue)
+  - [`Parseable([info])`](#parseableinfo)
+    - [`Parseable#choices([choices])`](#parseablechoiceschoices)
+    - [`Parseable#default([info])`](#parseabledefaultinfo)
+    - [`Parseable#id`](#parseableid)
+    - [`Parseable#parser([parser])`](#parseableparserparser)
+    - [`Parseable#required`](#parseablerequired)
+    - [`Parseable#toString()`](#parseabletostring)
+    - [`Parseable#variadic`](#parseablevariadic)
   - [`VersionOption(info)`](#versionoptioninfo)
     - [`VersionOption#version`](#versionoptionversion)
 - [Types](#types)
@@ -158,6 +153,7 @@
   - [`Flags`](#flags)
   - [`HelpCommandData`](#helpcommanddata)
   - [`HelpOptionData`](#helpoptiondata)
+  - [`HelpableInfo`](#helpableinfo-1)
   - [`KronkErrorCause`](#kronkerrorcause-1)
   - [`KronkErrorId`](#kronkerrorid-1)
   - [`KronkErrorInfo`](#kronkerrorinfo-1)
@@ -179,6 +175,8 @@
   - [`OptionsData`](#optionsdata)
   - [`ParseArg`](#parsearg)
   - [`ParseOptions`](#parseoptions)
+  - [`ParseableInfo`](#parseableinfo-1)
+  - [`ParseableMetadata`](#parseablemetadata)
   - [`ProcessEnv`](#processenv)
   - [`Process`](#process)
   - [`RawOptionValue`](#rawoptionvalue)
@@ -245,7 +243,6 @@ For larger programs using kronk in multiple ways, including unit testing, a `Com
 
 ```ts
 import { Command } from '@flex-development/kronk'
-
 const program: Command = new Command()
 ```
 
@@ -253,7 +250,7 @@ const program: Command = new Command()
 
 Options are defined with the [`.option()`](#commandoptioninfo-data) and [`.options()`](#commandoptionsinfos) methods,
 which also serve as documentation for the options. Each option can have at most 2 flags, typically one long flag and one
-short or shortish (e.g. `--ws`) flag. Flags can be separated by commas (`,`), pipes (`|`), or spaces (` `).
+short or shortish (e.g. `-w`, `--ws`) flag. Flags can be separated by commas (`,`), pipes (`|`), or spaces (` `).
 
 An option and its option-argument can be separated by an equal sign (`=`) or spaces (` `).
 A short option (i.e. `-p`) and its option-argument can also be combined.
@@ -295,7 +292,11 @@ There are additional, related routines for when `.opts<T>()` is not enough:
 
 ### `Argument(info)`
 
-A command argument (class).
+A command argument (`class`).
+
+#### Extends
+
+- [`Parseable`](#parseableinfo)
 
 #### Signatures
 
@@ -315,103 +316,11 @@ A command argument (class).
 
 The argument syntax id.
 
-#### `Argument#required`
-
-`boolean`
-
-Whether the argument must have a value after parsing.
-
 #### `Argument#syntax`
 
 [`ArgumentSyntax`](#argumentsyntax-1)
 
 The normalized argument syntax string.
-
-#### `Argument#choices([choices])`
-
-Get or set argument choices.
-
-##### Overloads
-
-- `choices(choices: List<string> | null | undefined): this`
-- `choices(): Set<string>`
-
-##### Parameters
-
-- `choices` ([`List<string>`](#list))
-  — list of argument choices
-
-##### Returns
-
-(`Set<string>` | [`this`](#argumentinfo)) List of argument choices or `this` argument
-
-#### `Argument#default([info])`
-
-Get or set the default value configuration.
-
-##### Overloads
-
-- `default(info: DefaultInfo | null | undefined): this`
-- `default<T>(): DefaultInfo<T>`
-
-##### Type Parameters
-
-- `T` (`any`)
-  — default value type
-
-##### Parameters
-
-- `info` ([`DefaultInfo`](#defaultinfo))
-  — default value info
-
-##### Returns
-
-([`DefaultInfo<T>`](#defaultinfo) | [`this`](#argumentinfo)) Default value info or `this` argument
-
-#### `Argument#description([description])`
-
-Get or set the argument description.
-
-Pass `null`, `undefined`, or an empty string to remove the argument from the auto-generated help text.
-
-##### Overloads
-
-- `description(description: URL | string | null | undefined): this`
-- `description(): string`
-
-##### Parameters
-
-- `description` (`URL | string`)
-  — the argument description
-
-##### Returns
-
-(`string` | [`this`](#argumentinfo)) Description of `this` argument or `this` argument
-
-#### `Argument#parser([parser])`
-
-Get or set the handler used to parse command-arguments.
-
-##### Overloads
-
-- `parser(parser: ParseArg<any, any> | null | undefined): this`
-- `parser<T, V extends string | string[] = string | string[]>(): ParseArg<T, V>`
-
-##### Type Parameters
-
-- `T` (`any`)
-  — parse result
-- `V` (`string | string[]`, optional)
-  — the argument or arguments to parse
-
-##### Parameters
-
-- `parser` ([`ParseArg<any, any>`](#parsearg) | `null` | `undefined`)
-  — the command-argument parser
-
-##### Returns
-
-([`ParseArg<T, V>`](#parsearg) | [`this`](#argumentinfo)) The command-argument parser or `this` argument
 
 #### `Argument#toString()`
 
@@ -419,17 +328,15 @@ Get the argument as a human-readable string.
 
 ##### Returns
 
-(`string`) String representation of `this` argument
-
-#### `Argument#variadic`
-
-`boolean`
-
-Whether the argument can be specified multiple times.
+(`string`) String representation of [`this`](#argumentinfo) argument
 
 ### `Command([info])`
 
-A command (class).
+A command (`class`).
+
+#### Extends
+
+- [`Helpable`](#helpableinfo)
 
 #### Signatures
 
@@ -748,24 +655,6 @@ Whether the command is the default subcommand of its [`parent`](#commandparent).
 
 The default command.
 
-#### `Command#description([description])`
-
-Get or set the command description.
-
-##### Overloads
-
-- `description(description: URL | string | null | undefined): this`
-- `description(): string`
-
-##### Parameters
-
-- `description` (`URL` | `string`)
-  — the command description
-
-##### Returns
-
-(`string` | [`this`](#commandinfo)) Description of `this` command or `this` command
-
 #### `Command#done([done])`
 
 Get or set the command done callback.
@@ -957,26 +846,6 @@ Get or configure the help option.
 ##### Returns
 
 (`T` | [`this`](#commandinfo) | `null`) Help option or `this` command
-
-#### `Command#hidden`
-
-`boolean`
-
-Whether the command should **not** be displayed in help text.
-
-#### `Command#hide([hidden])`
-
-Remove the command from help text.
-
-##### Parameters
-
-- `hidden` (`boolean` | `null` | `undefined`)
-  — whether the command should be hidden
-  - default: `true`
-
-##### Returns
-
-([`this`](#commandinfo)) `this` command
 
 #### `Command#id([name])`
 
@@ -1306,7 +1175,7 @@ Get or set the command version.
 
 ### `CommandError(info)`
 
-A command error (class).
+A command error (`class`).
 
 #### Extends
 
@@ -1331,9 +1200,58 @@ Get a snapshot of the error.
 
 ([`CommandErrorSnapshot`](#commanderrorsnapshot-1)) Error snapshot object
 
+### `Helpable([info])`
+
+A help text candidate (`abstract class`).
+
+#### Parameters
+
+- `info` ([`HelpableInfo`](#helpableinfo-1))
+  — candidate info
+
+#### `Helpable#description([description])`
+
+Get or set the candidate description.
+
+The description can be long or short form text, or a URL pointing to more information about the candidate.
+
+##### Overloads
+
+- `description(description: URL | string | null | undefined): this`
+- `description(): string`
+
+##### Parameters
+
+- `description` (`URL` | `string`)
+  — candidate description text or a URL pointing to more info
+
+##### Returns
+
+(`string` | [`this`](#helpableinfo)) Candidate description or `this` candidate
+
+#### `Helpable#hidden`
+
+`boolean`
+
+Whether the candidate should **not** be displayed in help text.
+
+#### `Helpable#hide([hidden])`
+
+Remove the candidate from the help text.
+
+##### Parameters
+
+- `hidden` (`boolean` | `null` | `undefined`)
+  — whether the candidate should be hidden in help text
+  - default: `true`
+
+##### Returns
+
+([`this`](#helpableinfo)) `this` candidate
+
 ### `KronkError(info)`
 
-A command-line error (class).
+A command-line error (`class`).
 
 #### Extends
 
@@ -1395,7 +1313,7 @@ Get the error as a human-readable string.
 
 ### `KronkEvent(id)`
 
-An event (class).
+An event (`class`).
 
 #### Parameters
 
@@ -1418,7 +1336,11 @@ Get the event as a human-readable string.
 
 ### `Option(info)`
 
-A command option (class).
+A command option (`class`).
+
+#### Extends
+
+- [`Parseable`](#parseableinfo)
 
 #### Signatures
 
@@ -1439,24 +1361,6 @@ A command option (class).
 Whether the option is a boolean option.
 Boolean options are options that do not take any option-arguments.
 
-#### `Option#choices([choices])`
-
-Get or set option choices.
-
-##### Overloads
-
-- `choices(choices: List<string> | null | undefined): this`
-- `choices(): Set<string>`
-
-##### Parameters
-
-- `choices` ([`List<string>`](#list) | `null` | `undefined`)
-  — list of option choices
-
-##### Returns
-
-(`Set<string>` | [`this`](#optioninfo)) List of option choices or `this` option
-
 #### `Option#conflicts([conflicts])`
 
 Get or set option names that conflict with the option.
@@ -1474,47 +1378,6 @@ Get or set option names that conflict with the option.
 ##### Returns
 
 (`Set<string>` | [`this`](#optioninfo)) List of conflicting option names or `this` option
-
-#### `Option#default([info])`
-
-Get or set the default value configuration.
-
-##### Overloads
-
-- `default(info: DefaultInfo | null | undefined): this`
-- `default<T>(): DefaultInfo<T>`
-
-##### Type Parameters
-
-- `T` (`any`)
-  — default value type
-
-##### Parameters
-
-- `info` ([`DefaultInfo`](#defaultinfo))
-  — default value info
-
-##### Returns
-
-([`DefaultInfo<T>`](#defaultinfo) | [`this`](#optioninfo)) Default value info or `this` option
-
-#### `Option#description([description])`
-
-Get or set the option description.
-
-##### Overloads
-
-- `description(description: URL | string | null | undefined): this`
-- `description(): string`
-
-##### Parameters
-
-- `description` (`URL | string`)
-  — the option description
-
-##### Returns
-
-(`string` | [`this`](#optioninfo)) Description of `this` option or `this` option
 
 #### `Option#env([env])`
 
@@ -1545,26 +1408,6 @@ The event name for the option.
 [`Flags`](#flags)
 
 The normalized option flags string.
-
-#### `Option#hidden`
-
-`boolean`
-
-Whether the option should **not** be displayed in help text.
-
-#### `Option#hide([hidden])`
-
-Remove the option from help text.
-
-##### Parameters
-
-- `hidden` (`boolean` | `null` | `undefined`, optional)
-  — whether the option should be hidden
-  - default: `true`
-
-##### Returns
-
-([`this`](#optioninfo)) `this` option
 
 #### `Option#id`
 
@@ -1644,41 +1487,21 @@ Whether the option must have a value after parsing.
 
 Whether a value is optional when the option is specified.
 
-#### `Option#parser([parser])`
-
-Get or set the handler used to parse option-arguments.
-
-##### Overloads
-
-- `parser(parser: ParseArg<any, any> | null | undefined): this`
-- `parser<T, V extends string | string[] = string | string[]>(): ParseArg<T, V>`
-
-##### Type Parameters
-
-- `T` (`any`)
-  — parse result
-- `V` (`string | string[]`, optional)
-  — the argument or arguments to parse
-
-##### Parameters
-
-- `parser` ([`ParseArg<any, any>`](#parsearg) | `null` | `undefined`)
-  — the option-argument parser
-
-##### Returns
-
-([`ParseArg<T, V>`](#parsearg) | [`this`](#optioninfo)) The option-argument parser or `this` option
-
 #### `Option#preset([preset])`
 
 Get or set the preset to use when the option is specified without an argument.
 
-The option-argument [`parser`](#optionparserparser) will be called.
+The option-argument [`parser`](#parseableparserparser) will be called.
 
 ##### Overloads
 
 - `preset(preset: string | null | undefined): this`
-- `preset(): string | null`
+- `preset<T extends string>(): T | null`
+
+##### Type Parameters
+
+- `T` (`string`)
+  — option-argument preset
 
 ##### Parameters
 
@@ -1687,13 +1510,7 @@ The option-argument [`parser`](#optionparserparser) will be called.
 
 ##### Returns
 
-(`string` | [`this`](#optioninfo) | `null`) The option-argument preset or `this` option
-
-#### `Option#required`
-
-`boolean`
-
-Whether a value must be supplied when the option is specified.
+(`T` | [`this`](#optioninfo) | `null`) The option-argument preset or `this` option
 
 #### `Option#short`
 
@@ -1708,17 +1525,11 @@ Get the option as a human-readable string.
 
 ##### Returns
 
-(`string`) String representation of `this` option
-
-#### `Option#variadic`
-
-`boolean`
-
-Whether the option can be specified multiple times.
+(`string`) String representation of [`this`](#optioninfo) option
 
 ### `OptionEvent<T>(option, value, source[, flag])`
 
-A parsed option event (class).
+A parsed option event (`class`).
 
 #### Extends
 
@@ -1770,9 +1581,120 @@ The source of the raw option [`value`](#optioneventvalue).
 
 The raw [`option`](#optioninfo) value.
 
+### `Parseable([info])`
+
+A parse candidate (`abstract class`).
+
+Parse candidates are the parseable components of commands (e.g. arguments and options).
+
+#### Parameters
+
+- `info` ([`ParseableInfo`](#parseableinfo-1))
+  — candidate info
+
+#### `Parseable#choices([choices])`
+
+Get or set candidate choices.
+
+##### Overloads
+
+- `choices(choices: List<string> | null | undefined): this`
+- `choices<T extends string>(): Set<T>`
+
+##### Type Parameters
+
+- `T` (`string`)
+  — candidate choice
+
+##### Parameters
+
+- `choices` ([`List<string>`](#list) | `null` | `undefined`)
+  — list of allowed candidate choices
+
+##### Returns
+
+(`Set<T>` | [`this`](#parseableinfo)) List of candidate choices or `this` candidate
+
+#### `Parseable#default([info])`
+
+Get or set the default value configuration.
+
+##### Overloads
+
+- `default(info: DefaultInfo | null | undefined): this`
+- `default<T>(): DefaultInfo<T>`
+
+##### Type Parameters
+
+- `T` (`any`)
+  — default value type
+
+##### Parameters
+
+- `info` ([`DefaultInfo`](#defaultinfo))
+  — default value info
+
+##### Returns
+
+([`DefaultInfo<T>`](#defaultinfo) | [`this`](#parseableinfo)) Default value info or `this` candidate
+
+#### `Parseable#id`
+
+`string`
+
+The unique id for the candidate (`abstract`).
+
+#### `Parseable#parser([parser])`
+
+Get or set the handler used to parse candidate-arguments.
+
+##### Overloads
+
+- `parser(parser: ParseArg<any, any> | null | undefined): this`
+- `parser<T, V extends string | string[] = string | string[]>(): ParseArg<T, V>`
+
+##### Type Parameters
+
+- `T` (`any`)
+  — parse result
+- `V` (`string | string[]`, optional)
+  — the argument or arguments to parse
+
+##### Parameters
+
+- `parser` ([`ParseArg<any, any>`](#parsearg) | `null` | `undefined`)
+  — the candidate-argument parser
+
+##### Returns
+
+([`ParseArg<T, V>`](#parsearg) | [`this`](#parseableinfo)) The candidate-argument parser or `this` candidate
+
+#### `Parseable#required`
+
+`boolean`
+
+Whether the candidate is required.
+
+Required arguments must have a value after parsing.
+Required options must have a value supplied when the option is specified.
+
+#### `Parseable#toString()`
+
+Get the candidate as a human-readable string (`abstract`).
+
+##### Returns
+
+(`string`) String representation of [`this`](#parseableinfo) candidate
+
+#### `Parseable#variadic`
+
+`boolean`
+
+Whether the candidate can be specified multiple times.
+
 ### `VersionOption(info)`
 
-A command version option (class).
+A command version option (`class`).
 
 #### Extends
 
@@ -1832,18 +1754,9 @@ type Action<
 
 Data transfer object for command-arguments (TypeScript interface).
 
-#### Properties
+#### Extends
 
-- `choices?` ([`List<string>`](#list), optional)
-  — list of argument choices
-- `default?` ([`DefaultInfo`](#defaultinfo), optional)
-  — default value configuration
-- `description?` (`URL | string`, optional)
-  — description of the argument
-- `parser?` ([`ParseArg<any, any>`](#parsearg), optional)
-  — handler used to parse command-arguments.\
-  the handler receives two parameters, the raw, unparsed command-argument (or *command-arguments* for variadic options),
-  and the previous (default) value for the argument. it should return the new value for the argument
+- [`ParseableInfo`](#parseableinfo-1)
 
 ### `ArgumentInfo`
 
@@ -1865,6 +1778,7 @@ Command-argument metadata (TypeScript interface).
 #### Extends
 
 - [`ArgumentInfo`](#argumentinfo-1)
+- [`ParseableMetadata`](#parseablemetadata)
 
 #### Properties
 
@@ -1961,6 +1875,10 @@ type Awaitable<T = unknown> = Promise<T> | T
 
 Data transfer object for commands (TypeScript interface).
 
+#### Extends
+
+- [`HelpableInfo`](#helpableinfo-1)
+
 #### Properties
 
 - `action?` ([`Action<any>`](#action), optional)
@@ -1971,8 +1889,6 @@ Data transfer object for commands (TypeScript interface).
   — arguments for the command
 - `default?` (`boolean`, optional)
   — whether this is the default command
-- `description?` (`URL | string`, optional)
-  — description of the command
 - `done?` ([`Action<any>`](#action), optional)
   — callback to fire after the command `action` is executed
 - `exit?` ([`Exit`](#exit), optional)
@@ -1985,8 +1901,6 @@ Data transfer object for commands (TypeScript interface).
 - `helpOption?` ([`HelpOptionData`](#helpoptiondata), optional)
   — customize the help option, or disable it (`false`)
   - default: `{ description: 'show help', flags: '-h | --help' }`
-- `hidden?` (`boolean`, optional)
-  — whether the command should be not displayed in help text
 - `optionPriority?` ([`OptionPriority`](#optionpriority), optional)
   — the strategy to use when merging global and local options
   - default: `'local'`
@@ -2229,6 +2143,18 @@ It can also be disabled (`false`).
 type HelpOptionData = Flags | Option | OptionInfo | false
 ```
 
+### `HelpableInfo`
+
+Data used to create help text candidates (TypeScript interface).
+
+#### Properties
+
+- `description?` (`URL | string`, optional)
+  — a description of the candidate. the description can be long or short form text,
+  or a URL pointing to more information about the candidate
+- `hidden?` (`boolean`, optional)
+  — whether the candidate should **not** be displayed in help text
+
 ### `KronkErrorCause`
 
 Info about the cause of an error (TypeScript interface).
@@ -2383,29 +2309,25 @@ type List<T = unknown> = ReadonlySet<T> | readonly T[]
 
 Data transfer object for command options (TypeScript interface).
 
+#### Extends
+
+- [`ParseableInfo`](#parseableinfo-1)
+
 #### Properties
 
-- `choices?` ([`List<string>`](#list), optional)
-  — list of option choices
-- `default?` ([`DefaultInfo`](#defaultinfo), optional)
-  — default value configuration
-  > 👉 **note**: the option-argument `parser` will not be called.
-- `description?` (`URL | string`, optional)
-  — description of the option
-  - default: `''`
-- `env?` ([`List<string>`](#list)| `string`, optional)
+- `conflicts?` ([`List<string>`](#list) | `string`, optional)
+  — an option name, or list of option names, that conflict with the option.\
+  an error will be displayed if conflicting options are found during parsing
+- `env?` ([`List<string>`](#list) | `string`, optional)
   — the name of the environment variable to check for option value, or a list of names, in order of priority, to check
-- `hidden?` (`boolean`, optional)
-  — whether the option should be not displayed in help text
-  - default: `false`
 - `mandatory?` (`boolean`, optional)
   — whether the option is mandatory. mandatory options must have a value after parsing, which usually means the option
   must be specified on the command line
   - default: `false`
-- `parser?` ([`ParseArg<any, string> | ParseArg<any, string[]>`](#parsearg), optional)
-  — handler used to parse option-arguments. the handler receives two parameters, the raw, unparsed option-argument (or
-  *option-arguments* for variadic options), and the previous (default) value for the argument. it should return the new
-  value for the argument
+- `implies?` ([`OptionValues`](#optionvalues) | `string`, optional)
+  — the key of an implied option, or a map where each key is an implied option key and each value is the value to use
+  when the option is set but the implied option is not.\
+  lone keys imply (string `implies`) `true`, i.e. `{ [implies]: true }`
 - `preset?` (`string`, optional)
   — for boolean and optional options, the preset to use when the option is specified without an option-argument.
   > 👉 **note**: the option-argument `parser` will be called.
@@ -2485,6 +2407,7 @@ Command option metadata (TypeScript interface).
 #### Extends
 
 - [`OptionInfo`](#optioninfo-1)
+- [`ParseableMetadata`](#parseablemetadata)
 
 #### Properties
 
@@ -2617,6 +2540,41 @@ Options for parsing command-line arguments (TypeScript interface).
 - `from?` ([`ArgvSource`](#argvsource), optional)
   — the source of the command line arguments
 
+### `ParseableInfo`
+
+Data used to create parse candidates (TypeScript interface).
+
+#### Extends
+
+- [`HelpableInfo`](#helpableinfo-1)
+
+#### Properties
+
+- `choices?` ([`List<string>`](#list), optional)
+  — list of option choices
+- `default?` ([`DefaultInfo`](#defaultinfo), optional)
+  — default value configuration
+  > 👉 **note**: the option-argument `parser` will not be called.
+- `parser?` ([`ParseArg<any, string> | ParseArg<any, string[]>`](#parsearg), optional)
+  — handler used to parse arguments. the handler receives two parameters, the raw, unparsed argument (or
+  *arguments* for variadic candidates), and the default value for the argument.
+  it should return the new value for the argument
+
+### `ParseableMetadata`
+
+Parse candidate metadata (TypeScript interface).
+
+#### Extends
+
+- [`ParseableInfo`](#parseableinfo-1)
+
+#### Properties
+
+- `required?` (`boolean`, optional)
+  — whether required syntax was used when defining the candidate
+- `variadic?` (`boolean`, optional)
+  — whether variadic syntax was used when defining the candidate.
+
 ### `ProcessEnv`
 
 Information about the current user environment (TypeScript interface).
@@ -2709,7 +2667,6 @@ An object describing command usage (TypeScript interface).
 - `options?` (`string`, optional)
   — command options descriptor
   > 👉 **note**: displayed in auto-generated help text **only** when a command has at least one visible option
-  - default: `'[options]'`
 - `subcommand?` (`string`, optional)
   — subcommands descriptor
   > 👉 **note**: displayed in auto-generated help text **only** when a command has at least one visible subcommand

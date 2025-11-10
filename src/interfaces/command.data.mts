@@ -8,6 +8,7 @@ import type {
   ArgumentsData,
   Command,
   Exit,
+  HelpableInfo,
   HelpCommandData,
   HelpOptionData,
   List,
@@ -21,8 +22,12 @@ import type {
 
 /**
  * Data transfer object for commands.
+ *
+ * @see {@linkcode HelpableInfo}
+ *
+ * @extends {HelpableInfo}
  */
-interface CommandData {
+interface CommandData extends HelpableInfo {
   /**
    * Callback to fire when the command is executed.
    *
@@ -48,11 +53,6 @@ interface CommandData {
    * Whether this is the default command.
    */
   default?: boolean | null | undefined
-
-  /**
-   * Description of the command.
-   */
-  description?: URL | string | null | undefined
 
   /**
    * The callback to fire after the command {@linkcode action} is executed.
@@ -91,11 +91,6 @@ interface CommandData {
    *  { description: 'show help', flags: '-h | --help' }
    */
   helpOption?: HelpOptionData | null | undefined
-
-  /**
-   * Whether the command should **not** be displayed in help text.
-   */
-  hidden?: boolean | null | undefined
 
   /**
    * The strategy to use when merging global and local options.

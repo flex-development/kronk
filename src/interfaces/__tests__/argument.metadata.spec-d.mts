@@ -4,11 +4,15 @@
  */
 
 import type TestSubject from '#interfaces/argument.metadata'
-import type { ArgumentInfo } from '@flex-development/kronk'
+import type { ArgumentInfo, ParseableMetadata } from '@flex-development/kronk'
 
 describe('unit-d:interfaces/ArgumentMetadata', () => {
   it('should extend ArgumentInfo', () => {
     expectTypeOf<TestSubject>().toExtend<ArgumentInfo>()
+  })
+
+  it('should extend ParseableMetadata', () => {
+    expectTypeOf<TestSubject>().toExtend<ParseableMetadata>()
   })
 
   it('should match [id: string]', () => {
