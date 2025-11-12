@@ -147,12 +147,8 @@ Command {
     },
     "delimiter": ":",
   },
-  "optionValueSources": {
-    "help": null,
-  },
-  "optionValues": {
-    "help": false,
-  },
+  "optionValueSources": {},
+  "optionValues": {},
   "parent": Command {
     "info": {
       "name": undefined,
@@ -243,12 +239,8 @@ Command {
       },
       "delimiter": ":",
     },
-    "optionValueSources": {
-      "help": null,
-    },
-    "optionValues": {
-      "help": false,
-    },
+    "optionValueSources": {},
+    "optionValues": {},
     "parent": null,
   },
 }

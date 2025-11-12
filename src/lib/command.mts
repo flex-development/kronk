@@ -1810,7 +1810,6 @@ class Command extends Helpable {
 
         // add help option.
         this.addOption(this.info.helpOption)
-        this.optionValue(this.info.helpOption.key, false, null)
 
         // register parsed option listeners.
         this.on(this.info.helpOption.event, this.onOptionWithAction.bind(this))
@@ -1960,6 +1959,8 @@ class Command extends Helpable {
    * > 👉 **Note**: This event listener is registered each time command help
    * > is configured (i.e. `command.helpOption(info)`).
    *
+   * @todo print help text
+   *
    * @see {@linkcode OptionEvent}
    *
    * @protected
@@ -1970,6 +1971,7 @@ class Command extends Helpable {
    * @return {undefined}
    */
   protected onOptionHelp(event: OptionEvent): undefined {
+    /* v8 ignore next - @preserve */
     return void event
   }
 
