@@ -588,12 +588,17 @@ class Command extends Helpable {
     if (option.long) this.info.options.set(option.long, option)
     if (option.short) this.info.options.set(option.short, option)
 
+    /**
+     * Default value info.
+     *
+     * @const {DefaultInfo | null | undefined} def
+     */
+    const def: DefaultInfo | null | undefined = option.default()
+
     // configure default option-argument value.
-    this.optionValue(
-      option.key,
-      option.default().value,
-      optionValueSource.default
-    )
+    if (def) {
+      this.optionValue(option.key, def.value, optionValueSource.default)
+    }
 
     // add option event handler.
     this.on<OptionEvent>(option.event, this.onOption.bind(this))
@@ -1937,12 +1942,12 @@ class Command extends Helpable {
       /**
        * Default value configuration.
        *
-       * @const {DefaultInfo} def
+       * @const {DefaultInfo | null | undefined} def
        */
-      const def: DefaultInfo = event.option.default()
+      const def: DefaultInfo | null | undefined = event.option.default()
 
       this.checkChoices(event.value, event.option)
-      this.optionValue(event.option.key, parser(event.value, def.value))
+      this.optionValue(event.option.key, parser(event.value, def?.value))
       this.optionValueSource(event.option.key, event.source)
     }
 
@@ -2784,9 +2789,9 @@ class Command extends Helpable {
       /**
        * Default value configuration.
        *
-       * @const {DefaultInfo} def
+       * @const {DefaultInfo | null | undefined} def
        */
-      const def: DefaultInfo = argument.default()
+      const def: DefaultInfo | null | undefined = argument.default()
 
       /**
        * Command-argument parser.
@@ -2800,13 +2805,13 @@ class Command extends Helpable {
        *
        * @var {unknown} value
        */
-      let value: unknown = def.value
+      let value: unknown = def?.value
 
       if (argument.variadic) {
         if (index < this.argv.length) {
           this.checkChoices(value = this.argv.slice(index), argument)
           ok(Array.isArray<string>(value), 'expected command-argument `value`')
-          value = parser([...value], def.value)
+          value = parser([...value], def?.value)
         } else {
           ok(!argument.required, 'expected optional command-argument')
           if (value === undefined) value = []
@@ -2821,7 +2826,7 @@ class Command extends Helpable {
       } else if (index < this.argv.length) {
         this.checkChoices(value = this.argv[index]!, argument)
         ok(typeof value === 'string', 'expected command-argument `value`')
-        this.args[index] = parser(value, def.value)
+        this.args[index] = parser(value, def?.value)
       }
     }
 

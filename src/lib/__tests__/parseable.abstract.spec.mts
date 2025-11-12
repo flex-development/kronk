@@ -99,8 +99,12 @@ describe('unit:lib/Parseable', () => {
       subject = new Subject()
     })
 
-    it('should return default value info', () => {
-      expect(subject.default()).to.eql({ value: undefined })
+    it.each<[ParseableInfo | null | undefined]>([
+      [null],
+      [undefined],
+      [{ default: { value: null } }]
+    ])('should return default value info (%#)', info => {
+      expect(new Subject(info).default()).to.eq(info?.default)
     })
 
     it.each<[DefaultInfo | null | undefined]>([

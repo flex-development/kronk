@@ -176,10 +176,10 @@ abstract class Parseable extends Helpable {
    * @template {any} T
    *  Default value
    *
-   * @return {DefaultInfo<T>}
+   * @return {DefaultInfo<T> | null | undefined}
    *  Default value info
    */
-  public default<T>(): DefaultInfo<T>
+  public default<T>(): DefaultInfo<T> | null | undefined
 
   /**
    * Get or set the default value configuration.
@@ -191,14 +191,14 @@ abstract class Parseable extends Helpable {
    *
    * @param {DefaultInfo | null | undefined} [info]
    *  Default value info
-   * @return {DefaultInfo | this}
+   * @return {DefaultInfo | this | null | undefined}
    *  Default value info or `this` candidate
    */
   public default(
     info?: DefaultInfo | null | undefined
-  ): DefaultInfo | this {
+  ): DefaultInfo | this | null | undefined {
     if (arguments.length) return this.info.default = info, this
-    return fallback(this.info.default, { value: undefined }, isNIL)
+    return this.info.default
   }
 
   /**
