@@ -1774,6 +1774,22 @@ class Command extends Helpable {
   }
 
   /**
+   * Print help text.
+   *
+   * @todo format help text
+   *
+   * @public
+   * @instance
+   *
+   * @return {this}
+   *  `this` command
+   */
+  public help(): this {
+    this.logger.log('')
+    return this
+  }
+
+  /**
    * Configure the help subcommand.
    *
    * > 👉 **Note**: This method auto-registers the subcommand with
@@ -2028,7 +2044,9 @@ class Command extends Helpable {
    */
   protected onOption<T extends Option>(event: OptionEvent<T>): undefined {
     /* v8 ignore else -- @preserve */
-    if (this.info.version === event.option as Option) {
+    if (this.info.helpOption === event.option) {
+      this.optionValue(event.option.key, true, event.source)
+    } else if (this.info.version === event.option as Option) {
       ok('version' in event.option, 'expected `event.option.version`')
       this.optionValue(event.option.key, event.option.version, event.source)
     } else if (typeof event.value === 'boolean') {
@@ -2065,8 +2083,6 @@ class Command extends Helpable {
    * > 👉 **Note**: This event listener is registered each time command help
    * > is configured (i.e. `command.helpOption(info)`).
    *
-   * @todo print help text
-   *
    * @see {@linkcode OptionEvent}
    *
    * @protected
@@ -2077,8 +2093,16 @@ class Command extends Helpable {
    * @return {undefined}
    */
   protected onOptionHelp(event: OptionEvent): undefined {
-    /* v8 ignore next - @preserve */
-    return void event
+    return void event, void this.action(help)
+
+    /**
+     * @this {Command}
+     *
+     * @return {undefined}
+     */
+    function help(this: Command): undefined {
+      return void this.help()
+    }
   }
 
   /**
@@ -2473,7 +2497,7 @@ class Command extends Helpable {
      */
     let merger: typeof reduce = reduce
 
-    /* v8 ignore file -- @preserve */
+    /* v8 ignore else -- @preserve */
     if (this.optionPriority() !== 'global') merger = reduceRight
 
     return merger([this, ...this.ancestors()], reducer, {} as T)

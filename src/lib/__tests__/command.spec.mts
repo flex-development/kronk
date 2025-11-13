@@ -373,8 +373,11 @@ describe('unit:lib/Command', () => {
   })
 
   describe('#helpCommand', () => {
-    it('should return help subcommand', () => {
-      expect(new TestSubject().helpCommand()).toMatchSnapshot()
+    it.each<[CommandInfo?]>([
+      [],
+      [{ helpCommand: false }]
+    ])('should return help subcommand (%#)', info => {
+      expect(new TestSubject(info).helpCommand()).toMatchSnapshot()
     })
 
     it.each<[HelpCommandData]>([
@@ -406,8 +409,11 @@ describe('unit:lib/Command', () => {
   })
 
   describe('#helpOption', () => {
-    it('should return help option', () => {
-      expect(new TestSubject().helpOption()).toMatchSnapshot()
+    it.each<[CommandInfo?]>([
+      [],
+      [{ helpOption: false }]
+    ])('should return help option (%#)', info => {
+      expect(new TestSubject(info).helpOption()).toMatchSnapshot()
     })
 
     it.each<[HelpOptionData]>([

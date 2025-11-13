@@ -343,6 +343,56 @@ describe('functional:lib/Command', () => {
       [grease, [grease.name]],
       [
         Object.assign({}, grease, { actionOverride: true as const }),
+        ['--help'],
+        /**
+         * @this {void}
+         *
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @return {undefined}
+             */
+            before(this: void): undefined {
+              return message = '', void this
+            }
+          }
+        }
+      ],
+      [
+        Object.assign({}, grease, { actionOverride: true as const }),
+        [grease.name, 'bump', '-h'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  Command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[1]!)!
+              ok(subcommand, 'expected `subcommand`')
+              return message = '', void this
+            }
+          }
+        }
+      ],
+      [
+        Object.assign({}, grease, { actionOverride: true as const }),
         ['-u', '--version'],
         /**
          * @this {void}

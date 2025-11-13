@@ -1248,6 +1248,71 @@ exports[`functional:lib/Command > parsing > should run command (11) 1`] = `
     "level": "default",
     "tagPrefix": "default",
     "write": "default",
+    "help": "cli",
+    "color": "env",
+    "cwd": "env",
+  },
+  "opts": {
+    "config": true,
+    "level": "info",
+    "tagPrefix": "",
+    "write": false,
+    "help": true,
+    "color": true,
+    "cwd": "\${process.cwd()}",
+  },
+  "optsWithGlobals": {
+    "config": true,
+    "level": "info",
+    "tagPrefix": "",
+    "write": false,
+    "help": true,
+    "color": true,
+    "cwd": "\${process.cwd()}",
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (12) 1`] = `
+{
+  "command": "bump",
+  "ancestors": [
+    "grease",
+  ],
+  "args": [],
+  "argv": [],
+  "optionValueSources": {
+    "prestart": "default",
+    "help": "cli",
+  },
+  "opts": {
+    "prestart": 1,
+    "help": true,
+  },
+  "optsWithGlobals": {
+    "config": true,
+    "level": "info",
+    "tagPrefix": "",
+    "write": false,
+    "color": true,
+    "cwd": "\${process.cwd()}",
+    "prestart": 1,
+    "help": true,
+  },
+}
+`;
+
+exports[`functional:lib/Command > parsing > should run command (13) 1`] = `
+{
+  "command": "grease",
+  "ancestors": [],
+  "args": [],
+  "argv": [],
+  "optionValueSources": {
+    "config": "default",
+    "level": "default",
+    "tagPrefix": "default",
+    "write": "default",
     "unstable": "cli",
     "version": "cli",
     "color": "env",
@@ -1276,7 +1341,7 @@ exports[`functional:lib/Command > parsing > should run command (11) 1`] = `
 }
 `;
 
-exports[`functional:lib/Command > parsing > should run command (12) 1`] = `
+exports[`functional:lib/Command > parsing > should run command (14) 1`] = `
 {
   "command": "recommend",
   "ancestors": [
@@ -1302,7 +1367,7 @@ exports[`functional:lib/Command > parsing > should run command (12) 1`] = `
 }
 `;
 
-exports[`functional:lib/Command > parsing > should run command (13) 1`] = `
+exports[`functional:lib/Command > parsing > should run command (15) 1`] = `
 {
   "command": "changelog",
   "ancestors": [
@@ -1334,7 +1399,7 @@ exports[`functional:lib/Command > parsing > should run command (13) 1`] = `
 }
 `;
 
-exports[`functional:lib/Command > parsing > should run command (14) 1`] = `
+exports[`functional:lib/Command > parsing > should run command (16) 1`] = `
 {
   "command": "changelog",
   "ancestors": [
@@ -1369,7 +1434,7 @@ exports[`functional:lib/Command > parsing > should run command (14) 1`] = `
 }
 `;
 
-exports[`functional:lib/Command > parsing > should run command (15) 1`] = `
+exports[`functional:lib/Command > parsing > should run command (17) 1`] = `
 {
   "command": "pack",
   "ancestors": [
@@ -1398,7 +1463,7 @@ exports[`functional:lib/Command > parsing > should run command (15) 1`] = `
 }
 `;
 
-exports[`functional:lib/Command > parsing > should run command (16) 1`] = `
+exports[`functional:lib/Command > parsing > should run command (18) 1`] = `
 {
   "command": "create",
   "ancestors": [
@@ -1442,7 +1507,7 @@ exports[`functional:lib/Command > parsing > should run command (16) 1`] = `
 }
 `;
 
-exports[`functional:lib/Command > parsing > should run command (17) 1`] = `
+exports[`functional:lib/Command > parsing > should run command (19) 1`] = `
 {
   "command": "mlly",
   "ancestors": [],
@@ -1463,7 +1528,7 @@ exports[`functional:lib/Command > parsing > should run command (17) 1`] = `
 }
 `;
 
-exports[`functional:lib/Command > parsing > should run command (18) 1`] = `
+exports[`functional:lib/Command > parsing > should run command (20) 1`] = `
 {
   "command": "resolve",
   "ancestors": [
@@ -1496,7 +1561,7 @@ exports[`functional:lib/Command > parsing > should run command (18) 1`] = `
 }
 `;
 
-exports[`functional:lib/Command > parsing > should run command (19) 1`] = `
+exports[`functional:lib/Command > parsing > should run command (21) 1`] = `
 {
   "command": "resolve",
   "ancestors": [
@@ -1531,7 +1596,7 @@ exports[`functional:lib/Command > parsing > should run command (19) 1`] = `
 }
 `;
 
-exports[`functional:lib/Command > parsing > should run command (20) 1`] = `
+exports[`functional:lib/Command > parsing > should run command (22) 1`] = `
 {
   "command": "resolve",
   "ancestors": [
@@ -1568,7 +1633,7 @@ exports[`functional:lib/Command > parsing > should run command (20) 1`] = `
 }
 `;
 
-exports[`functional:lib/Command > parsing > should run command (21) 1`] = `
+exports[`functional:lib/Command > parsing > should run command (23) 1`] = `
 {
   "command": "smallest-num",
   "ancestors": [],
@@ -1591,7 +1656,7 @@ exports[`functional:lib/Command > parsing > should run command (21) 1`] = `
 }
 `;
 
-exports[`functional:lib/Command > parsing > should run command (22) 1`] = `
+exports[`functional:lib/Command > parsing > should run command (24) 1`] = `
 {
   "command": "join",
   "ancestors": [
@@ -1611,7 +1676,7 @@ exports[`functional:lib/Command > parsing > should run command (22) 1`] = `
 }
 `;
 
-exports[`functional:lib/Command > parsing > should run command (23) 1`] = `
+exports[`functional:lib/Command > parsing > should run command (25) 1`] = `
 {
   "command": "tribonacci",
   "ancestors": [],
