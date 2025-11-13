@@ -16,6 +16,7 @@ import Argument from '#lib/argument'
 import TestSubject from '#lib/command'
 import Helpable from '#lib/helpable.abstract'
 import Option from '#lib/option'
+import VersionOption from '#lib/version.option'
 import errorSnapshot from '#tests/utils/error-snapshot'
 import sfmt from '#tests/utils/sfmt'
 import isOption from '#utils/is-option'
@@ -27,8 +28,10 @@ import type {
   HelpCommandData,
   HelpOptionData,
   OptionPriority,
-  UsageData
+  UsageData,
+  VersionData
 } from '@flex-development/kronk'
+import pkg from '@flex-development/kronk/package.json' with { type: 'json' }
 import type { MockInstance } from 'vitest'
 
 describe('unit:lib/Command', () => {
@@ -584,6 +587,32 @@ describe('unit:lib/Command', () => {
       faker.system.semver()
     ])('should return command version (%#)', version => {
       expect(new TestSubject().version(version).version()).to.eq(version)
+    })
+
+    it.each<[VersionData]>([
+      [pkg.version],
+      [new VersionOption(pkg.version)],
+      [{ version: pkg.version }]
+    ])('should set version option and return `this` (%#)', info => {
+      // Arrange
+      const prop: string = 'info.version'
+      const subject: TestSubject = new TestSubject()
+
+      // Act
+      const result = subject.version(info)
+
+      // Expect
+      expect(result).to.eq(subject)
+      expect(result).to.have.nested.property(prop).be.instanceof(VersionOption)
+
+      // Expect (conditional)
+      if (isOption(info)) {
+        expect(result).to.have.nested.property(prop, info)
+      } else if (typeof info === 'string') {
+        expect(result).to.have.nested.property(prop + '.version', info)
+      } else {
+        expect(result).to.have.nested.property(prop + '.version', info.version)
+      }
     })
   })
 })

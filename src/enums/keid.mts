@@ -16,6 +16,7 @@ import type { KronkErrorId } from '@flex-development/kronk'
  */
 const enum keid {
   argument_after_variadic = 'kronk/argument-after-variadic',
+  conflicting_option = 'kronk/conflicting-option',
   duplicate_option = 'kronk/duplicate-option',
   duplicate_subcommand = 'kronk/duplicate-subcommand',
   error = 'kronk/error',

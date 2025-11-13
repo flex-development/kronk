@@ -22,6 +22,7 @@ import type { CommandError, KronkError } from '@flex-development/kronk'
  */
 interface KronkErrorMap {
   'argument-after-variadic': CommandError
+  'conflicting-option': CommandError
   'duplicate-option': CommandError
   'duplicate-subcommand': CommandError
   'excess-arguments': CommandError

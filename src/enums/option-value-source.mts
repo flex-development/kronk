@@ -1,6 +1,6 @@
 /**
- * @file Enums - chars
- * @module kronk/enums/chars
+ * @file Enums - optionValueSource
+ * @module kronk/enums/optionValueSource
  */
 
 import type { OptionValueSource } from '@flex-development/kronk'

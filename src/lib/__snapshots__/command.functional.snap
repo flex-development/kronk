@@ -1,5 +1,112 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`functional:lib/Command > errors > should error on conflicting option (0) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/conflicting-option",
+  "message": "Option(-j | --json) cannot be used with Option(-m | --markdown)",
+  "additional": [],
+  "cause": {
+    "conflict": "json",
+    "option": "markdown",
+  },
+  "command": {
+    "command": "info",
+    "ancestors": [
+      "grease",
+    ],
+    "args": [],
+    "argv": [],
+    "optionValueSources": {
+      "markdown": "cli",
+    },
+    "opts": {
+      "markdown": true,
+    },
+    "optsWithGlobals": {
+      "config": true,
+      "level": "info",
+      "tagPrefix": "",
+      "write": false,
+      "json": true,
+      "markdown": true,
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on conflicting option (1) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/conflicting-option",
+  "message": "Option(-j | --json) cannot be used with Option(-m | --markdown)",
+  "additional": [],
+  "cause": {
+    "conflict": "json",
+    "option": "markdown",
+  },
+  "command": {
+    "command": "info",
+    "ancestors": [
+      "grease",
+    ],
+    "args": [],
+    "argv": [],
+    "optionValueSources": {
+      "markdown": "cli",
+    },
+    "opts": {
+      "markdown": true,
+    },
+    "optsWithGlobals": {
+      "config": true,
+      "level": "info",
+      "tagPrefix": "",
+      "write": false,
+      "json": true,
+      "markdown": true,
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on conflicting option (2) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/conflicting-option",
+  "message": "Option(-y | --yaml) cannot be used with Option(-m | --markdown)",
+  "additional": [],
+  "cause": {
+    "conflict": "yaml",
+    "option": "markdown",
+  },
+  "command": {
+    "command": "info",
+    "ancestors": [
+      "grease",
+    ],
+    "args": [],
+    "argv": [],
+    "optionValueSources": {
+      "yaml": "cli",
+      "markdown": "cli",
+    },
+    "opts": {
+      "yaml": true,
+      "markdown": true,
+    },
+    "optsWithGlobals": {
+      "config": true,
+      "level": "info",
+      "tagPrefix": "",
+      "write": false,
+      "yaml": true,
+      "markdown": true,
+    },
+  },
+}
+`;
+
 exports[`functional:lib/Command > errors > should error on excess command or option arguments (0) 1`] = `
 {
   "code": 1,
@@ -15,17 +122,14 @@ exports[`functional:lib/Command > errors > should error on excess command or opt
     "args": [],
     "argv": [],
     "optionValueSources": {
-      "config": "default",
       "dnsResultOrder": "default",
       "elideLines": "default",
     },
     "opts": {
-      "config": undefined,
       "dnsResultOrder": "verbatim",
       "elideLines": 10,
     },
     "optsWithGlobals": {
-      "config": undefined,
       "dnsResultOrder": "verbatim",
       "elideLines": 10,
     },
@@ -51,22 +155,15 @@ exports[`functional:lib/Command > errors > should error on excess command or opt
     ],
     "optionValueSources": {
       "extensionOrder": "default",
-      "mainFields": "default",
-      "tsconfigOverride": "default",
     },
     "opts": {
       "extensionOrder": "tsx,.ts,.jsx,.js,.json",
-      "mainFields": undefined,
-      "tsconfigOverride": undefined,
     },
     "optsWithGlobals": {
-      "config": undefined,
       "dnsResultOrder": "verbatim",
       "elideLines": 10,
       "hot": true,
       "extensionOrder": "tsx,.ts,.jsx,.js,.json",
-      "mainFields": undefined,
-      "tsconfigOverride": undefined,
     },
   },
 }
@@ -147,21 +244,18 @@ exports[`functional:lib/Command > errors > should error on excess command or opt
     "args": [],
     "argv": [],
     "optionValueSources": {
-      "color": "default",
       "config": "default",
       "level": "default",
       "tagPrefix": "default",
       "write": "default",
     },
     "opts": {
-      "color": undefined,
       "config": true,
       "level": "info",
       "tagPrefix": "",
       "write": false,
     },
     "optsWithGlobals": {
-      "color": undefined,
       "config": true,
       "level": "info",
       "tagPrefix": "",
@@ -196,7 +290,6 @@ exports[`functional:lib/Command > errors > should error on excess command or opt
       "gzipLevel": 9,
     },
     "optsWithGlobals": {
-      "color": undefined,
       "config": true,
       "level": "info",
       "tagPrefix": "",
@@ -226,7 +319,6 @@ exports[`functional:lib/Command > errors > should error on excess command or opt
     "optionValueSources": {},
     "opts": {},
     "optsWithGlobals": {
-      "color": undefined,
       "config": true,
       "level": "info",
       "tagPrefix": "",
@@ -287,17 +379,14 @@ exports[`functional:lib/Command > errors > should error on invalid command or op
     "args": [],
     "argv": [],
     "optionValueSources": {
-      "config": "default",
       "dnsResultOrder": "default",
       "elideLines": "default",
     },
     "opts": {
-      "config": undefined,
       "dnsResultOrder": "verbatim",
       "elideLines": 10,
     },
     "optsWithGlobals": {
-      "config": undefined,
       "dnsResultOrder": "verbatim",
       "elideLines": 10,
     },
@@ -382,7 +471,6 @@ exports[`functional:lib/Command > errors > should error on invalid command or op
       "gzipLevel": 9,
     },
     "optsWithGlobals": {
-      "color": undefined,
       "config": true,
       "level": "info",
       "tagPrefix": "",
@@ -487,21 +575,14 @@ exports[`functional:lib/Command > errors > should error on missing command or op
     "argv": [],
     "optionValueSources": {
       "extensionOrder": "default",
-      "mainFields": "default",
-      "tsconfigOverride": "default",
     },
     "opts": {
       "extensionOrder": "tsx,.ts,.jsx,.js,.json",
-      "mainFields": undefined,
-      "tsconfigOverride": undefined,
     },
     "optsWithGlobals": {
-      "config": undefined,
       "dnsResultOrder": "verbatim",
       "elideLines": 10,
       "extensionOrder": "tsx,.ts,.jsx,.js,.json",
-      "mainFields": undefined,
-      "tsconfigOverride": undefined,
     },
   },
 }
@@ -519,17 +600,14 @@ exports[`functional:lib/Command > errors > should error on missing command or op
     "args": [],
     "argv": [],
     "optionValueSources": {
-      "config": "default",
       "dnsResultOrder": "default",
       "elideLines": "default",
     },
     "opts": {
-      "config": undefined,
       "dnsResultOrder": "verbatim",
       "elideLines": 10,
     },
     "optsWithGlobals": {
-      "config": undefined,
       "dnsResultOrder": "verbatim",
       "elideLines": 10,
     },
@@ -610,17 +688,14 @@ exports[`functional:lib/Command > errors > should error on missing command or op
       "object": "default",
       "remote": "default",
       "sign": "default",
-      "verify": "default",
     },
     "opts": {
       "message": "",
       "object": "HEAD",
       "remote": "origin",
       "sign": false,
-      "verify": undefined,
     },
     "optsWithGlobals": {
-      "color": undefined,
       "config": true,
       "level": "info",
       "tagPrefix": "",
@@ -630,7 +705,6 @@ exports[`functional:lib/Command > errors > should error on missing command or op
       "object": "HEAD",
       "remote": "origin",
       "sign": false,
-      "verify": undefined,
     },
   },
 }
@@ -774,21 +848,14 @@ exports[`functional:lib/Command > errors > should error on unknown option (1) 1`
     ],
     "optionValueSources": {
       "extensionOrder": "default",
-      "mainFields": "default",
-      "tsconfigOverride": "default",
     },
     "opts": {
       "extensionOrder": "tsx,.ts,.jsx,.js,.json",
-      "mainFields": undefined,
-      "tsconfigOverride": undefined,
     },
     "optsWithGlobals": {
-      "config": undefined,
       "dnsResultOrder": "verbatim",
       "elideLines": 10,
       "extensionOrder": "tsx,.ts,.jsx,.js,.json",
-      "mainFields": undefined,
-      "tsconfigOverride": undefined,
     },
   },
 }
@@ -819,7 +886,6 @@ exports[`functional:lib/Command > errors > should error on unknown option (2) 1`
       "sort": "-creatordate",
     },
     "optsWithGlobals": {
-      "color": undefined,
       "config": true,
       "level": "info",
       "tagPrefix": "",
@@ -831,6 +897,46 @@ exports[`functional:lib/Command > errors > should error on unknown option (2) 1`
 `;
 
 exports[`functional:lib/Command > errors > should error on unknown option (3) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/unknown-option",
+  "message": "Unknown option '-m'",
+  "additional": [],
+  "cause": {
+    "flag": "-m",
+  },
+  "command": {
+    "command": "grease",
+    "ancestors": [],
+    "args": [],
+    "argv": [
+      "-m",
+      "info",
+      "-y",
+    ],
+    "optionValueSources": {
+      "config": "default",
+      "level": "default",
+      "tagPrefix": "default",
+      "write": "default",
+    },
+    "opts": {
+      "config": true,
+      "level": "info",
+      "tagPrefix": "",
+      "write": false,
+    },
+    "optsWithGlobals": {
+      "config": true,
+      "level": "info",
+      "tagPrefix": "",
+      "write": false,
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on unknown option (4) 1`] = `
 {
   "code": 1,
   "id": "kronk/unknown-option",
@@ -959,7 +1065,6 @@ exports[`functional:lib/Command > parsing > should run command (4) 1`] = `
     "minimal": true,
   },
   "optsWithGlobals": {
-    "config": undefined,
     "dnsResultOrder": "verbatim",
     "elideLines": 10,
     "cwd": "\${process.cwd()}",
@@ -983,21 +1088,17 @@ exports[`functional:lib/Command > parsing > should run command (5) 1`] = `
   ],
   "optionValueSources": {
     "extensionOrder": "default",
-    "mainFields": "default",
     "tsconfigOverride": "cli",
   },
   "opts": {
     "extensionOrder": "tsx,.ts,.jsx,.js,.json",
-    "mainFields": undefined,
     "tsconfigOverride": "tsconfig.prod.json",
   },
   "optsWithGlobals": {
-    "config": undefined,
     "dnsResultOrder": "verbatim",
     "elideLines": 10,
     "cwd": "\${process.cwd()}",
     "extensionOrder": "tsx,.ts,.jsx,.js,.json",
-    "mainFields": undefined,
     "tsconfigOverride": "tsconfig.prod.json",
   },
 }
@@ -1110,27 +1211,27 @@ exports[`functional:lib/Command > parsing > should run command (10) 1`] = `
   "args": [],
   "argv": [],
   "optionValueSources": {
-    "color": "env",
     "config": "default",
     "level": "default",
     "tagPrefix": "default",
     "write": "default",
+    "color": "env",
     "cwd": "env",
   },
   "opts": {
-    "color": true,
     "config": true,
     "level": "info",
     "tagPrefix": "",
     "write": false,
+    "color": true,
     "cwd": "\${process.cwd()}",
   },
   "optsWithGlobals": {
-    "color": true,
     "config": true,
     "level": "info",
     "tagPrefix": "",
     "write": false,
+    "color": true,
     "cwd": "\${process.cwd()}",
   },
 }
@@ -1143,33 +1244,33 @@ exports[`functional:lib/Command > parsing > should run command (11) 1`] = `
   "args": [],
   "argv": [],
   "optionValueSources": {
-    "color": "env",
     "config": "default",
     "level": "default",
     "tagPrefix": "default",
     "write": "default",
     "unstable": "cli",
     "version": "cli",
+    "color": "env",
     "cwd": "env",
   },
   "opts": {
-    "color": true,
     "config": true,
     "level": "info",
     "tagPrefix": "",
     "write": false,
     "unstable": true,
     "version": "3.0.0-alpha.10",
+    "color": true,
     "cwd": "\${process.cwd()}",
   },
   "optsWithGlobals": {
-    "color": true,
     "config": true,
     "level": "info",
     "tagPrefix": "",
     "write": false,
     "unstable": true,
     "version": "3.0.0-alpha.10",
+    "color": true,
     "cwd": "\${process.cwd()}",
   },
 }
@@ -1187,13 +1288,13 @@ exports[`functional:lib/Command > parsing > should run command (12) 1`] = `
   "optionValueSources": {},
   "opts": {},
   "optsWithGlobals": {
-    "color": true,
     "config": true,
     "level": "info",
     "tagPrefix": "",
     "write": false,
     "json": true,
     "unstable": true,
+    "color": true,
     "cwd": "\${process.cwd()}",
     "prestart": 1,
     "preid": "alpha",
@@ -1210,25 +1311,22 @@ exports[`functional:lib/Command > parsing > should run command (13) 1`] = `
   "args": [],
   "argv": [],
   "optionValueSources": {
-    "infile": "default",
     "releases": "cli",
     "samefile": "default",
     "to": "cli",
   },
   "opts": {
-    "infile": undefined,
     "releases": 0,
     "samefile": false,
     "to": "$(jq .version package.json -r)",
   },
   "optsWithGlobals": {
-    "color": true,
     "config": true,
     "level": "info",
     "tagPrefix": "",
     "write": true,
+    "color": true,
     "cwd": "\${process.cwd()}",
-    "infile": undefined,
     "releases": 0,
     "samefile": false,
     "to": "$(jq .version package.json -r)",
@@ -1245,27 +1343,24 @@ exports[`functional:lib/Command > parsing > should run command (14) 1`] = `
   "args": [],
   "argv": [],
   "optionValueSources": {
-    "infile": "default",
     "releases": "default",
     "samefile": "default",
     "to": "default",
     "outfile": "cli",
   },
   "opts": {
-    "infile": undefined,
     "releases": 1,
     "samefile": false,
     "to": "HEAD",
     "outfile": "$NOTES_FILE",
   },
   "optsWithGlobals": {
-    "color": true,
     "config": true,
     "level": "info",
     "tagPrefix": "",
     "write": true,
+    "color": true,
     "cwd": "\${process.cwd()}",
-    "infile": undefined,
     "releases": 1,
     "samefile": false,
     "to": "HEAD",
@@ -1291,11 +1386,11 @@ exports[`functional:lib/Command > parsing > should run command (15) 1`] = `
     "out": "%s-%v.tgz",
   },
   "optsWithGlobals": {
-    "color": true,
     "config": true,
     "level": "info",
     "tagPrefix": "",
     "write": false,
+    "color": true,
     "cwd": "\${process.cwd()}",
     "gzipLevel": 9,
     "out": "%s-%v.tgz",
@@ -1321,7 +1416,6 @@ exports[`functional:lib/Command > parsing > should run command (16) 1`] = `
     "object": "default",
     "remote": "default",
     "sign": "cli",
-    "verify": "default",
     "push": "cli",
   },
   "opts": {
@@ -1329,22 +1423,20 @@ exports[`functional:lib/Command > parsing > should run command (16) 1`] = `
     "object": "HEAD",
     "remote": "origin",
     "sign": "true",
-    "verify": undefined,
     "push": true,
   },
   "optsWithGlobals": {
-    "color": true,
     "config": true,
     "level": "info",
     "tagPrefix": "",
     "write": false,
+    "color": true,
     "cwd": "\${process.cwd()}",
     "sort": "-creatordate",
     "message": "release: {tag}",
     "object": "HEAD",
     "remote": "origin",
     "sign": "true",
-    "verify": undefined,
     "push": true,
   },
 }

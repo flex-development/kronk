@@ -102,9 +102,9 @@ describe('unit:lib/Parseable', () => {
     it.each<[ParseableInfo | null | undefined]>([
       [null],
       [undefined],
-      [{ default: { value: null } }]
+      [{ default: { value: -1 } }]
     ])('should return default value info (%#)', info => {
-      expect(new Subject(info).default()).to.eq(info?.default)
+      expect(new Subject(info).default()).to.eq(info?.default ?? undefined)
     })
 
     it.each<[DefaultInfo | null | undefined]>([

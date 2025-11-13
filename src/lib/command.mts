@@ -94,8 +94,13 @@ import plur from 'plur'
  */
 class Command extends Helpable {
   /**
-   * The event whose listener overrides the command action handler and any
-   * parsing checks (i.e. mandatory options, required arguments).
+   * The event whose listener overrides the command {@linkcode action} and
+   * certain parsing checks.
+   *
+   * Skipped parsing checks include:
+   *
+   * - command arguments
+   * - mandatory options
    *
    * @see {@linkcode KronkEvent}
    *
@@ -591,12 +596,12 @@ class Command extends Helpable {
     /**
      * Default value info.
      *
-     * @const {DefaultInfo | null | undefined} def
+     * @const {DefaultInfo | undefined} def
      */
-    const def: DefaultInfo | null | undefined = option.default()
+    const def: DefaultInfo | undefined = option.default()
 
     // configure default option-argument value.
-    if (def) {
+    if (def && 'value' in def) {
       this.optionValue(option.key, def.value, optionValueSource.default)
     }
 
@@ -934,6 +939,106 @@ class Command extends Helpable {
   }
 
   /**
+   * Check for conflicting options and error if any are found.
+   *
+   * @protected
+   * @instance
+   *
+   * @return {never | this}
+   *  `this` command
+   */
+  protected checkForConflictingOptions(): never | this {
+    /**
+     * List of commands.
+     *
+     * @const {Command[]} commands
+     */
+    const commands: Command[] = [this, ...this.ancestors()]
+
+    /**
+     * List of user options.
+     *
+     * > 👉 **Note**: User options are defined, non-default options.
+     *
+     * @const {Option[]} options
+     */
+    const options: Option[] = commands
+      // collect local and global options
+      .flatMap(command => command.options())
+      // remove non-user options
+      .filter(option => commands.some(command => isUserOption(option, command)))
+
+    // for each user option, check if the user also passed a conflicting option.
+    for (const option of options) {
+      /**
+       * List of conflicting option names.
+       *
+       * @const {Set<string>} conflicts
+       */
+      const conflicts: Set<string> = option.conflicts()
+
+      // if there are possible conflicts, loop through `options` again to
+      // check `defined.key` against the current list of conflicting options.
+      // any conflicting options passed by the user are in `options` too.
+      if (conflicts.size) {
+        for (const defined of options) {
+          if (conflicts.has(defined.key)) {
+            this.error({
+              cause: { conflict: defined.key, option: option.key },
+              id: keid.conflicting_option,
+              reason: `${String(defined)} cannot be used with ${String(option)}`
+            })
+          }
+        }
+      }
+    }
+
+    return this
+
+    /**
+     * Check if `option` is an option passed by the user.
+     *
+     * > 👉 **Note**: If `option` is a global option,
+     * > `command.optionValueSource(option.key)` will return `null` or
+     * > `undefined`.
+     *
+     * @this {void}
+     *
+     * @param {Option} option
+     *  The possible user option
+     * @param {Command} command
+     *  The parent or child command
+     * @return {boolean}
+     *  `true` if `option` is a defined, non-default option, `false` otherwise
+     */
+    function isUserOption(
+      this: void,
+      option: Option,
+      command: Command
+    ): boolean {
+      /**
+       * The source of the raw option value.
+       *
+       * @var {OptionValueSource | null | undefined} source
+       */
+      let source: OptionValueSource | null | undefined
+
+      // get option value source, with `null` or `undefined`
+      // meaning the option is an ancestor (global) option.
+      source = command.optionValueSource(option.key)
+
+      return (
+        // option value is defined by user
+        command.optionValue(option.key) !== undefined &&
+        // option value was actually passed by user
+        source !== optionValueSource.default &&
+        // option is a local option
+        !!source
+      )
+    }
+  }
+
+  /**
    * Check for missing mandatory options and error if any are found.
    *
    * @protected
@@ -971,6 +1076,7 @@ class Command extends Helpable {
    *  `this` command
    */
   protected checkForUnknownOptions(unknown: List<string>): this {
+    /* v8 ignore else -- @preserve */
     if (this.unknown !== 'options' && this.unknown !== true) {
       for (const flag of unknown) {
         this.error({
@@ -1941,9 +2047,9 @@ class Command extends Helpable {
       /**
        * Default value configuration.
        *
-       * @const {DefaultInfo | null | undefined} def
+       * @const {DefaultInfo | undefined} def
        */
-      const def: DefaultInfo | null | undefined = event.option.default()
+      const def: DefaultInfo | undefined = event.option.default()
 
       this.checkChoices(event.value, event.option)
       this.optionValue(event.option.key, parser(event.value, def?.value))
@@ -2662,6 +2768,7 @@ class Command extends Helpable {
             // doesn't accept any arguments to allow boolean flags to be
             // specified before command-arguments. otherwise, consider the
             // operand an option-argument and error accordingly.
+            /* v8 ignore else -- @preserve */
             if (operand.attached || !this.info.arguments.length) {
               this.error({
                 cause: { argument: operand.value },
@@ -2734,6 +2841,7 @@ class Command extends Helpable {
           if (env && env in cmd.process.env) {
             src = cmd.optionValueSource(option.key)
 
+            /* v8 ignore else -- @preserve */
             if (
               cmd.optionValue(option.key) === undefined ||
               includes([optionValueSource.default, optionValueSource.env], src)
@@ -2781,8 +2889,12 @@ class Command extends Helpable {
     // check for errors.
     if (!this.actionEvent) {
       this.checkForMissingMandatoryOptions()
+      this.checkForConflictingOptions()
       this.checkForUnknownOptions(result.unknown)
       this.checkCommandArguments()
+    } else {
+      this.checkForConflictingOptions()
+      this.checkForUnknownOptions(result.unknown)
     }
 
     // process arguments.
@@ -2791,9 +2903,9 @@ class Command extends Helpable {
       /**
        * Default value configuration.
        *
-       * @const {DefaultInfo | null | undefined} def
+       * @const {DefaultInfo | undefined} def
        */
-      const def: DefaultInfo | null | undefined = argument.default()
+      const def: DefaultInfo | undefined = argument.default()
 
       /**
        * Command-argument parser.
@@ -2816,7 +2928,7 @@ class Command extends Helpable {
           value = parser([...value], def?.value)
         } else {
           ok(!argument.required, 'expected optional command-argument')
-          if (value === undefined) value = []
+          /* v8 ignore else -- @preserve */ if (value === undefined) value = []
         }
 
         if (!Array.isArray(value)) value = [value]
@@ -3079,8 +3191,9 @@ class Command extends Helpable {
         }
 
         // create version option.
-        this.info.version = version as VersionOption
-        if (!isOption(version)) this.info.version = this.createOption(version)
+        this.info.version = isOption(version)
+          ? version
+          : this.createOption(version)
 
         // add version option and register parsed option listeners.
         this.addOption(this.info.version)

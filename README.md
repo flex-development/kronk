@@ -1622,7 +1622,7 @@ Get or set the default value configuration.
 ##### Overloads
 
 - `default(info: DefaultInfo | null | undefined): this`
-- `default<T>(): DefaultInfo<T> | null | undefined`
+- `default<T>(): DefaultInfo<T> | undefined`
 
 ##### Type Parameters
 
@@ -1636,7 +1636,7 @@ Get or set the default value configuration.
 
 ##### Returns
 
-([`DefaultInfo<T>`](#defaultinfo) | [`this`](#parseableinfo) | `null` | `undefined`)
+([`DefaultInfo<T>`](#defaultinfo) | [`this`](#parseableinfo) | `undefined`)
 Default value info or `this` candidate
 
 #### `Parseable#id`

@@ -126,6 +126,17 @@ describe('functional:lib/Command', () => {
     })
 
     it.each<ParseCase>([
+      [grease, [grease.name, '-j', 'info', '--markdown']],
+      [grease, ['info', '-jm']],
+      [grease, ['info', '--yaml', '--markdown']]
+    ])('should error on conflicting option (%#)', async (
+      info,
+      argv
+    ) => {
+      void test(eid.conflicting_option, info, argv)
+    })
+
+    it.each<ParseCase>([
       [bun, ['--watch', 'server.mts', 'main.mts']],
       [bun, ['server.mts', 'main.mts', '--hot']],
       [clamp, [chars.digit0, chars.digit1]],
@@ -196,6 +207,7 @@ describe('functional:lib/Command', () => {
       [average, ['--debug', chars.delimiter, '13', '26']],
       [bun, ['run.mts', '--import=./loader.mjs']],
       [grease, [grease.name, 'tag', '--list']],
+      [grease, ['-m', 'info', '-y']],
       [mlly, [mlly.name, '-p' + chars.dot, 'resolve', 'a.mts', '-m', 'main']]
     ])('should error on unknown option (%#)', async (info, argv) => {
       void test(eid.unknown_option, info, argv)

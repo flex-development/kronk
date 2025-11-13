@@ -151,9 +151,10 @@ export default {
       options: [
         {
           choices: bool.choices,
-          conflicts: ['json'],
+          conflicts: ['json', 'yaml'],
           description: 'enable markdown output',
           flags: '-m | --markdown',
+          implies: { level: 'log' },
           parser: bool(),
           preset: chars.digit1
         },
@@ -161,6 +162,15 @@ export default {
           choices: ['bun', 'npm', 'pnpm', 'yarn'],
           description: 'package manager name',
           flags: '--pm | --package-manager'
+        },
+        {
+          choices: bool.choices,
+          conflicts: ['json', 'markdown'],
+          description: 'enable yaml output',
+          flags: '-y | --yaml',
+          implies: { level: 'log' },
+          parser: bool(),
+          preset: chars.digit1
         }
       ]
     },
