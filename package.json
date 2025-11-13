@@ -176,7 +176,7 @@
     "@flex-development/pathe": "4.0.2",
     "@flex-development/pkg-types": "4.1.0",
     "@flex-development/remark-preset": "1.0.0",
-    "@tsconfig/strictest": "2.0.7",
+    "@tsconfig/strictest": "2.0.8",
     "@types/chai": "5.2.3",
     "@types/chai-string": "1.4.5",
     "@types/concat-stream": "2.0.3",
