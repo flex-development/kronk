@@ -65,6 +65,7 @@ Command {
     "name": "help",
     "helpCommand": null,
     "hidden": false,
+    "aliases": Set {},
     "arguments": [],
     "helpOption": Option {
       "info": {
@@ -119,7 +120,6 @@ Command {
     "subcommands": Map {},
     "version": undefined,
     "action": undefined,
-    "aliases": Set {},
     "done": undefined,
     "exit": undefined,
     "optionPriority": "local",
@@ -154,6 +154,7 @@ Command {
       "name": undefined,
       "description": undefined,
       "hidden": false,
+      "aliases": Set {},
       "arguments": [],
       "helpCommand": [Circular],
       "helpOption": Option {
@@ -211,7 +212,6 @@ Command {
       },
       "version": undefined,
       "action": undefined,
-      "aliases": Set {},
       "done": undefined,
       "exit": undefined,
       "optionPriority": "local",

@@ -234,7 +234,7 @@ describe('unit:lib/Command', () => {
       aliases = new Set([alias1, alias2])
     })
 
-    it('should add command aliases and return `this`', () => {
+    it('should add command alias and return `this`', () => {
       // Arrange
       const subject: TestSubject = new TestSubject('timezone', {
         aliases: alias2
@@ -263,6 +263,22 @@ describe('unit:lib/Command', () => {
   })
 
   describe('#aliases', () => {
+    it('should add command aliases and return `this`', () => {
+      // Arrange
+      const a1: string = 't'
+      const a2: string = 'tz'
+      const property: string = 'info.aliases'
+      const subject: TestSubject = new TestSubject('timezone', { aliases: a1 })
+
+      // Act
+      const result = subject.aliases(a2)
+
+      // Expect
+      expect(result).to.eq(subject)
+      expect(result).to.have.nested.property(property).be.instanceof(Set)
+      expect(result).to.have.nested.property(property).eql(new Set([a1, a2]))
+    })
+
     it('should return list of command aliases', () => {
       // Act
       const result = new TestSubject().aliases()
@@ -270,22 +286,6 @@ describe('unit:lib/Command', () => {
       // Expect
       expect(result).to.be.instanceof(Set).and.empty
       expect(result).to.not.be.frozen
-    })
-
-    it('should set command aliases and return `this`', () => {
-      // Arrange
-      const aliases: Set<string> = new Set(['tz'])
-      const property: string = 'info.aliases'
-      const subject: TestSubject = new TestSubject('timezone', { aliases: 't' })
-
-      // Act
-      const result = subject.aliases(aliases)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property(property).be.instanceof(Set)
-      expect(result).to.have.nested.property(property).eql(aliases)
-      expect(result).to.have.nested.property(property).not.eq(aliases)
     })
   })
 

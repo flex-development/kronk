@@ -25,6 +25,12 @@ describe('unit-d:interfaces/CommandMetadata', () => {
     expectTypeOf<TestSubject>().toExtend<Expect>()
   })
 
+  it('should match [aliases: Set<string>]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('aliases')
+      .toEqualTypeOf<Set<string>>()
+  })
+
   it('should match [arguments: Argument[]]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('arguments')

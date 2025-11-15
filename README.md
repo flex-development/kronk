@@ -436,19 +436,19 @@ Add a prepared `option`.
 
 #### `Command#alias([alias])`
 
-Get an alias for the command or add command aliases.
+Get an alias for the command or add a command alias.
 
 > 👉 **Note**: This method can be called more than once to add multiple aliases.
 
 ##### Overloads
 
-- `alias(alias: List<string> | string): this`
+- `alias(alias: string): this`
 - `alias(): CommandName`
 
 ##### Parameters
 
-- `alias` ([`List<string>`](#list) | `string`)
-  — an alias, or list of aliases, for the command
+- `alias` (`string`)
+  — an alias for the command
 
 ##### Returns
 
@@ -456,7 +456,7 @@ Get an alias for the command or add command aliases.
 
 #### `Command#aliases([aliases])`
 
-Get or set aliases for the command.
+Get or add aliases for the command.
 
 ##### Overloads
 
@@ -2025,6 +2025,8 @@ Command metadata (TypeScript interface).
 
 #### Properties
 
+- `aliases` (`Set<string>`)
+  — list of command aliases
 - `arguments` ([`Argument[]`](#argumentinfo))
   — list of command arguments
 - `helpOption` ([`Option`](#optioninfo) | `null` | `undefined`)

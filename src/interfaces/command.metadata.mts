@@ -27,6 +27,11 @@ type Skip = 'arguments' | 'options' | 'subcommands'
  */
 interface CommandMetadata extends Omit<CommandInfo, Skip> {
   /**
+   * List of command aliases.
+   */
+  aliases: Set<string>
+
+  /**
    * List of command arguments.
    *
    * @see {@linkcode Argument}

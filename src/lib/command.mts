@@ -267,6 +267,7 @@ class Command extends Helpable {
 
     this.info = {
       ...this.info,
+      aliases: new Set(),
       arguments: [],
       helpCommand: null,
       helpOption: null,
@@ -313,7 +314,7 @@ class Command extends Helpable {
     })
 
     this.action(this.info.action)
-    this.aliases(this.info.aliases)
+    this.aliases(data.aliases)
     this.done(this.info.done)
     this.exiter(this.info.exit)
     this.helpCommand(data.helpCommand)
@@ -613,22 +614,20 @@ class Command extends Helpable {
   }
 
   /**
-   * Add command aliases.
+   * Add a command alias.
    *
-   * > 👉 **Note**: This method can be called more than once to add multiple
-   * > aliases.
-   *
-   * @see {@linkcode List}
+   * > 👉 **Note**: This method can be called more than once
+   * > to add multiple aliases.
    *
    * @public
    * @instance
    *
-   * @param {List<string> | string} alias
-   *  An alias, or list of aliases, for the command
+   * @param {string} alias
+   *  An alias for the command
    * @return {this}
    *  `this` command
    */
-  public alias(alias: List<string> | string): this
+  public alias(alias: string): this
 
   /**
    * Get an alias for the command.
@@ -639,33 +638,31 @@ class Command extends Helpable {
    * @instance
    *
    * @return {CommandName}
-   *  Alias for `this` command
+   *  Command alias
    */
   public alias(): CommandName
 
   /**
-   * Get an alias for the command or add command aliases.
+   * Get or add a command alias.
    *
    * @see {@linkcode CommandName}
-   * @see {@linkcode List}
    *
    * @public
    * @instance
    *
-   * @param {List<string> | string} [alias]
-   *  An alias, or list of aliases, for the command
+   * @param {string} [alias]
+   *  An alias for the command
    * @return {CommandName | this}
    *  Command alias or `this` command
    */
-  public alias(alias?: List<string> | string): CommandName | this {
+  public alias(alias?: string): CommandName | this {
     if (!arguments.length) return fallback([...this.aliases()][0], null)
     ok(this.info.aliases instanceof Set, 'expected `info.aliases`')
-    for (const x of toList(alias)) this.info.aliases.add(x)
-    return this
+    return this.info.aliases.add(alias!), this
   }
 
   /**
-   * Set aliases for the command.
+   * Add aliases for the command.
    *
    * @see {@linkcode List}
    *
@@ -686,12 +683,12 @@ class Command extends Helpable {
    * @instance
    *
    * @return {Set<string>}
-   *  List of aliases for `this` command
+   *  List of command aliases
    */
   public aliases(): Set<string>
 
   /**
-   * Get or set aliases for the command.
+   * Get or add aliases for the command.
    *
    * @see {@linkcode List}
    *
@@ -706,8 +703,9 @@ class Command extends Helpable {
   public aliases(
     aliases?: List<string> | string | null | undefined
   ): Set<string> | this {
-    if (!arguments.length) return new Set(toList(this.info.aliases))
-    return this.info.aliases = new Set(toList(aliases)), this
+    if (!arguments.length) return this.info.aliases
+    for (const alias of toList(aliases)) this.alias(alias)
+    return this
   }
 
   /**
