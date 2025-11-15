@@ -39,6 +39,9 @@ export type { default as OptionData } from '#interfaces/option.data'
 export type { default as OptionInfo } from '#interfaces/option.info'
 export type { default as OptionMetadata } from '#interfaces/option.metadata'
 export type { default as ParseOptions } from '#interfaces/parse-options'
+export type {
+  default as ParseUnknownResult
+} from '#interfaces/parse-unknown-result'
 export type { default as ParseableInfo } from '#interfaces/parseable.info'
 export type {
   default as ParseableMetadata

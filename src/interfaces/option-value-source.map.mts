@@ -26,6 +26,12 @@ interface OptionValueSourceMap {
    * The option value was specified as an environment variable.
    */
   env: 'env'
+
+  /**
+   * The option was not passed by the user,
+   * but the option value was implied by another option.
+   */
+  implied: 'implied'
 }
 
 export type { OptionValueSourceMap as default }

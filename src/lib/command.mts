@@ -19,6 +19,7 @@ import Argument from '#lib/argument'
 import Helpable from '#lib/helpable.abstract'
 import Option from '#lib/option'
 import VersionOption from '#lib/version.option'
+import isRawParseValue from '#utils/is-raw-parse-value'
 import {
   ev,
   tokenize,
@@ -51,6 +52,7 @@ import type {
   OptionValueSources,
   ParseArg,
   ParseOptions,
+  ParseUnknownResult,
   Process,
   RawOptionValue,
   SubcommandInfo,
@@ -72,7 +74,6 @@ import { createLogger, type Logger } from '@flex-development/log'
 import { FancyReporter } from '@flex-development/log/reporters'
 import {
   fallback,
-  includes,
   isNIL,
   reduce,
   reduceRight
@@ -1521,19 +1522,212 @@ class Command extends Helpable {
   }
 
   /**
+   * Emit environment-based options.
+   *
+   * > 👉 **Note**: Environment variables are applied if an option value is
+   * > `undefined` or originally comes from an environment variable or default
+   * > value configuration.
+   *
+   * @protected
+   * @instance
+   *
+   * @return {this}
+   *  `this` command
+   */
+  protected emitEnvironmentOptions(): this {
+    for (const cmd of [...this.ancestors().reverse(), this]) {
+      for (const option of cmd.options()) {
+        for (const env of option.env()) {
+          if (env && env in cmd.process.env) {
+            /**
+             * The source of the raw option value.
+             *
+             * @var {OptionValueSource | null | undefined} source
+             */
+            let source: OptionValueSource | null | undefined
+
+            // get option value source.
+            source = cmd.optionValueSource(option.key)
+
+            /* v8 ignore else -- @preserve */
+            if (
+              cmd.optionValue(option.key) === undefined ||
+              source === optionValueSource.default ||
+              source === optionValueSource.env
+            ) {
+              /**
+               * The environment variable value.
+               *
+               * @const {string} value
+               */
+              const value: string = cmd.process.env[env]!
+
+              // emit option event.
+              // the option event handler will call the option-argument parser,
+              // as well as store the option value and source.
+              cmd.emitOption(option, value, optionValueSource.env)
+            }
+
+            break
+          }
+        }
+      }
+    }
+
+    return this
+  }
+
+  /**
+   * Emit implied options.
+   *
+   * @protected
+   * @instance
+   *
+   * @return {this}
+   *  `this` command
+   */
+  protected emitImpliedOptions(): this {
+    /**
+     * List of commands, where the first command is `this` command, and the last
+     * command is the greatest grandparent of `this` command.
+     *
+     * @const {Command[]} commands
+     */
+    const commands: Command[] = [this, ...this.ancestors()]
+
+    /**
+     * List of custom user options.
+     *
+     * > 👉 **Note**: User options are defined, non-default options.
+     * > Custom user options are options that are not implied.
+     *
+     * @const {Option[]} options
+     */
+    const options: Option[] = commands
+      // collect local and global options
+      .flatMap(command => command.options())
+      // custom user options only
+      .filter(option => commands.some(cmd => isCustomOption(option.key, cmd)))
+
+    // for each custom user option, check if it has implied values.
+    // for each option with implied values, match the implied option key
+    // to the option instance and emit the implied options.
+    for (const option of options) {
+      /**
+       * Implied values.
+       *
+       * @const {OptionValues} implies
+       */
+      const implies: OptionValues = option.implies()
+
+      // for each implied option key-value pair, ensure the implied option
+      // was not specified by the user then find the matching option instance
+      // and emit the implied option.
+      for (const [key, value] of Object.entries(implies)) {
+        /**
+         * The parent command of the {@linkcode implied} option.
+         *
+         * @const {Command | undefined} command
+         */
+        let command: Command | undefined
+
+        /**
+         * The implied option.
+         *
+         * @var {Option | undefined} implied
+         */
+        let implied: Option | undefined
+
+        // find implied option instance and its parent command.
+        for (const cmd of commands) {
+          for (const opt of cmd.options()) {
+            if (opt.key === key) {
+              command = cmd
+              implied = opt
+              break
+            }
+          }
+        }
+
+        // if a parent command could not be found,
+        // assume the developer made a mistake and error accordingly.
+        if (!command) {
+          this.error(new KronkError({
+            cause: {
+              commands: commands.map(command => command.id()),
+              implies,
+              key,
+              option: String(option)
+            },
+            id: keid.unknown_implied_option,
+            reason: `Implied option for \`${key}\` not found`
+          }))
+        }
+
+        // a `command` means `implied` is defined.
+        ok(implied, 'expected `implied` option')
+
+        // emit implied option if it is not a custom user option.
+        if (!isCustomOption(implied.key, command)) {
+          command.emitOption(implied, value, optionValueSource.implied, null)
+        }
+      }
+    }
+
+    return this
+
+    /**
+     * Check if `option` is a custom option passed by the user.
+     *
+     * @this {void}
+     *
+     * @param {Option['key']} option
+     *  The key of the possible custom user option
+     * @param {Command} command
+     *  The parent or child command
+     * @return {boolean}
+     *  `true` if `option` is custom user option, `false` otherwise
+     */
+    function isCustomOption(
+      this: void,
+      option: Option['key'],
+      command: Command
+    ): boolean {
+      /**
+       * The source of the raw option value.
+       *
+       * @var {OptionValueSource | null | undefined} source
+       */
+      let source: OptionValueSource | null | undefined
+
+      // get option value source, with `null` or `undefined`
+      // meaning the option is an ancestor (global) option.
+      source = command.optionValueSource(option)
+
+      return (
+        // option value is defined
+        command.optionValue(option) !== undefined &&
+        // option flag passed by user
+        source !== optionValueSource.default &&
+        // option value is not implied
+        source !== optionValueSource.implied
+      )
+    }
+  }
+
+  /**
    * Emit a parsed `option` event.
    *
    * @see {@linkcode Flags}
    * @see {@linkcode Option}
    * @see {@linkcode OptionValueSource}
-   * @see {@linkcode RawOptionValue}
    *
    * @public
    * @instance
    *
    * @param {Option} option
    *  The command option instance
-   * @param {RawOptionValue} value
+   * @param {unknown} value
    *  The raw `option` value
    * @param {OptionValueSource} source
    *  The source of the raw option `value`
@@ -1547,8 +1741,64 @@ class Command extends Helpable {
     value: RawOptionValue,
     source: OptionValueSource,
     flag?: Flags | null | undefined
+  ): boolean
+
+  /**
+   * Emit a parsed `option` event.
+   *
+   * @see {@linkcode Flags}
+   * @see {@linkcode Option}
+   * @see {@linkcode optionValueSource}
+   *
+   * @public
+   * @instance
+   *
+   * @param {Option} option
+   *  The command option instance
+   * @param {unknown} value
+   *  The `option` value
+   * @param {optionValueSource.implied} source
+   *  The source of the option `value`
+   * @param {Flags | null | undefined} [flag]
+   *  The parsed `option` flag
+   * @return {boolean}
+   *  `true` if event has listeners, `false` otherwise
+   */
+  public emitOption(
+    option: Option,
+    value: unknown,
+    source: optionValueSource.implied,
+    flag?: Flags | null | undefined
+  ): boolean
+
+  /**
+   * Emit a parsed `option` event.
+   *
+   * @see {@linkcode Flags}
+   * @see {@linkcode Option}
+   * @see {@linkcode OptionValueSource}
+   *
+   * @public
+   * @instance
+   *
+   * @param {Option} option
+   *  The command option instance
+   * @param {unknown} value
+   *  The raw or implied `option` value
+   * @param {OptionValueSource} source
+   *  The source of the option `value`
+   * @param {Flags | null | undefined} [flag]
+   *  The parsed `option` flag
+   * @return {boolean}
+   *  `true` if event has listeners, `false` otherwise
+   */
+  public emitOption(
+    option: Option,
+    value: unknown,
+    source: OptionValueSource,
+    flag?: Flags | null | undefined
   ): boolean {
-    return this.emit(new OptionEvent(option, value, source, flag))
+    return this.emit(new OptionEvent(option, value as never, source, flag))
   }
 
   /**
@@ -2043,15 +2293,14 @@ class Command extends Helpable {
    * @return {undefined}
    */
   protected onOption<T extends Option>(event: OptionEvent<T>): undefined {
-    /* v8 ignore else -- @preserve */
     if (this.info.helpOption === event.option) {
       this.optionValue(event.option.key, true, event.source)
     } else if (this.info.version === event.option as Option) {
       ok('version' in event.option, 'expected `event.option.version`')
       this.optionValue(event.option.key, event.option.version, event.source)
-    } else if (typeof event.value === 'boolean') {
+    } else if (!isRawParseValue(event.value)) {
       this.optionValue(event.option.key, event.value, event.source)
-    } else if (event.value !== null) {
+    } else {
       /**
        * Option-argument parser.
        *
@@ -2620,27 +2869,81 @@ class Command extends Helpable {
   }
 
   /**
-   * Process command-line arguments in the context of `this` command.
-   *
-   * > 👉 **Note**: Modifies `this` command by storing options. Does not reset
-   * > state if called again.
+   * Process command arguments and store parsed arguments.
    *
    * @protected
    * @instance
    *
-   * @param {string[]} operands
-   *  List of operands (not options or values)
+   * @return {this}
+   *  `this` command
+   */
+  protected parseCommandArguments(): this {
+    this.args = []
+
+    for (const [index, argument] of this.arguments().entries()) {
+      /**
+       * Default value configuration.
+       *
+       * @const {DefaultInfo | undefined} def
+       */
+      const def: DefaultInfo | undefined = argument.default()
+
+      /**
+       * Command-argument parser.
+       *
+       * @const {ParseArg} parser
+       */
+      const parser: ParseArg = argument.parser()
+
+      /**
+       * Processed argument value.
+       *
+       * @var {unknown} value
+       */
+      let value: unknown = def?.value
+
+      if (argument.variadic) {
+        if (index < this.argv.length) {
+          this.checkChoices(value = this.argv.slice(index), argument)
+          ok(Array.isArray<string>(value), 'expected command-argument `value`')
+          value = parser([...value], def?.value)
+        } else {
+          ok(!argument.required, 'expected optional command-argument')
+          /* v8 ignore else -- @preserve */ if (value === undefined) value = []
+        }
+
+        if (!Array.isArray(value)) value = [value]
+
+        ok(Array.isArray(value), 'expected command-argument `value`')
+        this.args.push(...value)
+
+        break
+      } else if (index < this.argv.length) {
+        this.checkChoices(value = this.argv[index]!, argument)
+        ok(typeof value === 'string', 'expected command-argument `value`')
+        this.args[index] = parser(value, def?.value)
+      }
+    }
+
+    return this
+  }
+
+  /**
+   * Parse `unknown` arguments.
+   *
+   * @see {@linkcode ParseUnknownResult}
+   *
+   * @protected
+   * @instance
+   *
    * @param {string[]} unknown
    *  List of unknown arguments
-   * @return {Command | this}
-   *  The command to run
+   * @return {ParseUnknownResult}
+   *  Parse result
    */
-  protected prepareCommand(
-    operands: string[],
-    unknown: string[]
-  ): Command | this {
+  protected parseUnknownArguments(unknown: string[]): ParseUnknownResult {
     /**
-     * List of events representing operands and option flags.
+     * List of parse events.
      *
      * @const {Event[]} events
      */
@@ -2665,12 +2968,9 @@ class Command extends Helpable {
     /**
      * Parse result.
      *
-     * @const {Record<'operands' | 'unknown', string[]>} result
+     * @const {ParseUnknownResult} result
      */
-    const result: Record<'operands' | 'unknown', string[]> = {
-      operands: [], // operands, not options or values
-      unknown: [] // first unknown option and remaining unknown args
-    }
+    const result: ParseUnknownResult = { operands: [], unknown: [] }
 
     /**
      * Destination list.
@@ -2686,8 +2986,7 @@ class Command extends Helpable {
      */
     let index: number = -1
 
-    // tokenize user arguments and remove events related to known options,
-    // thus leaving any events representing operands and unknown options.
+    // resolve parse events.
     while (++index < events.length) {
       ok(events[index], 'expected `events[index]`')
       const [event, token] = events[index]!
@@ -2850,62 +3149,58 @@ class Command extends Helpable {
       continue
     }
 
-    // apply any option-related environment variables if option does not have a
-    // value sourced from the cli, config, or unknown source.
-    for (const cmd of [...this.ancestors(), this]) {
-      for (const option of cmd.options()) {
-        for (const env of option.env()) {
-          /**
-           * The source of the raw option value.
-           *
-           * @var {OptionValueSource | null | undefined} src
-           */
-          let src: OptionValueSource | null | undefined
+    return result
+  }
 
-          if (env && env in cmd.process.env) {
-            src = cmd.optionValueSource(option.key)
+  /**
+   * Process command-line arguments in the context of `this` command.
+   *
+   * > 👉 **Note**: Modifies `this` command by storing options. Does not reset
+   * > state if called again.
+   *
+   * @protected
+   * @instance
+   *
+   * @param {string[]} operands
+   *  List of operands (not options or values)
+   * @param {string[]} unknown
+   *  List of unknown arguments
+   * @return {Command | this}
+   *  The command to run
+   */
+  protected prepareCommand(
+    operands: string[],
+    unknown: string[]
+  ): Command | this {
+    /**
+     * Parse result.
+     *
+     * @const {ParseUnknownResult} result
+     */
+    const result: ParseUnknownResult = this.parseUnknownArguments(unknown)
 
-            /* v8 ignore else -- @preserve */
-            if (
-              cmd.optionValue(option.key) === undefined ||
-              includes([optionValueSource.default, optionValueSource.env], src)
-            ) {
-              /**
-               * Environment variable value.
-               *
-               * @const {string} value
-               */
-              const value: string = cmd.process.env[env]!
+    // apply implied options and environment options.
+    void this.emitImpliedOptions()
+    void this.emitEnvironmentOptions()
 
-              // emit option event.
-              // the option event handler will parse the environment variable
-              // value, as well as store the option value and source.
-              this.emitOption(option, value, optionValueSource.env)
-            }
-
-            break
-          }
-        }
-      }
-    }
-
+    // collect raw command-line arguments.
     operands = [...operands, ...result.operands]
     unknown = result.unknown
     this.argv = [...operands, ...unknown]
 
     /**
-     * The command to dispatch.
+     * The subcommand to prepare.
      *
      * @const {Command | undefined} subcommand
      */
     const subcommand: Command | undefined = this.findCommand(operands[0])
 
-    // dispatch subcommand.
+    // prepare subcommand.
     if (subcommand) {
       return subcommand.prepareCommand(operands.slice(1), unknown)
     }
 
-    // dispatch default command.
+    // prepare default command.
     if (this.defaultCommand) {
       return this.defaultCommand.prepareCommand(operands, unknown)
     }
@@ -2914,61 +3209,15 @@ class Command extends Helpable {
     if (!this.actionEvent) {
       this.checkForMissingMandatoryOptions()
       this.checkForConflictingOptions()
-      this.checkForUnknownOptions(result.unknown)
+      this.checkForUnknownOptions(unknown)
       this.checkCommandArguments()
     } else {
       this.checkForConflictingOptions()
-      this.checkForUnknownOptions(result.unknown)
+      this.checkForUnknownOptions(unknown)
     }
 
-    // process arguments.
-    this.args = []
-    for (const [index, argument] of this.arguments().entries()) {
-      /**
-       * Default value configuration.
-       *
-       * @const {DefaultInfo | undefined} def
-       */
-      const def: DefaultInfo | undefined = argument.default()
-
-      /**
-       * Command-argument parser.
-       *
-       * @const {ParseArg} parser
-       */
-      const parser: ParseArg = argument.parser()
-
-      /**
-       * Processed argument value.
-       *
-       * @var {unknown} value
-       */
-      let value: unknown = def?.value
-
-      if (argument.variadic) {
-        if (index < this.argv.length) {
-          this.checkChoices(value = this.argv.slice(index), argument)
-          ok(Array.isArray<string>(value), 'expected command-argument `value`')
-          value = parser([...value], def?.value)
-        } else {
-          ok(!argument.required, 'expected optional command-argument')
-          /* v8 ignore else -- @preserve */ if (value === undefined) value = []
-        }
-
-        if (!Array.isArray(value)) value = [value]
-
-        ok(Array.isArray(value), 'expected command-argument `value`')
-        this.args.push(...value)
-
-        break
-      } else if (index < this.argv.length) {
-        this.checkChoices(value = this.argv[index]!, argument)
-        ok(typeof value === 'string', 'expected command-argument `value`')
-        this.args[index] = parser(value, def?.value)
-      }
-    }
-
-    return this
+    // command prepartion is done once command arguments are parsed.
+    return this.parseCommandArguments()
   }
 
   /**

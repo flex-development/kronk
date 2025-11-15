@@ -3,12 +3,16 @@
  * @module kronk/types/ParseArg
  */
 
+import type { RawParseValue } from '@flex-development/kronk'
+
 /**
  * Parse a command or option argument `value`.
  *
+ * @see {@linkcode RawParseValue}
+ *
  * @template {any} [T=any]
  *  Parse result
- * @template {string | string[]} [Value=string|string[]]
+ * @template {RawParseValue} [Value=RawParseValue]
  *  The argument or arguments to parse
  *
  * @this {void}
@@ -20,7 +24,7 @@
  * @return {T}
  *  Parse result
  */
-type ParseArg<T = any, Value extends string | string[] = string | string[]> = (
+type ParseArg<T = any, Value extends RawParseValue = RawParseValue> = (
   this: void,
   value: Value,
   previous: T | undefined

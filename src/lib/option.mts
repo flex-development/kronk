@@ -369,6 +369,9 @@ class Option extends Parseable {
    *
    * Lone keys (string `implies`) imply `true`, i.e. `{ [implies]: true }`.
    *
+   * The option-argument {@linkcode parser} will be called for implied values
+   * that are strings and string arrays.
+   *
    * @see {@linkcode OptionValues}
    *
    * @public

@@ -25,4 +25,10 @@ describe('unit-d:interfaces/OptionValueSourceMap', () => {
   it('should match [env: "env"]', () => {
     expectTypeOf<TestSubject>().toHaveProperty('env').toEqualTypeOf<'env'>()
   })
+
+  it('should match [implied: "implied"]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('implied')
+      .toEqualTypeOf<'implied'>()
+  })
 })

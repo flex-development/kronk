@@ -14,7 +14,8 @@ const enum optionValueSource {
   cli = 'cli',
   config = 'config',
   default = 'default',
-  env = 'env'
+  env = 'env',
+  implied = 'implied'
 }
 
 export default optionValueSource

@@ -33,6 +33,7 @@ interface KronkErrorMap {
   'missing-argument': CommandError
   'missing-mandatory-option': CommandError
   'no-flags': KronkError
+  'unknown-implied-option': KronkError
   'unknown-option': CommandError
   error: KronkError
 }

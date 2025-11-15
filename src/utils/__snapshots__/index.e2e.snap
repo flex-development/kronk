@@ -7,6 +7,7 @@ exports[`e2e:utils > should expose public api 1`] = `
   "isKronkError",
   "isKronkEvent",
   "isOption",
+  "isRawParseValue",
   "isSubcommandInfo",
 ]
 `;

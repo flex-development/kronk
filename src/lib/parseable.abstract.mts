@@ -10,7 +10,8 @@ import type {
   List,
   ParseableInfo,
   ParseableMetadata,
-  ParseArg
+  ParseArg,
+  RawParseValue
 } from '@flex-development/kronk'
 import { fallback, isNIL } from '@flex-development/tutils'
 import { ok } from 'devlop'
@@ -220,22 +221,23 @@ abstract class Parseable extends Helpable {
    * Get the handler used to parse candidate-arguments.
    *
    * @see {@linkcode ParseArg}
+   * @see {@linkcode RawParseValue}
    *
    * @public
    * @instance
    *
    * @template {any} T
    *  Parse result
-   * @template {string | string[]} [V=string|string[]]
+   * @template {RawParseValue} [Value=RawParseValue]
    *  The argument or arguments to parse
    *
-   * @return {ParseArg<T, V>}
+   * @return {ParseArg<T, Value>}
    *  The candidate-argument parser
    */
   public parser<
     T,
-    V extends string | string[] = string | string[]
-  >(): ParseArg<T, V>
+    Value extends RawParseValue = RawParseValue
+  >(): ParseArg<T, Value>
 
   /**
    * Get or set the handler used to parse candidate-arguments.

@@ -127,6 +127,8 @@
     - [`Parseable#variadic`](#parseablevariadic)
   - [`VersionOption(info)`](#versionoptioninfo)
     - [`VersionOption#version`](#versionoptionversion)
+  - [`keid`](#keid)
+  - [`optionValueSource`](#optionvaluesource)
 - [Types](#types)
   - [`Action`](#action)
   - [`ArgumentData`](#argumentdata)
@@ -170,16 +172,18 @@
   - [`OptionMetadata`](#optionmetadata)
   - [`OptionPriority`](#optionpriority)
   - [`OptionValueSourceMap`](#optionvaluesourcemap)
-  - [`OptionValueSource`](#optionvaluesource)
+  - [`OptionValueSource`](#optionvaluesource-1)
   - [`OptionValueSources`](#optionvaluesources)
   - [`OptionsData`](#optionsdata)
   - [`ParseArg`](#parsearg)
   - [`ParseOptions`](#parseoptions)
+  - [`ParseUnknownResult`](#parseunknownresult)
   - [`ParseableInfo`](#parseableinfo-1)
   - [`ParseableMetadata`](#parseablemetadata)
   - [`ProcessEnv`](#processenv)
   - [`Process`](#process)
   - [`RawOptionValue`](#rawoptionvalue)
+  - [`RawParseValue`](#rawparsevalue)
   - [`SubcommandInfo`](#subcommandinfo)
   - [`SubcommandsData`](#subcommandsdata)
   - [`SubcommandsInfo`](#subcommandsinfo)
@@ -703,7 +707,7 @@ Emit a parsed `option` event.
   — the command option instance
 - `value` ([`RawOptionValue`](#rawoptionvalue))
   — the raw `option` value
-- `source` ([`OptionValueSource`](#optionvaluesource))
+- `source` ([`OptionValueSource`](#optionvaluesource-1))
   — the source of the raw option `value`
 - `flag?` ([`Flags`](#flags), optional)
   — the parsed `option` flag
@@ -951,7 +955,7 @@ Get or set an option value.
   — option key
 - `value` (`unknown`)
   — the parsed option value to store
-- `source` ([`OptionValueSource`](#optionvaluesource) | `null` | `undefined`)
+- `source` ([`OptionValueSource`](#optionvaluesource-1) | `null` | `undefined`)
   — the source of the original option value
 
 ##### Returns
@@ -971,12 +975,12 @@ Get or set an option value source.
 
 - `key` ([`Option['key']`](#optionkey))
   — option key
-- `source` ([`OptionValueSource`](#optionvaluesource) | `null` | `undefined`, optional)
+- `source` ([`OptionValueSource`](#optionvaluesource-1) | `null` | `undefined`, optional)
   — the source of the option value
 
 ##### Returns
 
-([`OptionValueSource`](#optionvaluesource) | [`this`](#commandinfo) | `null` | `undefined`)
+([`OptionValueSource`](#optionvaluesource-1) | [`this`](#commandinfo) | `null` | `undefined`)
 Option value source for `key` or `this` command
 
 #### `Command#options([infos])`
@@ -1424,6 +1428,9 @@ when `this` option is passed, but the implied option is not.
 
 Lone keys (string `implies`) imply `true`, i.e. `{ [implies]: true }`.
 
+The option-argument [`parser`](#parseableparserparser) will be called for implied values
+that are strings and string arrays.
+
 ##### Overloads
 
 - `implies(implies: OptionValues | string | null | undefined): this`
@@ -1531,9 +1538,16 @@ Get the option as a human-readable string.
 
 A parsed option event (`class`).
 
+> 👉 **Note**: For options where the `source` is `'implied'`, the `value` may not be a raw option value.
+
 #### Extends
 
 - [`KronkEvent`](#kronkeventid)
+
+#### Signatures
+
+- `constructor(option: T, value: RawOptionValue, source: OptionValueSource, flag?: Flags | null | undefined)`
+- `constructor(option: T, value: unknown, source: optionValueSource.implied, flag?: Flags | null | undefined)`
 
 ##### Type Parameters
 
@@ -1545,9 +1559,9 @@ A parsed option event (`class`).
 - `option` (`T`)
   — the command option instance
 - `value` ([`RawOptionValue`](#rawoptionvalue))
-  — the raw `option` value
-- `source` ([`OptionValueSource`](#optionvaluesource))
-  — the source of the raw option `value`
+  — the `option` value
+- `source` ([`OptionValueSource`](#optionvaluesource-1))
+  — the source of the option `value`
 - `flag` ([`Flags`](#flags), optional)
   — the parsed `option` flag
 
@@ -1571,7 +1585,7 @@ The command [`option`](#optioninfo) instance.
 
 #### `OptionEvent#source`
 
-[`OptionValueSource`](#optionvaluesource)
+[`OptionValueSource`](#optionvaluesource-1)
 
 The source of the raw option [`value`](#optioneventvalue).
 
@@ -1652,13 +1666,13 @@ Get or set the handler used to parse candidate-arguments.
 ##### Overloads
 
 - `parser(parser: ParseArg<any, any> | null | undefined): this`
-- `parser<T, V extends string | string[] = string | string[]>(): ParseArg<T, V>`
+- `parser<T, Value extends RawParseValue = RawParseValue>(): ParseArg<T, Value>`
 
 ##### Type Parameters
 
 - `T` (`any`)
   — parse result
-- `V` (`string | string[]`, optional)
+- `Value` ([`RawParseValue`](#rawparsevalue), optional)
   — the argument or arguments to parse
 
 ##### Parameters
@@ -1668,7 +1682,7 @@ Get or set the handler used to parse candidate-arguments.
 
 ##### Returns
 
-([`ParseArg<T, V>`](#parsearg) | [`this`](#parseableinfo)) The candidate-argument parser or `this` candidate
+([`ParseArg<T, Value>`](#parsearg) | [`this`](#parseableinfo)) The candidate-argument parser or `this` candidate
 
 #### `Parseable#required`
 
@@ -1711,6 +1725,44 @@ A command version option (`class`).
 `string`
 
 The version of the command.
+
+### `keid`
+
+Default error ids (`const enum`).
+
+```ts
+const enum keid {
+  argument_after_variadic = 'kronk/argument-after-variadic',
+  conflicting_option = 'kronk/conflicting-option',
+  duplicate_option = 'kronk/duplicate-option',
+  duplicate_subcommand = 'kronk/duplicate-subcommand',
+  error = 'kronk/error',
+  excess_arguments = 'kronk/excess-arguments',
+  invalid_argument = 'kronk/invalid-argument',
+  invalid_argument_syntax = 'kronk/invalid-argument-syntax',
+  invalid_flags = 'kronk/invalid-flags',
+  invalid_subcommand_name = 'kronk/invalid-subcommand-name',
+  missing_argument = 'kronk/missing-argument',
+  missing_mandatory_option = 'kronk/missing-mandatory-option',
+  no_flags = 'kronk/no-flags',
+  unknown_implied_option = 'kronk/unknown-implied-option',
+  unknown_option = 'kronk/unknown-option'
+}
+```
+
+### `optionValueSource`
+
+Default option value sources (`const enum`).
+
+```ts
+const enum optionValueSource {
+  cli = 'cli',
+  config = 'config',
+  default = 'default',
+  env = 'env',
+  implied = 'implied'
+}
+```
 
 ## Types
 
@@ -2321,14 +2373,16 @@ Data transfer object for command options (TypeScript interface).
   an error will be displayed if conflicting options are found during parsing
 - `env?` ([`List<string>`](#list) | `string`, optional)
   — the name of the environment variable to check for option value, or a list of names, in order of priority, to check
+- `implies?` ([`OptionValues`](#optionvalues) | `string`, optional)
+  — the key of an implied option, or a map where each key is an implied option key and each value is the value to use
+  when the option is set but the implied option is not.\
+  lone keys imply (string `implies`) `true`, i.e. `{ [implies]: true }`.\
+  the option-argument [`parser`](#parseableparserparser) will be called for implied values
+  that are strings and string arrays
 - `mandatory?` (`boolean`, optional)
   — whether the option is mandatory. mandatory options must have a value after parsing, which usually means the option
   must be specified on the command line
   - default: `false`
-- `implies?` ([`OptionValues`](#optionvalues) | `string`, optional)
-  — the key of an implied option, or a map where each key is an implied option key and each value is the value to use
-  when the option is set but the implied option is not.\
-  lone keys imply (string `implies`) `true`, i.e. `{ [implies]: true }`
 - `preset?` (`string`, optional)
   — for boolean and optional options, the preset to use when the option is specified without an option-argument.
   > 👉 **note**: the option-argument `parser` will be called.
@@ -2467,7 +2521,7 @@ type OptionValueSource = OptionValueSourceMap[keyof OptionValueSourceMap]
 ### `OptionValueSources`
 
 Record, where each key is an option key ([`Option.key`](#optioninfo))
-and each value is an [`OptionValueSource`](#optionvaluesource) (TypeScript type).
+and each value is an [`OptionValueSource`](#optionvaluesource-1) (TypeScript type).
 
 ```ts
 type OptionValueSources = {
@@ -2505,7 +2559,7 @@ type OptionsData =
 Parse a command or option argument `value` (TypeScript type).
 
 ```ts
-type ParseArg<T = any, Value extends string | string[] = string | string[]> = (
+type ParseArg<T = any, Value extends RawParseValue = RawParseValue> = (
   this: void,
   value: Value,
   previous: T | undefined
@@ -2516,7 +2570,7 @@ type ParseArg<T = any, Value extends string | string[] = string | string[]> = (
 
 - `T` (`any`, optional)
   — parse result
-- `Value` (`string | string[]`, optional)
+- `Value` ([`RawParseValue`](#rawparsevalue), optional)
   — the argument or arguments to parse
 
 #### Parameters
@@ -2540,6 +2594,17 @@ Options for parsing command-line arguments (TypeScript interface).
 
 - `from?` ([`ArgvSource`](#argvsource), optional)
   — the source of the command line arguments
+
+### `ParseUnknownResult`
+
+The result of parsing unknown arguments (TypeScript interface).
+
+#### Properties
+
+- `operands` (`string[]`)
+  — list of arguments that are operands (not options or values)
+- `unknown` (`string[]`)
+  — list containing the first unknown option and any remaining unknown arguments
 
 ### `ParseableInfo`
 
@@ -2611,6 +2676,14 @@ Union of raw option value types (TypeScript type).
 
 ```ts
 type RawOptionValue = boolean | string | string[] | null
+```
+
+### `RawParseValue`
+
+The argument or arguments passed to an argument [parser](#parseableparserparser) (TypeScript type).
+
+```ts
+type RawParseValue = string | readonly string[]
 ```
 
 ### `SubcommandInfo`

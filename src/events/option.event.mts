@@ -7,6 +7,7 @@ import KronkEvent from '#events/kronk.event'
 import type {
   Flags,
   Option,
+  optionValueSource,
   OptionValueSource,
   RawOptionValue
 } from '@flex-development/kronk'
@@ -55,8 +56,55 @@ class OptionEvent<T extends Option = Option> extends KronkEvent {
    *  The parsed `option` flag
    */
   constructor(
+    option: T,
+    value: RawOptionValue,
+    source: OptionValueSource,
+    flag?: Flags | null | undefined
+  )
+
+  /**
+   * Create a new implied `option` event.
+   *
+   * @see {@linkcode Flags}
+   * @see {@linkcode optionValueSource}
+   *
+   * @param {T} option
+   *  The command option instance
+   * @param {unknown} value
+   *  The implied `option` value
+   * @param {optionValueSource.implied} source
+   *  The source of the option `value`
+   * @param {Flags | null | undefined} [flag]
+   *  The parsed `option` flag
+   */
+  constructor(
+    option: T,
+    value: unknown,
+    source: optionValueSource.implied,
+    flag?: Flags | null | undefined
+  )
+
+  /**
+   * Create a new parsed `option` event.
+   *
+   * > 👉 **Note**: For options where the `source` is `'implied'`, the `value`
+   * > may not be a raw option value.
+   *
+   * @see {@linkcode Flags}
+   * @see {@linkcode OptionValueSource}
+   *
+   * @param {T} option
+   *  The command option instance
+   * @param {unknown} value
+   *  The raw or implied `option` value
+   * @param {OptionValueSource} source
+   *  The source of the option `value`
+   * @param {Flags | null | undefined} [flag]
+   *  The parsed `option` flag
+   */
+  constructor(
     public option: T,
-    public value: RawOptionValue,
+    public value: unknown,
     public source: OptionValueSource,
     public flag?: Flags | null | undefined
   ) {

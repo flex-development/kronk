@@ -25,7 +25,7 @@ exports[`functional:lib/Command > errors > should error on conflicting option (0
     },
     "optsWithGlobals": {
       "config": true,
-      "level": "info",
+      "level": "log",
       "tagPrefix": "",
       "write": false,
       "json": true,
@@ -60,7 +60,7 @@ exports[`functional:lib/Command > errors > should error on conflicting option (1
     },
     "optsWithGlobals": {
       "config": true,
-      "level": "info",
+      "level": "log",
       "tagPrefix": "",
       "write": false,
       "json": true,
@@ -97,7 +97,7 @@ exports[`functional:lib/Command > errors > should error on conflicting option (2
     },
     "optsWithGlobals": {
       "config": true,
-      "level": "info",
+      "level": "log",
       "tagPrefix": "",
       "write": false,
       "yaml": true,
@@ -799,6 +799,84 @@ exports[`functional:lib/Command > errors > should error on missing mandatory opt
 }
 `;
 
+exports[`functional:lib/Command > errors > should error on unknown implied option (0) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/unknown-implied-option",
+  "message": "Implied option for \`LEVEL\` not found",
+  "additional": [],
+  "cause": {
+    "commands": [
+      "grease",
+    ],
+    "implies": {
+      "LEVEL": "log",
+    },
+    "key": "LEVEL",
+    "option": "Option(-j | --json)",
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on unknown implied option (1) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/unknown-implied-option",
+  "message": "Implied option for \`LEVEL\` not found",
+  "additional": [],
+  "cause": {
+    "commands": [
+      "grease",
+    ],
+    "implies": {
+      "LEVEL": "log",
+    },
+    "key": "LEVEL",
+    "option": "Option(-j | --json)",
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on unknown implied option (2) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/unknown-implied-option",
+  "message": "Implied option for \`logLevel\` not found",
+  "additional": [],
+  "cause": {
+    "commands": [
+      "info",
+      "grease",
+    ],
+    "implies": {
+      "logLevel": "log",
+    },
+    "key": "logLevel",
+    "option": "Option(-m | --markdown)",
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on unknown implied option (3) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/unknown-implied-option",
+  "message": "Implied option for \`logLevel\` not found",
+  "additional": [],
+  "cause": {
+    "commands": [
+      "info",
+      "grease",
+    ],
+    "implies": {
+      "logLevel": "log",
+    },
+    "key": "logLevel",
+    "option": "Option(-m | --markdown)",
+  },
+}
+`;
+
 exports[`functional:lib/Command > errors > should error on unknown option (0) 1`] = `
 {
   "code": 1,
@@ -1354,7 +1432,7 @@ exports[`functional:lib/Command > parsing > should run command (14) 1`] = `
   "opts": {},
   "optsWithGlobals": {
     "config": true,
-    "level": "info",
+    "level": "verbose",
     "tagPrefix": "",
     "write": false,
     "json": true,

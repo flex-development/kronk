@@ -35,6 +35,9 @@ interface OptionData extends ParseableInfo {
    * implied option is not.\
    * Lone keys imply (string `implies`) `true`, i.e. `{ [implies]: true }`.
    *
+   * The option-argument {@linkcode parser} will be called for implied values
+   * that are strings and string arrays.
+   *
    * @see {@linkcode OptionValues}
    */
   implies?: OptionValues | string | null | undefined

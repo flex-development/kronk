@@ -6,10 +6,12 @@
 import chars from '#enums/chars'
 import eid from '#enums/keid'
 import CommandError from '#errors/command.error'
+import KronkError from '#errors/kronk.error'
 import average from '#fixtures/commands/average'
 import bun from '#fixtures/commands/bun'
 import clamp from '#fixtures/commands/clamp'
 import grease from '#fixtures/commands/grease'
+import greaseBad from '#fixtures/commands/grease-bad'
 import mlly from '#fixtures/commands/mlly'
 import smallestNum from '#fixtures/commands/smallest-num'
 import stringUtil from '#fixtures/commands/string-util'
@@ -28,6 +30,7 @@ import type {
 } from '@flex-development/kronk'
 import type { Logger } from '@flex-development/log'
 import pathe from '@flex-development/pathe'
+import type { Constructor } from '@flex-development/tutils'
 import { ok } from 'devlop'
 import type { MockInstance } from 'vitest'
 
@@ -204,6 +207,18 @@ describe('functional:lib/Command', () => {
     })
 
     it.each<ParseCase>([
+      [greaseBad, [greaseBad.name, '--json']],
+      [greaseBad, [greaseBad.name, '-j']],
+      [greaseBad, ['info', '--markdown']],
+      [greaseBad, ['info', '-m']]
+    ])('should error on unknown implied option (%#)', async (
+      info,
+      argv
+    ) => {
+      void test(eid.unknown_implied_option, info, argv, KronkError)
+    })
+
+    it.each<ParseCase>([
       [average, ['--debug', chars.delimiter, '13', '26']],
       [bun, ['run.mts', '--import=./loader.mjs']],
       [grease, [grease.name, 'tag', '--list']],
@@ -224,13 +239,16 @@ describe('functional:lib/Command', () => {
      *  Command info
      * @param {string[]} argv
      *  Command-line arguments
+     * @param {Constructor<KronkError>} [Error=CommandError]
+     *  The expected error constructor
      * @return {Promise<undefined>}
      */
     async function test(
       this: void,
       id: string,
       info: CommandInfo,
-      argv: string[]
+      argv: string[],
+      Error: Constructor<KronkError> = CommandError
     ): Promise<undefined> {
       info.exit = exiter
       info.process ??= createProcess()
@@ -238,7 +256,7 @@ describe('functional:lib/Command', () => {
       // Arrange
       const method: 'parse' | 'parseAsync' = info.async ? 'parseAsync' : 'parse'
       const subject: TestSubject = new TestSubject(info)
-      let error!: CommandError
+      let error!: KronkError
 
       // Act
       try {
@@ -248,10 +266,16 @@ describe('functional:lib/Command', () => {
       }
 
       // Expect
-      expect(error).to.be.instanceof(CommandError).and.have.property('id', id)
-      expect(error).to.have.property('command').be.instanceof(TestSubject)
+      expect(error).to.be.instanceof(Error).and.have.property('id', id)
       expect(exiter).toHaveBeenCalledExactlyOnceWith(error)
       expect(info.process).to.have.property('exitCode', error.code)
+
+      // Expect (conditional)
+      if (Error === CommandError) {
+        expect(error).to.have.property('command').be.instanceof(TestSubject)
+      }
+
+      // Expect (snapshot)
       expect(errorSnapshot(error)).toMatchSnapshot()
 
       return delete info.process, void 0
@@ -415,7 +439,7 @@ describe('functional:lib/Command', () => {
       ],
       [
         grease,
-        ['-ju', 'bump', '--preid=alpha', 'recommend'],
+        ['-ju', '--level=verbose', 'bump', '--preid=alpha', 'recommend'],
         /**
          * @this {void}
          *
@@ -434,7 +458,7 @@ describe('functional:lib/Command', () => {
              * @return {undefined}
              */
             before(this: void, subject: TestSubject): undefined {
-              subcommand = subject.commands().get(argv[1]!)!
+              subcommand = subject.commands().get(argv[2]!)!
               ok(subcommand, 'expected `subcommand`')
               subcommand = subcommand.commands().get(argv.at(-1)!)!
               ok(subcommand, 'expected `subcommand`')

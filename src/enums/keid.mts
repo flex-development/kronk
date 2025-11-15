@@ -6,11 +6,9 @@
 import type { KronkErrorId } from '@flex-development/kronk'
 
 /**
- * Kronk error ids.
+ * Default error ids.
  *
  * @see {@linkcode KronkErrorId}
- *
- * @internal
  *
  * @enum {KronkErrorId}
  */
@@ -28,6 +26,7 @@ const enum keid {
   missing_argument = 'kronk/missing-argument',
   missing_mandatory_option = 'kronk/missing-mandatory-option',
   no_flags = 'kronk/no-flags',
+  unknown_implied_option = 'kronk/unknown-implied-option',
   unknown_option = 'kronk/unknown-option'
 }
 
