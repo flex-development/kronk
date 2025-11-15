@@ -28,6 +28,13 @@ declare module '@flex-development/kronk' {
      * @internal
      */
     async?: true
+
+    /**
+     * Whether help text is expected to be printed during testing.
+     *
+     * @internal
+     */
+    help?: true
   }
 }
 

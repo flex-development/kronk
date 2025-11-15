@@ -133,7 +133,7 @@ Command {
     },
     "subcommands": Map {},
     "version": undefined,
-    "action": undefined,
+    "action": [Function bound help],
     "done": undefined,
     "exit": undefined,
     "optionPriority": "local",

@@ -288,7 +288,7 @@ describe('functional:lib/Command', () => {
     let process: Process
     let log: MockInstance<Logger['log']>
     let message: string | undefined
-    let subcommand: TestSubject | undefined
+    let subcommand: TestSubject | null | undefined
 
     afterEach(() => {
       action = undefined
@@ -388,6 +388,32 @@ describe('functional:lib/Command', () => {
         }
       ],
       [
+        Object.assign({}, grease, { help: true as const }),
+        ['help'],
+        /**
+         * @this {void}
+         *
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.helpCommand()
+              ok(subcommand, 'expected `subcommand`')
+              return message = '', void this
+            }
+          }
+        }
+      ],
+      [
         Object.assign({}, grease, { actionOverride: true as const }),
         [grease.name, 'bump', '-h'],
         /**
@@ -409,6 +435,36 @@ describe('functional:lib/Command', () => {
              */
             before(this: void, subject: TestSubject): undefined {
               subcommand = subject.commands().get(argv[1]!)!
+              ok(subcommand, 'expected `subcommand`')
+              return message = '', void this
+            }
+          }
+        }
+      ],
+      [
+        Object.assign({}, grease, { help: true as const }),
+        [grease.name, 'bump', 'help'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  Command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[1]!)!
+              ok(subcommand, 'expected `subcommand`')
+              subcommand = subcommand.helpCommand()
               ok(subcommand, 'expected `subcommand`')
               return message = '', void this
             }
@@ -774,6 +830,12 @@ describe('functional:lib/Command', () => {
       if (info.actionOverride) {
         expect(action).not.toHaveBeenCalled()
         expect(log).toHaveBeenCalledExactlyOnceWith(message)
+        expect(done).toHaveBeenCalledAfter(log)
+      } else if (info.help) {
+        expect(action).toHaveBeenCalledOnce()
+        expect(action.mock.contexts[0]).to.eq(result)
+        expect(action.mock.lastCall).to.eql([opts, ...result.args])
+        expect(done).toHaveBeenCalledAfter(action)
       } else {
         expect(action).toHaveBeenCalledOnce()
         expect(action.mock.contexts[0]).to.eq(result)

@@ -2142,12 +2142,10 @@ class Command extends Helpable {
    * @public
    * @instance
    *
-   * @return {this}
-   *  `this` command
+   * @return {undefined}
    */
-  public help(): this {
-    this.logger.log('')
-    return this
+  public help(): undefined {
+    return void this.logger.log('')
   }
 
   /**
@@ -2189,8 +2187,6 @@ class Command extends Helpable {
   /**
    * Get or configure the help subcommand.
    *
-   * @todo configure subcommand to print help text
-   *
    * @see {@linkcode Command}
    * @see {@linkcode HelpCommandData}
    *
@@ -2219,7 +2215,15 @@ class Command extends Helpable {
           : this
             // prevent `RangeError: Maximum call stack size exceeded`
             // by disabling help subcommand for current help subcommand.
-            .command({ ...help, helpCommand: false })
+            .createCommand({ ...help, helpCommand: false })
+
+        // add help subcommand.
+        this.addCommand(this.info.helpCommand)
+
+        // configure help subcommand to print help text.
+        if (this.info.helpCommand.action() === noop) {
+          this.info.helpCommand.action(this.help.bind(this))
+        }
       }
 
       return this

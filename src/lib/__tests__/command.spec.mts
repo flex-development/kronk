@@ -435,7 +435,7 @@ describe('unit:lib/Command', () => {
     it.each<[HelpCommandData]>([
       [false],
       ['more'],
-      [new TestSubject('info')],
+      [new TestSubject('info', { action: vi.fn() })],
       [{ description: 'show help for command', name: 'details' }]
     ])('should set help subcommand and return `this` (%#)', help => {
       // Arrange
@@ -453,6 +453,7 @@ describe('unit:lib/Command', () => {
         expect(result).to.have.nested.property(prop, null)
       } else if (TestSubject.isCommand(help)) {
         expect(result).to.have.nested.property(prop, help)
+        expect(help).to.have.nested.property('info.action.mock')
       } else {
         expect(result).to.have.nested.property(prop).not.eq(help)
         expect(result).to.have.nested.property(prop).be.instanceof(TestSubject)
