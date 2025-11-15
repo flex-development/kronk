@@ -7,6 +7,7 @@ import type {
   Argument,
   Command,
   CommandInfo,
+  ExampleInfo,
   Option,
   VersionOption
 } from '@flex-development/kronk'
@@ -37,6 +38,15 @@ interface CommandMetadata extends Omit<CommandInfo, Skip> {
    * @see {@linkcode Argument}
    */
   arguments: Argument[]
+
+  /**
+   * A list of command examples.
+   *
+   * @see {@linkcode ExampleInfo}
+   *
+   * @override
+   */
+  examples: ExampleInfo[]
 
   /**
    * The help subcommand.

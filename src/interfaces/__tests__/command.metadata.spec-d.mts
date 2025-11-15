@@ -11,6 +11,7 @@ import type {
   Argument,
   Command,
   CommandInfo,
+  ExampleInfo,
   Option,
   VersionOption
 } from '@flex-development/kronk'
@@ -35,6 +36,12 @@ describe('unit-d:interfaces/CommandMetadata', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('arguments')
       .toEqualTypeOf<Argument[]>()
+  })
+
+  it('should match [examples: ExampleInfo[]]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('examples')
+      .toEqualTypeOf<ExampleInfo[]>()
   })
 
   it('should match [helpCommand: Command | null | undefined]', () => {

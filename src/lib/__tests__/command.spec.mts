@@ -24,6 +24,7 @@ import type {
   Action,
   CommandInfo,
   CommandName,
+  ExampleInfo,
   Exit,
   HelpCommandData,
   HelpOptionData,
@@ -310,6 +311,57 @@ describe('unit:lib/Command', () => {
       // Expect
       expect(result).to.eq(subject)
       expect(result).to.have.nested.property('info.done', done)
+    })
+  })
+
+  describe('#example', () => {
+    let subject: TestSubject
+
+    beforeEach(() => {
+      subject = new TestSubject()
+    })
+
+    it.each<[ExampleInfo | string, (string | null | undefined)?]>([
+      ['--to=0ea3bcf737edf29d0a0ad3dc7702f29615e16b29', 'ch'],
+      [{ text: '-s' }]
+    ])('should add example and return `this` (%#)', (info, prefix) => {
+      // Arrange
+      const property: string = 'info.examples'
+
+      // Act
+      const result = subject.example(info as never, prefix)
+
+      // Expect
+      expect(result).to.eq(subject)
+      expect(result).to.have.nested.property(property).satisfy(Array.isArray)
+      expect(result).to.have.nested.property(property).be.of.length(1)
+    })
+  })
+
+  describe('#examples', () => {
+    let subject: TestSubject
+
+    beforeEach(() => {
+      subject = new TestSubject()
+    })
+
+    it('should add examples and return `this`', () => {
+      // Act
+      const result = subject.examples([
+        'bump -w 1.0.0',
+        {
+          prefix: 'ch',
+          text: '--releases=0 --to=$(jq .version package.json -r) -sw'
+        }
+      ])
+
+      // Expect
+      expect(result).to.eq(subject)
+      expect(subject.examples()).toMatchSnapshot()
+    })
+
+    it('should return list of command examples', () => {
+      expect(subject.examples()).to.satisfy(Array.isArray).and.be.empty
     })
   })
 

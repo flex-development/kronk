@@ -38,6 +38,8 @@ import type {
   CommandName,
   CommandSnapshot,
   DefaultInfo,
+  ExampleInfo,
+  ExamplesData,
   Exit,
   Flags,
   HelpCommandData,
@@ -269,6 +271,7 @@ class Command extends Helpable {
       ...this.info,
       aliases: new Set(),
       arguments: [],
+      examples: [],
       helpCommand: null,
       helpOption: null,
       options: new Map(),
@@ -317,6 +320,7 @@ class Command extends Helpable {
     this.aliases(data.aliases)
     this.done(this.info.done)
     this.exiter(this.info.exit)
+    this.examples(data.examples)
     this.helpCommand(data.helpCommand)
     this.helpOption(data.helpOption)
     this.id(this.info.name)
@@ -1826,6 +1830,115 @@ class Command extends Helpable {
     }
 
     this.exit(error)
+  }
+
+  /**
+   * Add an example for the command.
+   *
+   * > 👉 **Note**: This method can be called more than once
+   * > to add multiple examples.
+   *
+   * @see {@linkcode ExampleInfo}
+   *
+   * @public
+   * @instance
+   *
+   * @param {ExampleInfo | string} info
+   *  Example info or text
+   * @return {this}
+   *  `this` command
+   */
+  public example(info: ExampleInfo | string): this
+
+  /**
+   * Add an example for the command.
+   *
+   * > 👉 **Note**: This method can be called more than once
+   * > to add multiple examples.
+   *
+   * @public
+   * @instance
+   *
+   * @param {string} text
+   *  The example text
+   * @param {string | null | undefined} [prefix]
+   *  The example text prefix
+   * @return {this}
+   *  `this` command
+   */
+  public example(text: string, prefix?: string | null | undefined): this
+
+  /**
+   * Add an example for the command.
+   *
+   * @see {@linkcode ExampleInfo}
+   *
+   * @public
+   * @instance
+   *
+   * @param {ExampleInfo | string} info
+   *  Example info or text
+   * @param {string | null | undefined} [prefix]
+   *  The example text prefix
+   * @return {this}
+   *  `this` command
+   */
+  public example(
+    info: ExampleInfo | string,
+    prefix?: string | null | undefined
+  ): this {
+    if (typeof info === 'string') info = { prefix, text: info }
+    ok(Array.isArray(this.info.examples), 'expected `info.examples`')
+    return this.info.examples.push(info), this
+  }
+
+  /**
+   * Add examples for the command.
+   *
+   * @see {@linkcode ExamplesData}
+   *
+   * @public
+   * @instance
+   *
+   * @param {ExamplesData | null | undefined} examples
+   *  Example info, example text, or a list of such
+   * @return {this}
+   *  `this` command
+   */
+  public examples(examples: ExamplesData | null | undefined): this
+
+  /**
+   * Get a list of command examples.
+   *
+   * @see {@linkcode ExampleInfo}
+   *
+   * @public
+   * @instance
+   *
+   * @return {ExampleInfo[]}
+   *  List of examples
+   */
+  public examples(): ExampleInfo[]
+
+  /**
+   * Get or add examples for the command.
+   *
+   * @see {@linkcode ExamplesData}
+   *
+   * @public
+   * @instance
+   *
+   * @param {ExamplesData | null | undefined} [examples]
+   *  Example info, example text, or a list of such
+   * @return {ExampleInfo[] | this}
+   *  List of examples or `this` command
+   */
+  public examples(
+    examples?: ExamplesData | null | undefined
+  ): ExampleInfo[] | this {
+    if (!arguments.length) return this.info.examples
+    for (const example of toList(examples)) this.example(example)
+    return this
   }
 
   /**

@@ -50,6 +50,8 @@
     - [`Command#done([done])`](#commanddonedone)
     - [`Command#emit(event)`](#commandemitevent)
     - [`Command#emitOption(option, value, source[, flags])`](#commandemitoptionoption-value-source-flag)
+    - [`Command#example(info[, prefix])`](#commandexampleinfo-prefix)
+    - [`Command#examples([examples])`](#commandexamplesexamples)
     - [`Command#error(info)`](#commanderrorinfo)
     - [`Command#exit([e])`](#commandexite)
     - [`Command#exiter([exit])`](#commandexiterexit)
@@ -149,6 +151,8 @@
   - [`CommandSnapshot`](#commandsnapshot-1)
   - [`DefaultInfo`](#defaultinfo)
   - [`EmptyString`](#emptystring)
+  - [`ExampleInfo`](#exampleinfo)
+  - [`ExamplesData`](#examplesdata)
   - [`ExitCode`](#exitcode)
   - [`ExitProcess`](#exitprocess)
   - [`Exit`](#exit)
@@ -728,6 +732,46 @@ Display an error message and exit.
 ##### Returns
 
 (`never`) Never, exits erroneously
+
+#### `Command#example(info[, prefix])`
+
+Add an example for the command.
+
+> 👉 **Note**: This method can be called more than once to add multiple examples.
+
+##### Overloads
+
+- `example(info: ExampleInfo | string): this`
+- `example(info: string, prefix?: string | null | undefined): this`
+
+##### Parameters
+
+- `info` ([`ExampleInfo`](#exampleinfo) | `string`)
+  — example info or text
+- `prefix` (`string` | `null` | `undefined`)
+  — the example text prefix
+
+##### Returns
+
+([`this`](#commandinfo)) `this` command
+
+#### `Command#examples([examples])`
+
+Get or add examples for the command.
+
+##### Overloads
+
+- `examples(examples: ExamplesData | null | undefined): this`
+- `examples(): ExampleInfo[]`
+
+##### Parameters
+
+- `examples` ([`ExamplesData`](#examplesdata) | `null` | `undefined`)
+  — example info, example text, or a list of such
+
+##### Returns
+
+([`ExampleInfo[]`](#exampleinfo) | [`this`](#commandinfo)) List of examples or `this` command
 
 #### `Command#exit([e])`
 
@@ -2029,6 +2073,8 @@ Command metadata (TypeScript interface).
   — list of command aliases
 - `arguments` ([`Argument[]`](#argumentinfo))
   — list of command arguments
+- `examples` ([`ExampleInfo[]`](#exampleinfo))
+  — list of command examples
 - `helpOption` ([`Option`](#optioninfo) | `null` | `undefined`)
   — the help option
 - `options` ([`Map<string, Option>`](#optioninfo))
@@ -2095,6 +2141,25 @@ An empty string (TypeScript type).
 
 ```ts
 type EmptyString = ''
+```
+
+### `ExampleInfo`
+
+Command example info (TypeScript interface).
+
+#### Properties
+
+- `prefix?` (`string`, optional)
+  — the example text prefix
+- `text` (`string`)
+  — the example text
+
+### `ExamplesData`
+
+Union of types used to configure command examples (TypeScript type).
+
+```ts
+type ExamplesData = ExampleInfo | List<ExampleInfo | string> | string
 ```
 
 ### `ExitCode`

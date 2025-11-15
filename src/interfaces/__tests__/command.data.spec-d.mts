@@ -8,6 +8,7 @@ import type {
   Action,
   ArgumentsData,
   Command,
+  ExamplesData,
   Exit,
   HelpableInfo,
   HelpOptionData,
@@ -58,6 +59,12 @@ describe('unit-d:interfaces/CommandData', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('done')
       .toEqualTypeOf<Nilable<Action<any>>>()
+  })
+
+  it('should match [examples?: ExamplesData | null | undefined]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('examples')
+      .toEqualTypeOf<Nilable<ExamplesData>>()
   })
 
   it('should match [exit?: Exit | null | undefined]', () => {

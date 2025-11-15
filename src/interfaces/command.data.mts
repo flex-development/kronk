@@ -7,6 +7,7 @@ import type {
   Action,
   ArgumentsData,
   Command,
+  ExamplesData,
   Exit,
   HelpableInfo,
   HelpCommandData,
@@ -60,6 +61,13 @@ interface CommandData extends HelpableInfo {
    * @see {@linkcode Action}
    */
   done?: Action<any> | null | undefined
+
+  /**
+   * An example of the command, or a list of examples.
+   *
+   * @see {@linkcode ExamplesData}
+   */
+  examples?: ExamplesData | null | undefined
 
   /**
    * The callback to fire when the process is exited.

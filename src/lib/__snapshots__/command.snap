@@ -58,6 +58,19 @@ exports[`unit:lib/Command > #addOption > should throw on short flag conflict 1`]
 }
 `;
 
+exports[`unit:lib/Command > #examples > should add examples and return \`this\` 1`] = `
+[
+  {
+    "prefix": undefined,
+    "text": "bump -w 1.0.0",
+  },
+  {
+    "prefix": "ch",
+    "text": "--releases=0 --to=$(jq .version package.json -r) -sw",
+  },
+]
+`;
+
 exports[`unit:lib/Command > #helpCommand > should return help subcommand (0) 1`] = `
 Command {
   "info": {
@@ -67,6 +80,7 @@ Command {
     "hidden": false,
     "aliases": Set {},
     "arguments": [],
+    "examples": [],
     "helpOption": Option {
       "info": {
         "description": "show help",
@@ -156,6 +170,7 @@ Command {
       "hidden": false,
       "aliases": Set {},
       "arguments": [],
+      "examples": [],
       "helpCommand": [Circular],
       "helpOption": Option {
         "info": {
