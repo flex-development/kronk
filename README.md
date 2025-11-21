@@ -59,6 +59,7 @@
     - [`Command#findOption(flag[, direction])`](#commandfindoptionflag-direction)
     - [`Command#helpCommand([help])`](#commandhelpcommandhelp)
     - [`Command#helpOption([help])`](#commandhelpoptionhelp)
+    - [`Command#helpUtility([util])`](#commandhelputilityutil)
     - [`Command#id([name])`](#commandidname)
     - [`Command#logger`](#commandlogger)
     - [`Command#on<T>(event, listener[, options])`](#commandontevent-listener-options)
@@ -83,6 +84,8 @@
   - [`CommandError(info)`](#commanderrorinfo-1)
     - [`CommandError#command`](#commanderrorcommand)
     - [`CommandError#snapshot()`](#commanderrorsnapshot)
+  - [`Help([options])`](#helpoptions)
+    - [`Help#text(cmd)`](#helptextcmd)
   - [`Helpable([info])`](#helpableinfo)
     - [`Helpable#description([description])`](#helpabledescriptiondescription)
     - [`Helpable#hidden`](#helpablehidden)
@@ -159,6 +162,7 @@
   - [`Flags`](#flags)
   - [`HelpCommandData`](#helpcommanddata)
   - [`HelpOptionData`](#helpoptiondata)
+  - [`HelpTextOptions`](#helptextoptions)
   - [`HelpableInfo`](#helpableinfo-1)
   - [`KronkErrorCause`](#kronkerrorcause-1)
   - [`KronkErrorId`](#kronkerrorid-1)
@@ -895,6 +899,29 @@ Get or configure the help option.
 
 (`T` | [`this`](#commandinfo) | `null`) Help option or `this` command
 
+#### `Command#helpUtility([util])`
+
+Get or set the help text utility.
+
+##### Overloads
+
+- `helpUtility(util: Help | null | undefined): this`
+- `helpUtility<T extends Help>(): T`
+
+##### Type Parameters
+
+- `T` ([`Help`](#helpoptions))
+  — help text utility instance
+
+##### Parameters
+
+- `util` ([`Help`](#helpoptions) | `null`| `undefined`)
+  — the help text utility
+
+##### Returns
+
+(`T` | [`this`](#commandinfo)) Help text utility or `this` command
+
 #### `Command#id([name])`
 
 Get or set the name of the command.
@@ -1247,6 +1274,28 @@ Get a snapshot of the error.
 ##### Returns
 
 ([`CommandErrorSnapshot`](#commanderrorsnapshot-1)) Error snapshot object
+
+### `Help([options])`
+
+Help text utility (`class`).
+
+#### Parameters
+
+- `options` ([`HelpTextOptions`](#helptextoptions) | `null` | `undefined`)
+  — options for formating help text
+
+#### `Help#text(cmd)`
+
+Generate help text for a command.
+
+##### Parameters
+
+- `cmd` ([`Command`](#commandinfo))
+  — the command to generate help text for
+
+##### Returns
+
+(`string`) Formatted help text
 
 ### `Helpable([info])`
 
@@ -1998,6 +2047,9 @@ Data transfer object for commands (TypeScript interface).
 - `helpOption?` ([`HelpOptionData`](#helpoptiondata), optional)
   — customize the help option, or disable it (`false`)
   - default: `{ description: 'show help', flags: '-h | --help' }`
+- `helpUtility?` ([`Help`](#helpoptions), optional)
+  — the help text utility to use when generating help text
+  - default: `new Help()`
 - `optionPriority?` ([`OptionPriority`](#optionpriority), optional)
   — the strategy to use when merging global and local options
   - default: `'local'`
@@ -2075,8 +2127,12 @@ Command metadata (TypeScript interface).
   — list of command arguments
 - `examples` ([`ExampleInfo[]`](#exampleinfo))
   — list of command examples
+- `helpCommand` ([`Command`](#commandinfo) | `null` | `undefined`)
+  — the help subcommand
 - `helpOption` ([`Option`](#optioninfo) | `null` | `undefined`)
   — the help option
+- `helpUtility` ([`Help`](#helpoptions))
+  — the help text utility to use when generating help text
 - `options` ([`Map<string, Option>`](#optioninfo))
   — map, where each key is a long or short flag and each value is the command option instance registered for that flag
 - `parent?` (`null` | `undefined`)
@@ -2262,6 +2318,20 @@ It can also be disabled (`false`).
 ```ts
 type HelpOptionData = Flags | Option | OptionInfo | false
 ```
+
+### `HelpTextOptions`
+
+Options for formating help text (TypeScript interface).
+
+#### Extends
+
+- [`ColorizerOptions`][colorizeroptions]
+
+#### Properties
+
+- `columns?` (`number`, optional)
+  — the maximum number of columns to output
+  - default: `80`
 
 ### `HelpableInfo`
 
@@ -2870,6 +2940,8 @@ This project has a [code of conduct](./CODE_OF_CONDUCT.md). By interacting with 
 community you agree to abide by its terms.
 
 [bun]: https://bun.sh
+
+[colorizeroptions]: https://github.com/flex-development/colors#colorizeroptions
 
 [esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
 

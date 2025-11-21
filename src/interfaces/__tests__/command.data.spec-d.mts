@@ -10,7 +10,9 @@ import type {
   Command,
   ExamplesData,
   Exit,
+  Help,
   HelpableInfo,
+  HelpCommandData,
   HelpOptionData,
   List,
   OptionPriority,
@@ -73,10 +75,22 @@ describe('unit-d:interfaces/CommandData', () => {
       .toEqualTypeOf<Nilable<Exit>>()
   })
 
+  it('should match [helpCommand?: HelpCommandData | null | undefined]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('helpCommand')
+      .toEqualTypeOf<Nilable<HelpCommandData>>()
+  })
+
   it('should match [helpOption?: HelpOptionData | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('helpOption')
       .toEqualTypeOf<Nilable<HelpOptionData>>()
+  })
+
+  it('should match [helpUtility?: Help | null | undefined]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('helpUtility')
+      .toEqualTypeOf<Nilable<Help>>()
   })
 
   it('should match [optionPriority?: OptionPriority | null | undefined]', () => {

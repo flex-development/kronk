@@ -17,6 +17,7 @@ import smallestNum from '#fixtures/commands/smallest-num'
 import stringUtil from '#fixtures/commands/string-util'
 import tribonacci from '#fixtures/commands/tribonacci'
 import TestSubject from '#lib/command'
+import Help from '#lib/help'
 import createProcess from '#tests/utils/create-process'
 import errorSnapshot from '#tests/utils/error-snapshot'
 import type {
@@ -28,7 +29,7 @@ import type {
   ParseOptions,
   Process
 } from '@flex-development/kronk'
-import type { Logger } from '@flex-development/log'
+import type { WriteStream } from '@flex-development/log'
 import pathe from '@flex-development/pathe'
 import type { Constructor } from '@flex-development/tutils'
 import { ok } from 'devlop'
@@ -285,19 +286,21 @@ describe('functional:lib/Command', () => {
   describe('parsing', () => {
     let action: MockInstance<Action<any, any>> | undefined
     let done: MockInstance<Action<any, any>> | undefined
+    let help: Help
+    let output: string | undefined
     let process: Process
-    let log: MockInstance<Logger['log']>
-    let message: string | undefined
     let subcommand: TestSubject | null | undefined
+    let write: MockInstance<WriteStream['write']>
 
     afterEach(() => {
       action = undefined
       done = undefined
-      message = undefined
+      output = undefined
       subcommand = undefined
     })
 
     beforeAll(() => {
+      help = new Help()
       process = createProcess({ GREASE_COLOR: chars.true, PWD: pathe.cwd() })
     })
 
@@ -366,7 +369,7 @@ describe('functional:lib/Command', () => {
       [clamp, [clamp.name, chars.digit3, '--max', '13', '--min=']],
       [grease, [grease.name]],
       [
-        Object.assign({}, grease, { actionOverride: true as const }),
+        Object.assign({}, grease, { actionOverride: true }),
         ['--help'],
         /**
          * @this {void}
@@ -379,16 +382,18 @@ describe('functional:lib/Command', () => {
             /**
              * @this {void}
              *
+             * @param {TestSubject} subject
+             *  The command under test
              * @return {undefined}
              */
-            before(this: void): undefined {
-              return message = '', void this
+            before(this: void, subject: TestSubject): undefined {
+              return output = help.text(subject), void this
             }
           }
         }
       ],
       [
-        Object.assign({}, grease, { help: true as const }),
+        Object.assign({}, grease, { help: true }),
         ['help'],
         /**
          * @this {void}
@@ -407,14 +412,13 @@ describe('functional:lib/Command', () => {
              */
             before(this: void, subject: TestSubject): undefined {
               subcommand = subject.helpCommand()
-              ok(subcommand, 'expected `subcommand`')
-              return message = '', void this
+              return ok(subcommand, 'expected `subcommand`'), void this
             }
           }
         }
       ],
       [
-        Object.assign({}, grease, { actionOverride: true as const }),
+        Object.assign({}, grease, { actionOverride: true }),
         [grease.name, 'bump', '-h'],
         /**
          * @this {void}
@@ -436,13 +440,13 @@ describe('functional:lib/Command', () => {
             before(this: void, subject: TestSubject): undefined {
               subcommand = subject.commands().get(argv[1]!)!
               ok(subcommand, 'expected `subcommand`')
-              return message = '', void this
+              return output = help.text(subcommand), void this
             }
           }
         }
       ],
       [
-        Object.assign({}, grease, { help: true as const }),
+        Object.assign({}, grease, { help: true }),
         [grease.name, 'bump', 'help'],
         /**
          * @this {void}
@@ -464,15 +468,19 @@ describe('functional:lib/Command', () => {
             before(this: void, subject: TestSubject): undefined {
               subcommand = subject.commands().get(argv[1]!)!
               ok(subcommand, 'expected `subcommand`')
+
+              output = help.text(subcommand)
+
               subcommand = subcommand.helpCommand()
               ok(subcommand, 'expected `subcommand`')
-              return message = '', void this
+
+              return void this
             }
           }
         }
       ],
       [
-        Object.assign({}, grease, { actionOverride: true as const }),
+        Object.assign({}, grease, { actionOverride: true }),
         ['-u', '--version'],
         /**
          * @this {void}
@@ -488,7 +496,7 @@ describe('functional:lib/Command', () => {
              * @return {undefined}
              */
             before(this: void): undefined {
-              return message = grease.version, void this
+              return output = grease.version + chars.lf, void this
             }
           }
         }
@@ -643,8 +651,8 @@ describe('functional:lib/Command', () => {
         }
       ],
       [
-        Object.assign({}, mlly, { actionOverride: true as const }),
-        ['--version'],
+        Object.assign({}, mlly, { actionOverride: true }),
+        ['-v'],
         /**
          * @this {void}
          *
@@ -659,13 +667,13 @@ describe('functional:lib/Command', () => {
              * @return {undefined}
              */
             before(this: void): undefined {
-              return message = mlly.version, void this
+              return output = mlly.version + chars.lf, void this
             }
           }
         }
       ],
       [
-        Object.assign({}, mlly, { actionOverride: true as const }),
+        Object.assign({}, mlly, { actionOverride: true }),
         [mlly.name, 'resolve', '--version'],
         /**
          * @this {void}
@@ -688,8 +696,8 @@ describe('functional:lib/Command', () => {
               subcommand = subject.commands().get(argv[1]!)!
               ok(subcommand, 'expected `subcommand`')
 
-              message = subcommand.version()!
-              ok(message, 'expected `subcommand` version')
+              output = subcommand.version()! + chars.lf
+              ok(output, 'expected `subcommand` version')
 
               return void this
             }
@@ -807,9 +815,10 @@ describe('functional:lib/Command', () => {
       ]
     ])('should run command (%#)', async (info, argv, hooks) => {
       const { after, before } = hooks?.(argv) ?? {}
+      const { actionOverride, async: isAsync, helpText, ...rest } = info
 
       // Arrange
-      const subject: TestSubject = new TestSubject({ ...info, process })
+      const subject: TestSubject = new TestSubject({ ...rest, process })
       let command: TestSubject
       let opts: OptionValues
       let optsWithGlobals: OptionValues
@@ -818,29 +827,34 @@ describe('functional:lib/Command', () => {
       // Act
       before?.(subject)
       command = subcommand ?? subject
-      command.action(vi.fn().mockName('action')).done(vi.fn().mockName('done'))
+      !helpText && command.action(vi.fn().mockName('action'))
+      helpText && (output ??= new Help().text(command))
+      command.done(vi.fn().mockName('done'))
       action ??= act(command)
       done ??= dn(command)
-      log = vi.spyOn(command.logger, 'log')
-      result = await subject[info.async ? 'parseAsync' : 'parse'](argv, options)
+      write = vi.spyOn(process.stdout, 'write')
+      result = await subject[isAsync ? 'parseAsync' : 'parse'](argv, options)
       opts = result.opts()
       optsWithGlobals = result.optsWithGlobals()
 
       // Expect (conditional)
-      if (info.actionOverride) {
+      if (actionOverride) {
         expect(action).not.toHaveBeenCalled()
-        expect(log).toHaveBeenCalledExactlyOnceWith(message)
-        expect(done).toHaveBeenCalledAfter(log)
-      } else if (info.help) {
+        expect(write).toHaveBeenCalledExactlyOnceWith(output)
+        expect(done).toHaveBeenCalledAfter(write)
+      } else if (helpText) {
         expect(action).toHaveBeenCalledOnce()
         expect(action.mock.contexts[0]).to.eq(result)
         expect(action.mock.lastCall).to.eql([opts, ...result.args])
+        expect(write).toHaveBeenCalledExactlyOnceWith(output)
         expect(done).toHaveBeenCalledAfter(action)
+        expect(done).toHaveBeenCalledAfter(write)
       } else {
         expect(action).toHaveBeenCalledOnce()
         expect(action.mock.contexts[0]).to.eq(result)
         expect(action.mock.lastCall).to.eql([opts, ...result.args])
         expect(done).toHaveBeenCalledAfter(action)
+        expect(write).not.toHaveBeenCalled()
       }
 
       // Expect

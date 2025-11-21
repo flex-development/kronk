@@ -9,6 +9,7 @@ import type {
   Command,
   ExamplesData,
   Exit,
+  Help,
   HelpableInfo,
   HelpCommandData,
   HelpOptionData,
@@ -99,6 +100,16 @@ interface CommandData extends HelpableInfo {
    *  { description: 'show help', flags: '-h | --help' }
    */
   helpOption?: HelpOptionData | null | undefined
+
+  /**
+   * The help text utility to use when generating help text.
+   *
+   * @see {@linkcode Help}
+   *
+   * @default
+   *  new Help()
+   */
+  helpUtility?: Help | null | undefined
 
   /**
    * The strategy to use when merging global and local options.

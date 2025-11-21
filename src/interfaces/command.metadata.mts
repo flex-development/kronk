@@ -8,6 +8,7 @@ import type {
   Command,
   CommandInfo,
   ExampleInfo,
+  Help,
   Option,
   VersionOption
 } from '@flex-development/kronk'
@@ -65,6 +66,15 @@ interface CommandMetadata extends Omit<CommandInfo, Skip> {
    * @override
    */
   helpOption: Option | null | undefined
+
+  /**
+   * The help text utility to use when generating help text.
+   *
+   * @see {@linkcode Help}
+   *
+   * @override
+   */
+  helpUtility: Help
 
   /**
    * Map, where each key is a long or short flag and each value is the command

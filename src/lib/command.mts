@@ -16,6 +16,7 @@ import orNIL from '#internal/or-nil'
 import toChunks from '#internal/to-chunks'
 import toList from '#internal/to-list'
 import Argument from '#lib/argument'
+import Help from '#lib/help'
 import Helpable from '#lib/helpable.abstract'
 import Option from '#lib/option'
 import VersionOption from '#lib/version.option'
@@ -272,8 +273,6 @@ class Command extends Helpable {
       aliases: new Set(),
       arguments: [],
       examples: [],
-      helpCommand: null,
-      helpOption: null,
       options: new Map(),
       parent: undefined,
       subcommands: new Map(),
@@ -321,8 +320,9 @@ class Command extends Helpable {
     this.done(this.info.done)
     this.exiter(this.info.exit)
     this.examples(data.examples)
-    this.helpCommand(data.helpCommand)
-    this.helpOption(data.helpOption)
+    this.helpCommand(this.info.helpCommand)
+    this.helpOption(this.info.helpOption)
+    this.helpUtility(this.info.helpUtility)
     this.id(this.info.name)
     this.optionPriority(this.info.optionPriority)
     this.summary(this.info.summary)
@@ -2137,15 +2137,13 @@ class Command extends Helpable {
   /**
    * Print help text.
    *
-   * @todo format help text
-   *
    * @public
    * @instance
    *
    * @return {undefined}
    */
   public help(): undefined {
-    return void this.logger.log('')
+    return void this.process.stdout.write(this.helpUtility().text(this))
   }
 
   /**
@@ -2307,6 +2305,60 @@ class Command extends Helpable {
     }
 
     return this.info.helpOption ?? null
+  }
+
+  /**
+   * Set the help text utility.
+   *
+   * @see {@linkcode Help}
+   *
+   * @public
+   * @instance
+   *
+   * @param {Help | null | undefined} util
+   *  The help text utility
+   * @return {this}
+   *  `this` command
+   */
+  public helpUtility(util: Help | null | undefined): this
+
+  /**
+   * Get the help text utility.
+   *
+   * @see {@linkcode Help}
+   *
+   * @template {Help} [T=Help]
+   *  Help text utility instance
+   *
+   * @public
+   * @instance
+   *
+   * @return {Help}
+   *  The help text utility
+   */
+  public helpUtility<T extends Help>(): T
+
+  /**
+   * Get or set the help text utility.
+   *
+   * @see {@linkcode Help}
+   *
+   * @public
+   * @instance
+   *
+   * @param {Help | null | undefined} [util]
+   *  The help text utility
+   * @return {Help | this}
+   *  Help text utility or `this` command
+   */
+  public helpUtility(util?: Help | null | undefined): Help | this {
+    if (arguments.length) {
+      this.info.helpUtility = fallback(util, new Help(), isNIL)
+      return this
+    }
+
+    ok(this.info.helpUtility, 'expected `info.helpUtility`')
+    return this.info.helpUtility
   }
 
   /**

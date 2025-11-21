@@ -34,7 +34,7 @@ declare module '@flex-development/kronk' {
      *
      * @internal
      */
-    help?: true
+    helpText?: true
   }
 }
 

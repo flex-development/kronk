@@ -12,6 +12,7 @@ import type {
   Command,
   CommandInfo,
   ExampleInfo,
+  Help,
   Option,
   VersionOption
 } from '@flex-development/kronk'
@@ -54,6 +55,12 @@ describe('unit-d:interfaces/CommandMetadata', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('helpOption')
       .toEqualTypeOf<Nilable<Option>>()
+  })
+
+  it('should match [helpUtility: Help]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('helpUtility')
+      .toEqualTypeOf<Help>()
   })
 
   it('should match [options: Map<string, Option>]', () => {

@@ -1458,6 +1458,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@flex-development/colors@npm:1.1.0":
+  version: 1.1.0
+  resolution: "@flex-development/colors@npm:1.1.0"
+  checksum: 10/2f086ae85134f18eb9acecbe8afaff1ab562a65da8a2cff451e7d3940741865bc42c2bb0af91b79ae36b77a96f74f0739febb5239c8b9bb3343a8ee552ecc490
+  languageName: node
+  linkType: hard
+
 "@flex-development/commitlint-config@npm:1.0.1":
   version: 1.0.1
   resolution: "@flex-development/commitlint-config@npm:1.0.1"
@@ -1704,6 +1711,7 @@ __metadata:
     "@commitlint/cli": "npm:20.1.0"
     "@commitlint/types": "npm:20.0.0"
     "@faker-js/faker": "npm:10.1.0"
+    "@flex-development/colors": "npm:1.1.0"
     "@flex-development/commitlint-config": "npm:1.0.1"
     "@flex-development/eslint-config": "npm:1.1.1"
     "@flex-development/fsm-tokenizer": "npm:1.0.0-alpha.1"
@@ -3560,9 +3568,9 @@ __metadata:
   linkType: hard
 
 "ansi-styles@npm:^6.1.0":
-  version: 6.2.1
-  resolution: "ansi-styles@npm:6.2.1"
-  checksum: 10/70fdf883b704d17a5dfc9cde206e698c16bcd74e7f196ab821511651aee4f9f76c9514bdfa6ca3a27b5e49138b89cb222a28caf3afe4567570139577f991df32
+  version: 6.2.3
+  resolution: "ansi-styles@npm:6.2.3"
+  checksum: 10/c49dad7639f3e48859bd51824c93b9eb0db628afc243c51c3dd2410c4a15ede1a83881c6c7341aa2b159c4f90c11befb38f2ba848c07c66c9f9de4bcd7cb9f30
   languageName: node
   linkType: hard
 

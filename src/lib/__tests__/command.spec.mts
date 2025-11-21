@@ -14,12 +14,14 @@ import kCommand from '#internal/k-command'
 import noop from '#internal/noop'
 import Argument from '#lib/argument'
 import TestSubject from '#lib/command'
+import Help from '#lib/help'
 import Helpable from '#lib/helpable.abstract'
 import Option from '#lib/option'
 import VersionOption from '#lib/version.option'
 import errorSnapshot from '#tests/utils/error-snapshot'
 import sfmt from '#tests/utils/sfmt'
 import isOption from '#utils/is-option'
+import { faker } from '@faker-js/faker'
 import type {
   Action,
   CommandInfo,
@@ -493,6 +495,36 @@ describe('unit:lib/Command', () => {
       } else {
         expect(result).to.have.nested.property(property).not.eq(help)
         expect(result).to.have.nested.property(property).be.instanceof(Option)
+      }
+    })
+  })
+
+  describe('#helpUtility', () => {
+    it('should return help text utility', () => {
+      expect(new TestSubject().helpUtility()).to.be.instanceof(Help)
+    })
+
+    it.each<[Help | null | undefined]>([
+      [null],
+      [undefined],
+      [new Help()]
+    ])('should set help text utility and return `this` (%#)', util => {
+      // Arrange
+      const subject: TestSubject = new TestSubject()
+      const property: string = 'info.helpUtility'
+
+      // Act
+      const result = subject.helpUtility(util)
+
+      // Expect
+      expect(result).to.eq(subject)
+      expect(result).to.have.nested.property(property).be.instanceof(Help)
+
+      // Expect (conditional)
+      if (util) {
+        expect(result).to.have.nested.property(property, util)
+      } else {
+        expect(result).to.have.nested.property(property).not.eq(util)
       }
     })
   })

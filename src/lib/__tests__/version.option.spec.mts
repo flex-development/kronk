@@ -5,6 +5,7 @@
 
 import Option from '#lib/option'
 import TestSubject from '#lib/version.option'
+import { faker } from '@faker-js/faker'
 import type { Flags, Version } from '@flex-development/kronk'
 import { SemVer } from 'semver'
 

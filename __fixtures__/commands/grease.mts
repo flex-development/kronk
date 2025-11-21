@@ -3,11 +3,11 @@
  * @module fixtures/commands/grease
  */
 
+import chars from '#enums/chars'
 import digits from '#fixtures/digits'
 import bool from '#parsers/bool'
 import number from '#parsers/number'
 import sfmt from '#tests/utils/sfmt'
-import { chars } from '@flex-development/fsm-tokenizer'
 import type { SubcommandInfo as CommandInfo } from '@flex-development/kronk'
 
 /**

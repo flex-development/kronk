@@ -4,6 +4,7 @@ exports[`e2e:lib > should expose public api 1`] = `
 [
   "Argument",
   "Command",
+  "Help",
   "Helpable",
   "Option",
   "Parseable",

@@ -117,7 +117,7 @@ function config(this: void, env: ConfigEnv): ViteUserConfig {
           ]
         }
       },
-      setupFiles: ['./__tests__/setup/chai.mts', './__tests__/setup/faker.mts'],
+      setupFiles: ['./__tests__/setup/chai.mts'],
       snapshotFormat: {
         callToJSON: true,
         min: false,
