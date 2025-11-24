@@ -155,7 +155,7 @@
     "typecheck:ui": "yarn test:ui --typecheck --mode=typecheck"
   },
   "dependencies": {
-    "@flex-development/colors": "1.1.0",
+    "@flex-development/colors": "2.0.0",
     "@flex-development/fsm-tokenizer": "1.0.0-alpha.1",
     "@flex-development/log": "5.0.0",
     "@flex-development/tutils": "6.0.0-alpha.25",
