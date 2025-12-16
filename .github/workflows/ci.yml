@@ -299,7 +299,7 @@ jobs:
       - id: codecov-results
         if: ${{ !cancelled() }}
         name: Upload test results to Codecov
-        uses: codecov/test-results-action@v1.1.1
+        uses: codecov/test-results-action@v1.2.1
         with:
           disable_search: true
           env_vars: GITHUB_JOB,GITHUB_REF_TYPE
@@ -377,7 +377,7 @@ jobs:
       - id: codecov-results
         if: ${{ !cancelled() }}
         name: Upload test results to Codecov
-        uses: codecov/test-results-action@v1.1.1
+        uses: codecov/test-results-action@v1.2.1
         with:
           disable_search: true
           env_vars: GITHUB_JOB,GITHUB_REF_TYPE
