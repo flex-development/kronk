@@ -10,7 +10,7 @@
 # - https://docs.github.com/actions/using-workflows/events-that-trigger-workflows#release
 # - https://docs.github.com/actions/using-workflows/workflow-commands-for-github-actions
 # - https://docs.github.com/webhooks-and-events/webhooks/webhook-events-and-payloads#release
-# - https://docs.npmjs.com/generating-provenance-statements
+# - https://docs.npmjs.com/trusted-publishers
 # - https://github.com/actions/checkout
 # - https://github.com/actions/setup-node
 # - https://github.com/actions/setup-node/blob/main/docs/advanced-usage.md#yarn2-configuration
@@ -92,7 +92,6 @@ jobs:
         name: Setup .npmrc file
         uses: actions/setup-node@v6.1.0
         with:
-          always-auth: true
           node-version-file: .nvmrc
           registry-url: https://npm.pkg.github.com
           scope: ${{ github.repository_owner }}
@@ -131,7 +130,6 @@ jobs:
         name: Setup .npmrc file
         uses: actions/setup-node@v6.1.0
         with:
-          always-auth: true
           node-version-file: .nvmrc
           registry-url: https://registry.npmjs.org
           scope: ${{ github.repository_owner }}
@@ -140,6 +138,4 @@ jobs:
         run: cat $NPM_CONFIG_USERCONFIG
       - id: publish
         name: Publish package
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: ${{ needs.preflight.outputs.command }}
