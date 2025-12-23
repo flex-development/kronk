@@ -188,7 +188,7 @@
     "@vates/toggle-scripts": "1.0.0",
     "@vitest/coverage-v8": "4.0.16",
     "@vitest/ui": "4.0.16",
-    "chai": "6.2.1",
+    "chai": "6.2.2",
     "chai-string": "1.6.0",
     "commander": "14.0.2",
     "concat-stream": "2.0.0",
