@@ -1655,7 +1655,7 @@ exports[`functional:lib/Command > parsing > should run command (9) 1`] = `
   "optsWithGlobals": {},
   "usage": {
     "arguments": [],
-    "options": "[flags...]",
+    "options": null,
     "subcommand": "[command]",
   },
 }
@@ -1674,7 +1674,7 @@ exports[`functional:lib/Command > parsing > should run command (10) 1`] = `
   "optsWithGlobals": {},
   "usage": {
     "arguments": [],
-    "options": "[flags...]",
+    "options": null,
     "subcommand": "[command]",
   },
 }
@@ -1725,7 +1725,7 @@ exports[`functional:lib/Command > parsing > should run command (11) 1`] = `
   "optsWithGlobals": {},
   "usage": {
     "arguments": [],
-    "options": "[flags...]",
+    "options": null,
     "subcommand": "[command]",
   },
 }
@@ -1751,7 +1751,7 @@ exports[`functional:lib/Command > parsing > should run command (12) 1`] = `
   "optsWithGlobals": {},
   "usage": {
     "arguments": [],
-    "options": "[flags...]",
+    "options": null,
     "subcommand": "[command]",
   },
 }

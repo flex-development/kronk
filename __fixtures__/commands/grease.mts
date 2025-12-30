@@ -165,6 +165,7 @@ export default {
           syntax: sfmt.optional({ id: 'candidate' })
         },
         description: 'Get a version bump recommendation.',
+        examples: { text: [] },
         helpCommand: false,
         name: 'recommend',
         summary: 'get a recommended version bump'
@@ -256,6 +257,7 @@ export default {
     },
     manifest: {
       description: 'Manage the package manifest.',
+      help: { globalOptions: false },
       helpCommand: false,
       options: {
         description: 'the manifest path or url',
@@ -371,6 +373,7 @@ export default {
             syntax: sfmt.required({ id: 'tag' })
           },
           description: 'Create a release tag.',
+          help: { globalOptions: false },
           options: [
             {
               choices: bool.choices, // dprint-ignore-next

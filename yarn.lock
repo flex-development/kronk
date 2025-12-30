@@ -1444,6 +1444,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@flex-development/ansi-regex@npm:1.0.0":
+  version: 1.0.0
+  resolution: "@flex-development/ansi-regex@npm:1.0.0"
+  checksum: 10/31622b2be7ded14b8d2092e9fc8c011d865bbdfcbbfc164d688d9be228236f54369f67466d3a870cdcbbd939da9bec7cb17e44113afb6dcd2cfa1c11f5431e54
+  languageName: node
+  linkType: hard
+
 "@flex-development/builtin-modules@npm:1.0.0":
   version: 1.0.0
   resolution: "@flex-development/builtin-modules@npm:1.0.0"
@@ -1720,6 +1727,8 @@ __metadata:
     "@flex-development/pathe": "npm:4.0.2"
     "@flex-development/pkg-types": "npm:4.1.0"
     "@flex-development/remark-preset": "npm:1.0.0"
+    "@flex-development/string-wrap": "npm:2.1.2"
+    "@flex-development/strip-ansi": "npm:1.0.0"
     "@flex-development/tutils": "npm:6.0.0-alpha.25"
     "@tsconfig/strictest": "npm:2.0.8"
     "@types/chai": "npm:5.2.3"
@@ -1755,6 +1764,7 @@ __metadata:
     remark-cli: "npm:12.0.1"
     semver: "npm:7.7.3"
     sh-syntax: "npm:0.5.8"
+    string-width: "npm:8.1.0"
     trash-cli: "npm:7.0.0"
     ts-dedent: "npm:2.2.0"
     typescript: "npm:5.9.3"
@@ -1996,6 +2006,31 @@ __metadata:
     remark-validate-links: "npm:13.1.0"
     string-width: "npm:7.2.0"
   checksum: 10/c9359ae511395299e73c243825646d96fd819a75324a7bb31b3c0f3e3f58f5264bfb69c60857ea230817a34c1aa408cad41d96036eb20c78598e3257a9efbbc2
+  languageName: node
+  linkType: hard
+
+"@flex-development/string-wrap@npm:2.1.2":
+  version: 2.1.2
+  resolution: "@flex-development/string-wrap@npm:2.1.2"
+  dependencies:
+    "@flex-development/ansi-regex": "npm:1.0.0"
+    "@flex-development/fsm-tokenizer": "npm:1.0.0-alpha.1"
+    "@flex-development/strip-ansi": "npm:1.0.0"
+    detab: "npm:3.0.2"
+    devlop: "npm:1.1.0"
+    grapheme-splitter: "npm:1.0.4"
+    micromark-util-character: "npm:2.1.1"
+    string-width: "npm:8.1.0"
+  checksum: 10/9f3033c590ff6ee2d79ac6ccc5fe09ee101cac4aa455ebdbd144ba07b8b617a48ab926c0dbaf292b904e84bcf094513b6d0509cb8e575d7b9b67d6ac86d17737
+  languageName: node
+  linkType: hard
+
+"@flex-development/strip-ansi@npm:1.0.0":
+  version: 1.0.0
+  resolution: "@flex-development/strip-ansi@npm:1.0.0"
+  dependencies:
+    "@flex-development/ansi-regex": "npm:1.0.0"
+  checksum: 10/95670ef22d1ab3aa696dc80b90d738820a375bed8036cd42edb100ddf3589e170387b5d00c8a7e2316ddbc1c77cfdfd65093683ddeb5c1551e2d44e50dbe5ef8
   languageName: node
   linkType: hard
 
@@ -4558,6 +4593,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"detab@npm:3.0.2":
+  version: 3.0.2
+  resolution: "detab@npm:3.0.2"
+  checksum: 10/89a1bebadfcca7f378358671b97c44d14b24960e755f93c9236eb002574782985d7faa7cdda1ee9e3a5fafcd60485f077d792d290232eaaab75a7077d944ef6f
+  languageName: node
+  linkType: hard
+
 "devlop@npm:1.1.0, devlop@npm:^1.0.0, devlop@npm:^1.1.0":
   version: 1.1.0
   resolution: "devlop@npm:1.1.0"
@@ -5925,10 +5967,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"get-east-asian-width@npm:^1.0.0":
-  version: 1.3.0
-  resolution: "get-east-asian-width@npm:1.3.0"
-  checksum: 10/8e8e779eb28701db7fdb1c8cab879e39e6ae23f52dadd89c8aed05869671cee611a65d4f8557b83e981428623247d8bc5d0c7a4ef3ea7a41d826e73600112ad8
+"get-east-asian-width@npm:^1.0.0, get-east-asian-width@npm:^1.3.0":
+  version: 1.4.0
+  resolution: "get-east-asian-width@npm:1.4.0"
+  checksum: 10/c9ae85bfc2feaf4cc71cdb236e60f1757ae82281964c206c6aa89a25f1987d326ddd8b0de9f9ccd56e37711b9fcd988f7f5137118b49b0b45e19df93c3be8f45
   languageName: node
   linkType: hard
 
@@ -6115,6 +6157,13 @@ __metadata:
   version: 4.2.11
   resolution: "graceful-fs@npm:4.2.11"
   checksum: 10/bf152d0ed1dc159239db1ba1f74fdbc40cb02f626770dcd5815c427ce0688c2635a06ed69af364396da4636d0408fcf7d4afdf7881724c3307e46aff30ca49e2
+  languageName: node
+  linkType: hard
+
+"grapheme-splitter@npm:1.0.4":
+  version: 1.0.4
+  resolution: "grapheme-splitter@npm:1.0.4"
+  checksum: 10/fdb2f51fd430ce881e18e44c4934ad30e59736e46213f7ad35ea5970a9ebdf7d0fe56150d15cc98230d55d2fd48c73dc6781494c38d8cf2405718366c36adb88
   languageName: node
   linkType: hard
 
@@ -10682,6 +10731,16 @@ __metadata:
     get-east-asian-width: "npm:^1.0.0"
     strip-ansi: "npm:^7.1.0"
   checksum: 10/42f9e82f61314904a81393f6ef75b832c39f39761797250de68c041d8ba4df2ef80db49ab6cd3a292923a6f0f409b8c9980d120f7d32c820b4a8a84a2598a295
+  languageName: node
+  linkType: hard
+
+"string-width@npm:8.1.0":
+  version: 8.1.0
+  resolution: "string-width@npm:8.1.0"
+  dependencies:
+    get-east-asian-width: "npm:^1.3.0"
+    strip-ansi: "npm:^7.1.0"
+  checksum: 10/51ee97c4ffee7b94f8a2ee785fac14f81ec9809b9fcec9a4db44e25c717c263af0cc4387c111aef76195c0718dc43766f3678c07fb542294fb0244f7bfbde883
   languageName: node
   linkType: hard
 

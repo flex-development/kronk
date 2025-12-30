@@ -5,7 +5,6 @@
 
 import testSubject from '#constructs/initial-command'
 import chars from '#enums/chars'
-import bun from '#fixtures/commands/bun'
 import clamp from '#fixtures/commands/clamp'
 import grease from '#fixtures/commands/grease'
 import mlly from '#fixtures/commands/mlly'
@@ -21,16 +20,6 @@ import pathe from '@flex-development/pathe'
 
 describe('integration:constructs/initialCommand', () => {
   it.each<[CommandInfo, string[]]>([
-    [
-      bun,
-      [
-        '--conditions',
-        'development',
-        '--conditions',
-        'kronk',
-        './scratch.mts'
-      ]
-    ],
     [clamp, ['-M=26', chars.digit9]],
     [clamp, ['-M3', '-m-1', chars.delimiter, '-13']],
     [clamp, [chars.digit1, '--max', '26', '--min=13']],
@@ -58,6 +47,19 @@ describe('integration:constructs/initialCommand', () => {
     [grease, [grease.name, '-n', 'pack', '-o', '%s-%v.tgz']],
     [grease, ['tag', 'create', '-ps', '-m=release: {tag}', grease.version]],
     [grease, ['version', '1.0.0-alpha.1']],
+    [
+      mlly,
+      [
+        '--parent',
+        chars.dot,
+        'resolve',
+        '--conditions',
+        'development',
+        '--conditions',
+        'kronk',
+        './scratch.mts'
+      ]
+    ],
     [
       mlly,
       [

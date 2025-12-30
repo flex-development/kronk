@@ -3,20 +3,19 @@
  * @module kronk/lib/tests/unit/Help
  */
 
-import bun from '#fixtures/commands/bun'
 import clamp from '#fixtures/commands/clamp'
 import copy from '#fixtures/commands/copy'
 import distinct from '#fixtures/commands/distinct'
 import factorial from '#fixtures/commands/factorial'
 import grease from '#fixtures/commands/grease'
+import semver from '#fixtures/commands/semver'
 import tribonacci from '#fixtures/commands/tribonacci'
 import Command from '#lib/command'
 import TestSubject from '#lib/help'
 import { faker } from '@faker-js/faker'
 import { isColorSupported } from '@flex-development/colors'
-import type { CommandInfo } from '@flex-development/kronk'
+import type { CommandInfo, CommandName } from '@flex-development/kronk'
 import { isObjectPlain } from '@flex-development/tutils'
-import { ok } from 'devlop'
 
 describe('unit:lib/Help', () => {
   describe('constructor', () => {
@@ -46,77 +45,59 @@ describe('unit:lib/Help', () => {
   })
 
   describe('#text', () => {
-    let command: (parent: Command, commands: string[]) => Command
-    let subject: TestSubject
+    let command: (root: Command, subcommand: CommandName) => Command
 
     beforeAll(() => {
-      subject = new TestSubject()
-
       /**
+       * Find a `subcommand`.
+       *
        * @this {void}
        *
-       * @param {Command} parent
-       *  The parent command
-       * @param {string[]} commands
-       *  The list of subcommands
+       * @param {Command} root
+       *  The root command
+       * @param {CommandName} subcommand
+       *  The top-level or nested subcommand name or alias
        * @return {Command}
        *  The resulting command
        */
       command = function command(
         this: void,
-        parent: Command,
-        commands: string[]
+        root: Command,
+        subcommand: CommandName
       ): Command {
-        /**
-         * The command.
-         *
-         * @var {Command} command
-         */
-        let command: Command = parent
-
-        /**
-         * The list of subcommands.
-         *
-         * @var {Map<string, Command>} subcommands
-         */
-        let subcommands: Map<string, Command> = command.commands()
-
-        while (commands.length) {
-          /**
-           * The name or alias of the subcommand.
-           *
-           * @const {string | undefined} subcommand
-           */
-          const subcommand: string | undefined = commands.shift()
-
-          ok(subcommand, 'expected subcommand reference')
-
-          command = subcommands.get(subcommand)!
-          subcommands = command.commands()
-        }
-
-        return command
+        return subcommand ? root.findCommand(subcommand)! : root
       }
     })
 
-    it.each<[info: CommandInfo, commands?: string[]]>([
-      [bun, ['init']],
-      [copy],
+    it.each<[info: CommandInfo, subcommand?: CommandName]>([
       [clamp],
       [Object.assign({}, clamp, { name: null })],
+      [copy],
       [distinct],
-      [factorial, []],
+      [factorial],
       [grease],
-      [grease, ['bump', 'recommend']],
-      [grease, ['changelog']],
-      [grease, ['info']],
+      [grease, 'bump'],
+      [grease, 'recommend'],
+      [grease, 'changelog'],
+      [grease, 'dist-tag'],
+      [grease, 'info'],
+      [grease, 'manifest'],
+      [grease, 'delete'],
+      [grease, 'get'],
+      [grease, 'set'],
+      [grease, 'pack'],
+      [grease, 'publish'],
+      [grease, 'tag'],
+      [grease, 'create'],
+      [grease, 'list'],
+      [semver],
       [tribonacci]
-    ])('should return help text for `command` (%#)', (info, commands) => {
+    ])('should return help text for `command` (%#)', (info, subcommand) => {
       // Arrange
-      const candidate: Command = command(new Command(info), commands ?? [])
+      const candidate: Command = command(new Command(info), subcommand ?? null)
 
       // Act
-      const result = subject.text(candidate)
+      const result = candidate.help().text(candidate)
 
       // Expect
       expect(result).to.be.a('string')

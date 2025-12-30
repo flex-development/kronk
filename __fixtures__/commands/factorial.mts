@@ -7,7 +7,10 @@ import chars from '#enums/chars'
 import integer from '#parsers/integer'
 import sfmt from '#tests/utils/sfmt'
 import c from '@flex-development/colors'
-import type { SubcommandInfo as CommandInfo } from '@flex-development/kronk'
+import type {
+  SubcommandInfo as CommandInfo,
+  ExampleInfo
+} from '@flex-development/kronk'
 
 /**
  * The program info for `factorial`.
@@ -29,7 +32,10 @@ export default {
     { comment: '// 6', text: '3' },
     { comment: '// 6227020800', text: '13' },
     { comment: '// show help and exit', text: '--help' }
-  ].map(info => (info.text && (info.text = c.yellow(info.text)), info)),
+  ].map((info: ExampleInfo) => {
+    if (info.text) info.text = c.yellow(info.text)
+    return info.command = c.bold('factorial'), info
+  }),
   name: 'factorial',
   usage: { options: null },
   version: chars.empty

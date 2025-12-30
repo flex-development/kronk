@@ -330,16 +330,21 @@ describe('unit:lib/Command', () => {
 
     it('should prepare help text utility', () => {
       // Arrange
-      const columns: number = grease.help.columns + 70
+      const { help: help1, subcommands } = grease
+      const columns: number = help1.columns + 70
       const options: HelpTextOptions = { columns }
+      const help2: HelpTextOptions = subcommands.manifest.help
+      const help3: HelpTextOptions = subcommands.tag.subcommands.create.help
 
       // Act
       subject.help(options)
 
       // Expect
       expect(subject).to.have.nested.property('info.help.columns', columns)
-      expect(prepare).toHaveBeenCalledTimes(2)
-      expect(prepare).toHaveBeenCalledWith(grease.help)
+      expect(prepare).toHaveBeenCalledTimes(4)
+      expect(prepare).toHaveBeenCalledWith(help1)
+      expect(prepare).toHaveBeenCalledWith(help2)
+      expect(prepare).toHaveBeenCalledWith(help3)
       expect(prepare).toHaveBeenLastCalledWith(options)
     })
   })

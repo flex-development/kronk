@@ -1,23 +1,927 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (0) 1`] = `""`;
+exports[`unit:lib/Help > #text > should return help text for \`command\` (0) 1`] = `
+"clamp[2m@[22m1.0.0
+[1musage[22m: clamp [flags...] <number>
+  clamp a number within a given range
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (1) 1`] = `""`;
+[4mExamples[24m
+  $ clamp -M3 -m-1 -- -13
+  $ clamp -M=26 9
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (2) 1`] = `""`;
+[4mArguments[24m
+  n                           [3mthe number to clamp[23m
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (3) 1`] = `""`;
+[4mOptions[24m
+  -d --debug [choice]         [3m-[23m
+                                choices: 0|1|false|true|'n'|'y'
+                                env: CLAMP_DEBUG
+  -M --max <n>                [3mupper bound (inclusive)[23m
+                                default: 'MAX_SAFE_INTEGER'
+  -m --min <n>                [3mlower bound (inclusive)[23m
+                                default: 0
+  -h --help                   [3mshow help[23m
+  -v --version                [3mprint version number[23m
+"
+`;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (4) 1`] = `""`;
+exports[`unit:lib/Help > #text > should return help text for \`command\` (1) 1`] = `
+"[2mv1.0.0[22m
+[1musage[22m: [flags...] <number>
+  clamp a number within a given range
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (5) 1`] = `""`;
+[4mExamples[24m
+  $ -M3 -m-1 -- -13
+  $ -M=26 9
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (6) 1`] = `""`;
+[4mArguments[24m
+  n                       [3mthe number to clamp[23m
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (7) 1`] = `""`;
+[4mOptions[24m
+  -d --debug [choice]     [3m-[23m
+                            choices: 0|1|false|true|'n'|'y'
+                            env: CLAMP_DEBUG
+  -M --max <n>            [3mupper bound (inclusive)[23m
+                            default: 'MAX_SAFE_INTEGER'
+  -m --min <n>            [3mlower bound (inclusive)[23m
+                            default: 0
+  -h --help               [3mshow help[23m
+  -v --version            [3mprint version number[23m
+"
+`;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (8) 1`] = `""`;
+exports[`unit:lib/Help > #text > should return help text for \`command\` (2) 1`] = `
+"copy[2m@[22m0.0.1
+[1musage[22m: copy [flags...] <source> [dest]
+  copy a file.
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (9) 1`] = `""`;
+[4mAliases[24m
+  cp
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (10) 1`] = `""`;
+[4mArguments[24m
+  source            [3mthe file to copy[23m
+  dest              [3mthe file or folder to copy the source file to[23m
+                      default: '.'
+
+[4mOptions[24m
+  -h, --help        [3mshow help[23m
+  -v, --version     [3mprint version number[23m
+"
+`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (3) 1`] = `
+"distinct
+[1musage[22m: distinct [numbers...]
+  print a list of numbers with all duplicates removed.
+  https://codewars.com/kata/57a5b0dfcf1fa526bb000118
+
+[4mExamples[24m
+  $              [2m//[22m
+  $ [36m1[39m            [2m// 1[22m
+  $ [36m3 1 3[39m        [2m// 1 3[22m
+  $ [36m--help[39m       [2m// show help[22m
+
+[4mArguments[24m
+  numbers        [3mthe list of numbers[23m
+                   default: [91mnew[39m [94mSet()[39m
+
+[4mOptions[24m
+  -h, --help     [3mshow help[23m
+"
+`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (4) 1`] = `
+"factorial
+[1musage[22m: factorial <n>
+  Given an integer, [36mn[39m, print [36mn![39m.
+  https://codewars.com/kata/5694cb0ec554589633000036
+
+[4mExamples[24m
+  $ [1mfactorial[22m [33m0[39m          [2m// 1[22m
+  $ [1mfactorial[22m [33m1[39m          [2m// 1[22m
+  $ [1mfactorial[22m [33m2[39m          [2m// 2[22m
+  $ [1mfactorial[22m [33m3[39m          [2m// 6[22m
+  $ [1mfactorial[22m [33m13[39m         [2m// 6227020800[22m
+  $ [1mfactorial[22m [33m--help[39m     [2m// show help and exit[22m
+
+[4mArguments[24m
+  n                      [3mthe integer[23m
+
+[4mOptions[24m
+  -h, --help             [3mshow help[23m
+  -v, --version          [3mprint version number[23m
+"
+`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (5) 1`] = `
+"grease[2m@[22m3.0.0-alpha.10
+[1musage[22m: grease [flags...] <command>
+  A release workflow tool.
+
+[4mExamples[24m
+  $ grease bump major
+  $ [90mTZ=America/New_York[39m grease changelog -wo=$NOTES_FILE
+  $ grease pack -o %s-%v.tgz
+  $ grease tag -psm "release: {tag}"
+  $ grease --help                                            [2m# show help and exit[22m
+
+[4mOptions[24m
+  -c, --color [choice]                                       [3mwhether color output is enabled
+                                                             • [33m0[39m: 2 colors (disables colors)
+                                                             • [33m1[39m: 16 colors
+                                                             • [33m2[39m: 256 colors
+                                                             • [33m3[39m: 16,777,216 colors
+                                                             • [33mfalse[39m: disable colors
+                                                             • [33mtrue[39m: default color support[23m
+                                                               choices: 0|1|2|3|false|true
+                                                               default: isColorSupported()
+                                                               preset: true
+                                                               env: GREASE_COLOR
+  -g, --config [opt]                                         [3mthe config file path or config search setting[23m
+                                                               default: true
+                                                               preset: 'y'
+                                                               env: GREASE_CONFIG
+  -k, --cwd <dir>                                            [3mthe path to the current working directory[23m
+                                                               env: GREASE_CWD, PWD
+  -n, --dry [choice]                                         [3mwhether grease should only report what it would have done, rather
+                                                             than make any changes (i.e. write to disk, publish)[23m
+                                                               default: true
+                                                               preset: 1
+                                                               env: GREASE_DRY
+                                                               conflicts: write
+  --ignore-scripts                                           [3mwhether to ignore scripts defined in manifest files[23m
+                                                               env: GREASE_IGNORE_SCRIPTS
+  -j, --json                                                 [3mwhether to enable json output[23m
+                                                               env: GREASE_JSON
+  -L, --log-level <level>                                    [3mthe log level[23m
+                                                               choices: 'debug'|'error'|'info'|'log'|'silent'|'warn'|'verbose'
+                                                               default: 'info'
+                                                               env: GREASE_LOG_LEVEL
+  -T, --tag-prefix <prefix>                                  [3mthe tag prefix to consider when handling tags[23m
+                                                               default: ''
+                                                               env: GREASE_TAG_PREFIX
+  -u, --unstable [choice]                                    [3mwhether to respect unstable tags[23m
+                                                               choices: 0|1|false|true|'n'|'y'
+                                                               default: true
+                                                               preset: 'y'
+                                                               env: GREASE_UNSTABLE
+  -w, --write                                                [3mwhether to write to disk[23m
+                                                               env: GREASE_WRITE
+                                                               conflicts: dry
+  -h, --help                                                 [3mshow help[23m
+  -v, --version                                              [3mprint version number[23m
+
+[4mCommands[24m
+  bump [flags...] [command] <type|version> [files...]        execute a version bump or get a recommendation
+  changelog [flags...]                                       generate a changelog
+  dist-tag [flags...] <target>                               distribution tag lookup
+  info [flags...]                                            get an environment report
+  manifest [flags...] <command>                              package manifest manager
+  pack [flags...] [files...]                                 pack a project
+  publish --registry <url!> [flags...] [artifact]            publish a package
+  tag [flags...] <command>                                   release tag manager
+  help                                                       show help
+"
+`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (6) 1`] = `
+"bump
+[1musage[22m: grease bump [flags...] [command] <type|version> [files...]
+  Execute a version bump.
+
+[4mAliases[24m
+  version
+
+[4mArguments[24m
+  type|version                         [3mthe release type or version[23m
+  files                                [3mthe bump files[23m
+
+[4mOptions[24m
+  --preid <id>                         [3mthe identifier to be used to prefix premajor, preminor, or prepatch version increments[23m
+                                         env: GREASE_BUMP_PREID
+  --prestart <start>                   [3mthe base to use for the prerelease identifier[23m
+                                         choices: 0|1
+                                         default: 1
+                                         env: GREASE_BUMP_PRESTART
+  -h, --help                           [3mshow help[23m
+
+[4mGlobal Options[24m
+  -c, --color [choice]                 [3mwhether color output is enabled
+                                       • [33m0[39m: 2 colors (disables colors)
+                                       • [33m1[39m: 16 colors
+                                       • [33m2[39m: 256 colors
+                                       • [33m3[39m: 16,777,216 colors
+                                       • [33mfalse[39m: disable colors
+                                       • [33mtrue[39m: default color support[23m
+                                         choices: 0|1|2|3|false|true
+                                         default: isColorSupported()
+                                         preset: true
+                                         env: GREASE_COLOR
+  -g, --config [opt]                   [3mthe config file path or config search setting[23m
+                                         default: true
+                                         preset: 'y'
+                                         env: GREASE_CONFIG
+  -k, --cwd <dir>                      [3mthe path to the current working directory[23m
+                                         env: GREASE_CWD, PWD
+  -n, --dry [choice]                   [3mwhether grease should only report what it would have done, rather than make any changes
+                                       (i.e. write to disk, publish)[23m
+                                         default: true
+                                         preset: 1
+                                         env: GREASE_DRY
+                                         conflicts: write
+  --ignore-scripts                     [3mwhether to ignore scripts defined in manifest files[23m
+                                         env: GREASE_IGNORE_SCRIPTS
+  -j, --json                           [3mwhether to enable json output[23m
+                                         env: GREASE_JSON
+  -L, --log-level <level>              [3mthe log level[23m
+                                         choices: 'debug'|'error'|'info'|'log'|'silent'|'warn'|'verbose'
+                                         default: 'info'
+                                         env: GREASE_LOG_LEVEL
+  -T, --tag-prefix <prefix>            [3mthe tag prefix to consider when handling tags[23m
+                                         default: ''
+                                         env: GREASE_TAG_PREFIX
+  -u, --unstable [choice]              [3mwhether to respect unstable tags[23m
+                                         choices: 0|1|false|true|'n'|'y'
+                                         default: true
+                                         preset: 'y'
+                                         env: GREASE_UNSTABLE
+  -w, --write                          [3mwhether to write to disk[23m
+                                         env: GREASE_WRITE
+                                         conflicts: dry
+  -h, --help                           [3mshow help[23m
+  -v, --version                        [3mprint version number[23m
+
+[4mCommands[24m
+  recommend [flags...] [candidate]     get a recommended version bump
+"
+`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (7) 1`] = `
+"recommend
+[1musage[22m: grease bump recommend [flags...] [candidate]
+  Get a version bump recommendation.
+
+[4mExamples[24m
+  $ grease bump recommend
+
+[4mArguments[24m
+  candidate                     [3mthe version bump candidate[23m
+                                  default: inferred from changelog
+
+[4mOptions[24m
+  -h, --help                    [3mshow help[23m
+
+[4mGlobal Options[24m
+  -c, --color [choice]          [3mwhether color output is enabled
+                                • [33m0[39m: 2 colors (disables colors)
+                                • [33m1[39m: 16 colors
+                                • [33m2[39m: 256 colors
+                                • [33m3[39m: 16,777,216 colors
+                                • [33mfalse[39m: disable colors
+                                • [33mtrue[39m: default color support[23m
+                                  choices: 0|1|2|3|false|true
+                                  default: isColorSupported()
+                                  preset: true
+                                  env: GREASE_COLOR
+  -g, --config [opt]            [3mthe config file path or config search setting[23m
+                                  default: true
+                                  preset: 'y'
+                                  env: GREASE_CONFIG
+  -k, --cwd <dir>               [3mthe path to the current working directory[23m
+                                  env: GREASE_CWD, PWD
+  -n, --dry [choice]            [3mwhether grease should only report what it would have done, rather than make any changes (i.e.
+                                write to disk, publish)[23m
+                                  default: true
+                                  preset: 1
+                                  env: GREASE_DRY
+                                  conflicts: write
+  --ignore-scripts              [3mwhether to ignore scripts defined in manifest files[23m
+                                  env: GREASE_IGNORE_SCRIPTS
+  -j, --json                    [3mwhether to enable json output[23m
+                                  env: GREASE_JSON
+  -L, --log-level <level>       [3mthe log level[23m
+                                  choices: 'debug'|'error'|'info'|'log'|'silent'|'warn'|'verbose'
+                                  default: 'info'
+                                  env: GREASE_LOG_LEVEL
+  --preid <id>                  [3mthe identifier to be used to prefix premajor, preminor, or prepatch version increments[23m
+                                  env: GREASE_BUMP_PREID
+  --prestart <start>            [3mthe base to use for the prerelease identifier[23m
+                                  choices: 0|1
+                                  default: 1
+                                  env: GREASE_BUMP_PRESTART
+  -T, --tag-prefix <prefix>     [3mthe tag prefix to consider when handling tags[23m
+                                  default: ''
+                                  env: GREASE_TAG_PREFIX
+  -u, --unstable [choice]       [3mwhether to respect unstable tags[23m
+                                  choices: 0|1|false|true|'n'|'y'
+                                  default: true
+                                  preset: 'y'
+                                  env: GREASE_UNSTABLE
+  -w, --write                   [3mwhether to write to disk[23m
+                                  env: GREASE_WRITE
+                                  conflicts: dry
+  -h, --help                    [3mshow help[23m
+  -v, --version                 [3mprint version number[23m
+"
+`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (8) 1`] = `
+"changelog
+[1musage[22m: grease changelog [flags...]
+  Generate a changelog from Git metadata.
+
+[4mOptions[24m
+  -i, --infile <path>           [3mread the changelog from this file[23m
+                                  default: CHANGELOG.md given --samefile
+                                  env: GREASE_CHANGELOG_INFILE
+  -o, --outfile <path>          [3mwrite the changelog to this file[23m
+                                  env: GREASE_CHANGELOG_OUTFILE
+  -r, --releases <count>        [3mthe number of releases to be generated from the latest.
+                                if [36m0[39m, the entire changelog will be regenerated[23m
+                                  default: 1
+                                  env: GREASE_CHANGELOG_RELEASES
+  -s, --samefile [choice]       [3mwhether to output content to [36m--infile[39m[23m
+                                  choices: 0|1|false|true|'n'|'y'
+                                  default: false
+                                  preset: 'y'
+                                  env: GREASE_CHANGELOG_SAMEFILE
+  -t, --to <commitish>          [3mend of commit revision range[23m
+                                  default: 'HEAD'
+                                  env: GREASE_CHANGELOG_TO
+  -h, --help                    [3mshow help[23m
+
+[4mGlobal Options[24m
+  -c, --color [choice]          [3mwhether color output is enabled
+                                • [33m0[39m: 2 colors (disables colors)
+                                • [33m1[39m: 16 colors
+                                • [33m2[39m: 256 colors
+                                • [33m3[39m: 16,777,216 colors
+                                • [33mfalse[39m: disable colors
+                                • [33mtrue[39m: default color support[23m
+                                  choices: 0|1|2|3|false|true
+                                  default: isColorSupported()
+                                  preset: true
+                                  env: GREASE_COLOR
+  -g, --config [opt]            [3mthe config file path or config search setting[23m
+                                  default: true
+                                  preset: 'y'
+                                  env: GREASE_CONFIG
+  -k, --cwd <dir>               [3mthe path to the current working directory[23m
+                                  env: GREASE_CWD, PWD
+  -n, --dry [choice]            [3mwhether grease should only report what it would have done, rather than make any changes (i.e.
+                                write to disk, publish)[23m
+                                  default: true
+                                  preset: 1
+                                  env: GREASE_DRY
+                                  conflicts: write
+  --ignore-scripts              [3mwhether to ignore scripts defined in manifest files[23m
+                                  env: GREASE_IGNORE_SCRIPTS
+  -j, --json                    [3mwhether to enable json output[23m
+                                  env: GREASE_JSON
+  -L, --log-level <level>       [3mthe log level[23m
+                                  choices: 'debug'|'error'|'info'|'log'|'silent'|'warn'|'verbose'
+                                  default: 'info'
+                                  env: GREASE_LOG_LEVEL
+  -T, --tag-prefix <prefix>     [3mthe tag prefix to consider when handling tags[23m
+                                  default: ''
+                                  env: GREASE_TAG_PREFIX
+  -u, --unstable [choice]       [3mwhether to respect unstable tags[23m
+                                  choices: 0|1|false|true|'n'|'y'
+                                  default: true
+                                  preset: 'y'
+                                  env: GREASE_UNSTABLE
+  -w, --write                   [3mwhether to write to disk[23m
+                                  env: GREASE_WRITE
+                                  conflicts: dry
+  -h, --help                    [3mshow help[23m
+  -v, --version                 [3mprint version number[23m
+"
+`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (9) 1`] = `
+"dist-tag
+[1musage[22m: grease dist-tag [flags...] <target>
+  Get a distribution tag from a release type or version.
+
+[4mExamples[24m
+  $ grease dist-tag grease@3.0.0-alpha.10 -T=grease@     [2m# alpha[22m
+
+[4mArguments[24m
+  target                                                 [3mthe release type or version[23m
+
+[4mOptions[24m
+  -h, --help                                             [3mshow help[23m
+
+[4mGlobal Options[24m
+  -c, --color [choice]                                   [3mwhether color output is enabled
+                                                         • [33m0[39m: 2 colors (disables colors)
+                                                         • [33m1[39m: 16 colors
+                                                         • [33m2[39m: 256 colors
+                                                         • [33m3[39m: 16,777,216 colors
+                                                         • [33mfalse[39m: disable colors
+                                                         • [33mtrue[39m: default color support[23m
+                                                           choices: 0|1|2|3|false|true
+                                                           default: isColorSupported()
+                                                           preset: true
+                                                           env: GREASE_COLOR
+  -g, --config [opt]                                     [3mthe config file path or config search setting[23m
+                                                           default: true
+                                                           preset: 'y'
+                                                           env: GREASE_CONFIG
+  -k, --cwd <dir>                                        [3mthe path to the current working directory[23m
+                                                           env: GREASE_CWD, PWD
+  -n, --dry [choice]                                     [3mwhether grease should only report what it would have done, rather than
+                                                         make any changes (i.e. write to disk, publish)[23m
+                                                           default: true
+                                                           preset: 1
+                                                           env: GREASE_DRY
+                                                           conflicts: write
+  --ignore-scripts                                       [3mwhether to ignore scripts defined in manifest files[23m
+                                                           env: GREASE_IGNORE_SCRIPTS
+  -j, --json                                             [3mwhether to enable json output[23m
+                                                           env: GREASE_JSON
+  -L, --log-level <level>                                [3mthe log level[23m
+                                                           choices: 'debug'|'error'|'info'|'log'|'silent'|'warn'|'verbose'
+                                                           default: 'info'
+                                                           env: GREASE_LOG_LEVEL
+  -T, --tag-prefix <prefix>                              [3mthe tag prefix to consider when handling tags[23m
+                                                           default: ''
+                                                           env: GREASE_TAG_PREFIX
+  -u, --unstable [choice]                                [3mwhether to respect unstable tags[23m
+                                                           choices: 0|1|false|true|'n'|'y'
+                                                           default: true
+                                                           preset: 'y'
+                                                           env: GREASE_UNSTABLE
+  -w, --write                                            [3mwhether to write to disk[23m
+                                                           env: GREASE_WRITE
+                                                           conflicts: dry
+  -h, --help                                             [3mshow help[23m
+  -v, --version                                          [3mprint version number[23m
+"
+`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (10) 1`] = `
+"info
+[1musage[22m: grease info [flags...]
+  Get an environment report.
+
+[4mOptions[24m
+  -m, --markdown []              [3mwhether to enable markdown output[23m
+                                   choices: 0|1|false|true|'n'|'y'
+                                   preset: 1
+                                   conflicts: json, yaml
+  --pm, --package-manager <>     [3mthe package manager name[23m
+                                   choices: 'bun'|'npm'|'pnpm'|'yarn'
+  -y, --yaml []                  [3mwhether to enable yaml output[23m
+                                   choices: 0|1|false|true|'n'|'y'
+                                   preset: 1
+                                   conflicts: json, markdown
+  -h, --help                     [3mshow help[23m
+
+[4mGlobal Options[24m
+  -c, --color [choice]           [3mwhether color output is enabled
+                                 • [33m0[39m: 2 colors (disables colors)
+                                 • [33m1[39m: 16 colors
+                                 • [33m2[39m: 256 colors
+                                 • [33m3[39m: 16,777,216 colors
+                                 • [33mfalse[39m: disable colors
+                                 • [33mtrue[39m: default color support[23m
+                                   choices: 0|1|2|3|false|true
+                                   default: isColorSupported()
+                                   preset: true
+                                   env: GREASE_COLOR
+  -g, --config [opt]             [3mthe config file path or config search setting[23m
+                                   default: true
+                                   preset: 'y'
+                                   env: GREASE_CONFIG
+  -k, --cwd <dir>                [3mthe path to the current working directory[23m
+                                   env: GREASE_CWD, PWD
+  -n, --dry [choice]             [3mwhether grease should only report what it would have done, rather than make any changes (i.e.
+                                 write to disk, publish)[23m
+                                   default: true
+                                   preset: 1
+                                   env: GREASE_DRY
+                                   conflicts: write
+  --ignore-scripts               [3mwhether to ignore scripts defined in manifest files[23m
+                                   env: GREASE_IGNORE_SCRIPTS
+  -j, --json                     [3mwhether to enable json output[23m
+                                   env: GREASE_JSON
+  -L, --log-level <level>        [3mthe log level[23m
+                                   choices: 'debug'|'error'|'info'|'log'|'silent'|'warn'|'verbose'
+                                   default: 'info'
+                                   env: GREASE_LOG_LEVEL
+  -T, --tag-prefix <prefix>      [3mthe tag prefix to consider when handling tags[23m
+                                   default: ''
+                                   env: GREASE_TAG_PREFIX
+  -u, --unstable [choice]        [3mwhether to respect unstable tags[23m
+                                   choices: 0|1|false|true|'n'|'y'
+                                   default: true
+                                   preset: 'y'
+                                   env: GREASE_UNSTABLE
+  -w, --write                    [3mwhether to write to disk[23m
+                                   env: GREASE_WRITE
+                                   conflicts: dry
+  -h, --help                     [3mshow help[23m
+  -v, --version                  [3mprint version number[23m
+"
+`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (11) 1`] = `
+"manifest
+[1musage[22m: grease manifest [flags...] <command>
+  Manage the package manifest.
+
+[4mOptions[24m
+  -M, --manifest <manifest>           [3mthe manifest path or url[23m
+                                        env: GREASE_MANIFEST_PATH, npm_package_json
+  -h, --help                          [3mshow help[23m
+
+[4mCommands[24m
+  delete [flags...] <field>           delete a value
+  get [flags...] <field>              get a value
+  set [flags...] <field=value...>     set values
+"
+`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (12) 1`] = `
+"delete
+[1musage[22m: grease manifest delete [flags...] <field>
+  Remove the value at [36mfield[39m from the manifest.
+
+[4mArguments[24m
+  field          [3mthe field to remove[23m
+
+[4mOptions[24m
+  -h, --help     [3mshow help[23m
+"
+`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (13) 1`] = `
+"get
+[1musage[22m: grease manifest get [flags...] <field>
+  Get the value at [36mfield[39m from the manifest.
+  Returned values are always in [1mjson[22m format.
+
+[4mArguments[24m
+  field          [3mthe field to retrieve[23m
+
+[4mOptions[24m
+  -h, --help     [3mshow help[23m
+"
+`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (14) 1`] = `
+"set
+[1musage[22m: grease manifest set [flags...] <field=value...>
+  Set the [36mvalue[39m at [36mfield[39m in the manifest.
+
+[4mArguments[24m
+  fieldValue     [3mthe list of field-value pairs[23m
+
+[4mOptions[24m
+  -h, --help     [3mshow help[23m
+"
+`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (15) 1`] = `
+"pack
+[1musage[22m: grease pack [flags...] [files...]
+  Generate a tarball from the current project.
+
+[4mArguments[24m
+  files                            [3mthe files to pack[23m
+                                     default: based on [36mfiles[39m property in manifest
+
+[4mOptions[24m
+  --gzip, --gzip-level <level>     [3mgzip compression level[23m
+                                     choices: 0|1|2|3|4|5|6|7|8|9
+                                     default: 9
+                                     env: GREASE_PACK_GZIP_LEVEL
+  -o, --out <outfile>              [3mwrite the tarball to this file[23m
+                                     env: GREASE_PACK_OUTFILE
+  -h, --help                       [3mshow help[23m
+
+[4mGlobal Options[24m
+  -c, --color [choice]             [3mwhether color output is enabled
+                                   • [33m0[39m: 2 colors (disables colors)
+                                   • [33m1[39m: 16 colors
+                                   • [33m2[39m: 256 colors
+                                   • [33m3[39m: 16,777,216 colors
+                                   • [33mfalse[39m: disable colors
+                                   • [33mtrue[39m: default color support[23m
+                                     choices: 0|1|2|3|false|true
+                                     default: isColorSupported()
+                                     preset: true
+                                     env: GREASE_COLOR
+  -g, --config [opt]               [3mthe config file path or config search setting[23m
+                                     default: true
+                                     preset: 'y'
+                                     env: GREASE_CONFIG
+  -k, --cwd <dir>                  [3mthe path to the current working directory[23m
+                                     env: GREASE_CWD, PWD
+  -n, --dry [choice]               [3mwhether grease should only report what it would have done, rather than make any changes (i.e.
+                                   write to disk, publish)[23m
+                                     default: true
+                                     preset: 1
+                                     env: GREASE_DRY
+                                     conflicts: write
+  --ignore-scripts                 [3mwhether to ignore scripts defined in manifest files[23m
+                                     env: GREASE_IGNORE_SCRIPTS
+  -j, --json                       [3mwhether to enable json output[23m
+                                     env: GREASE_JSON
+  -L, --log-level <level>          [3mthe log level[23m
+                                     choices: 'debug'|'error'|'info'|'log'|'silent'|'warn'|'verbose'
+                                     default: 'info'
+                                     env: GREASE_LOG_LEVEL
+  -T, --tag-prefix <prefix>        [3mthe tag prefix to consider when handling tags[23m
+                                     default: ''
+                                     env: GREASE_TAG_PREFIX
+  -u, --unstable [choice]          [3mwhether to respect unstable tags[23m
+                                     choices: 0|1|false|true|'n'|'y'
+                                     default: true
+                                     preset: 'y'
+                                     env: GREASE_UNSTABLE
+  -w, --write                      [3mwhether to write to disk[23m
+                                     env: GREASE_WRITE
+                                     conflicts: dry
+  -h, --help                       [3mshow help[23m
+  -v, --version                    [3mprint version number[23m
+"
+`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (16) 1`] = `
+"publish
+[1musage[22m: grease publish --registry <url!> [flags...] [artifact]
+  Publish a package to a registry so it can be installed by name.
+
+[4mExamples[24m
+  $ grease publish @flex-development-kronk-1.0.0.tgz -PR=https://npm.pkg.github.com
+
+[4mArguments[24m
+  artifact                                                                              [3mthe package artifact path[23m
+
+[4mOptions[24m
+  -P, --provenance                                                                      [3mwhen publishing from a supported cloud
+                                                                                        ci/cd system, the package will be publicly
+                                                                                        linked to where it was built and published
+                                                                                        from[23m
+                                                                                          conflicts: provenance-file
+  --pf, --provenance-file                                                               [3mthe provenance bundle path[23m
+                                                                                          conflicts: provenance
+  -R, --registry <url!>                                                                 [3mthe registry url[23m
+  -t, --tag <tag>                                                                       [3mthe distribution tag[23m
+                                                                                          default: 'latest'
+  -h, --help                                                                            [3mshow help[23m
+
+[4mGlobal Options[24m
+  -c, --color [choice]                                                                  [3mwhether color output is enabled
+                                                                                        • [33m0[39m: 2 colors (disables colors)
+                                                                                        • [33m1[39m: 16 colors
+                                                                                        • [33m2[39m: 256 colors
+                                                                                        • [33m3[39m: 16,777,216 colors
+                                                                                        • [33mfalse[39m: disable colors
+                                                                                        • [33mtrue[39m: default color support[23m
+                                                                                          choices: 0|1|2|3|false|true
+                                                                                          default: isColorSupported()
+                                                                                          preset: true
+                                                                                          env: GREASE_COLOR
+  -g, --config [opt]                                                                    [3mthe config file path or config search
+                                                                                        setting[23m
+                                                                                          default: true
+                                                                                          preset: 'y'
+                                                                                          env: GREASE_CONFIG
+  -k, --cwd <dir>                                                                       [3mthe path to the current working directory[23m
+                                                                                          env: GREASE_CWD, PWD
+  -n, --dry [choice]                                                                    [3mwhether grease should only report what it
+                                                                                        would have done, rather than make any
+                                                                                        changes (i.e. write to disk, publish)[23m
+                                                                                          default: true
+                                                                                          preset: 1
+                                                                                          env: GREASE_DRY
+                                                                                          conflicts: write
+  --ignore-scripts                                                                      [3mwhether to ignore scripts defined in
+                                                                                        manifest files[23m
+                                                                                          env: GREASE_IGNORE_SCRIPTS
+  -j, --json                                                                            [3mwhether to enable json output[23m
+                                                                                          env: GREASE_JSON
+  -L, --log-level <level>                                                               [3mthe log level[23m
+                                                                                          choices:
+                                                                                          'debug'|'error'|'info'|'log'|'silent'|'warn'|'verbose'
+                                                                                          default: 'info'
+                                                                                          env: GREASE_LOG_LEVEL
+  -T, --tag-prefix <prefix>                                                             [3mthe tag prefix to consider when handling
+                                                                                        tags[23m
+                                                                                          default: ''
+                                                                                          env: GREASE_TAG_PREFIX
+  -u, --unstable [choice]                                                               [3mwhether to respect unstable tags[23m
+                                                                                          choices: 0|1|false|true|'n'|'y'
+                                                                                          default: true
+                                                                                          preset: 'y'
+                                                                                          env: GREASE_UNSTABLE
+  -w, --write                                                                           [3mwhether to write to disk[23m
+                                                                                          env: GREASE_WRITE
+                                                                                          conflicts: dry
+  -h, --help                                                                            [3mshow help[23m
+  -v, --version                                                                         [3mprint version number[23m
+"
+`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (17) 1`] = `
+"tag
+[1musage[22m: grease tag [flags...] <command>
+  Manage release tags.
+
+[4mOptions[24m
+  -h, --help                    [3mshow help[23m
+
+[4mGlobal Options[24m
+  -c, --color [choice]          [3mwhether color output is enabled
+                                • [33m0[39m: 2 colors (disables colors)
+                                • [33m1[39m: 16 colors
+                                • [33m2[39m: 256 colors
+                                • [33m3[39m: 16,777,216 colors
+                                • [33mfalse[39m: disable colors
+                                • [33mtrue[39m: default color support[23m
+                                  choices: 0|1|2|3|false|true
+                                  default: isColorSupported()
+                                  preset: true
+                                  env: GREASE_COLOR
+  -g, --config [opt]            [3mthe config file path or config search setting[23m
+                                  default: true
+                                  preset: 'y'
+                                  env: GREASE_CONFIG
+  -k, --cwd <dir>               [3mthe path to the current working directory[23m
+                                  env: GREASE_CWD, PWD
+  -n, --dry [choice]            [3mwhether grease should only report what it would have done, rather than make any changes (i.e.
+                                write to disk, publish)[23m
+                                  default: true
+                                  preset: 1
+                                  env: GREASE_DRY
+                                  conflicts: write
+  --ignore-scripts              [3mwhether to ignore scripts defined in manifest files[23m
+                                  env: GREASE_IGNORE_SCRIPTS
+  -j, --json                    [3mwhether to enable json output[23m
+                                  env: GREASE_JSON
+  -L, --log-level <level>       [3mthe log level[23m
+                                  choices: 'debug'|'error'|'info'|'log'|'silent'|'warn'|'verbose'
+                                  default: 'info'
+                                  env: GREASE_LOG_LEVEL
+  -T, --tag-prefix <prefix>     [3mthe tag prefix to consider when handling tags[23m
+                                  default: ''
+                                  env: GREASE_TAG_PREFIX
+  -u, --unstable [choice]       [3mwhether to respect unstable tags[23m
+                                  choices: 0|1|false|true|'n'|'y'
+                                  default: true
+                                  preset: 'y'
+                                  env: GREASE_UNSTABLE
+  -w, --write                   [3mwhether to write to disk[23m
+                                  env: GREASE_WRITE
+                                  conflicts: dry
+  -h, --help                    [3mshow help[23m
+  -v, --version                 [3mprint version number[23m
+
+[4mCommands[24m
+  create [flags...] <tag>       create release tags
+  list [flags...]               list release tags
+"
+`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (18) 1`] = `
+"create
+[1musage[22m: grease tag create [flags...] <tag>
+  Create a release tag.
+
+[4mArguments[24m
+  tag                          [3mthe tag to create[23m
+
+[4mOptions[24m
+  -f, --force [choice]         [3mwhether to replace [36mtag[39m instead of failing if it already exists[23m
+                                 choices: 0|1|false|true|'n'|'y'
+                                 preset: 1
+                                 env: GREASE_TAG_FORCE
+  -m, --message <msg>          [3mthe message to associate with the new tag[23m
+                                 default: ''
+                                 env: GREASE_TAG_MESSAGE
+  -o, --object <commitish>     [3mthe object the new tag will refer to[23m
+                                 default: 'HEAD'
+                                 env: GREASE_TAG_OBJECT
+  -p, --push                   [3mwhether to push the tag to remote after creation[23m
+                                 env: GREASE_TAG_PUSH
+  -r, --remote <dest>          [3mthe push destination[23m
+                                 default: 'origin'
+                                 env: GREASE_TAG_REMOTE
+  -s, --sign [opt]             [3mcreate a gpg-signed tag using the default e-mail address' key or the given key[23m
+                                 default: false
+                                 preset: true
+                                 env: GREASE_TAG_SIGN
+  -V, --verify [choice]        [3mwhether to verify gpg signature[23m
+                                 choices: 0|1|false|true|'n'|'y'
+                                 default: [36mtrue[39m if signing is enabled
+                                 preset: 'y'
+                                 env: GREASE_TAG_VERIFY
+  -h, --help                   [3mshow help[23m
+"
+`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (19) 1`] = `
+"list
+[1musage[22m: grease tag list [flags...]
+  List release tags.
+
+[4mAliases[24m
+  ls
+
+[4mOptions[24m
+  --sort <list>                 [3mthe sorting configuration[23m
+                                  default: ['-creatordate']
+                                  env: GREASE_TAG_SORT
+  -h, --help                    [3mshow help[23m
+
+[4mGlobal Options[24m
+  -c, --color [choice]          [3mwhether color output is enabled
+                                • [33m0[39m: 2 colors (disables colors)
+                                • [33m1[39m: 16 colors
+                                • [33m2[39m: 256 colors
+                                • [33m3[39m: 16,777,216 colors
+                                • [33mfalse[39m: disable colors
+                                • [33mtrue[39m: default color support[23m
+                                  choices: 0|1|2|3|false|true
+                                  default: isColorSupported()
+                                  preset: true
+                                  env: GREASE_COLOR
+  -g, --config [opt]            [3mthe config file path or config search setting[23m
+                                  default: true
+                                  preset: 'y'
+                                  env: GREASE_CONFIG
+  -k, --cwd <dir>               [3mthe path to the current working directory[23m
+                                  env: GREASE_CWD, PWD
+  -n, --dry [choice]            [3mwhether grease should only report what it would have done, rather than make any changes (i.e.
+                                write to disk, publish)[23m
+                                  default: true
+                                  preset: 1
+                                  env: GREASE_DRY
+                                  conflicts: write
+  --ignore-scripts              [3mwhether to ignore scripts defined in manifest files[23m
+                                  env: GREASE_IGNORE_SCRIPTS
+  -j, --json                    [3mwhether to enable json output[23m
+                                  env: GREASE_JSON
+  -L, --log-level <level>       [3mthe log level[23m
+                                  choices: 'debug'|'error'|'info'|'log'|'silent'|'warn'|'verbose'
+                                  default: 'info'
+                                  env: GREASE_LOG_LEVEL
+  -T, --tag-prefix <prefix>     [3mthe tag prefix to consider when handling tags[23m
+                                  default: ''
+                                  env: GREASE_TAG_PREFIX
+  -u, --unstable [choice]       [3mwhether to respect unstable tags[23m
+                                  choices: 0|1|false|true|'n'|'y'
+                                  default: true
+                                  preset: 'y'
+                                  env: GREASE_UNSTABLE
+  -w, --write                   [3mwhether to write to disk[23m
+                                  env: GREASE_WRITE
+                                  conflicts: dry
+  -h, --help                    [3mshow help[23m
+  -v, --version                 [3mprint version number[23m
+"
+`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (20) 1`] = `
+"semver[2m@[22m3.4.5
+[1musage[22m: semver [flags...] [command]
+  Utilities for semantic versioning.
+
+[4mOptions[24m
+  -h, --help                                           [3mshow help[23m
+  -v, --version                                        [3mprint version number[23m
+
+[4mCommands[24m
+  parse [flags...] <string>                            semantic version parser
+  satisfies [flags...] [command] <version> <range>     check if a version satisfies a range
+  help                                                 show help
+"
+`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (21) 1`] = `
+"tribonacci[2m@[22m1.0.0
+[1musage[22m: tribonacci [flags...] <a> <b> <c>
+  Given the starting sequence [36m[a, b, c][39m,
+  print the first [36mn[39m elements of the sequence.
+
+[4mExamples[24m
+  $ tribonacci [33m-n10 0 0 1[39m
+
+[4mArguments[24m
+  a                           [3mfirst value in starting sequence[23m
+                                choices: 0|1|2|3|4|5|6|7|8|9
+  b                           [3msecond value in starting sequence[23m
+                                choices: 0|1|2|3|4|5|6|7|8|9
+  c                           [3mthird value in starting sequence[23m
+                                choices: 0|1|2|3|4|5|6|7|8|9
+
+[4mOptions[24m
+  -n <!>                      [3mthe number of values to include in the sequence[23m
+                                choices: 1|2|3|4|5|6|7|8|9
+  -h, --help                  [3mshow help[23m
+  -v, --version               [3mprint version number[23m
+"
+`;
