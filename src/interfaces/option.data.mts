@@ -3,7 +3,11 @@
  * @module kronk/interfaces/OptionData
  */
 
-import type { List, OptionValues, ParseableInfo } from '@flex-development/kronk'
+import type {
+  List,
+  OptionValues,
+  ParseableInfo
+} from '@flex-development/kronk'
 
 /**
  * Data transfer object for command options.

@@ -35,15 +35,15 @@ interface ParseableInfo extends HelpableInfo {
   default?: DefaultInfo | null | undefined
 
   /**
-   * Handler used to parse arguments.
+   * The handler used to parse arguments.
    *
-   * The handler receives two parameters, the raw, unparsed argument (or
-   * *arguments* for variadic candidates), and the default value for the
-   * argument. It should return the new value for the argument.
+   * The handler receives two parameters, the raw, unparsed argument,
+   * and the previous value for the argument.
+   * It should return the new value for the argument.
    *
    * @see {@linkcode ParseArg}
    */
-  parser?: ParseArg<any, string> | ParseArg<any, string[]> | null | undefined
+  parser?: ParseArg | null | undefined
 }
 
 export type { ParseableInfo as default }

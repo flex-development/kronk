@@ -3,7 +3,11 @@
  * @module kronk/types/HelpCommandData
  */
 
-import type { Command, SubcommandInfo } from '@flex-development/kronk'
+import type {
+  Command,
+  CommandInfo,
+  SubcommandInfo
+} from '@flex-development/kronk'
 
 /**
  * Union of types used to configure the help subcommand.
@@ -14,6 +18,11 @@ import type { Command, SubcommandInfo } from '@flex-development/kronk'
  * @see {@linkcode Command}
  * @see {@linkcode SubcommandInfo}
  */
-type HelpCommandData = Command | SubcommandInfo | string | false
+type HelpCommandData =
+  | Command
+  | CommandInfo
+  | SubcommandInfo
+  | boolean
+  | string
 
 export type { HelpCommandData as default }

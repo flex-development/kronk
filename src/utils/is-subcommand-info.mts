@@ -11,7 +11,7 @@ import isOption from '#utils/is-option'
 import type { SubcommandInfo } from '@flex-development/kronk'
 
 /**
- * Check if `value` looks like a subcommand info object.
+ * Check if `value` is a subcommand info object.
  *
  * @see {@linkcode SubcommandInfo}
  *
@@ -23,7 +23,7 @@ import type { SubcommandInfo } from '@flex-development/kronk'
  * @param {unknown} value
  *  The thing to check
  * @return {value is SubcommandInfo}
- *  `true` if `value` looks like a subcommand info object, `false` otherwise
+ *  `true` if `value` looks like subcommand info object, `false` otherwise
  */
 function isSubcommandInfo(this: void, value: unknown): value is SubcommandInfo {
   return (

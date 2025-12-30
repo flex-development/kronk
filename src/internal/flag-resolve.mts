@@ -15,6 +15,8 @@ import {
 import type { Option } from '@flex-development/kronk'
 import { ok } from 'devlop'
 
+export default resolveFlag
+
 /**
  * Resolve long and short flag events.
  *
@@ -77,89 +79,111 @@ function resolveFlag(
         : chars.hyphen + id.value[0]!
 
       // handle flag when tokenizing in a `Command` instance context.
-      if (context[kCommand]) {
-        ok(context.command, 'expected `context.command`')
-
-        // find option associated with flag.
-        token.option = context.command.findOption(token.value, 0)
-
-        // capture current command or continue looking for option and command.
-        if (token.option) {
-          token.command = context.command
-        } else {
-          token.option = context.command.findOption(token.value)
-
-          // capture command or look for global option and command.
-          if (token.option) {
-            token.command = context.command.defaultCommand
-          } else {
-            for (const ancestor of context.command.ancestors()) {
-              /**
-               * Ancestor option with the flag `token.value`.
-               *
-               * @var {Option | undefined} option
-               */
-              let option: Option | undefined
-
-              if ((option = ancestor.findOption(token.value, 0))) {
-                token.command = ancestor
-                token.global = true
-                token.option = option
-                break
-              }
-            }
-          }
-        }
+      if (context[kCommand] && context.command) {
+        findOption(token.value, token, context) // find corresponding option.
 
         // split combined short flag.
-        if (token.option && token.short && id.value.length > 1) {
-          id.start._bufferIndex++
-          id.start.column++
-          id.start.offset++
-          id.value = id.value.slice(1)
+        if (token.short && id.value.length > 1) {
+          id.value = id.value.slice(1) // remove already processed character.
 
-          // `next` set of events will be mutated, so capture current length.
-          const { length } = next
+          // fix end location of original flag token.
+          token.end.column = token.start.column + token.value.length
+          token.end.offset = token.start.offset + token.value.length
 
-          // determine flag combination strategy.
-          // the flag accepting an argument must be specified after all boolean
-          // flags. otherwise, the argument will be processed as several
-          // combined flags.
-          if (!token.option.optional && !token.option.required) {
-            // boolean flag was combined.
+          // fix end position in string chunk of original flag token.
+          if (token.end._bufferIndex < 0) token.end._index--
+          token.end._bufferIndex = token.start._bufferIndex
+          token.end._bufferIndex += token.value.length
 
-            // the first character in `id.value` is now assumed to be a flag id.
-            // the corresponding flag may be another boolean short flag, or a
-            // flag that accepts an argument.
+          /**
+           * The distance from the beginning of the token value.
+           *
+           * @var {number} k
+           */
+          let k: number = -1
 
+          /**
+           * The value of the current flag id token.
+           *
+           * @var {string} value
+           */
+          let value: string = id.value
+
+          // treat the first character in `value` as a short flag id until an
+          // option is not found.
+          // if any portion of the `id.value` is left, it will be considered an
+          // operand for `token.value` or the last combined flag.
+          // this means short flags can be combined with operands as long as the
+          // first character in the operand is not also a short flag id.
+          while (value.length) {
             /**
-             * New flag token.
+             * The new flag token.
              *
              * @const {Token} flag
              */
             const flag: Token = Object.assign({}, token, {
               combined: true,
-              option: null,
-              value: undefined
+              end: Object.assign({}, token.end),
+              start: Object.assign({}, token.start)
             })
 
-            // add flag events to continue processing any remaining
-            // combined flags or option-arguments.
-            next.unshift([event, flag, ctx])
-            next.push([ev.exit, flag, ctx])
-          } else {
-            // flag representing optional or required option was combined.
+            // look for an option.
+            // the option may be local, global, or an option known only
+            // to the current default command.
+            // break once an option is not found to treat the current `value`
+            // as an operand for `token.value`, or the last combined flag.
+            findOption(chars.hyphen + value[0]!, flag, context)
+            if (!flag.option) break
+            ok(typeof flag.value === 'string', 'expected string token value')
 
-            // `id.value` is now assumed to be an option-argument.
-            id.type = tt.operand
-            id.combined = true
-            token.end = id.start
+            // get distance from beginning of original flag token.
+            k = token.value.length + id.value.length - value.length
+
+            // fix start location of new flag token.
+            flag.start.column += k
+            flag.start.offset = flag.start.column - 1
+
+            // fix end location of new flag token.
+            flag.end.column += flag.value.length - 1
+            flag.end.offset = flag.end.column - 1
+
+            // fix position in string chunk of new flag token.
+            // note: when serialized, the token value will not start
+            // with a hyphen. `findOption` prepends the hyphen.
+            flag.start._bufferIndex = token.start._bufferIndex + k
+            flag.end._bufferIndex = flag.start._bufferIndex + 1
+
+            // move one past original flag exit event and onto next character.
+            index += 2
+            value = value.slice(1)
+
+            // add new flag event pack.
+            events.splice(index, 0, [event, flag, ctx], [ev.exit, flag, ctx])
           }
 
-          // re-insert previously removed flag id events, along with any events
-          // that were added to continue processing any remaining combined flags
-          // or option-arguments.
-          events.splice(index + length, 0, ...next)
+          // treat the rest of `value` as an operand.
+          if (value) {
+            id.type = tt.operand
+            id.combined = true // operand was combined with flags.
+
+            // all of `value` is an operand if still equal to `id.value`.
+            // otherwise, set new operand value.
+            if (value === id.value) k = 1
+            else id.value = value
+
+            // fix start location of operand.
+            id.start.column += k
+            id.start.offset = id.start.column - 1
+
+            // fix start position in string chunk of operand.
+            id.start._bufferIndex += k
+
+            // move one past original flag exit event.
+            index += 2
+
+            // add new operand event pack.
+            events.splice(index, 0, [event, id, ctx], [ev.exit, id, ctx])
+          }
         }
       }
     }
@@ -168,4 +192,72 @@ function resolveFlag(
   return events
 }
 
-export default resolveFlag
+/**
+ * Find an option for `token`, setting `token.option`.
+ *
+ * The option may be local, global, or an option known only
+ * to the current default command.
+ *
+ * > 👉 **Note**: Sets `token.value` to `flag` if an option is found.
+ *
+ * @internal
+ *
+ * @this {void}
+ *
+ * @param {string} flag
+ *  The option flag
+ * @param {Token} token
+ *  The current token
+ * @param {TokenizeContext} context
+ *  Tokenize context
+ * @return {undefined}
+ */
+function findOption(
+  this: void,
+  flag: string,
+  token: Token,
+  context: TokenizeContext
+): undefined {
+  ok(context[kCommand], 'expected to be in `Command` context')
+  ok(context.command, 'expected `context.command`')
+
+  // look for a local option.
+  token.option = context.command.findOption(flag, 0)
+
+  // capture current command or continue looking for option and command.
+  if (token.option) {
+    token.command = context.command
+  } else {
+    token.option = context.command.findOption(flag)
+
+    // capture command or look for global option and command.
+    if (token.option) {
+      token.command = context.command.defaultCommand
+    } else {
+      for (const ancestor of context.command.ancestors()) {
+        /**
+         * The ancestor option with the flag `flag`.
+         *
+         * @var {Option | undefined} option
+         */
+        let option: Option | undefined
+
+        if ((option = ancestor.findOption(flag, 0))) {
+          token.command = ancestor
+          token.global = true
+          token.option = option
+          break
+        }
+      }
+    }
+  }
+
+  // capture option flag on `token`.
+  if (token.option) {
+    token.value = flag
+  } else {
+    token.option = null
+  }
+
+  return void token
+}

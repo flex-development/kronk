@@ -3,16 +3,14 @@
  * @module fixtures/commands/mlly
  */
 
-import bool from '#parsers/bool'
 import unique from '#parsers/unique'
 import sfmt from '#tests/utils/sfmt'
-import { chars } from '@flex-development/fsm-tokenizer'
 import type { SubcommandInfo as CommandInfo } from '@flex-development/kronk'
 import { canParseUrl, defaultConditions, toUrl } from '@flex-development/mlly'
 import type {} from '@flex-development/pkg-types'
 
 /**
- * `mlly` program info.
+ * The program info for `mlly`.
  *
  * @type {CommandInfo}
  */
@@ -22,14 +20,10 @@ export default {
   name: 'mlly',
   options: [
     {
-      choices: bool.choices,
-      default: { value: false },
-      flags: '-d | --debug [choice]',
-      parser: bool(),
-      preset: chars.lowercaseY
+      flags: '-d | --debug'
     },
     {
-      description: 'url of parent module',
+      description: 'the parent module url',
       flags: '-p | --parent <!>',
       parser: url
     }
@@ -51,12 +45,11 @@ export default {
           parser: unique
         },
         {
-          default: { value: false },
-          description: 'keep symlinks instead of resolving them',
+          description: 'whether to keep symlinks instead of resolving them',
           flags: '--ps | --preserve-symlinks'
         }
       ],
-      version: '0.0.1'
+      summary: 'resolve modules'
     }
   },
   version: '1.0.0-alpha.20'

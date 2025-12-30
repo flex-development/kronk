@@ -14,17 +14,27 @@ import type { UsageData } from '@flex-development/kronk'
  */
 interface UsageInfo extends UsageData {
   /**
-   * Command options descriptor.
+   * The parts of the arguments descriptor.
+   *
+   * > 👉 **Note**: Displayed in auto-generated help text **only** when a
+   * > command has at least one visible argument.
+   *
+   * @override
+   */
+  arguments: readonly string[]
+
+  /**
+   * The options descriptor, with `null` used to omit the descriptor completely.
    *
    * > 👉 **Note**: Displayed in auto-generated help text **only** when a
    * > command has at least one visible command option.
    *
    * @override
    */
-  options: string
+  options: string | null
 
   /**
-   * Subcommands descriptor.
+   * The subcommands descriptor.
    *
    * > 👉 **Note**: Displayed in auto-generated help text **only** when a
    * > subcommand has at least one visible subcommand.

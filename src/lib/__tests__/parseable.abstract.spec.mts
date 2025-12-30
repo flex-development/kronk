@@ -4,10 +4,10 @@
  */
 
 import chars from '#enums/chars'
-import digits from '#fixtures/digits'
 import identity from '#internal/identity'
 import Helpable from '#lib/helpable.abstract'
 import TestSubject from '#lib/parseable.abstract'
+import digits from '#utils/digits'
 import type {
   DefaultInfo,
   List,
@@ -136,7 +136,7 @@ describe('unit:lib/Parseable', () => {
       expect(result).to.be.a('function').with.property('name', identity.name)
     })
 
-    it.each<[ParseArg<any, any> | null | undefined]>([
+    it.each<[ParseArg | null | undefined]>([
       [null],
       [undefined],
       [vi.fn(Number.parseInt).mockName('parser')]

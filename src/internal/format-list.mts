@@ -11,6 +11,8 @@ import type { List } from '@flex-development/kronk'
  *
  * @internal
  *
+ * @this {void}
+ *
  * @param {List<string>} list
  *  The list to format
  * @return {string}

@@ -11,7 +11,7 @@
  */
 interface DefaultInfo<T = any> {
   /**
-   * Description of the default value.
+   * A description of the default value.
    */
   description?: URL | string | null | undefined
 

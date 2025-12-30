@@ -7,7 +7,7 @@ import Option from '#lib/option'
 import type { Version, VersionOptionInfo } from '@flex-development/kronk'
 
 /**
- * A command version option (i.e. `-v | --version`).
+ * A command version option (i.e. `-v, --version`).
  *
  * @see {@linkcode Option}
  *
@@ -39,7 +39,7 @@ class VersionOption extends Option {
     super({
       ...info,
       description: info.description ?? 'print version number',
-      flags: info.flags ?? '-v | --version'
+      flags: info.flags ?? '-v, --version'
     })
 
     this.version = String(info.version)

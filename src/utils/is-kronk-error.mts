@@ -4,10 +4,10 @@
  */
 
 import kKronkError from '#internal/k-kronk-error'
-import { KronkError } from '@flex-development/kronk/errors'
+import type { KronkError } from '@flex-development/kronk/errors'
 
 /**
- * Check if `value` looks like a {@linkcode KronkError}.
+ * Check if `value` is a {@linkcode KronkError}.
  *
  * @category
  *  utils
@@ -17,7 +17,7 @@ import { KronkError } from '@flex-development/kronk/errors'
  * @param {unknown} value
  *  The thing to check
  * @return {value is KronkError}
- *  `true` if `value` looks like a `KronkError` instance, `false` otherwise
+ *  `true` if `value` looks like a `KronkError`, `false` otherwise
  */
 function isKronkError(this: void, value: unknown): value is KronkError {
   return (
@@ -25,10 +25,7 @@ function isKronkError(this: void, value: unknown): value is KronkError {
     typeof value === 'object' &&
     value !== null &&
     value instanceof Error &&
-    (
-      value instanceof KronkError ||
-      kKronkError in value && value[kKronkError] === true
-    )
+    kKronkError in value
   )
 }
 

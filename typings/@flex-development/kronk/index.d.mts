@@ -14,27 +14,23 @@ declare module '@flex-development/kronk' {
 
   interface CommandInfo {
     /**
-     * Whether the command {@linkcode action} is expected to be overridden
-     * during testing (e.g. testing `--version`).
-     *
-     * @internal
-     */
-    actionOverride?: true
-
-    /**
      * Whether the `parseAsync` method should be called instead of `parse`
      * during testing.
      *
      * @internal
      */
     async?: true
+  }
 
+  interface SubcommandInfo {
     /**
-     * Whether help text is expected to be printed during testing.
+     * Information about the current process.
      *
      * @internal
+     *
+     * @override
      */
-    helpText?: true
+    process?: null | undefined
   }
 }
 

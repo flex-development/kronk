@@ -10,8 +10,7 @@ import type {
   List,
   ParseableInfo,
   ParseableMetadata,
-  ParseArg,
-  RawParseValue
+  ParseArg
 } from '@flex-development/kronk'
 import { fallback, isNIL } from '@flex-development/tutils'
 import { ok } from 'devlop'
@@ -210,34 +209,28 @@ abstract class Parseable extends Helpable {
    * @public
    * @instance
    *
-   * @param {ParseArg<any, any> | null | undefined} parser
+   * @param {ParseArg | null | undefined} parser
    *  The candidate-argument parser
    * @return {this}
    *  `this` candidate
    */
-  public parser(parser: ParseArg<any, any> | null | undefined): this
+  public parser(parser: ParseArg | null | undefined): this
 
   /**
    * Get the handler used to parse candidate-arguments.
    *
    * @see {@linkcode ParseArg}
-   * @see {@linkcode RawParseValue}
    *
    * @public
    * @instance
    *
-   * @template {any} T
-   *  Parse result
-   * @template {RawParseValue} [Value=RawParseValue]
-   *  The argument or arguments to parse
+   * @template {any} [T=any]
+   *  The result of the parse
    *
-   * @return {ParseArg<T, Value>}
+   * @return {ParseArg<T>}
    *  The candidate-argument parser
    */
-  public parser<
-    T,
-    Value extends RawParseValue = RawParseValue
-  >(): ParseArg<T, Value>
+  public parser<T>(): ParseArg<T>
 
   /**
    * Get or set the handler used to parse candidate-arguments.
@@ -254,7 +247,7 @@ abstract class Parseable extends Helpable {
    */
   public parser(parser?: ParseArg | null | undefined): ParseArg | this {
     if (arguments.length) return this.info.parser = parser, this
-    return fallback(this.info.parser as ParseArg, identity, isNIL)
+    return fallback(this.info.parser, identity, isNIL)
   }
 
   /**

@@ -4,7 +4,7 @@
  */
 
 import kKronkEvent from '#internal/k-kronk-event'
-import { KronkEvent } from '@flex-development/kronk/events'
+import type { KronkEvent } from '@flex-development/kronk/events'
 
 /**
  * Check if `value` is a {@linkcode KronkEvent}.
@@ -17,17 +17,14 @@ import { KronkEvent } from '@flex-development/kronk/events'
  * @param {unknown} value
  *  The thing to check
  * @return {value is KronkEvent}
- *  `true` if `value` is looks like `KronkEvent`, `false` otherwise
+ *  `true` if `value` looks like a `KronkEvent`, `false` otherwise
  */
 function isKronkEvent(this: void, value: unknown): value is KronkEvent {
   return (
     !Array.isArray(value) &&
     typeof value === 'object' &&
     value !== null &&
-    (
-      value instanceof KronkEvent ||
-      kKronkEvent in value && value[kKronkEvent] === true
-    )
+    kKronkEvent in value
   )
 }
 

@@ -17,8 +17,4 @@ describe('unit-d:types/RawOptionValue', () => {
   it('should extract string', () => {
     expectTypeOf<TestSubject>().extract<string>().not.toBeNever()
   })
-
-  it('should extract string[]', () => {
-    expectTypeOf<TestSubject>().extract<string[]>().not.toBeNever()
-  })
 })

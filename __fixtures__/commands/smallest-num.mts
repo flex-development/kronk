@@ -5,11 +5,10 @@
 
 import unique from '#parsers/unique'
 import sfmt from '#tests/utils/sfmt'
-import { faker } from '@faker-js/faker'
 import type { SubcommandInfo as CommandInfo } from '@flex-development/kronk'
 
 /**
- * `smallest-num` program info.
+ * The program info for `smallest-num`.
  *
  * @type {CommandInfo}
  */
@@ -19,7 +18,7 @@ export default {
     parser: unique,
     syntax: sfmt.required({ id: 'numbers', variadic: true })
   },
-  description: 'find the smallest number',
+  description: 'find the smallest number.',
   name: 'smallest-num',
-  version: faker.system.semver()
+  version: '1.2.0'
 }

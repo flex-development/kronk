@@ -4,13 +4,14 @@
  */
 
 import chars from '#enums/chars'
-import digits from '#fixtures/digits'
 import number from '#parsers/number'
 import sfmt from '#tests/utils/sfmt'
+import digits from '#utils/digits'
+import c from '@flex-development/colors'
 import type { SubcommandInfo as CommandInfo } from '@flex-development/kronk'
 
 /**
- * `tribonacci` program info.
+ * The program info for `tribonacci`.
  *
  * @type {CommandInfo}
  */
@@ -35,11 +36,15 @@ export default {
       syntax: sfmt.required({ id: chars.lowercaseC })
     }
   ],
+  description: 'Given the starting sequence `[a, b, c]`,\n' +
+    'print the first `n` elements of the sequence.',
+  examples: c.yellow('-n10 0 0 1'),
+  help: { columns: 80 },
   name: 'tribonacci',
   options: {
     choices: digits.filter(digit => digit !== chars.digit0),
-    description: 'number of values to include in new sequence',
-    flags: '-n' + chars.ht + sfmt.required({ mandatory: true })
+    description: 'the number of values to include in the sequence',
+    flags: '-n' + chars.space + sfmt.required({ mandatory: true })
   },
-  usage: { arguments: '<x> <y> <z>' }
+  version: '1.0.0'
 }

@@ -8,7 +8,7 @@
  */
 interface UsageData {
   /**
-   * Command arguments descriptor.
+   * The parts of the arguments descriptor.
    *
    * > 👉 **Note**: Displayed in auto-generated help text **only** when a
    * > command has at least one visible argument.
@@ -16,10 +16,10 @@ interface UsageData {
    * @default
    *  generated using visible command arguments
    */
-  arguments?: string | null | undefined
+  arguments?: readonly string[] | string | null | undefined
 
   /**
-   * Command options descriptor.
+   * The options descriptor, with `null` used to omit the descriptor completely.
    *
    * > 👉 **Note**: Displayed in auto-generated help text **only** when a
    * > command has at least one visible option.
@@ -29,7 +29,7 @@ interface UsageData {
   options?: string | null | undefined
 
   /**
-   * Subcommands descriptor.
+   * The subcommands descriptor.
    *
    * > 👉 **Note**: Displayed in auto-generated help text **only** when a
    * > command has at least one visible subcommand.

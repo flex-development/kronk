@@ -4,8 +4,12 @@
  */
 
 import type TestSubject from '#interfaces/process'
-import type { ExitCode, ExitProcess, ProcessEnv } from '@flex-development/kronk'
-import type { WriteStream } from '@flex-development/log'
+import type {
+  ExitCode,
+  ExitProcess,
+  ProcessEnv,
+  WriteStream
+} from '@flex-development/kronk'
 import type { Nilable } from '@flex-development/tutils'
 
 describe('unit-d:interfaces/Process', () => {

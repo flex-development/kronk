@@ -15,7 +15,7 @@ import kOption from '#internal/k-option'
  * @param {string} string
  *  The string to chunk
  * @param {symbol} context
- *  Context symbol
+ *  The context symbol
  * @return {string[]}
  *  List of chunks created from `string`
  */

@@ -7,19 +7,21 @@ import chars from '#enums/chars'
 import eid from '#enums/keid'
 import CommandError from '#errors/command.error'
 import KronkError from '#errors/kronk.error'
-import average from '#fixtures/commands/average'
-import bun from '#fixtures/commands/bun'
 import clamp from '#fixtures/commands/clamp'
+import copy from '#fixtures/commands/copy'
+import distinct from '#fixtures/commands/distinct'
+import factorial from '#fixtures/commands/factorial'
 import grease from '#fixtures/commands/grease'
 import greaseBad from '#fixtures/commands/grease-bad'
 import mlly from '#fixtures/commands/mlly'
+import semver from '#fixtures/commands/semver'
 import smallestNum from '#fixtures/commands/smallest-num'
-import stringUtil from '#fixtures/commands/string-util'
 import tribonacci from '#fixtures/commands/tribonacci'
 import TestSubject from '#lib/command'
 import Help from '#lib/help'
 import createProcess from '#tests/utils/create-process'
 import errorSnapshot from '#tests/utils/error-snapshot'
+import digits from '#utils/digits'
 import type {
   Action,
   CommandInfo,
@@ -27,18 +29,15 @@ import type {
   List,
   OptionValues,
   ParseOptions,
-  Process
+  Process,
+  WriteStream
 } from '@flex-development/kronk'
-import type { WriteStream } from '@flex-development/log'
 import pathe from '@flex-development/pathe'
-import type { Constructor } from '@flex-development/tutils'
+import { constant, type Constructor } from '@flex-development/tutils'
 import { ok } from 'devlop'
 import type { MockInstance } from 'vitest'
 
 describe('functional:lib/Command', () => {
-  type ActionMock = MockInstance<Action>
-  type GetActionSpy = (this: void, command: TestSubject) => ActionMock
-
   type ParseCase = [
     info: CommandInfo,
     argv: string[],
@@ -71,55 +70,12 @@ describe('functional:lib/Command', () => {
     before?(this: void, subject: TestSubject): undefined
   }
 
-  let act: GetActionSpy
-  let dn: GetActionSpy
   let nodeArgv: List<string>
   let options: ParseOptions
 
   beforeAll(() => {
     nodeArgv = ['node', pathe.fileURLToPath(import.meta.url)]
     options = { from: 'user' }
-
-    /**
-     * @this {void}
-     *
-     * @param {TestSubject} command
-     *  The command under test
-     * @return {MockInstance<Action>}
-     *  Command action callback spy
-     */
-    act = function act(this: void, command: TestSubject): MockInstance<Action> {
-      // @ts-expect-error [2445] testing.
-      ok(command.info.action, 'expected command action callback')
-
-      // @ts-expect-error [2445] testing.
-      return vi.spyOn(command.info, 'action')
-    }
-
-    /**
-     * @this {void}
-     *
-     * @param {TestSubject} command
-     *  The command under test
-     * @return {MockInstance<Action>}
-     *  Command done callback spy
-     */
-    dn = function act(this: void, command: TestSubject): MockInstance<Action> {
-      // @ts-expect-error [2445] testing.
-      ok(command.info.done, 'expected command done callback')
-
-      // @ts-expect-error [2445] testing.
-      return vi.spyOn(command.info, 'done').mockImplementation(done)
-
-      /**
-       * @this {TestSubject}
-       *
-       * @return {undefined}
-       */
-      function done(this: TestSubject): undefined {
-        return void this.exit()
-      }
-    }
   })
 
   describe('errors', () => {
@@ -130,8 +86,8 @@ describe('functional:lib/Command', () => {
     })
 
     it.each<ParseCase>([
+      [grease, [grease.name, 'changelog', '-nsw']],
       [grease, [grease.name, '-j', 'info', '--markdown']],
-      [grease, ['info', '-jm']],
       [grease, ['info', '--yaml', '--markdown']]
     ])('should error on conflicting option (%#)', async (
       info,
@@ -141,23 +97,15 @@ describe('functional:lib/Command', () => {
     })
 
     it.each<ParseCase>([
-      [bun, ['--watch', 'server.mts', 'main.mts']],
-      [bun, ['server.mts', 'main.mts', '--hot']],
-      [clamp, [chars.digit0, chars.digit1]],
       [clamp, [chars.delimiter, chars.minus + chars.digit1, chars.digit1]],
-      [grease, ['-w' + chars.equal + chars.digit1]],
-      [grease, ['pack', 'CHANGELOG.md', 'LICENSE.md', 'README.md', 'dist']],
-      [grease, [grease.name, 'tag', 'list', 'fab255b']],
-      [
-        tribonacci,
-        [
-          '-n' + chars.digit3,
-          chars.digit0,
-          chars.digit1,
-          chars.digit2,
-          chars.digit3
-        ]
-      ]
+      [copy, [copy.aliases, './index.mjs', './dist', './lib']],
+      [factorial, [factorial.name, chars.digit1, chars.digit3]],
+      [grease, [grease.name, 'changelog', '-sw1']],
+      [grease, [grease.name, 'changelog', 'changelog.md']],
+      [grease, [grease.subcommands.distTag.name, '1.0.0', '2.0.0-alpha.1']],
+      [semver, [semver.name, semver.version, semver.subcommands.parse.version]],
+      [semver, [copy.version, grease.version]],
+      [semver, [semver.version, '-l1']]
     ])('should error on excess command or option arguments (%#)', async (
       info,
       argv
@@ -166,20 +114,33 @@ describe('functional:lib/Command', () => {
     })
 
     it.each<ParseCase>([
-      [bun, ['--shell=node', 'release']],
-      [clamp, [chars.delimiter, chars.minus + chars.digit4]],
+      [clamp, ['-m13', chars.digit0]],
       [grease, [grease.name, 'pack']],
-      [tribonacci, [chars.digit0, chars.digit1, '-n13', chars.digit2]],
       [
         tribonacci,
-        ['-n' + chars.digit1, chars.lowercaseA, chars.digit0, chars.digit1]
+        [
+          tribonacci.name,
+          chars.digit0,
+          chars.digit1,
+          chars.digit2,
+          '-n' + chars.digit0
+        ]
+      ],
+      [
+        tribonacci,
+        [
+          '-n' + chars.digit1,
+          chars.lowercaseA,
+          chars.digit2,
+          chars.digit3
+        ]
       ]
     ])('should error on invalid command or option argument choice (%#)', async (
       info,
       argv
     ) => {
       info.process = createProcess({
-        CLAMP_DEBUG: chars.lowercaseF,
+        CLAMP_DEBUG: 'verbose',
         GREASE_PACK_GZIP_LEVEL: '-1'
       })
 
@@ -187,13 +148,16 @@ describe('functional:lib/Command', () => {
     })
 
     it.each<ParseCase>([
-      [bun, []],
-      [bun, [bun.name, 'app.mts', '--elide-lines']],
       [clamp, []],
       [clamp, [clamp.name, chars.digit5, '-M']],
-      [grease, [grease.name, 'tag', 'create']],
-      [stringUtil, ['join', chars.digit1 + chars.plus + chars.digit2, '-s']],
-      [tribonacci, ['-n', chars.digit3, chars.digit3, chars.digit9]]
+      [copy, [copy.name]],
+      [copy, [copy.aliases]],
+      [grease, [grease.subcommands.bump.aliases]],
+      [grease, [grease.subcommands.distTag.name]],
+      [grease, [grease.name, 'manifest', '--manifest', 'get', 'name']],
+      [grease, ['manifest', 'set']],
+      [smallestNum, []],
+      [tribonacci, ['-n' + chars.digit3, chars.digit3, chars.digit9]]
     ])('should error on missing command or option argument (%#)', async (
       info,
       argv
@@ -202,7 +166,9 @@ describe('functional:lib/Command', () => {
     })
 
     it.each<ParseCase>([
-      [mlly, [mlly.name, 'resolve', '#lib/command']]
+      [grease, ['publish', '@flex-development-kronk-1.0.0.tgz']],
+      [mlly, [mlly.name, 'resolve', '#lib/command']],
+      [tribonacci, [chars.digit1, chars.digit2, chars.digit3]]
     ])('should error on missing mandatory option (%#)', async (info, argv) => {
       void test(eid.missing_mandatory_option, info, argv)
     })
@@ -220,11 +186,12 @@ describe('functional:lib/Command', () => {
     })
 
     it.each<ParseCase>([
-      [average, ['--debug', chars.delimiter, '13', '26']],
-      [bun, ['run.mts', '--import=./loader.mjs']],
+      [copy, [copy.aliases, './index.mts', '--debug']],
+      [factorial, [factorial.name, '-V', chars.digit3]],
       [grease, [grease.name, 'tag', '--list']],
       [grease, ['-m', 'info', '-y']],
-      [mlly, [mlly.name, '-p' + chars.dot, 'resolve', 'a.mts', '-m', 'main']]
+      [mlly, [mlly.name, '-p' + chars.dot, 'resolve', 'a.mts', '-m', 'main']],
+      [semver, [semver.name, semver.version, '-S']]
     ])('should error on unknown option (%#)', async (info, argv) => {
       void test(eid.unknown_option, info, argv)
     })
@@ -239,7 +206,7 @@ describe('functional:lib/Command', () => {
      * @param {CommandInfo} info
      *  Command info
      * @param {string[]} argv
-     *  Command-line arguments
+     *  The command-line arguments
      * @param {Constructor<KronkError>} [Error=CommandError]
      *  The expected error constructor
      * @return {Promise<undefined>}
@@ -284,39 +251,59 @@ describe('functional:lib/Command', () => {
   })
 
   describe('parsing', () => {
-    let action: MockInstance<Action<any, any>> | undefined
-    let done: MockInstance<Action<any, any>> | undefined
-    let help: Help
-    let output: string | undefined
+    let helpCommand: TestSubject | null | undefined
     let process: Process
     let subcommand: TestSubject | null | undefined
-    let write: MockInstance<WriteStream['write']>
 
     afterEach(() => {
-      action = undefined
-      done = undefined
-      output = undefined
+      helpCommand = undefined
       subcommand = undefined
     })
 
     beforeAll(() => {
-      help = new Help()
       process = createProcess({ GREASE_COLOR: chars.true, PWD: pathe.cwd() })
     })
 
-    it.each<ParseCase>([
-      [average, []],
-      [average, [average.name]],
-      [average, [average.name, chars.digit3, chars.digit4, chars.digit5]],
-      [average, [chars.digit3, chars.digit6, chars.digit9]],
+    beforeEach(() => {
+      vi.spyOn(Help.prototype, 'text').mockImplementation(constant(chars.empty))
+    })
+
+    it.each<[version: string, ...ParseCase]>([
+      [clamp.version.version, clamp, ['--version']],
+      [clamp.version.version, clamp, [clamp.name, '-v', chars.digit3]],
+      [copy.version, copy, [copy.aliases, '--version']],
+      [copy.version, copy, [copy.aliases, '-v']],
+      [copy.version, copy, ['--version']],
+      [copy.version, copy, ['-v']],
+      [factorial.version, factorial, [factorial.name, '--version']],
+      [factorial.version, factorial, [factorial.name, '-v']],
+      [factorial.version, factorial, ['--version']],
+      [factorial.version, factorial, ['-v']],
+      [grease.version, grease, ['--version']],
+      [grease.version, grease, ['-v']],
+      [grease.version, grease, ['-vc' + chars.equal + chars.digit2]],
+      [grease.version, grease, [grease.name, '-vj']],
+      [semver.version, semver, ['--version']],
+      [semver.version, semver, [semver.name, '--version']],
+      [smallestNum.version, smallestNum, [smallestNum.name, '--version']],
+      [smallestNum.version, smallestNum, [smallestNum.name, '-v']],
+      [smallestNum.version, smallestNum, [smallestNum.aliases, '--version']],
+      [smallestNum.version, smallestNum, [smallestNum.aliases, '-v']],
+      [smallestNum.version, smallestNum, ['--version']],
+      [smallestNum.version, smallestNum, ['-v']],
+      [tribonacci.version, tribonacci, [tribonacci.name, '--version']],
+      [tribonacci.version, tribonacci, [tribonacci.name, '-v']],
+      [tribonacci.version, tribonacci, ['--version']],
+      [tribonacci.version, tribonacci, ['-v']],
       [
-        bun,
-        [bun.name, 'init', 'packages/types', '-ym'],
+        semver.subcommands.parse.version,
+        semver,
+        [semver.name, 'parse', '-v'],
         /**
          * @this {void}
          *
          * @param {string[]} argv
-         *  Command-line arguments
+         *  The command-line arguments
          * @return {ParseCaseHooks}
          *  Test case hooks
          */
@@ -331,46 +318,131 @@ describe('functional:lib/Command', () => {
              */
             before(this: void, subject: TestSubject): undefined {
               subcommand = subject.commands().get(argv[1]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        semver.subcommands.satisfies.subcommands.max.version,
+        semver,
+        ['satisfies', 'max', '--version'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[0]!)!
               ok(subcommand, 'expected `subcommand`')
-              return void this
+              subcommand = subcommand.commands().get(argv[1]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
             }
           }
         }
-      ],
-      [
-        bun,
-        ['--tsconfig-override=tsconfig.prod.json', 'src/main.mts'],
-        /**
-         * @this {void}
-         *
-         * @return {ParseCaseHooks}
-         *  Test case hooks
-         */
-        function context(this: void): ParseCaseHooks {
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              ok(subject.defaultCommand, 'expected `subject.defaultCommand`')
-              subcommand = subject.defaultCommand
-              return void this
-            }
-          }
-        }
-      ],
-      [clamp, ['-M3', '-m-1', chars.delimiter, '-13']],
-      [clamp, ['-M=26', chars.digit9]],
-      [clamp, [chars.digit1, '--max', '26', '--min=13']],
-      [clamp, [clamp.name, chars.digit3, '--max', '13', '--min=']],
+      ]
+    ])('should print command version (%#)', async (
+      version,
+      info,
+      argv,
+      hooks
+    ) => {
+      const { before } = hooks?.(argv) ?? {}
+      const { async: isAsync, ...rest } = info
+
+      // Arrange
+      const done: MockInstance<Action> = vi.fn().mockName('done')
+      const subject: TestSubject = new TestSubject({ ...rest, process })
+      let command: TestSubject
+      let opts: OptionValues
+      let optsWithGlobals: OptionValues
+      let printVersion: MockInstance<Action>
+      let result: TestSubject
+      let write: MockInstance<WriteStream['write']>
+
+      // Act
+      before?.(subject)
+      command = subcommand ?? subject
+      command.done(done as unknown as Action) // @ts-expect-error [2445] testing
+      printVersion = vi.spyOn(command, 'printVersion')
+      write = vi.spyOn(process.stdout, 'write')
+      result = await subject[isAsync ? 'parseAsync' : 'parse'](argv, options)
+      opts = result.opts()
+      optsWithGlobals = result.optsWithGlobals()
+
+      // Expect
+      expect(result).to.eq(command)
+      expect(opts).to.have.property('version', version)
+      expect(optsWithGlobals).to.have.property('version', version)
+      expect(printVersion).toHaveBeenCalledOnce()
+      expect(printVersion.mock.contexts[0]).to.eq(result)
+      expect(printVersion.mock.lastCall).to.eql([opts, ...result.args])
+      expect(done).toHaveBeenCalledAfter(printVersion)
+      expect(done).toHaveBeenCalledOnce()
+      expect(done.mock.contexts[0]).to.eq(result)
+      expect(done.mock.lastCall).to.eql([optsWithGlobals, ...result.args])
+
+      // Expect (version conditional)
+      if (version) {
+        expect(write).toHaveBeenCalledExactlyOnceWith(version + chars.lf)
+        expect(done).toHaveBeenCalledAfter(write)
+      } else {
+        expect(write).not.toHaveBeenCalled()
+      }
+
+      // Expect (subcommand conditional)
+      if (subcommand) expect(result).to.not.eq(subject)
+    })
+
+    it.each<ParseCase>([
+      [copy, [copy.aliases, '--help']],
+      [copy, [copy.aliases, '-h']],
+      [copy, ['--help']],
+      [copy, ['-h']],
+      [distinct, [distinct.name, '--help']],
+      [distinct, [distinct.name, '-h']],
+      [distinct, ['--help']],
+      [distinct, ['-h']],
+      [factorial, [factorial.name, '--help']],
+      [factorial, [factorial.name, '-h']],
+      [factorial, ['--help']],
+      [factorial, ['-h']],
+      [grease, []],
+      [grease, ['-w']],
       [grease, [grease.name]],
+      [grease, [grease.name, '--help']],
+      [grease, [grease.name, '-h']],
+      [grease, ['--help']],
+      [grease, ['-h']],
+      [semver, [semver.name, '--help']],
+      [semver, [semver.name, '-h']],
+      [semver, ['--help']],
+      [semver, ['-h']],
+      [smallestNum, [smallestNum.name, '--help']],
+      [smallestNum, [smallestNum.name, '-h']],
+      [smallestNum, [smallestNum.aliases, '--help']],
+      [smallestNum, [smallestNum.aliases, '-h']],
+      [smallestNum, ['--help']],
+      [smallestNum, ['-h']],
+      [tribonacci, [tribonacci.name, '--help']],
+      [tribonacci, [tribonacci.name, '-h']],
+      [tribonacci, ['--help']],
+      [tribonacci, ['-h']],
       [
-        Object.assign({}, grease, { actionOverride: true }),
-        ['--help'],
+        grease,
+        [grease.name, 'help'],
         /**
          * @this {void}
          *
@@ -387,13 +459,13 @@ describe('functional:lib/Command', () => {
              * @return {undefined}
              */
             before(this: void, subject: TestSubject): undefined {
-              return output = help.text(subject), void this
+              return helpCommand = subject.helpCommand(), void this
             }
           }
         }
       ],
       [
-        Object.assign({}, grease, { help: true }),
+        grease,
         ['help'],
         /**
          * @this {void}
@@ -411,20 +483,73 @@ describe('functional:lib/Command', () => {
              * @return {undefined}
              */
             before(this: void, subject: TestSubject): undefined {
-              subcommand = subject.helpCommand()
+              return helpCommand = subject.helpCommand(), void this
+            }
+          }
+        }
+      ],
+      [
+        grease,
+        [grease.name, 'manifest'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[1]!)!
               return ok(subcommand, 'expected `subcommand`'), void this
             }
           }
         }
       ],
       [
-        Object.assign({}, grease, { actionOverride: true }),
-        [grease.name, 'bump', '-h'],
+        grease,
+        ['manifest', '-M' + 'packages/api/package.json'],
         /**
          * @this {void}
          *
          * @param {string[]} argv
-         *  Command-line arguments
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[0]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        grease,
+        [grease.name, 'tag'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
          * @return {ParseCaseHooks}
          *  Test case hooks
          */
@@ -439,20 +564,46 @@ describe('functional:lib/Command', () => {
              */
             before(this: void, subject: TestSubject): undefined {
               subcommand = subject.commands().get(argv[1]!)!
-              ok(subcommand, 'expected `subcommand`')
-              return output = help.text(subcommand), void this
+              return ok(subcommand, 'expected `subcommand`'), void this
             }
           }
         }
       ],
       [
-        Object.assign({}, grease, { help: true }),
-        [grease.name, 'bump', 'help'],
+        grease,
+        ['tag'],
         /**
          * @this {void}
          *
          * @param {string[]} argv
-         *  Command-line arguments
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[0]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        grease,
+        [grease.name, 'tag', '--help'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
          * @return {ParseCaseHooks}
          *  Test case hooks
          */
@@ -467,21 +618,95 @@ describe('functional:lib/Command', () => {
              */
             before(this: void, subject: TestSubject): undefined {
               subcommand = subject.commands().get(argv[1]!)!
-              ok(subcommand, 'expected `subcommand`')
-
-              output = help.text(subcommand)
-
-              subcommand = subcommand.helpCommand()
-              ok(subcommand, 'expected `subcommand`')
-
-              return void this
+              return ok(subcommand, 'expected `subcommand`'), void this
             }
           }
         }
       ],
       [
-        Object.assign({}, grease, { actionOverride: true }),
-        ['-u', '--version'],
+        grease,
+        [grease.name, 'tag', '-h'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[1]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        grease,
+        ['tag', '--help'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[0]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        grease,
+        ['tag', '-h'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[0]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        semver,
+        [semver.name, 'help'],
         /**
          * @this {void}
          *
@@ -493,22 +718,473 @@ describe('functional:lib/Command', () => {
             /**
              * @this {void}
              *
+             * @param {TestSubject} subject
+             *  The command under test
              * @return {undefined}
              */
-            before(this: void): undefined {
-              return output = grease.version + chars.lf, void this
+            before(this: void, subject: TestSubject): undefined {
+              return helpCommand = subject.helpCommand(), void this
+            }
+          }
+        }
+      ],
+      [
+        semver,
+        ['help'],
+        /**
+         * @this {void}
+         *
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              return helpCommand = subject.helpCommand(), void this
+            }
+          }
+        }
+      ],
+      [
+        semver,
+        [semver.name, 'parse', '--help'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[1]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        semver,
+        [semver.name, 'parse', '-h'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[1]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        semver,
+        ['parse', '--help'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[0]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        semver,
+        ['parse', '-h'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[0]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        semver,
+        [semver.name, 'satisfies', '--help'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[1]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        semver,
+        [semver.name, 'satisfies', '-h'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[1]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        semver,
+        ['satisfies', '--help'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[0]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        semver,
+        ['satisfies', '-h'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[0]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        semver,
+        [semver.name, 'satisfies', 'help'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[1]!)!
+              ok(subcommand, 'expected `subcommand`')
+              return helpCommand = subcommand.helpCommand(), void this
+            }
+          }
+        }
+      ],
+      [
+        semver,
+        ['satisfies', 'help'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[0]!)!
+              ok(subcommand, 'expected `subcommand`')
+              return helpCommand = subcommand.helpCommand(), void this
+            }
+          }
+        }
+      ]
+    ])('should print help text for command (%#)', async (
+      info,
+      argv,
+      hooks
+    ) => {
+      const { before } = hooks?.(argv) ?? {}
+      const { async: isAsync, ...rest } = info
+
+      // Arrange
+      const done: MockInstance<Action> = vi.fn().mockName('done')
+      const subject: TestSubject = new TestSubject({ ...rest, process })
+      let command: TestSubject
+      let help: Help
+      let opts: OptionValues
+      let optsWithGlobals: OptionValues
+      let printHelp: MockInstance<Action>
+      let result: TestSubject
+      let write: MockInstance<WriteStream['write']>
+
+      // Act
+      before?.(subject)
+      command = subcommand ?? subject
+      command.done(done as unknown as Action)
+      help = command.help() // @ts-expect-error [2445] testing.
+      printHelp = vi.spyOn(command, 'printHelp')
+      write = vi.spyOn(process.stdout, 'write')
+      result = await subject[isAsync ? 'parseAsync' : 'parse'](argv, options)
+      opts = result.opts()
+      optsWithGlobals = result.optsWithGlobals()
+
+      // Expect
+      expect(result).to.eq(helpCommand ?? command)
+      expect(printHelp).toHaveBeenCalledOnce()
+      expect(printHelp.mock.contexts[0]).to.eq(helpCommand ? command : result)
+      expect(printHelp.mock.lastCall).to.eql([opts, ...result.args])
+      expect(write).toHaveBeenCalledExactlyOnceWith(help.text(command))
+      expect(done).toHaveBeenCalledAfter(printHelp)
+      expect(done).toHaveBeenCalledAfter(write)
+      expect(done).toHaveBeenCalledOnce()
+      expect(done.mock.contexts[0]).to.eq(result)
+      expect(done.mock.lastCall).to.eql([optsWithGlobals, ...result.args])
+
+      // Expect (subcommand conditional)
+      if (subcommand) expect(result).to.not.eq(subject)
+    })
+
+    it.each<ParseCase>([
+      [clamp, [chars.digit0]],
+      [clamp, [clamp.name, chars.digit1]],
+      [clamp, [chars.digit3, '-M', '13', '--min=']],
+      [clamp, ['-M3', '-m-1', chars.delimiter, '-13']],
+      [clamp, ['--min=13', '--max', '26', chars.digit1]],
+      [copy, [copy.name, './dist/index.mjs']],
+      [copy, [copy.aliases, './src/global.d.mts', './dist/global.d.mts']],
+      [copy, ['./src/main.mjs']],
+      [copy, ['./src/typings/*.d.mts', './dist/typings']],
+      [distinct, []],
+      [distinct, [distinct.name]],
+      [distinct, [distinct.name, ...digits, ...digits]],
+      [distinct, [chars.digit0, chars.digit0, chars.digit1]],
+      [
+        smallestNum,
+        [smallestNum.name, chars.digit3, chars.digit4, chars.digit5]
+      ],
+      [
+        grease,
+        [grease.name, 'bump', 'major'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[1]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
             }
           }
         }
       ],
       [
         grease,
-        ['-ju', '--level=verbose', 'bump', '--preid=alpha', 'recommend'],
+        [
+          grease.subcommands.bump.aliases,
+          '3.1.3',
+          'package.json',
+          'versions.json',
+          '-jT=grease@'
+        ],
         /**
          * @this {void}
          *
          * @param {string[]} argv
-         *  Command-line arguments
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[0]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        grease,
+        [grease.name, 'bump', 'recommend'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[1]!)!
+              ok(subcommand, 'expected `subcommand`')
+              subcommand = subcommand.commands().get(argv.at(-1)!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        grease,
+        ['-ju', '--log-level=verbose', 'bump', '--preid=alpha', 'recommend'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
          * @return {ParseCaseHooks}
          *  Test case hooks
          */
@@ -533,39 +1209,17 @@ describe('functional:lib/Command', () => {
       ],
       [
         grease,
-        ['ch', '-wr=0', '-t$(jq .version package.json -r)'],
+        [
+          grease.subcommands.bump.aliases,
+          'recommend',
+          '-u' + chars.false,
+          '1.0.0-alpha.3'
+        ],
         /**
          * @this {void}
          *
          * @param {string[]} argv
-         *  Command-line arguments
-         * @return {ParseCaseHooks}
-         *  Test case hooks
-         */
-        function context(this: void, argv: string[]): ParseCaseHooks {
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              subcommand = subject.findCommand(argv[0])
-              return void ok(subcommand, 'expected `subcommand`')
-            }
-          }
-        }
-      ],
-      [
-        grease,
-        ['changelog', '-wo$NOTES_FILE'],
-        /**
-         * @this {void}
-         *
-         * @param {string[]} argv
-         *  Command-line arguments
+         *  The command-line arguments
          * @return {ParseCaseHooks}
          *  Test case hooks
          */
@@ -580,7 +1234,185 @@ describe('functional:lib/Command', () => {
              */
             before(this: void, subject: TestSubject): undefined {
               subcommand = subject.commands().get(argv[0]!)!
-              return void ok(subcommand, 'expected `subcommand`')
+              ok(subcommand, 'expected `subcommand`')
+              subcommand = subcommand.commands().get(argv[1]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        grease,
+        [
+          grease.name,
+          '-w',
+          'changelog',
+          '-r' + chars.equal + chars.digit0,
+          '-t$(jq .version package.json -r)'
+        ],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[2]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        grease,
+        ['changelog', '-wo$NOTES_FILE'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[0]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        grease,
+        [grease.name, grease.subcommands.distTag.name, '2.0.0-beta.4'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[1]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        grease,
+        [
+          grease.subcommands.distTag.name,
+          'grease@3.0.0-alpha.10',
+          '-T=grease@'
+        ],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[0]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        grease,
+        [grease.name, 'manifest', '-M=package.json', 'get', 'version'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[1]!)!
+              ok(subcommand, 'expected `subcommand`')
+              subcommand = subcommand.commands().get(argv.at(-2)!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        grease,
+        ['manifest', 'set', 'name=@flex-development/kronk', 'version=0.0.0'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[0]!)!
+              ok(subcommand, 'expected `subcommand`')
+              subcommand = subcommand.commands().get(argv[1]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
             }
           }
         }
@@ -592,7 +1424,7 @@ describe('functional:lib/Command', () => {
          * @this {void}
          *
          * @param {string[]} argv
-         *  Command-line arguments
+         *  The command-line arguments
          * @return {ParseCaseHooks}
          *  Test case hooks
          */
@@ -615,19 +1447,105 @@ describe('functional:lib/Command', () => {
       [
         grease,
         [
-          grease.name,
-          'tag',
-          'create',
-          '-p',
-          '-s',
-          '-m=release: {tag}',
-          grease.version
+          'pack',
+          '-o' + '%s-%v.tgz',
+          'CHANGELOG.md',
+          'LICENSE.md',
+          'README.md',
+          'dist',
+          '--gzip' + chars.equal + chars.digit9
         ],
         /**
          * @this {void}
          *
          * @param {string[]} argv
-         *  Command-line arguments
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[0]!)!
+              return void ok(subcommand, 'expected `subcommand`')
+            }
+          }
+        }
+      ],
+      [
+        grease,
+        [grease.name, 'publish', '-PR=https://npm.pkg.github.com'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[1]!)!
+              return void ok(subcommand, 'expected `subcommand`')
+            }
+          }
+        }
+      ],
+      [
+        grease,
+        [
+          'publish',
+          '--registry=https://registry.npmjs.org',
+          '--tag=beta',
+          'package.tgz'
+        ],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[0]!)!
+              return void ok(subcommand, 'expected `subcommand`')
+            }
+          }
+        }
+      ],
+      [
+        grease,
+        [grease.name, 'tag', 'create', grease.version, '-psm=release: {tag}'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
          * @return {ParseCaseHooks}
          *  Test case hooks
          */
@@ -651,35 +1569,13 @@ describe('functional:lib/Command', () => {
         }
       ],
       [
-        Object.assign({}, mlly, { actionOverride: true }),
-        ['-v'],
-        /**
-         * @this {void}
-         *
-         * @return {ParseCaseHooks}
-         *  Test case hooks
-         */
-        function context(this: void): ParseCaseHooks {
-          return {
-            /**
-             * @this {void}
-             *
-             * @return {undefined}
-             */
-            before(this: void): undefined {
-              return output = mlly.version + chars.lf, void this
-            }
-          }
-        }
-      ],
-      [
-        Object.assign({}, mlly, { actionOverride: true }),
-        [mlly.name, 'resolve', '--version'],
+        grease,
+        [grease.name, 'tag', 'list'],
         /**
          * @this {void}
          *
          * @param {string[]} argv
-         *  Command-line arguments
+         *  The command-line arguments
          * @return {ParseCaseHooks}
          *  Test case hooks
          */
@@ -695,10 +1591,38 @@ describe('functional:lib/Command', () => {
             before(this: void, subject: TestSubject): undefined {
               subcommand = subject.commands().get(argv[1]!)!
               ok(subcommand, 'expected `subcommand`')
-
-              output = subcommand.version()! + chars.lf
-              ok(output, 'expected `subcommand` version')
-
+              subcommand = subcommand.commands().get(argv[2]!)!
+              ok(subcommand, 'expected `subcommand`')
+              return void this
+            }
+          }
+        }
+      ],
+      [
+        grease,
+        ['tag', grease.subcommands.tag.subcommands.list.aliases[0]],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[0]!)!
+              ok(subcommand, 'expected `subcommand`')
+              subcommand = subcommand.commands().get(argv[1]!)!
+              ok(subcommand, 'expected `subcommand`')
               return void this
             }
           }
@@ -706,12 +1630,12 @@ describe('functional:lib/Command', () => {
       ],
       [
         mlly,
-        ['resolve', '#internal/tokenize', `--parent=${chars.dot}`],
+        [mlly.name, 'resolve', '#internal/tokenize', '-p' + chars.dot],
         /**
          * @this {void}
          *
          * @param {string[]} argv
-         *  Command-line arguments
+         *  The command-line arguments
          * @return {ParseCaseHooks}
          *  Test case hooks
          */
@@ -725,7 +1649,7 @@ describe('functional:lib/Command', () => {
              * @return {undefined}
              */
             before(this: void, subject: TestSubject): undefined {
-              subcommand = subject.commands().get(argv[0]!)!
+              subcommand = subject.commands().get(argv[1]!)!
               return void ok(subcommand, 'expected `subcommand`')
             }
           }
@@ -734,21 +1658,20 @@ describe('functional:lib/Command', () => {
       [
         mlly,
         [
-          mlly.name,
-          '-p' + chars.dot,
+          '--parent' + chars.equal + chars.dot,
           'resolve',
-          '#lib/command',
+          '--ps',
           '--conditions=kronk',
+          '-c' + 'node',
           '-c',
           'development',
-          '--ps',
-          '-c' + 'node'
+          '#lib/command'
         ],
         /**
          * @this {void}
          *
          * @param {string[]} argv
-         *  Command-line arguments
+         *  The command-line arguments
          * @return {ParseCaseHooks}
          *  Test case hooks
          */
@@ -762,34 +1685,95 @@ describe('functional:lib/Command', () => {
              * @return {undefined}
              */
             before(this: void, subject: TestSubject): undefined {
-              subcommand = subject.commands().get(argv[2]!)!
+              subcommand = subject.commands().get(argv[1]!)!
               return void ok(subcommand, 'expected `subcommand`')
             }
           }
         }
       ],
       [
-        smallestNum,
-        [
-          smallestNum.aliases,
-          chars.digit0,
-          chars.digit0,
-          chars.digit3,
-          chars.digit5
-        ]
+        semver,
+        [semver.name, semver.version],
+        /**
+         * @this {void}
+         *
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.defaultCommand
+              return void ok(subcommand, 'expected `subcommand`')
+            }
+          }
+        }
       ],
       [
-        stringUtil,
-        [
-          'join',
-          '-s' + chars.slash,
-          chars.lowercaseA + chars.slash + chars.lowercaseZ
-        ],
+        semver,
+        [copy.version],
+        /**
+         * @this {void}
+         *
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.defaultCommand
+              return void ok(subcommand, 'expected `subcommand`')
+            }
+          }
+        }
+      ],
+      [
+        semver,
+        ['--loose', chars.space + semver.subcommands.parse.version],
+        /**
+         * @this {void}
+         *
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.defaultCommand
+              return void ok(subcommand, 'expected `subcommand`')
+            }
+          }
+        }
+      ],
+      [
+        semver,
+        ['parse', semver.subcommands.satisfies.subcommands.max.version],
         /**
          * @this {void}
          *
          * @param {string[]} argv
-         *  Command-line arguments
+         *  The command-line arguments
          * @return {ParseCaseHooks}
          *  Test case hooks
          */
@@ -804,6 +1788,70 @@ describe('functional:lib/Command', () => {
              */
             before(this: void, subject: TestSubject): undefined {
               subcommand = subject.commands().get(argv[0]!)!
+              return void ok(subcommand, 'expected `subcommand`')
+            }
+          }
+        }
+      ],
+      [
+        semver,
+        [semver.name, 'satisfies', '1.2.3', '1.x || >=2.5.0 || 5.0.0 - 7.2.3'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[1]!)!
+              return void ok(subcommand, 'expected `subcommand`')
+            }
+          }
+        }
+      ],
+      [
+        semver,
+        [
+          'satisfies',
+          'max',
+          '>=3.0.0',
+          copy.version,
+          grease.version,
+          semver.subcommands.satisfies.subcommands.max.version,
+          semver.subcommands.parse.version
+        ],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[0]!)!
+              ok(subcommand, 'expected `subcommand`')
+              subcommand = subcommand.commands().get(argv[1]!)!
               return void ok(subcommand, 'expected `subcommand`')
             }
           }
@@ -815,10 +1863,12 @@ describe('functional:lib/Command', () => {
       ]
     ])('should run command (%#)', async (info, argv, hooks) => {
       const { after, before } = hooks?.(argv) ?? {}
-      const { actionOverride, async: isAsync, helpText, ...rest } = info
+      const { async: isAsync, ...rest } = info
 
       // Arrange
-      const subject: TestSubject = new TestSubject({ ...rest, process })
+      const action: MockInstance<Action> = vi.fn().mockName('action')
+      const done: MockInstance<Action> = vi.fn().mockName('done')
+      const subject: TestSubject = new TestSubject(rest)
       let command: TestSubject
       let opts: OptionValues
       let optsWithGlobals: OptionValues
@@ -827,37 +1877,17 @@ describe('functional:lib/Command', () => {
       // Act
       before?.(subject)
       command = subcommand ?? subject
-      !helpText && command.action(vi.fn().mockName('action'))
-      helpText && (output ??= new Help().text(command))
-      command.done(vi.fn().mockName('done'))
-      action ??= act(command)
-      done ??= dn(command)
-      write = vi.spyOn(process.stdout, 'write')
+      command.action(action as unknown as Action)
+      command.done(done as unknown as Action)
       result = await subject[isAsync ? 'parseAsync' : 'parse'](argv, options)
       opts = result.opts()
       optsWithGlobals = result.optsWithGlobals()
 
-      // Expect (conditional)
-      if (actionOverride) {
-        expect(action).not.toHaveBeenCalled()
-        expect(write).toHaveBeenCalledExactlyOnceWith(output)
-        expect(done).toHaveBeenCalledAfter(write)
-      } else if (helpText) {
-        expect(action).toHaveBeenCalledOnce()
-        expect(action.mock.contexts[0]).to.eq(result)
-        expect(action.mock.lastCall).to.eql([opts, ...result.args])
-        expect(write).toHaveBeenCalledExactlyOnceWith(output)
-        expect(done).toHaveBeenCalledAfter(action)
-        expect(done).toHaveBeenCalledAfter(write)
-      } else {
-        expect(action).toHaveBeenCalledOnce()
-        expect(action.mock.contexts[0]).to.eq(result)
-        expect(action.mock.lastCall).to.eql([opts, ...result.args])
-        expect(done).toHaveBeenCalledAfter(action)
-        expect(write).not.toHaveBeenCalled()
-      }
-
       // Expect
+      expect(action).toHaveBeenCalledOnce()
+      expect(action.mock.contexts[0]).to.eq(result)
+      expect(action.mock.lastCall).to.eql([opts, ...result.args])
+      expect(done).toHaveBeenCalledAfter(action)
       expect(done).toHaveBeenCalledOnce()
       expect(done.mock.contexts[0]).to.eq(result)
       expect(done.mock.lastCall).to.eql([optsWithGlobals, ...result.args])

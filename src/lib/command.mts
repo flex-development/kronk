@@ -8,19 +8,20 @@ import chars from '#enums/chars'
 import keid from '#enums/keid'
 import optionValueSource from '#enums/option-value-source'
 import tt from '#enums/tt'
+import CommandEvent from '#events/command.event'
 import formatList from '#internal/format-list'
 import isList from '#internal/is-list'
 import kCommand from '#internal/k-command'
 import noop from '#internal/noop'
-import orNIL from '#internal/or-nil'
 import toChunks from '#internal/to-chunks'
 import toList from '#internal/to-list'
+import trim from '#internal/trim'
 import Argument from '#lib/argument'
 import Help from '#lib/help'
 import Helpable from '#lib/helpable.abstract'
 import Option from '#lib/option'
 import VersionOption from '#lib/version.option'
-import isRawParseValue from '#utils/is-raw-parse-value'
+import isCommandEvent from '#utils/is-command-event'
 import {
   ev,
   tokenize,
@@ -32,8 +33,10 @@ import type {
   ArgumentData,
   ArgumentInfo,
   ArgumentSyntax,
+  Awaitable,
   CommandData,
   CommandErrorInfo,
+  CommandEventName,
   CommandInfo,
   CommandMetadata,
   CommandName,
@@ -45,6 +48,7 @@ import type {
   Flags,
   HelpCommandData,
   HelpOptionData,
+  HelpTextOptions,
   KronkEventListener,
   List,
   OptionData,
@@ -69,12 +73,11 @@ import type {
 import { CommandError, KronkError } from '@flex-development/kronk/errors'
 import { KronkEvent, OptionEvent } from '@flex-development/kronk/events'
 import {
+  isCommand,
   isKronkError,
   isOption,
   isSubcommandInfo
 } from '@flex-development/kronk/utils'
-import { createLogger, type Logger } from '@flex-development/log'
-import { FancyReporter } from '@flex-development/log/reporters'
 import {
   fallback,
   isNIL,
@@ -98,24 +101,7 @@ import plur from 'plur'
  */
 class Command extends Helpable {
   /**
-   * The event whose listener overrides the command {@linkcode action} and
-   * certain parsing checks.
-   *
-   * Skipped parsing checks include:
-   *
-   * - command arguments
-   * - mandatory options
-   *
-   * @see {@linkcode KronkEvent}
-   *
-   * @protected
-   * @instance
-   * @member {KronkEvent | null} actionEvent
-   */
-  protected actionEvent: KronkEvent | null
-
-  /**
-   * Parsed command-line arguments.
+   * The parsed command arguments.
    *
    * @public
    * @instance
@@ -124,7 +110,7 @@ class Command extends Helpable {
   public args: any[]
 
   /**
-   * Raw command-line arguments.
+   * The raw command-line arguments.
    *
    * @public
    * @instance
@@ -149,9 +135,18 @@ class Command extends Helpable {
    * @protected
    * @readonly
    * @instance
-   * @member {EventEmitter}
+   * @member {EventEmitter} events
    */
   protected readonly events: EventEmitter
+
+  /**
+   * Whether command help was requested.
+   *
+   * @protected
+   * @instance
+   * @member {boolean} helpRequested
+   */
+  protected helpRequested: boolean
 
   /**
    * Command metadata.
@@ -166,15 +161,16 @@ class Command extends Helpable {
   declare protected info: CommandMetadata
 
   /**
-   * Logger instance.
+   * The event whose listener takes precedence over any parsing checks
+   * and the command {@linkcode action}.
    *
-   * @see {@linkcode Logger}
+   * @see {@linkcode KronkEvent}
    *
-   * @public
+   * @protected
    * @instance
-   * @member {Logger} logger
+   * @member {KronkEvent | null} interrupter
    */
-  public logger: Logger
+  protected interrupter: KronkEvent | null
 
   /**
    * Record, where each key is an option key and each value is the source of an
@@ -219,6 +215,15 @@ class Command extends Helpable {
    * @member {Process} process
    */
   public process: Process
+
+  /**
+   * Whether the command version was requested.
+   *
+   * @protected
+   * @instance
+   * @member {boolean} versionRequested
+   */
+  protected versionRequested: boolean
 
   /**
    * Create a new command.
@@ -279,26 +284,20 @@ class Command extends Helpable {
       version: null
     }
 
-    this.actionEvent = null
     this.args = []
     this.argv = []
     this.defaultCommand = null
     this.events = new EventEmitter({ delimiter: chars.colon })
+    this.helpRequested = false
+    this.interrupter = null
     this.optionValueSources = {}
     this.optionValues = {}
     this.parent = data.parent ?? null
     this.process = this.info.process ?? process
+    this.versionRequested = false
 
     delete this.info.parent
     delete this.info.process
-
-    this.logger = createLogger({
-      format: { badge: false, columns: 0 },
-      level: 'verbose',
-      reporters: new FancyReporter(),
-      stderr: this.process.stderr,
-      stdout: this.process.stdout
-    })
 
     Object.defineProperties(this, {
       [kCommand]: {
@@ -320,9 +319,8 @@ class Command extends Helpable {
     this.done(this.info.done)
     this.exiter(this.info.exit)
     this.examples(data.examples)
-    this.helpCommand(this.info.helpCommand)
+    this.help(this.info.help)
     this.helpOption(this.info.helpOption)
-    this.helpUtility(this.info.helpUtility)
     this.id(this.info.name)
     this.optionPriority(this.info.optionPriority)
     this.summary(this.info.summary)
@@ -352,32 +350,12 @@ class Command extends Helpable {
         this.command(data.subcommands)
       }
     }
-  }
 
-  /**
-   * Check if `value` looks like a command.
-   *
-   * @public
-   * @static
-   *
-   * @template {Command} T
-   *  Command instance type
-   *
-   * @param {unknown} value
-   *  The thing to check
-   * @return {value is T}
-   *  `true` if `value` is looks like a command, `false` otherwise
-   */
-  public static isCommand<T extends Command>(value: unknown): value is T {
-    return (
-      !Array.isArray(value) &&
-      typeof value === 'object' &&
-      value !== null &&
-      (
-        value instanceof Command ||
-        kCommand in value && value[kCommand] === true
-      )
-    )
+    // configure help subcommand with user configuration,
+    // or add default help subcommand if command has subcommands.
+    if (!isNIL(this.info.helpCommand) || this.info.subcommands.size) {
+      this.helpCommand(this.info.helpCommand)
+    }
   }
 
   /**
@@ -391,6 +369,45 @@ class Command extends Helpable {
    */
   public get default(): boolean {
     return !!this.info.default
+  }
+
+  /**
+   * The event name for the command.
+   *
+   * @see {@linkcode CommandEventName}
+   *
+   * @public
+   * @instance
+   *
+   * @return {CommandEventName}
+   *  Command event name
+   */
+  public get event(): CommandEventName {
+    return ['command', ...this.ancestors().reverse(), this].map(value => {
+      return typeof value === 'string' ? value : value.id() ?? chars.dollar
+    }).join(chars.colon) as CommandEventName
+  }
+
+  /**
+   * Whether the command has subcommands, but no {@linkcode action}.
+   *
+   * @public
+   * @instance
+   *
+   * @return {boolean}
+   *  `true` if command is structural, `false` otherwise
+   */
+  public get structural(): boolean {
+    return (
+      // no default command
+      !this.defaultCommand &&
+      // meaningless action
+      this.info.action === noop &&
+      // has subcommands
+      !!this.info.subcommands.size &&
+      // zero visible arguments
+      !this.info.arguments.filter(arg => String(arg.description())).length
+    )
   }
 
   /**
@@ -428,6 +445,9 @@ class Command extends Helpable {
   /**
    * Get the command action callback.
    *
+   * For structural commands, and commands where help was requested (via option
+   * or subcommand), the action callback prints the help text.
+   *
    * @see {@linkcode Action}
    * @see {@linkcode OptionValues}
    *
@@ -460,11 +480,18 @@ class Command extends Helpable {
    * @return {Action | this}
    *  The command action callback or `this` command
    */
-  public action(
-    action?: Action | null | undefined
-  ): Action | this {
-    if (!arguments.length) return fallback(this.info.action, noop, isNIL)
-    return this.info.action = action, this
+  public action(action?: Action | null | undefined): Action | this {
+    if (arguments.length) return this.info.action = action ?? noop, this
+
+    // print command version on request.
+    if (this.versionRequested) return this.printVersion.bind(this)
+
+    // print help text on explicit or implicit request.
+    // explicit requests are made help subcommand or option;
+    // implicit requests are made when structural commands are invoked.
+    if (this.structural || this.helpRequested) return this.printHelp.bind(this)
+
+    return ok(this.info.action, 'expected `info.action`'), this.info.action
   }
 
   /**
@@ -485,7 +512,7 @@ class Command extends Helpable {
    */
   public addArgument(argument: Argument): never | this {
     /**
-     * Last registered argument.
+     * The last registered argument.
      *
      * @const {Argument | undefined} last
      */
@@ -538,33 +565,68 @@ class Command extends Helpable {
       })
     }
 
-    // check subcommand id for conflicts.
-    if (sub && this.findCommand(sub)) {
-      throw new KronkError({
-        id: keid.duplicate_subcommand,
-        reason: `Subcommand with name or alias '${sub}' already exists`
-      })
-    }
+    /**
+     * List of parent command aliases.
+     *
+     * @const {Set<string>} aliases
+     */
+    const aliases: Set<string> = this.aliases()
 
-    // check subcommand aliases for conflicts.
-    for (const alias of subcommand.aliases()) {
-      if (this.findCommand(alias)) {
+    /**
+     * The name of the parent command.
+     *
+     * @const {CommandName} name
+     */
+    const name: CommandName = this.id()
+
+    // check subcommand references for conflicts.
+    for (const ref of [sub, ...subcommand.aliases()]) {
+      if (ref === name) {
         throw new KronkError({
-          id: keid.duplicate_subcommand,
-          reason: `Subcommand with name or alias '${alias}' already exists`
+          cause: { command: name, subcommand: sub },
+          id: keid.invalid_subcommand_name,
+          reason: 'Subcommand cannot have same name as parent command'
         })
       }
+
+      if (aliases.has(ref)) {
+        throw new KronkError({
+          cause: {
+            alias: ref,
+            aliases: [...aliases],
+            command: name,
+            subcommand: sub
+          },
+          id: keid.invalid_subcommand_name,
+          reason: 'Subcommand cannot have same alias as parent command'
+        })
+      }
+
+      if (this.info.subcommands.has(ref)) {
+        throw new KronkError({
+          cause: {
+            alias: sub !== ref,
+            command: name,
+            ref,
+            subcommand: sub
+          },
+          id: keid.duplicate_subcommand,
+          reason: `Subcommand with name or alias '${ref}' already exists`
+        })
+      }
+
+      // add new subcommand and map to name or alias.
+      this.info.subcommands.set(ref, subcommand)
     }
 
-    // add new subcommand.
-    this.info.subcommands.set(sub, subcommand)
-
     // set parent command.
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
     subcommand.parent = this
 
     // set default command.
     if (subcommand.default) this.defaultCommand = subcommand
+
+    // add event handler.
+    this.on<CommandEvent>(subcommand.event, this.onCommand.bind(this))
 
     return this
   }
@@ -611,7 +673,7 @@ class Command extends Helpable {
       this.optionValue(option.key, def.value, optionValueSource.default)
     }
 
-    // add option event handler.
+    // add event handler.
     this.on<OptionEvent>(option.event, this.onOption.bind(this))
 
     return this
@@ -935,7 +997,11 @@ class Command extends Helpable {
       reason += chars.space
       reason += `but got \`${this.argv.length}\``
 
-      this.error({ id: keid.excess_arguments, reason })
+      this.error({
+        cause: { argv: this.argv, expected: this.info.arguments.length },
+        id: keid.excess_arguments,
+        reason
+      })
     }
 
     return this
@@ -1209,7 +1275,7 @@ class Command extends Helpable {
   public commands(infos?: SubcommandsInfo): Map<string, Command> | this {
     if (infos) {
       for (const [name, info] of Object.entries(infos)) {
-        info.name = name
+        info.name ||= name
         this.command(info as SubcommandInfo)
       }
 
@@ -1235,9 +1301,9 @@ class Command extends Helpable {
    *  `this` command
    */
   public copyInheritedSettings(parent: Command): this {
-    this.logger = parent.logger
     this.process = parent.process
 
+    this.help(this.info.help ?? parent.info.help)
     this.exiter(this.info.exit ?? parent.info.exit)
     this.unknowns(parent.info.unknown)
 
@@ -1502,8 +1568,8 @@ class Command extends Helpable {
    *  Command done callback or `this` command
    */
   public done(done?: Action | null | undefined): Action | this {
-    if (!arguments.length) return fallback(this.info.done, noop, isNIL)
-    return this.info.done = done, this
+    if (arguments.length) return this.info.done = done ?? noop, this
+    return ok(this.info.done, 'expected `info.done`'), this.info.done
   }
 
   /**
@@ -1521,6 +1587,21 @@ class Command extends Helpable {
    */
   public emit(event: KronkEvent): boolean {
     return this.events.emit(event.id, event)
+  }
+
+  /**
+   * Emit a `command` event.
+   *
+   * @public
+   * @instance
+   *
+   * @param {Command} command
+   *  The command instance
+   * @return {boolean}
+   *  `true` if event has listeners, `false` otherwise
+   */
+  public emitCommand(command: Command): boolean {
+    return this.emit(new CommandEvent(command))
   }
 
   /**
@@ -1843,51 +1924,14 @@ class Command extends Helpable {
    * @public
    * @instance
    *
-   * @param {ExampleInfo | string} info
-   *  Example info or text
+   * @param {ExampleInfo | ReadonlyArray<string> | string} info
+   *  The example info or text
    * @return {this}
    *  `this` command
    */
-  public example(info: ExampleInfo | string): this
-
-  /**
-   * Add an example for the command.
-   *
-   * > 👉 **Note**: This method can be called more than once
-   * > to add multiple examples.
-   *
-   * @public
-   * @instance
-   *
-   * @param {string} text
-   *  The example text
-   * @param {string | null | undefined} [prefix]
-   *  The example text prefix
-   * @return {this}
-   *  `this` command
-   */
-  public example(text: string, prefix?: string | null | undefined): this
-
-  /**
-   * Add an example for the command.
-   *
-   * @see {@linkcode ExampleInfo}
-   *
-   * @public
-   * @instance
-   *
-   * @param {ExampleInfo | string} info
-   *  Example info or text
-   * @param {string | null | undefined} [prefix]
-   *  The example text prefix
-   * @return {this}
-   *  `this` command
-   */
-  public example(
-    info: ExampleInfo | string,
-    prefix?: string | null | undefined
-  ): this {
-    if (typeof info === 'string') info = { prefix, text: info }
+  public example(info: ExampleInfo | readonly string[] | string): this {
+    if (Array.isArray(info)) info = { text: info.join(chars.space) }
+    if (typeof info === 'string') info = { text: info }
     ok(Array.isArray(this.info.examples), 'expected `info.examples`')
     return this.info.examples.push(info), this
   }
@@ -1901,7 +1945,7 @@ class Command extends Helpable {
    * @instance
    *
    * @param {ExamplesData | null | undefined} examples
-   *  Example info, example text, or a list of such
+   *  The example info, example text, or a list of such
    * @return {this}
    *  `this` command
    */
@@ -1929,7 +1973,7 @@ class Command extends Helpable {
    * @instance
    *
    * @param {ExamplesData | null | undefined} [examples]
-   *  Example info, example text, or a list of such
+   *  The example info, example text, or a list of such
    * @return {ExampleInfo[] | this}
    *  List of examples or `this` command
    */
@@ -2059,38 +2103,36 @@ class Command extends Helpable {
    * @public
    * @instance
    *
-   * @param {CommandName | List<CommandName> | undefined} ref
-   *  A command name, command alias, or list of such references
+   * @param {CommandName | undefined} ref
+   *  A command name or alias
    * @return {Command | this | undefined}
    *  Command with a name or alias matching `ref`
    */
-  public findCommand(
-    ref: CommandName | List<CommandName> | undefined
-  ): Command | this | undefined {
-    if (
-      typeof ref === 'string' &&
-      (this.id() === ref || this.aliases().has(ref))
-    ) {
-      return this
-    }
+  public findCommand(ref: CommandName | undefined): Command | this | undefined {
+    /**
+     * The referenced command.
+     *
+     * @var {Command | undefined} command
+     */
+    let command: Command | undefined = undefined
 
-    if (ref && this.info.subcommands.size) {
-      /**
-       * List of command names and/or aliases.
-       *
-       * @const {List<CommandName>} references
-       */
-      const references: List<CommandName> = toList(ref)
+    if (typeof ref === 'string') {
+      if (this.id() === ref || this.aliases().has(ref)) {
+        command = this // current command was referenced.
+      } else if (this.info.subcommands.has(ref)) {
+        // subcommand was referenced by name or alias.
+        command = this.info.subcommands.get(ref)
+      } else {
+        for (const subcommand of new Set(this.commands().values())) {
+          command = subcommand.findCommand(ref)
 
-      // search for a matching subcommand.
-      for (const [, cmd] of this.commands()) {
-        for (const ref of references) {
-          if (cmd.findCommand(ref)) return cmd
+          // subcommand of subcommand was referenced.
+          /* v8 ignore next -- @preserve */ if (command) break
         }
       }
     }
 
-    return undefined
+    return command
   }
 
   /**
@@ -2135,15 +2177,87 @@ class Command extends Helpable {
   }
 
   /**
-   * Print help text.
+   * Configure the help text.
+   *
+   * @see {@linkcode Help}
+   * @see {@linkcode HelpTextOptions}
    *
    * @public
    * @instance
    *
+   * @param {Help | HelpTextOptions | null | undefined} help
+   *  The help text utility or options for formatting help text
+   * @return {this}
+   *  `this` command
+   */
+  public help(help: Help | HelpTextOptions | null | undefined): this
+
+  /**
+   * Print the help text.
+   *
+   * @public
+   * @instance
+   *
+   * @param {'1' | 1 | true} help
+   *  Whether to print help text
    * @return {undefined}
    */
-  public help(): undefined {
-    return void this.process.stdout.write(this.helpUtility().text(this))
+  public help(help: '1' | 1 | true): undefined
+
+  /**
+   * Get the help text utility.
+   *
+   * @see {@linkcode Help}
+   *
+   * @template {Help} [T=Help]
+   *  Help text utility instance
+   *
+   * @public
+   * @instance
+   *
+   * @return {Help}
+   *  The help text utility
+   */
+  public help<T extends Help>(): T
+
+  /**
+   * Get the help text utility, configure the help text, or print the help text.
+   *
+   * @see {@linkcode Help}
+   * @see {@linkcode HelpTextOptions}
+   *
+   * @public
+   * @instance
+   *
+   * @param {Help | HelpTextOptions | '1' | 1 | true | null | undefined} [help]
+   *  The help text utility, options for formatting help text,
+   *  or a truthy value to print the help text
+   * @return {Help | this | undefined}
+   *  Help text utility, `this` command, or nothing
+   */
+  public help(
+    help?: Help | HelpTextOptions | '1' | 1 | true | true | null | undefined
+  ): Help | this | undefined {
+    if (!arguments.length) return this.info.help ?? new Help()
+
+    if (help) {
+      if (typeof help !== 'object') {
+        help = this.info.help ?? new Help()
+        return void this.process.stdout.write(help.text(this))
+      } else if ('prepare' in help && 'text' in help) {
+        this.info.help = help
+      } else if (
+        this.info.help &&
+        'prepare' in this.info.help &&
+        'text' in this.info.help
+      ) {
+        this.info.help.prepare(help)
+      } else {
+        this.info.help = new Help(help)
+      }
+    }
+
+    return this
   }
 
   /**
@@ -2172,7 +2286,7 @@ class Command extends Helpable {
    * @see {@linkcode Command}
    *
    * @template {Command} [T=Command]
-   *  Help subcommand instance
+   *  The help subcommand instance
    *
    * @public
    * @instance
@@ -2204,37 +2318,43 @@ class Command extends Helpable {
       if (help === false) {
         this.info.helpCommand = null
       } else {
-        help ??= { description: 'show help', name: 'help' }
         if (typeof help === 'string') help = { name: help }
+        if (!help || typeof help !== 'object') help = {}
 
         // define help subcommand.
-        this.info.helpCommand = Command.isCommand(help)
-          ? help
-          : this
-            // prevent `RangeError: Maximum call stack size exceeded`
-            // by disabling help subcommand for current help subcommand.
-            .createCommand({ ...help, helpCommand: false })
+        if (isCommand(help)) {
+          this.info.helpCommand = help
+        } else {
+          // prevent `RangeError: Maximum call stack size exceeded`
+          // by disabling help subcommand for current help subcommand.
+          help.helpCommand = false
+          help.helpOption = false
+
+          this.info.helpCommand = this.createCommand({
+            ...help,
+            description: help.description || 'show help',
+            name: help.name || 'help'
+          })
+        }
 
         // add help subcommand.
         this.addCommand(this.info.helpCommand)
 
-        // configure help subcommand to print help text.
-        if (this.info.helpCommand.action() === noop) {
-          this.info.helpCommand.action(this.help.bind(this))
-        }
+        // register event listeners.
+        this.on(this.info.helpCommand.event, this.onHelp.bind(this))
       }
 
       return this
     }
 
-    return this.info.helpCommand ?? null
+    return fallback(this.info.helpCommand, null, isNIL)
   }
 
   /**
    * Configure the help option.
    *
    * > 👉 **Note**: This method auto-registers the help option with the flags
-   * > `-h | --help`. No cleanup is performed when this method is called with
+   * > `-h, --help`. No cleanup is performed when this method is called with
    * > different flags (i.e. `help` as a string or `help.flags`).
    *
    * @see {@linkcode HelpOptionData}
@@ -2256,7 +2376,7 @@ class Command extends Helpable {
    * @see {@linkcode Option}
    *
    * @template {Option} [T=Option]
-   *  Help option instance
+   *  The help option instance
    *
    * @public
    * @instance
@@ -2288,77 +2408,32 @@ class Command extends Helpable {
       if (help === false) {
         this.info.helpOption = null
       } else {
-        help ??= { description: 'show help', flags: '-h | --help' }
+        if (typeof help === 'string') help = { flags: help }
+        if (!help || typeof help !== 'object') help = {}
 
         // set help option.
-        this.info.helpOption = isOption(help) ? help : this.createOption(help)
+        if (isOption(help)) {
+          this.info.helpOption = help
+        } else {
+          help.description ||= 'show help'
 
-        // add help option.
+          if ('flags' in help) {
+            this.info.helpOption = this.createOption(help)
+          } else {
+            help = { ...help, flags: '-h, --help' }
+            this.info.helpOption = this.createOption(help)
+          }
+        }
+
+        // add help option and register help event listener.
         this.addOption(this.info.helpOption)
-
-        // register parsed option listeners.
-        this.on(this.info.helpOption.event, this.onOptionWithAction.bind(this))
-        this.on(this.info.helpOption.event, this.onOptionHelp.bind(this))
+        this.on(this.info.helpOption.event, this.onHelp.bind(this))
       }
 
       return this
     }
 
-    return this.info.helpOption ?? null
-  }
-
-  /**
-   * Set the help text utility.
-   *
-   * @see {@linkcode Help}
-   *
-   * @public
-   * @instance
-   *
-   * @param {Help | null | undefined} util
-   *  The help text utility
-   * @return {this}
-   *  `this` command
-   */
-  public helpUtility(util: Help | null | undefined): this
-
-  /**
-   * Get the help text utility.
-   *
-   * @see {@linkcode Help}
-   *
-   * @template {Help} [T=Help]
-   *  Help text utility instance
-   *
-   * @public
-   * @instance
-   *
-   * @return {Help}
-   *  The help text utility
-   */
-  public helpUtility<T extends Help>(): T
-
-  /**
-   * Get or set the help text utility.
-   *
-   * @see {@linkcode Help}
-   *
-   * @public
-   * @instance
-   *
-   * @param {Help | null | undefined} [util]
-   *  The help text utility
-   * @return {Help | this}
-   *  Help text utility or `this` command
-   */
-  public helpUtility(util?: Help | null | undefined): Help | this {
-    if (arguments.length) {
-      this.info.helpUtility = fallback(util, new Help(), isNIL)
-      return this
-    }
-
-    ok(this.info.helpUtility, 'expected `info.helpUtility`')
-    return this.info.helpUtility
+    return fallback(this.info.helpOption, null, isNIL)
   }
 
   /**
@@ -2435,6 +2510,53 @@ class Command extends Helpable {
   }
 
   /**
+   * Handle a command `event`.
+   *
+   * @see {@linkcode CommandEvent}
+   *
+   * @protected
+   * @instance
+   *
+   * @template {Command} T
+   *  The command
+   *
+   * @param {CommandEvent<T>} event
+   *  The emitted command event
+   * @return {undefined}
+   */
+  protected onCommand<T extends Command>(event: CommandEvent<T>): undefined {
+    return void event
+  }
+
+  /**
+   * Handle a help `event`.
+   *
+   * @see {@linkcode CommandEvent}
+   * @see {@linkcode OptionEvent}
+   *
+   * @protected
+   * @instance
+   *
+   * @param {CommandEvent | OptionEvent} event
+   *  The emitted event
+   * @return {undefined}
+   */
+  protected onHelp(event: CommandEvent | OptionEvent): undefined {
+    for (const cmd of [this, ...this.ancestors()]) {
+      cmd.interrupter = event // capture the interrupting event.
+      cmd.helpRequested = true // propagate help request to all commands.
+    }
+
+    // configure `this` help command to print the help text for `this` command.
+    if (isCommandEvent(event) && event.command.info.action === noop) {
+      event.command.action(this.action())
+      event.command.done(this.done())
+    }
+
+    return void event
+  }
+
+  /**
    * Handle a parsed option `event`.
    *
    * The method will parse the raw option-argument value using the specified
@@ -2465,28 +2587,53 @@ class Command extends Helpable {
     } else if (this.info.version === event.option as Option) {
       ok('version' in event.option, 'expected `event.option.version`')
       this.optionValue(event.option.key, event.option.version, event.source)
-    } else if (!isRawParseValue(event.value)) {
+    } else if (typeof event.value !== 'string') {
       this.optionValue(event.option.key, event.value, event.source)
     } else {
+      // check option-argument value against option choices.
+      this.checkChoices(event.value, event.option)
+
       /**
-       * Option-argument parser.
+       * The option-argument parser.
        *
        * The default parser is an identity function that returns the raw
        * option-argument value.
        *
-       * @const {ParseArg}
+       * @const {ParseArg<any, string>}
        */
       const parser: ParseArg = event.option.parser()
 
       /**
-       * Default value configuration.
+       * The previous option value.
        *
-       * @const {DefaultInfo | undefined} def
+       * @var {unknown} previous
        */
-      const def: DefaultInfo | undefined = event.option.default()
+      let previous: unknown
 
-      this.checkChoices(event.value, event.option)
-      this.optionValue(event.option.key, parser(event.value, def?.value))
+      /**
+       * The source of the option value.
+       *
+       * @var {OptionValueSource | null | undefined} src
+       */
+      let src: OptionValueSource | null | undefined
+
+      // get the source of the option value.
+      // this is used to determine if a variadic option has already been seen.
+      src = this.optionValueSource(event.option.key)
+
+      // get the previous option value.
+      // for non-variadic options and unseen variadic options,
+      // the default option value previous value.
+      // the previous value is otherwise the previous parse result.
+      if (!event.option.variadic || src && src !== optionValueSource.default) {
+        previous = event.option.default()?.value
+      } else {
+        ok(event.option.variadic, 'expected `event.option` to be variadic')
+        previous = this.optionValue(event.option.key)
+      }
+
+      // store parsed option value and source of raw option value.
+      this.optionValue(event.option.key, parser(event.value, previous))
       this.optionValueSource(event.option.key, event.source)
     }
 
@@ -2494,79 +2641,24 @@ class Command extends Helpable {
   }
 
   /**
-   * Handle a parsed help option `event`.
+   * Handle a version `event`.
    *
-   * > 👉 **Note**: This event listener is registered each time command help
-   * > is configured (i.e. `command.helpOption(info)`).
-   *
+   * @see {@linkcode CommandEvent}
    * @see {@linkcode OptionEvent}
    *
    * @protected
    * @instance
    *
-   * @param {OptionEvent} event
-   *  The emitted parsed option event
+   * @param {CommandEvent | OptionEvent} event
+   *  The emitted event
    * @return {undefined}
    */
-  protected onOptionHelp(event: OptionEvent): undefined {
-    return void event, void this.action(help)
-
-    /**
-     * @this {Command}
-     *
-     * @return {undefined}
-     */
-    function help(this: Command): undefined {
-      return void this.help()
+  protected onVersion(event: CommandEvent | OptionEvent): undefined {
+    for (const cmd of [this, ...this.ancestors()]) {
+      cmd.interrupter = event // capture the interrupting event.
+      cmd.versionRequested = true // propagate version request to all commands.
     }
-  }
 
-  /**
-   * Handle a parsed version option `event`.
-   *
-   * > 👉 **Note**: This event listener is registered each time the command
-   * > version is set (i.e. `command.version(version, info)`) and will override
-   * > the {@linkcode action} callback to print the command version on request.
-   *
-   * @see {@linkcode OptionEvent}
-   * @see {@linkcode VersionOption}
-   *
-   * @protected
-   * @instance
-   *
-   * @param {OptionEvent<VersionOption>} event
-   *  The emitted parsed option event
-   * @return {undefined}
-   */
-  protected onOptionVersion(event: OptionEvent<VersionOption>): undefined {
-    return void this.action(version)
-
-    /**
-     * @this {Command}
-     *
-     * @return {undefined}
-     */
-    function version(this: Command): undefined {
-      return void this.logger.log(event.option.version)
-    }
-  }
-
-  /**
-   * Handle a parsed option `event`.
-   *
-   * The {@linkcode actionEvent} will be set and propagated to ancestors.
-   *
-   * @see {@linkcode OptionEvent}
-   *
-   * @protected
-   * @instance
-   *
-   * @param {OptionEvent} event
-   *  The emitted parsed option event
-   * @return {undefined}
-   */
-  protected onOptionWithAction(event: OptionEvent): undefined {
-    for (const cmd of [this, ...this.ancestors()]) cmd.actionEvent = event
     return void event
   }
 
@@ -2970,15 +3062,20 @@ class Command extends Helpable {
     /**
      * The command to run.
      *
-     * @const {Command | this} cmd
+     * @const {Command} cmd
      */
-    const cmd: Command | this = this.prepareCommand([], unknown)
+    const cmd: Command = this.prepareCommand([], unknown)
 
-    // run action callback.
-    void cmd.action().call(cmd, cmd.opts(), ...cmd.args as unknown[])
+    /**
+     * The parsed arguments.
+     *
+     * @const {unknown[]} args
+     */
+    const args: unknown[] = cmd.args
 
-    // run done callback.
-    void cmd.done().call(cmd, cmd.optsWithGlobals(), ...cmd.args as unknown[])
+    // run action and done callbacks.
+    void cmd.action().call(cmd, cmd.opts(), ...args)
+    void cmd.done().call(cmd, cmd.optsWithGlobals(), ...args)
 
     return cmd
   }
@@ -3022,15 +3119,20 @@ class Command extends Helpable {
     /**
      * The command to run.
      *
-     * @const {Command | this} cmd
+     * @const {Command} cmd
      */
-    const cmd: Command | this = this.prepareCommand([], unknown)
+    const cmd: Command = this.prepareCommand([], unknown)
 
-    // run action callback.
-    await cmd.action().call(cmd, cmd.opts(), ...cmd.args as unknown[])
+    /**
+     * The parsed arguments.
+     *
+     * @const {unknown[]} args
+     */
+    const args: unknown[] = cmd.args
 
-    // run done callback.
-    await cmd.done().call(cmd, cmd.optsWithGlobals(), ...cmd.args as unknown[])
+    // run action and done callbacks.
+    await cmd.action().call(cmd, cmd.opts(), ...args)
+    await cmd.done().call(cmd, cmd.optsWithGlobals(), ...args)
 
     return cmd
   }
@@ -3071,20 +3173,22 @@ class Command extends Helpable {
 
       if (argument.variadic) {
         if (index < this.argv.length) {
-          this.checkChoices(value = this.argv.slice(index), argument)
-          ok(Array.isArray<string>(value), 'expected command-argument `value`')
-          value = parser([...value], def?.value)
-        } else {
-          ok(!argument.required, 'expected optional command-argument')
-          /* v8 ignore else -- @preserve */ if (value === undefined) value = []
+          /**
+           * The previous argument value.
+           *
+           * @var {unknown} previous
+           */
+          let previous: unknown = def?.value
+
+          for (const val of this.argv.slice(index)) {
+            this.checkChoices(val, argument)
+            value = parser(val, previous)
+            previous = value
+          }
+
+          this.args.push(value)
+          break
         }
-
-        if (!Array.isArray(value)) value = [value]
-
-        ok(Array.isArray(value), 'expected command-argument `value`')
-        this.args.push(...value)
-
-        break
       } else if (index < this.argv.length) {
         this.checkChoices(value = this.argv[index]!, argument)
         ok(typeof value === 'string', 'expected command-argument `value`')
@@ -3125,7 +3229,6 @@ class Command extends Helpable {
        * @return {undefined}
        */
       finalizeContext: (context: TokenizeContext): undefined => {
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
         return context[kCommand] = true, context.command = this, void context
       },
       initial: initialCommand,
@@ -3174,6 +3277,7 @@ class Command extends Helpable {
         if (chunkIndex) chunkIndex -= 2
 
         // add command-line arguments after delimiter only.
+        /* v8 ignore else -- @preserve */
         if (dest !== result.unknown) chunkIndex++
 
         // delimiters only appear the beginning of chunks,
@@ -3188,23 +3292,17 @@ class Command extends Helpable {
         ok(event === ev.enter, 'expected operand enter event')
         ok(token.value !== undefined, 'expected operand token value')
 
-        // `token.value` is either a variadic option-argument, subcommand id,
-        // command-argument, or a raw option-argument for an option unknown to
-        // `this` command.
-        if (Array.isArray(token.value)) {
-          dest.push(...token.value)
-        } else if (token.command) {
+        // the token value is either a command-argument, subcommand id,
+        // or a raw argument for an option unknown to `this` command.
+        if (token.command) {
           // `token.value` is the name of a subcommand.
           // remaining arguments are classified as unknown.
 
           dest.push(token.value)
           dest = result.unknown
-
-          // note: this branch means global options must be specified before
-          // subcommands, but also that subcommand options can have the same
-          // flag as a parent command option.
+          this.emitCommand(token.command)
         } else {
-          dest.push(token.value)
+          dest.push(token.value) // operand is a command or option-argument.
         }
 
         index++
@@ -3265,16 +3363,17 @@ class Command extends Helpable {
                 id: keid.excess_arguments,
                 reason: `${String(token.option)} does not allow an argument`
               })
+
+              // @ts-expect-error [7027] the `splice` call removes the
+              // erroneous tokens and acts a cleanup function when the
+              // call to `error` does not exit the process.
+              events.splice(afterIndex, 2)
             }
           } else { // use option-argument passed by user.
             ok(operand.value !== undefined, 'expected operand token value')
+            events.splice(afterIndex, 2)
             value = operand.value
           }
-
-          // remove operand tokens.
-          // tokens are removed outside of the if statement so the `splice`
-          // call functions as cleanup when `error` does not exit the process.
-          events.splice(afterIndex, 2)
         } else if (token.option.required) { // option-argument not passed.
           this.error({
             id: keid.missing_argument,
@@ -3367,24 +3466,21 @@ class Command extends Helpable {
       return subcommand.prepareCommand(operands.slice(1), unknown)
     }
 
-    // prepare default command.
-    if (this.defaultCommand) {
-      return this.defaultCommand.prepareCommand(operands, unknown)
-    }
+    // prepare default command,
+    // then check for errors and parse command arguments.
+    if (!this.interrupter) {
+      if (this.defaultCommand) {
+        return this.defaultCommand.prepareCommand(operands, unknown)
+      }
 
-    // check for errors.
-    if (!this.actionEvent) {
       this.checkForMissingMandatoryOptions()
       this.checkForConflictingOptions()
       this.checkForUnknownOptions(unknown)
       this.checkCommandArguments()
-    } else {
-      this.checkForConflictingOptions()
-      this.checkForUnknownOptions(unknown)
+      this.parseCommandArguments()
     }
 
-    // command prepartion is done once command arguments are parsed.
-    return this.parseCommandArguments()
+    return this
   }
 
   /**
@@ -3426,6 +3522,60 @@ class Command extends Helpable {
   }
 
   /**
+   * Print the help text.
+   *
+   * @see {@linkcode Awaitable}
+   *
+   * @protected
+   * @instance
+   *
+   * @template {OptionValues} [Opts=OptionValues]
+   *  Parsed command options
+   * @template {any[]} [Args=any[]]
+   *  Parsed command arguments
+   *
+   * @param {Opts} opts
+   *  The parsed command options
+   * @param {Args} args
+   *  The parsed command arguments
+   * @return {Awaitable<undefined>}
+   *  Nothing
+   */
+  protected printHelp<
+    Opts extends OptionValues = OptionValues,
+    Args extends any[] = any[]
+  >(opts: Opts, ...args: Args): Awaitable<undefined> {
+    return void opts, void args, void this.help(true)
+  }
+
+  /**
+   * Print the command version.
+   *
+   * @see {@linkcode Awaitable}
+   *
+   * @protected
+   * @instance
+   *
+   * @template {OptionValues} [Opts=OptionValues]
+   *  Parsed command options
+   * @template {any[]} [Args=any[]]
+   *  Parsed command arguments
+   *
+   * @param {Opts} opts
+   *  The parsed command options
+   * @param {Args} args
+   *  The parsed command arguments
+   * @return {Awaitable<undefined>}
+   *  Nothing
+   */
+  protected printVersion<
+    Opts extends OptionValues = OptionValues,
+    Args extends any[] = any[]
+  >(opts: Opts, ...args: Args): Awaitable<undefined> {
+    return void opts, void args, void this.version(true)
+  }
+
+  /**
    * Get a snapshot of `this` command.
    *
    * @see {@linkcode CommandSnapshot}
@@ -3444,7 +3594,8 @@ class Command extends Helpable {
       argv: [...this.argv],
       optionValueSources: { ...this.optionValueSources },
       opts: this.opts(),
-      optsWithGlobals: this.optsWithGlobals()
+      optsWithGlobals: this.optsWithGlobals(),
+      usage: this.usage()
     }
   }
 
@@ -3520,7 +3671,7 @@ class Command extends Helpable {
   }
 
   /**
-   * Set the command `usage` description.
+   * Set the usage description.
    *
    * @see {@linkcode UsageData}
    *
@@ -3528,14 +3679,14 @@ class Command extends Helpable {
    * @instance
    *
    * @param {UsageData | null | undefined} usage
-   *  Command usage data
+   *  Usage data
    * @return {this}
    *  `this` command
    */
   public usage(usage: UsageData | null | undefined): this
 
   /**
-   * Get the command usage description.
+   * Get the usage description.
    *
    * @see {@linkcode UsageInfo}
    *
@@ -3543,12 +3694,12 @@ class Command extends Helpable {
    * @instance
    *
    * @return {UsageInfo}
-   *  Command usage info
+   *  Usage info
    */
   public usage(): UsageInfo
 
   /**
-   * Get or set the command usage description.
+   * Get or set the usage description.
    *
    * @see {@linkcode UsageInfo}
    * @see {@linkcode UsageData}
@@ -3557,27 +3708,37 @@ class Command extends Helpable {
    * @instance
    *
    * @param {UsageData | null | undefined} [usage]
-   *  Command usage data
+   *  Usage data
    * @return {UsageInfo | this}
-   *  Command usage info or `this` command
+   *  Usage info or `this` command
    */
   public usage(usage?: UsageData | null | undefined): UsageInfo | this {
-    if (!arguments.length) {
-      return {
-        arguments: orNIL(this.info.usage?.arguments),
-        options: orNIL(this.info.usage?.options) ?? '[options]',
-        subcommand: orNIL(this.info.usage?.subcommand) ?? '[command]'
-      }
-    }
+    if (arguments.length) return this.info.usage = usage, this
 
-    return this.info.usage = usage, this
+    /**
+     * The command usage data.
+     *
+     * @const {UsageData} data
+     */
+    const data: UsageData = { ...this.info.usage }
+
+    data.options = trim(data.options)
+    if (data.options !== null && !data.options) data.options = '[flags...]'
+
+    return {
+      arguments: toList(data.arguments).map(arg => arg.trim()),
+      options: data.options,
+      subcommand: trim(data.subcommand) ?? this.structural
+        ? '<command>'
+        : '[command]'
+    }
   }
 
   /**
    * Set the command version.
    *
    * > 👉 **Note**: This method auto-registers the version command option with
-   * > the flags `-v | --version`. No cleanup is performed when this method is
+   * > the flags `-v, --version`. No cleanup is performed when this method is
    * > called with different flags (i.e. `info` as a string or `info.flags`).
    *
    * @see {@linkcode VersionData}
@@ -3591,6 +3752,18 @@ class Command extends Helpable {
    *  `this` command
    */
   public version(version: VersionData | null | undefined): this
+
+  /**
+   * Print the command version.
+   *
+   * @public
+   * @instance
+   *
+   * @param {true} version
+   *  Whether to print the command version
+   * @return {undefined}
+   */
+  public version(version: true): undefined
 
   /**
    * Get the command version.
@@ -3607,25 +3780,35 @@ class Command extends Helpable {
   public version<T extends string = string>(): T | null
 
   /**
-   * Get or set the command version.
+   * Get, set, or print the command version.
    *
    * @see {@linkcode VersionData}
    *
    * @public
    * @instance
    *
-   * @param {VersionData | null | undefined} [version]
-   *  Version, version option instance, or version option info
-   * @return {string | this | null}
+   * @param {VersionData | true | null | undefined} [version]
+   *  Version, version option instance, version option info,
+   *  or whether to print the command version
+   * @return {string | this | null | undefined}
    *  Command version or `this` command
    */
   public version(
-    version?: VersionData | null | undefined
-  ): string | this | null {
+    version?: VersionData | true | null | undefined
+  ): string | this | null | undefined {
     if (arguments.length) {
-      this.info.version = version as VersionOption | null | undefined
+      if (version === true) {
+        if (!this.info.version?.version) return void this.info.version
 
-      if (version !== null && version !== undefined) {
+        /**
+         * The command version.
+         *
+         * @const {string} version
+         */
+        const version: string = this.info.version.version
+
+        return void this.process.stdout.write(version + chars.lf)
+      } else if (!isNIL(version)) {
         if (typeof version === 'string' || 'compare' in version) {
           version = { version }
         }
@@ -3635,10 +3818,9 @@ class Command extends Helpable {
           ? version
           : this.createOption(version)
 
-        // add version option and register parsed option listeners.
+        // add version option and register event listener.
         this.addOption(this.info.version)
-        this.on(this.info.version.event, this.onOptionWithAction.bind(this))
-        this.on(this.info.version.event, this.onOptionVersion.bind(this))
+        this.on(this.info.version.event, this.onVersion.bind(this))
       }
 
       return this

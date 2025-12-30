@@ -4,6 +4,7 @@
  */
 
 import type {
+  Action,
   Argument,
   Command,
   CommandInfo,
@@ -29,6 +30,15 @@ type Skip = 'arguments' | 'options' | 'subcommands'
  */
 interface CommandMetadata extends Omit<CommandInfo, Skip> {
   /**
+   * The callback to fire when the command is executed.
+   *
+   * @see {@linkcode Action}
+   *
+   * @override
+   */
+  action: Action<any>
+
+  /**
    * List of command aliases.
    */
   aliases: Set<string>
@@ -41,6 +51,15 @@ interface CommandMetadata extends Omit<CommandInfo, Skip> {
   arguments: Argument[]
 
   /**
+   * The callback to fire after the command {@linkcode action} is executed.
+   *
+   * @see {@linkcode Action}
+   *
+   * @override
+   */
+  done: Action<any>
+
+  /**
    * A list of command examples.
    *
    * @see {@linkcode ExampleInfo}
@@ -48,6 +67,15 @@ interface CommandMetadata extends Omit<CommandInfo, Skip> {
    * @override
    */
   examples: ExampleInfo[]
+
+  /**
+   * The help text utility to use when generating help text.
+   *
+   * @see {@linkcode Help}
+   *
+   * @override
+   */
+  help: Help | null | undefined
 
   /**
    * The help subcommand.
@@ -66,15 +94,6 @@ interface CommandMetadata extends Omit<CommandInfo, Skip> {
    * @override
    */
   helpOption: Option | null | undefined
-
-  /**
-   * The help text utility to use when generating help text.
-   *
-   * @see {@linkcode Help}
-   *
-   * @override
-   */
-  helpUtility: Help
 
   /**
    * Map, where each key is a long or short flag and each value is the command

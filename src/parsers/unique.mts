@@ -3,29 +3,29 @@
  * @module kronk/parsers/unique
  */
 
-import toList from '#internal/to-list'
-import type { List } from '@flex-development/kronk'
+/**
+ * The unique list.
+ *
+ * @const {Set<string>} list
+ */
+const list: Set<string> = new Set()
+
+unique.list = list
+export default unique
 
 /**
  * Parse a unique list.
- *
- * @see {@linkcode List}
  *
  * @category
  *  parsers
  *
  * @this {void}
  *
- * @param {List<string> | string} value
+ * @param {string} value
  *  The value to parse
- * @return {ReadonlySet<string> | Set<string>}
- *  Unique list created from `value`
+ * @return {Set<string>}
+ *  The unique list
  */
-function unique(
-  this: void,
-  value: List<string> | string
-): ReadonlySet<string> | Set<string> {
-  return value instanceof Set ? value : new Set(toList(value))
+function unique(this: void, value: string): Set<string> {
+  return list.add(value), list
 }
-
-export default unique

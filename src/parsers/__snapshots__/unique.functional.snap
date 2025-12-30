@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`functional:parsers/unique > should store unique \`value\` in list 1`] = `
+Set {
+  "0",
+  "1",
+  "2",
+}
+`;

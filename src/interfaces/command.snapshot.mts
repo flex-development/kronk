@@ -6,7 +6,8 @@
 import type {
   CommandName,
   OptionValues,
-  OptionValueSources
+  OptionValueSources,
+  UsageInfo
 } from '@flex-development/kronk'
 
 /**
@@ -58,6 +59,13 @@ interface CommandSnapshot {
    * @see {@linkcode OptionValues}
    */
   optsWithGlobals: OptionValues
+
+  /**
+   * The command usage info.
+   *
+   * @see {@linkcode UsageInfo}
+   */
+  usage: UsageInfo
 }
 
 export type { CommandSnapshot as default }

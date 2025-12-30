@@ -8,7 +8,6 @@ import atBreak from '#internal/at-break'
 import kArgument from '#internal/k-argument'
 import kCommand from '#internal/k-command'
 import kOption from '#internal/k-option'
-import toList from '#internal/to-list'
 import {
   codes,
   ev,
@@ -17,10 +16,8 @@ import {
   type Effects,
   type Event,
   type State,
-  type Token,
   type TokenizeContext
 } from '@flex-development/fsm-tokenizer'
-import type { Option } from '@flex-development/kronk'
 import { ok as assert } from 'devlop'
 
 /**
@@ -37,7 +34,6 @@ const operand: Construct = {
   name: tt.operand,
   previous: previousOperand,
   resolve: resolveOperand,
-  resolveAll: resolveAllOperand,
   tokenize: tokenizeOperand
 }
 
@@ -113,116 +109,6 @@ function resolveOperand(
     }
 
     index++
-  }
-
-  return events
-}
-
-/**
- * Resolve all events when the content is complete, from the start to the end.
- *
- * > 👉 **Note**: Only used if {@linkcode tokenizeOperand} is successful once.
- *
- * @see {@linkcode Event}
- * @see {@linkcode TokenizeContext}
- *
- * @this {void}
- *
- * @param {Event[]} events
- *  List of events
- * @param {TokenizeContext} context
- *  Tokenize context
- * @return {Event[]}
- *  List of changed events
- */
-function resolveAllOperand(
-  this: void,
-  events: Event[],
-  context: TokenizeContext
-): Event[] {
-  assert(!context[kOption], 'expected to not to be in `Option` context')
-
-  /**
-   * Map, where each key is a variadic {@linkcode Option} instance and each
-   * value is an operand token.
-   *
-   * @const {WeakMap<Option, Token<tt.operand>>} variadics
-   */
-  const variadics: WeakMap<Option, Token<tt.operand>> = new WeakMap()
-
-  /**
-   * Index of current event.
-   *
-   * @var {number} index
-   */
-  let index: number = -1
-
-  /**
-   * The current option.
-   *
-   * @var {Option | null | undefined} option
-   */
-  let option: Option | null | undefined
-
-  while (++index < events.length) {
-    assert(events[index], 'expected event')
-    const [event, token] = events[index]!
-
-    // capture current option.
-    if (event === ev.exit && token.type === 'flag') {
-      assert(token.long || token.short, 'expected long or short flag')
-      option = token.option
-      continue
-    }
-
-    // combine option-arguments for variadic options into a single token.
-    if (
-      event === ev.enter &&
-      token.type === tt.operand &&
-      !token.command &&
-      option?.variadic
-    ) {
-      assert(token.value !== undefined, 'expected token value')
-      token.value = toList(token.value)
-
-      /**
-       * Previous event.
-       *
-       * @const {Event | undefined} event
-       */
-      const previous: Event | undefined = events[index - 1]
-
-      if (variadics.has(option)) {
-        /**
-         * Operand token.
-         *
-         * @const {Token} operand
-         */
-        const operand: Token = variadics.get(option)!
-
-        assert(operand.type === tt.operand, 'expected operand token')
-        assert(Array.isArray(operand.value), 'expected array token value')
-        assert(previous, 'expected `previous` event')
-
-        operand.value.push(...token.value)
-
-        if (
-          previous[0] === ev.exit &&
-          previous[1].type === tt.flag &&
-          previous[1].option?.variadic
-        ) {
-          index -= events.splice(index - 2, 2).length
-        }
-
-        events.splice(index, 2)
-        if (!token.attached) index--
-
-        continue
-      } else {
-        token.value = [...token.value]
-        variadics.set(option, token as Token<tt.operand>)
-      }
-    }
   }
 
   return events

@@ -7,18 +7,15 @@ import type TestSubject from '#types/parse-arg'
 
 describe('unit-d:types/ParseArg', () => {
   type T = number
-  type Value = string
-  type Subject = TestSubject<T, Value>
+  type Subject = TestSubject<T>
 
-  it('should match [this: void]', () => {
-    expectTypeOf<Subject>().thisParameter.toEqualTypeOf<void>()
+  it('should match [this: unknown]', () => {
+    expectTypeOf<Subject>().thisParameter.toEqualTypeOf<unknown>()
   })
 
   describe('parameters', () => {
-    it('should be callable with [string, T | undefined]', () => {
-      expectTypeOf<Subject>()
-        .parameters
-        .toEqualTypeOf<[string, T | undefined]>()
+    it('should be callable with [string, T?]', () => {
+      expectTypeOf<Subject>().parameters.toEqualTypeOf<[string, T?]>()
     })
   })
 

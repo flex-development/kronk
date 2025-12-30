@@ -14,18 +14,7 @@ import type { Command, HelpTextOptions } from '@flex-development/kronk'
  */
 class Help {
   /**
-   * The maximum number of columns to output.
-   *
-   * @default 80
-   *
-   * @protected
-   * @instance
-   * @member {number} columns
-   */
-  protected columns: number
-
-  /**
-   * An object containing methods for coloring and styling text.
+   * An object containing methods for styling text.
    *
    * @see {@linkcode Colors}
    *
@@ -33,7 +22,51 @@ class Help {
    * @instance
    * @member {Colors} style
    */
-  protected style: Colors
+  protected ansi!: Colors
+
+  /**
+   * The maximum number of columns to output.
+   *
+   * @default 110
+   *
+   * @protected
+   * @instance
+   * @member {number} columns
+   */
+  protected columns!: number
+
+  /**
+   * The character, or characters, used to mark the end of a line.
+   *
+   * @default '\n'
+   *
+   * @protected
+   * @instance
+   * @member {string} eol
+   */
+  protected eol!: string
+
+  /**
+   * The example marker to use.
+   *
+   * @default '$'
+   *
+   * @protected
+   * @instance
+   * @member {string} exampleMarker
+   */
+  protected exampleMarker!: string
+
+  /**
+   * Whether to show global options.
+   *
+   * @default true
+   *
+   * @protected
+   * @instance
+   * @member {boolean | null | undefined} showGlobalOptions
+   */
+  protected showGlobalOptions?: boolean | null | undefined
 
   /**
    * Create a new help text utility.
@@ -44,8 +77,29 @@ class Help {
    *  Options for formating help text
    */
   constructor(options?: HelpTextOptions | null | undefined) {
-    this.columns = options?.columns ?? 80
-    this.style = createColors(options)
+    void this.prepare(options)
+  }
+
+  /**
+   * Prepare the help text context.
+   *
+   * @see {@linkcode HelpTextOptions}
+   *
+   * @public
+   * @instance
+   *
+   * @param {HelpTextOptions | null | undefined} [options]
+   *  Options for formating help text
+   * @return {this}
+   *  The help text utility
+   */
+  public prepare(options?: HelpTextOptions | null | undefined): this {
+    this.ansi = createColors(options)
+    this.columns = options?.columns ?? 110
+    this.eol = options?.eol ?? chars.lf
+    this.exampleMarker = options?.exampleMarker ?? chars.dollar
+    this.showGlobalOptions = options?.globalOptions ?? true
+    return this
   }
 
   /**
@@ -56,13 +110,13 @@ class Help {
    * @public
    * @instance
    *
-   * @param {Command} cmd
-   *  The command to generate help text for
+   * @param {Command} command
+   *  The command
    * @return {string}
    *  Formatted help text
    */
-  public text(cmd: Command): string {
-    return void cmd, chars.empty
+  public text(command: Command): string {
+    return void command, chars.empty
   }
 }
 

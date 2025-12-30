@@ -7,10 +7,10 @@ import type TestSubject from '#interfaces/usage.data'
 import type { Nilable } from '@flex-development/tutils'
 
 describe('unit-d:interfaces/UsageData', () => {
-  it('should match [arguments?: string | null | undefined]', () => {
+  it('should match [arguments?: readonly string[] | string | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('arguments')
-      .toEqualTypeOf<Nilable<string>>()
+      .toEqualTypeOf<Nilable<readonly string[] | string>>()
   })
 
   it('should match [options?: string | null | undefined]', () => {

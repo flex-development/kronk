@@ -5,27 +5,35 @@
 
 import chars from '#enums/chars'
 import date from '#fixtures/date'
+import kArgument from '#internal/k-argument'
+import kCommand from '#internal/k-command'
+import kCommandError from '#internal/k-command-error'
+import kCommandEvent from '#internal/k-command-event'
+import kKronkError from '#internal/k-kronk-error'
+import kKronkEvent from '#internal/k-kronk-event'
 import kOption from '#internal/k-option'
-import Argument from '#lib/argument'
-import Command from '#lib/command'
-import Option from '#lib/option'
+import kOptionEvent from '#internal/k-option-event'
 import testSubject from '#utils/is-option'
+import { codes } from '@flex-development/fsm-tokenizer'
 
 describe('unit:utils/isOption', () => {
   it.each<Parameters<typeof testSubject>>([
-    [chars.digit5],
+    [[]],
+    [codes.eof],
+    [chars.delimiter],
     [date],
-    [new Argument('<>')],
-    [new Command()],
-    [null]
-  ])('should return `false` if `value` is not `Option`-like (%#)', value => {
+    [{ [kArgument]: true }],
+    [{ [kCommand]: true }],
+    [{ [kCommandError]: true }],
+    [{ [kCommandEvent]: true }],
+    [{ [kKronkError]: true }],
+    [{ [kKronkEvent]: true }],
+    [{ [kOptionEvent]: true }]
+  ])('should return `false` if `kOption` is not in `value` (%#)', value => {
     expect(testSubject(value)).to.be.false
   })
 
-  it.each<Parameters<typeof testSubject>>([
-    [{ [kOption]: true }],
-    [new Option('--option')]
-  ])('should return `true` if `value` looks like `Option` (%#)', value => {
-    expect(testSubject(value)).to.be.true
+  it('should return `true` if `kOption` in `value`', () => {
+    expect(testSubject({ [kOption]: true })).to.be.true
   })
 })

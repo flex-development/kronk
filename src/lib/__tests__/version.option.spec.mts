@@ -64,7 +64,7 @@ describe('unit:lib/VersionOption', () => {
     })
 
     it('should set flags', () => {
-      expect(subject).to.have.property('flags', '-v | --version')
+      expect(subject).to.have.property('flags', '-v, --version')
     })
   })
 })

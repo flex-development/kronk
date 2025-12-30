@@ -14,6 +14,14 @@ import type { CommandInfo } from '@flex-development/kronk'
  */
 interface SubcommandInfo extends CommandInfo {
   /**
+   * Options for formatting help text,
+   * or the utility to use when generating help text.
+   *
+   * @override
+   */
+  help?: null | undefined
+
+  /**
    * The name of the subcommand.
    */
   name: string

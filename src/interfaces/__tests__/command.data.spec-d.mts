@@ -14,9 +14,11 @@ import type {
   HelpableInfo,
   HelpCommandData,
   HelpOptionData,
+  HelpTextOptions,
   List,
   OptionPriority,
   OptionsData,
+  Process,
   SubcommandsData,
   UnknownStrategy,
   UsageData,
@@ -75,6 +77,12 @@ describe('unit-d:interfaces/CommandData', () => {
       .toEqualTypeOf<Nilable<Exit>>()
   })
 
+  it('should match [help?: Help | HelpTextOptions | null | undefined]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('help')
+      .toEqualTypeOf<Nilable<Help | HelpTextOptions>>()
+  })
+
   it('should match [helpCommand?: HelpCommandData | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('helpCommand')
@@ -85,12 +93,6 @@ describe('unit-d:interfaces/CommandData', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('helpOption')
       .toEqualTypeOf<Nilable<HelpOptionData>>()
-  })
-
-  it('should match [helpUtility?: Help | null | undefined]', () => {
-    expectTypeOf<TestSubject>()
-      .toHaveProperty('helpUtility')
-      .toEqualTypeOf<Nilable<Help>>()
   })
 
   it('should match [optionPriority?: OptionPriority | null | undefined]', () => {
@@ -109,6 +111,12 @@ describe('unit-d:interfaces/CommandData', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('parent')
       .toEqualTypeOf<Nilable<Command>>()
+  })
+
+  it('should match [process?: Process | null | undefined]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('process')
+      .toEqualTypeOf<Nilable<Process>>()
   })
 
   it('should match [subcommands?: SubcommandsData | null | undefined]', () => {

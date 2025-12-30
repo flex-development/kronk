@@ -21,4 +21,22 @@ describe('unit-d:interfaces/HelpTextOptions', () => {
       .toHaveProperty('columns')
       .toEqualTypeOf<Nilable<number>>()
   })
+
+  it('should match [eol?: string | null | undefined]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('eol')
+      .toEqualTypeOf<Nilable<string>>()
+  })
+
+  it('should match [exampleMarker?: string | null | undefined]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('exampleMarker')
+      .toEqualTypeOf<Nilable<string>>()
+  })
+
+  it('should match [globalOptions?: boolean | null | undefined]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('globalOptions')
+      .toEqualTypeOf<Nilable<boolean>>()
+  })
 })

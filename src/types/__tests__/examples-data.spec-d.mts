@@ -11,10 +11,14 @@ describe('unit-d:types/ExamplesData', () => {
     expectTypeOf<TestSubject>().extract<ExampleInfo>().not.toBeNever()
   })
 
-  it('should extract List<ExampleInfo | string>', () => {
+  it('should extract List<ExampleInfo | readonly string[] | string>', () => {
     expectTypeOf<TestSubject>()
-      .extract<List<ExampleInfo | string>>()
+      .extract<List<ExampleInfo | readonly string[] | string>>()
       .not.toBeNever()
+  })
+
+  it('should extract readonly string[]', () => {
+    expectTypeOf<TestSubject>().extract<readonly string[]>().not.toBeNever()
   })
 
   it('should extract string', () => {

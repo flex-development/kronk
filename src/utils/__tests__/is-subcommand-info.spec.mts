@@ -4,6 +4,7 @@
  */
 
 import chars from '#enums/chars'
+import grease from '#fixtures/commands/grease'
 import Argument from '#lib/argument'
 import Command from '#lib/command'
 import Option from '#lib/option'
@@ -18,14 +19,14 @@ describe('unit:utils/isSubcommandInfo', () => {
     [new Command('info')],
     [new Option('--info')],
     [null]
-  ])('should return `false` if `value` does not look like info (%#)', value => {
+  ])('should return `false` if `value` is not subcommand info (%#)', value => {
     expect(testSubject(value)).to.be.false
   })
 
   it.each<Parameters<typeof testSubject>>([
     [{ name: chars.empty }],
-    [{ name: 'tag' }]
-  ])('should return `true` if `value` looks like info (%#)', value => {
+    [{ name: grease.subcommands.distTag.name }]
+  ])('should return `true` if `value` is subcommand info (%#)', value => {
     expect(testSubject(value)).to.be.true
   })
 })

@@ -6,13 +6,13 @@
 import type { Option, OptionEvent } from '@flex-development/kronk'
 
 /**
- * Handle a parsed command option `event`.
+ * Handle a parsed option `event`.
  *
  * @see {@linkcode Option}
  * @see {@linkcode OptionEvent}
  *
  * @template {Option} [T=Option]
- *  Parsed command option
+ *  The parsed option
  *
  * @param {OptionEvent<T>} event
  *  The emitted parsed option event

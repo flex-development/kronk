@@ -3,6 +3,7 @@
  * @module kronk/internal/isList
  */
 
+import isSet from '#internal/is-set'
 import type { List } from '@flex-development/kronk'
 
 /**
@@ -20,8 +21,8 @@ import type { List } from '@flex-development/kronk'
  * @return {value is List<T>}
  *  `true` if `value` is an array or {@linkcode Set}, `false` otherwise
  */
-function isList<T = unknown>(this: void, value: unknown): value is List<T> {
-  return Array.isArray(value) || value instanceof Set
+function isList<T>(this: void, value: unknown): value is List<T> {
+  return Array.isArray(value) || isSet(value)
 }
 
 export default isList

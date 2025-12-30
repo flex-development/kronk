@@ -1,0 +1,17 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`unit:parsers/integer > should return parsed integer ("-3") 1`] = `-3`;
+
+exports[`unit:parsers/integer > should return parsed integer ("0") 1`] = `0`;
+
+exports[`unit:parsers/integer > should return parsed integer ("26") 1`] = `26`;
+
+exports[`unit:parsers/integer > should return parsed integer ("POSITIVE_INFINITY") 1`] = `NaN`;
+
+exports[`unit:parsers/integer > should return parsed integer ("integer") 1`] = `NaN`;
+
+exports[`unit:parsers/integer > should return parsed integer (3.13) 1`] = `NaN`;
+
+exports[`unit:parsers/integer > should return parsed integer (13) 1`] = `13`;
+
+exports[`unit:parsers/integer > should return parsed integer (null) 1`] = `NaN`;

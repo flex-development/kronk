@@ -3,26 +3,37 @@
  * @module kronk/utils/tests/unit/isKronkEvent
  */
 
-import KronkError from '#errors/kronk.error'
-import KronkEvent from '#events/kronk.event'
+import chars from '#enums/chars'
 import date from '#fixtures/date'
+import kArgument from '#internal/k-argument'
+import kCommand from '#internal/k-command'
+import kCommandError from '#internal/k-command-error'
+import kCommandEvent from '#internal/k-command-event'
+import kKronkError from '#internal/k-kronk-error'
 import kKronkEvent from '#internal/k-kronk-event'
+import kOption from '#internal/k-option'
+import kOptionEvent from '#internal/k-option-event'
 import testSubject from '#utils/is-kronk-event'
+import { codes } from '@flex-development/fsm-tokenizer'
 
 describe('unit:utils/isKronkEvent', () => {
   it.each<Parameters<typeof testSubject>>([
-    [13],
+    [[]],
+    [codes.eof],
+    [chars.delimiter],
     [date],
-    [new KronkError(import.meta.url)],
-    [null]
-  ])('should return `false` if `value` is not `KronkEvent`-like (%#)', v => {
-    expect(testSubject(v)).to.be.false
+    [{ [kArgument]: true }],
+    [{ [kCommand]: true }],
+    [{ [kCommandError]: true }],
+    [{ [kCommandEvent]: true }],
+    [{ [kKronkError]: true }],
+    [{ [kOption]: true }],
+    [{ [kOptionEvent]: true }]
+  ])('should return `false` if `kKronkEvent` is not in `value` (%#)', value => {
+    expect(testSubject(value)).to.be.false
   })
 
-  it.each<Parameters<typeof testSubject>>([
-    [{ [kKronkEvent]: true }],
-    [new KronkEvent('option:')]
-  ])('should return `true` if `value` looks like `KronkEvent` (%#)', value => {
-    expect(testSubject(value)).to.be.true
+  it('should return `true` if `kKronkEvent` in `value`', () => {
+    expect(testSubject({ [kKronkEvent]: true })).to.be.true
   })
 })

@@ -4,7 +4,12 @@
  */
 
 import type TestSubject from '#types/help-option-data'
-import type { Flags, Option, OptionInfo } from '@flex-development/kronk'
+import type {
+  Flags,
+  Option,
+  OptionData,
+  OptionInfo
+} from '@flex-development/kronk'
 
 describe('unit-d:types/HelpOptionData', () => {
   it('should extract Flags', () => {
@@ -19,7 +24,11 @@ describe('unit-d:types/HelpOptionData', () => {
     expectTypeOf<TestSubject>().extract<OptionInfo>().not.toBeNever()
   })
 
-  it('should extract false', () => {
-    expectTypeOf<TestSubject>().extract<false>().not.toBeNever()
+  it('should extract OptionData', () => {
+    expectTypeOf<TestSubject>().extract<OptionData>().not.toBeNever()
+  })
+
+  it('should extract boolean', () => {
+    expectTypeOf<TestSubject>().extract<boolean>().not.toBeNever()
   })
 })

@@ -13,6 +13,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--command",
       "start": {
         "line": 1,
         "column": 1,
@@ -35,6 +36,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--command",
       "start": {
         "line": 1,
         "column": 1,
@@ -59,6 +61,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
       "id": "",
       "mandatory": true,
       "required": false,
+      "serialized": "[!...]",
       "start": {
         "line": 1,
         "column": 10,
@@ -84,6 +87,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
       "id": "",
       "mandatory": true,
       "required": false,
+      "serialized": "[!...]",
       "start": {
         "line": 1,
         "column": 10,
@@ -112,6 +116,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--letter",
       "start": {
         "line": 1,
         "column": 1,
@@ -134,6 +139,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--letter",
       "start": {
         "line": 1,
         "column": 1,
@@ -158,6 +164,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
       "id": "",
       "mandatory": false,
       "required": true,
+      "serialized": "<...>",
       "start": {
         "line": 1,
         "column": 9,
@@ -183,6 +190,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
       "id": "",
       "mandatory": false,
       "required": true,
+      "serialized": "<...>",
       "start": {
         "line": 1,
         "column": 9,
@@ -211,6 +219,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--mode",
       "start": {
         "line": 1,
         "column": 1,
@@ -233,6 +242,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--mode",
       "start": {
         "line": 1,
         "column": 1,
@@ -257,6 +267,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
       "id": "mode",
       "mandatory": false,
       "required": true,
+      "serialized": "<mode>",
       "start": {
         "line": 1,
         "column": 7,
@@ -282,6 +293,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
       "id": "mode",
       "mandatory": false,
       "required": true,
+      "serialized": "<mode>",
       "start": {
         "line": 1,
         "column": 7,
@@ -310,6 +322,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--number",
       "start": {
         "line": 1,
         "column": 1,
@@ -332,6 +345,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--number",
       "start": {
         "line": 1,
         "column": 1,
@@ -356,6 +370,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
       "id": "value",
       "mandatory": false,
       "required": false,
+      "serialized": "[value...]",
       "start": {
         "line": 1,
         "column": 9,
@@ -381,6 +396,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
       "id": "value",
       "mandatory": false,
       "required": false,
+      "serialized": "[value...]",
       "start": {
         "line": 1,
         "column": 9,
@@ -409,6 +425,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--parent",
       "start": {
         "line": 1,
         "column": 1,
@@ -431,6 +448,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--parent",
       "start": {
         "line": 1,
         "column": 1,
@@ -455,6 +473,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
       "id": "",
       "mandatory": true,
       "required": true,
+      "serialized": "<!>",
       "start": {
         "line": 1,
         "column": 9,
@@ -480,6 +499,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
       "id": "",
       "mandatory": true,
       "required": true,
+      "serialized": "<!>",
       "start": {
         "line": 1,
         "column": 9,
@@ -508,6 +528,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--ps",
       "start": {
         "line": 1,
         "column": 1,
@@ -530,6 +551,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--ps",
       "start": {
         "line": 1,
         "column": 1,
@@ -552,6 +574,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": -1,
       },
       "long": true,
+      "serialized": "--preserve-symlinks",
       "start": {
         "line": 1,
         "column": 5,
@@ -574,6 +597,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": -1,
       },
       "long": true,
+      "serialized": "--preserve-symlinks",
       "start": {
         "line": 1,
         "column": 5,
@@ -601,6 +625,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--resolve.conditions",
       "start": {
         "line": 1,
         "column": 1,
@@ -623,6 +648,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--resolve.conditions",
       "start": {
         "line": 1,
         "column": 1,
@@ -647,6 +673,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
       "id": "condition",
       "mandatory": true,
       "required": true,
+      "serialized": "<condition!...>",
       "start": {
         "line": 1,
         "column": 21,
@@ -672,6 +699,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
       "id": "condition",
       "mandatory": true,
       "required": true,
+      "serialized": "<condition!...>",
       "start": {
         "line": 1,
         "column": 21,
@@ -700,6 +728,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--sr",
       "start": {
         "line": 1,
         "column": 1,
@@ -722,6 +751,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--sr",
       "start": {
         "line": 1,
         "column": 1,
@@ -744,6 +774,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--sourceRoot",
       "start": {
         "line": 1,
         "column": 5,
@@ -766,6 +797,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--sourceRoot",
       "start": {
         "line": 1,
         "column": 5,
@@ -790,6 +822,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
       "id": "",
       "mandatory": false,
       "required": true,
+      "serialized": "<>",
       "start": {
         "line": 1,
         "column": 17,
@@ -815,6 +848,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
       "id": "",
       "mandatory": false,
       "required": true,
+      "serialized": "<>",
       "start": {
         "line": 1,
         "column": 17,
@@ -843,6 +877,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--ws",
       "start": {
         "line": 1,
         "column": 1,
@@ -865,6 +900,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--ws",
       "start": {
         "line": 1,
         "column": 1,
@@ -887,6 +923,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--workspace",
       "start": {
         "line": 1,
         "column": 5,
@@ -909,6 +946,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--workspace",
       "start": {
         "line": 1,
         "column": 5,
@@ -933,6 +971,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
       "id": "",
       "mandatory": false,
       "required": false,
+      "serialized": "[]",
       "start": {
         "line": 1,
         "column": 16,
@@ -958,6 +997,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
       "id": "",
       "mandatory": false,
       "required": false,
+      "serialized": "[]",
       "start": {
         "line": 1,
         "column": 16,
@@ -985,6 +1025,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-T",
       "short": true,
       "start": {
         "line": 1,
@@ -1007,6 +1048,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-T",
       "short": true,
       "start": {
         "line": 1,
@@ -1030,6 +1072,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--token",
       "start": {
         "line": 1,
         "column": 3,
@@ -1052,6 +1095,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
         "_bufferIndex": 0,
       },
       "long": true,
+      "serialized": "--token",
       "start": {
         "line": 1,
         "column": 3,
@@ -1076,6 +1120,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
       "id": "token",
       "mandatory": false,
       "required": true,
+      "serialized": "<token>",
       "start": {
         "line": 1,
         "column": 10,
@@ -1101,6 +1146,7 @@ exports[`integration:constructs/initialOption > should tokenize flags string ("-
       "id": "token",
       "mandatory": false,
       "required": true,
+      "serialized": "<token>",
       "start": {
         "line": 1,
         "column": 10,
@@ -1129,6 +1175,7 @@ exports[`integration:constructs/initialOption > should tokenize long flag ("---g
         "_bufferIndex": -1,
       },
       "long": true,
+      "serialized": "---gnu-style-hidden-option",
       "start": {
         "line": 1,
         "column": 1,
@@ -1151,6 +1198,7 @@ exports[`integration:constructs/initialOption > should tokenize long flag ("---g
         "_bufferIndex": -1,
       },
       "long": true,
+      "serialized": "---gnu-style-hidden-option",
       "start": {
         "line": 1,
         "column": 1,
@@ -1178,6 +1226,7 @@ exports[`integration:constructs/initialOption > should tokenize long flag ("--13
         "_bufferIndex": -1,
       },
       "long": true,
+      "serialized": "--13",
       "start": {
         "line": 1,
         "column": 1,
@@ -1200,6 +1249,7 @@ exports[`integration:constructs/initialOption > should tokenize long flag ("--13
         "_bufferIndex": -1,
       },
       "long": true,
+      "serialized": "--13",
       "start": {
         "line": 1,
         "column": 1,
@@ -1227,6 +1277,7 @@ exports[`integration:constructs/initialOption > should tokenize long flag ("--TZ
         "_bufferIndex": -1,
       },
       "long": true,
+      "serialized": "--TZ",
       "start": {
         "line": 1,
         "column": 1,
@@ -1249,6 +1300,7 @@ exports[`integration:constructs/initialOption > should tokenize long flag ("--TZ
         "_bufferIndex": -1,
       },
       "long": true,
+      "serialized": "--TZ",
       "start": {
         "line": 1,
         "column": 1,
@@ -1276,6 +1328,7 @@ exports[`integration:constructs/initialOption > should tokenize long flag ("--es
         "_bufferIndex": -1,
       },
       "long": true,
+      "serialized": "--esbuild.jsxDev",
       "start": {
         "line": 1,
         "column": 1,
@@ -1298,6 +1351,7 @@ exports[`integration:constructs/initialOption > should tokenize long flag ("--es
         "_bufferIndex": -1,
       },
       "long": true,
+      "serialized": "--esbuild.jsxDev",
       "start": {
         "line": 1,
         "column": 1,
@@ -1325,6 +1379,7 @@ exports[`integration:constructs/initialOption > should tokenize long flag ("--fo
         "_bufferIndex": -1,
       },
       "long": true,
+      "serialized": "--force",
       "start": {
         "line": 1,
         "column": 1,
@@ -1347,6 +1402,7 @@ exports[`integration:constructs/initialOption > should tokenize long flag ("--fo
         "_bufferIndex": -1,
       },
       "long": true,
+      "serialized": "--force",
       "start": {
         "line": 1,
         "column": 1,
@@ -1374,6 +1430,7 @@ exports[`integration:constructs/initialOption > should tokenize long flag ("--ps
         "_bufferIndex": -1,
       },
       "long": true,
+      "serialized": "--ps",
       "start": {
         "line": 1,
         "column": 1,
@@ -1396,6 +1453,7 @@ exports[`integration:constructs/initialOption > should tokenize long flag ("--ps
         "_bufferIndex": -1,
       },
       "long": true,
+      "serialized": "--ps",
       "start": {
         "line": 1,
         "column": 1,
@@ -1422,6 +1480,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-0"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-0",
       "short": true,
       "start": {
         "line": 1,
@@ -1444,6 +1503,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-0"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-0",
       "short": true,
       "start": {
         "line": 1,
@@ -1471,6 +1531,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-1"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-1",
       "short": true,
       "start": {
         "line": 1,
@@ -1493,6 +1554,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-1"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-1",
       "short": true,
       "start": {
         "line": 1,
@@ -1520,6 +1582,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-2"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-2",
       "short": true,
       "start": {
         "line": 1,
@@ -1542,6 +1605,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-2"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-2",
       "short": true,
       "start": {
         "line": 1,
@@ -1569,6 +1633,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-3"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-3",
       "short": true,
       "start": {
         "line": 1,
@@ -1591,6 +1656,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-3"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-3",
       "short": true,
       "start": {
         "line": 1,
@@ -1618,6 +1684,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-4"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-4",
       "short": true,
       "start": {
         "line": 1,
@@ -1640,6 +1707,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-4"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-4",
       "short": true,
       "start": {
         "line": 1,
@@ -1667,6 +1735,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-5"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-5",
       "short": true,
       "start": {
         "line": 1,
@@ -1689,6 +1758,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-5"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-5",
       "short": true,
       "start": {
         "line": 1,
@@ -1716,6 +1786,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-6"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-6",
       "short": true,
       "start": {
         "line": 1,
@@ -1738,6 +1809,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-6"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-6",
       "short": true,
       "start": {
         "line": 1,
@@ -1765,6 +1837,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-7"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-7",
       "short": true,
       "start": {
         "line": 1,
@@ -1787,6 +1860,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-7"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-7",
       "short": true,
       "start": {
         "line": 1,
@@ -1814,6 +1888,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-8"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-8",
       "short": true,
       "start": {
         "line": 1,
@@ -1836,6 +1911,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-8"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-8",
       "short": true,
       "start": {
         "line": 1,
@@ -1863,6 +1939,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-9"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-9",
       "short": true,
       "start": {
         "line": 1,
@@ -1885,6 +1962,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-9"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-9",
       "short": true,
       "start": {
         "line": 1,
@@ -1912,6 +1990,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-A"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-A",
       "short": true,
       "start": {
         "line": 1,
@@ -1934,6 +2013,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-A"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-A",
       "short": true,
       "start": {
         "line": 1,
@@ -1961,6 +2041,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-B"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-B",
       "short": true,
       "start": {
         "line": 1,
@@ -1983,6 +2064,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-B"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-B",
       "short": true,
       "start": {
         "line": 1,
@@ -2010,6 +2092,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-C"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-C",
       "short": true,
       "start": {
         "line": 1,
@@ -2032,6 +2115,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-C"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-C",
       "short": true,
       "start": {
         "line": 1,
@@ -2059,6 +2143,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-D"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-D",
       "short": true,
       "start": {
         "line": 1,
@@ -2081,6 +2166,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-D"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-D",
       "short": true,
       "start": {
         "line": 1,
@@ -2108,6 +2194,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-E"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-E",
       "short": true,
       "start": {
         "line": 1,
@@ -2130,6 +2217,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-E"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-E",
       "short": true,
       "start": {
         "line": 1,
@@ -2157,6 +2245,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-F"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-F",
       "short": true,
       "start": {
         "line": 1,
@@ -2179,6 +2268,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-F"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-F",
       "short": true,
       "start": {
         "line": 1,
@@ -2206,6 +2296,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-G"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-G",
       "short": true,
       "start": {
         "line": 1,
@@ -2228,6 +2319,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-G"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-G",
       "short": true,
       "start": {
         "line": 1,
@@ -2255,6 +2347,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-H"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-H",
       "short": true,
       "start": {
         "line": 1,
@@ -2277,6 +2370,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-H"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-H",
       "short": true,
       "start": {
         "line": 1,
@@ -2304,6 +2398,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-I"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-I",
       "short": true,
       "start": {
         "line": 1,
@@ -2326,6 +2421,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-I"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-I",
       "short": true,
       "start": {
         "line": 1,
@@ -2353,6 +2449,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-J"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-J",
       "short": true,
       "start": {
         "line": 1,
@@ -2375,6 +2472,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-J"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-J",
       "short": true,
       "start": {
         "line": 1,
@@ -2402,6 +2500,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-K"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-K",
       "short": true,
       "start": {
         "line": 1,
@@ -2424,6 +2523,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-K"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-K",
       "short": true,
       "start": {
         "line": 1,
@@ -2451,6 +2551,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-L"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-L",
       "short": true,
       "start": {
         "line": 1,
@@ -2473,6 +2574,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-L"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-L",
       "short": true,
       "start": {
         "line": 1,
@@ -2500,6 +2602,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-M"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-M",
       "short": true,
       "start": {
         "line": 1,
@@ -2522,6 +2625,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-M"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-M",
       "short": true,
       "start": {
         "line": 1,
@@ -2549,6 +2653,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-N"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-N",
       "short": true,
       "start": {
         "line": 1,
@@ -2571,6 +2676,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-N"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-N",
       "short": true,
       "start": {
         "line": 1,
@@ -2598,6 +2704,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-O"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-O",
       "short": true,
       "start": {
         "line": 1,
@@ -2620,6 +2727,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-O"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-O",
       "short": true,
       "start": {
         "line": 1,
@@ -2647,6 +2755,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-P"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-P",
       "short": true,
       "start": {
         "line": 1,
@@ -2669,6 +2778,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-P"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-P",
       "short": true,
       "start": {
         "line": 1,
@@ -2696,6 +2806,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-Q"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-Q",
       "short": true,
       "start": {
         "line": 1,
@@ -2718,6 +2829,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-Q"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-Q",
       "short": true,
       "start": {
         "line": 1,
@@ -2745,6 +2857,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-R"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-R",
       "short": true,
       "start": {
         "line": 1,
@@ -2767,6 +2880,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-R"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-R",
       "short": true,
       "start": {
         "line": 1,
@@ -2794,6 +2908,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-S"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-S",
       "short": true,
       "start": {
         "line": 1,
@@ -2816,6 +2931,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-S"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-S",
       "short": true,
       "start": {
         "line": 1,
@@ -2843,6 +2959,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-T"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-T",
       "short": true,
       "start": {
         "line": 1,
@@ -2865,6 +2982,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-T"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-T",
       "short": true,
       "start": {
         "line": 1,
@@ -2892,6 +3010,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-U"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-U",
       "short": true,
       "start": {
         "line": 1,
@@ -2914,6 +3033,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-U"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-U",
       "short": true,
       "start": {
         "line": 1,
@@ -2941,6 +3061,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-V"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-V",
       "short": true,
       "start": {
         "line": 1,
@@ -2963,6 +3084,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-V"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-V",
       "short": true,
       "start": {
         "line": 1,
@@ -2990,6 +3112,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-W"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-W",
       "short": true,
       "start": {
         "line": 1,
@@ -3012,6 +3135,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-W"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-W",
       "short": true,
       "start": {
         "line": 1,
@@ -3039,6 +3163,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-X"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-X",
       "short": true,
       "start": {
         "line": 1,
@@ -3061,6 +3186,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-X"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-X",
       "short": true,
       "start": {
         "line": 1,
@@ -3088,6 +3214,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-Y"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-Y",
       "short": true,
       "start": {
         "line": 1,
@@ -3110,6 +3237,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-Y"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-Y",
       "short": true,
       "start": {
         "line": 1,
@@ -3137,6 +3265,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-Z"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-Z",
       "short": true,
       "start": {
         "line": 1,
@@ -3159,6 +3288,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-Z"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-Z",
       "short": true,
       "start": {
         "line": 1,
@@ -3186,6 +3316,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-a"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-a",
       "short": true,
       "start": {
         "line": 1,
@@ -3208,6 +3339,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-a"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-a",
       "short": true,
       "start": {
         "line": 1,
@@ -3235,6 +3367,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-b"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-b",
       "short": true,
       "start": {
         "line": 1,
@@ -3257,6 +3390,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-b"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-b",
       "short": true,
       "start": {
         "line": 1,
@@ -3284,6 +3418,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-c"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-c",
       "short": true,
       "start": {
         "line": 1,
@@ -3306,6 +3441,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-c"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-c",
       "short": true,
       "start": {
         "line": 1,
@@ -3333,6 +3469,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-d"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-d",
       "short": true,
       "start": {
         "line": 1,
@@ -3355,6 +3492,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-d"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-d",
       "short": true,
       "start": {
         "line": 1,
@@ -3382,6 +3520,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-e"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-e",
       "short": true,
       "start": {
         "line": 1,
@@ -3404,6 +3543,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-e"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-e",
       "short": true,
       "start": {
         "line": 1,
@@ -3431,6 +3571,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-f"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-f",
       "short": true,
       "start": {
         "line": 1,
@@ -3453,6 +3594,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-f"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-f",
       "short": true,
       "start": {
         "line": 1,
@@ -3480,6 +3622,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-g"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-g",
       "short": true,
       "start": {
         "line": 1,
@@ -3502,6 +3645,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-g"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-g",
       "short": true,
       "start": {
         "line": 1,
@@ -3529,6 +3673,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-h"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-h",
       "short": true,
       "start": {
         "line": 1,
@@ -3551,6 +3696,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-h"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-h",
       "short": true,
       "start": {
         "line": 1,
@@ -3578,6 +3724,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-i"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-i",
       "short": true,
       "start": {
         "line": 1,
@@ -3600,6 +3747,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-i"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-i",
       "short": true,
       "start": {
         "line": 1,
@@ -3627,6 +3775,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-j"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-j",
       "short": true,
       "start": {
         "line": 1,
@@ -3649,6 +3798,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-j"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-j",
       "short": true,
       "start": {
         "line": 1,
@@ -3676,6 +3826,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-k"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-k",
       "short": true,
       "start": {
         "line": 1,
@@ -3698,6 +3849,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-k"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-k",
       "short": true,
       "start": {
         "line": 1,
@@ -3725,6 +3877,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-l"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-l",
       "short": true,
       "start": {
         "line": 1,
@@ -3747,6 +3900,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-l"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-l",
       "short": true,
       "start": {
         "line": 1,
@@ -3774,6 +3928,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-m"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-m",
       "short": true,
       "start": {
         "line": 1,
@@ -3796,6 +3951,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-m"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-m",
       "short": true,
       "start": {
         "line": 1,
@@ -3823,6 +3979,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-n"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-n",
       "short": true,
       "start": {
         "line": 1,
@@ -3845,6 +4002,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-n"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-n",
       "short": true,
       "start": {
         "line": 1,
@@ -3872,6 +4030,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-o"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-o",
       "short": true,
       "start": {
         "line": 1,
@@ -3894,6 +4053,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-o"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-o",
       "short": true,
       "start": {
         "line": 1,
@@ -3921,6 +4081,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-p"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-p",
       "short": true,
       "start": {
         "line": 1,
@@ -3943,6 +4104,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-p"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-p",
       "short": true,
       "start": {
         "line": 1,
@@ -3970,6 +4132,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-q"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-q",
       "short": true,
       "start": {
         "line": 1,
@@ -3992,6 +4155,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-q"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-q",
       "short": true,
       "start": {
         "line": 1,
@@ -4019,6 +4183,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-r"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-r",
       "short": true,
       "start": {
         "line": 1,
@@ -4041,6 +4206,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-r"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-r",
       "short": true,
       "start": {
         "line": 1,
@@ -4068,6 +4234,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-s"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-s",
       "short": true,
       "start": {
         "line": 1,
@@ -4090,6 +4257,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-s"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-s",
       "short": true,
       "start": {
         "line": 1,
@@ -4117,6 +4285,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-t"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-t",
       "short": true,
       "start": {
         "line": 1,
@@ -4139,6 +4308,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-t"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-t",
       "short": true,
       "start": {
         "line": 1,
@@ -4166,6 +4336,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-u"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-u",
       "short": true,
       "start": {
         "line": 1,
@@ -4188,6 +4359,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-u"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-u",
       "short": true,
       "start": {
         "line": 1,
@@ -4215,6 +4387,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-v"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-v",
       "short": true,
       "start": {
         "line": 1,
@@ -4237,6 +4410,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-v"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-v",
       "short": true,
       "start": {
         "line": 1,
@@ -4264,6 +4438,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-w"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-w",
       "short": true,
       "start": {
         "line": 1,
@@ -4286,6 +4461,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-w"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-w",
       "short": true,
       "start": {
         "line": 1,
@@ -4313,6 +4489,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-x"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-x",
       "short": true,
       "start": {
         "line": 1,
@@ -4335,6 +4512,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-x"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-x",
       "short": true,
       "start": {
         "line": 1,
@@ -4362,6 +4540,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-y"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-y",
       "short": true,
       "start": {
         "line": 1,
@@ -4384,6 +4563,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-y"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-y",
       "short": true,
       "start": {
         "line": 1,
@@ -4411,6 +4591,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-z"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-z",
       "short": true,
       "start": {
         "line": 1,
@@ -4433,6 +4614,7 @@ exports[`integration:constructs/initialOption > should tokenize short flag ("-z"
         "_index": 1,
         "_bufferIndex": -1,
       },
+      "serialized": "-z",
       "short": true,
       "start": {
         "line": 1,

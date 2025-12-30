@@ -16,8 +16,8 @@ bool.choices = Object.freeze(new Set([
   chars.digit0,
   chars.digit1,
   chars.false,
-  chars.lowercaseN,
   chars.true,
+  chars.lowercaseN,
   chars.lowercaseY
 ]))
 

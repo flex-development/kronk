@@ -40,11 +40,11 @@ declare module '@flex-development/fsm-tokenizer' {
     option?: Option | null | undefined
 
     /**
-     * Token value.
+     * The token value.
      *
      * @internal
      */
-    value?: string | string[] | undefined
+    value?: string | undefined
   }
 
   interface TokenFields {

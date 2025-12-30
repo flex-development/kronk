@@ -3,38 +3,33 @@
  * @module kronk/lib/tests/unit/Command
  */
 
-import chars from '#enums/chars'
-import eid from '#enums/keid'
-import CommandError from '#errors/command.error'
 import KronkError from '#errors/kronk.error'
-import average from '#fixtures/commands/average'
+import clamp from '#fixtures/commands/clamp'
+import factorial from '#fixtures/commands/factorial'
+import grease from '#fixtures/commands/grease'
+import smallestNum from '#fixtures/commands/smallest-num'
 import tribonacci from '#fixtures/commands/tribonacci'
-import date from '#fixtures/date'
-import kCommand from '#internal/k-command'
-import noop from '#internal/noop'
 import Argument from '#lib/argument'
 import TestSubject from '#lib/command'
 import Help from '#lib/help'
 import Helpable from '#lib/helpable.abstract'
 import Option from '#lib/option'
 import VersionOption from '#lib/version.option'
+import createProcess from '#tests/utils/create-process'
 import errorSnapshot from '#tests/utils/error-snapshot'
 import sfmt from '#tests/utils/sfmt'
-import isOption from '#utils/is-option'
 import { faker } from '@faker-js/faker'
 import type {
-  Action,
   CommandInfo,
-  CommandName,
   ExampleInfo,
+  ExamplesData,
   Exit,
-  HelpCommandData,
-  HelpOptionData,
+  HelpTextOptions,
   OptionPriority,
-  UsageData,
-  VersionData
+  Process,
+  UsageData
 } from '@flex-development/kronk'
-import pkg from '@flex-development/kronk/package.json' with { type: 'json' }
+import { SemVer } from 'semver'
 import type { MockInstance } from 'vitest'
 
 describe('unit:lib/Command', () => {
@@ -44,53 +39,10 @@ describe('unit:lib/Command', () => {
     })
   })
 
-  describe('.isCommand', () => {
-    it.each<Parameters<typeof TestSubject['isCommand']>>([
-      [chars.digit3],
-      [date],
-      [new Argument('[]')],
-      [new Option('--command')],
-      [null]
-    ])('should return `false` if `value` is not `Command`-like (%#)', value => {
-      expect(TestSubject.isCommand(value)).to.be.false
-    })
-
-    it.each<Parameters<typeof TestSubject['isCommand']>>([
-      [{ [kCommand]: true }],
-      [new TestSubject()]
-    ])('should return `true` if `value` looks like `Command` (%#)', value => {
-      expect(TestSubject.isCommand(value)).to.be.true
-    })
-  })
-
-  describe('#action', () => {
-    let subject: TestSubject
-
-    beforeEach(() => {
-      subject = new TestSubject()
-    })
-
-    it('should return command action callback', () => {
-      expect(subject.action()).to.eq(noop)
-    })
-
-    it('should set command action callback and return `this`', () => {
-      // Arrange
-      const action: Action = vi.fn().mockName('action')
-
-      // Act
-      const result = subject.action(action)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property('info.action', action)
-    })
-  })
-
   describe('#addArgument', () => {
     it('should throw if argument is added after variadic argument', () => {
       // Arrange
-      const subject: TestSubject = new TestSubject(average)
+      const subject: TestSubject = new TestSubject(smallestNum)
       let error!: KronkError
 
       // Act
@@ -108,29 +60,21 @@ describe('unit:lib/Command', () => {
   })
 
   describe('#addCommand', () => {
-    let alias: string
-    let cmd: string
     let subject: TestSubject
 
     beforeAll(() => {
-      alias = 'tz'
-      cmd = 'timezone'
-
-      subject = new TestSubject({ aliases: alias, name: cmd })
-
-      // @ts-expect-error testing (2445).
-      subject.info.subcommands = [
-        new TestSubject({ aliases: 'tz', name: 'timezone' })
-      ]
+      subject = new TestSubject(grease)
     })
 
-    it('should throw on `command` alias conflict', () => {
+    it('should throw on duplicate subcommand alias', () => {
       // Arrange
+      const alias: string = grease.subcommands.bump.aliases
+      const name: string = 'same-alias-as-subcommand'
       let error!: KronkError
 
       // Act
       try {
-        subject.addCommand(new TestSubject('timezones', { aliases: alias }))
+        subject.addCommand(new TestSubject(name, { aliases: alias }))
       } catch (e: unknown) {
         error = e as typeof error
       }
@@ -141,13 +85,13 @@ describe('unit:lib/Command', () => {
       expect(errorSnapshot(error)).toMatchSnapshot()
     })
 
-    it('should throw on `command` name conflict', () => {
+    it('should throw on duplicate subcommand name', () => {
       // Arrange
       let error!: KronkError
 
       // Act
       try {
-        subject.addCommand(new TestSubject(cmd))
+        subject.addCommand(new TestSubject(grease.subcommands.distTag.name))
       } catch (e: unknown) {
         error = e as typeof error
       }
@@ -158,13 +102,18 @@ describe('unit:lib/Command', () => {
       expect(errorSnapshot(error)).toMatchSnapshot()
     })
 
-    it('should throw on invalid `command` name', () => {
+    it.each<[CommandInfo?]>([
+      [],
+      [smallestNum],
+      [Object.assign({}, smallestNum, { name: 'same-alias-as-parent' })]
+    ])('should throw on invalid `command` name (%#)', info => {
       // Arrange
+      const subject: TestSubject = new TestSubject(smallestNum)
       let error!: KronkError
 
       // Act
       try {
-        subject.addCommand(new TestSubject())
+        subject.addCommand(new TestSubject(info))
       } catch (e: unknown) {
         error = e as typeof error
       }
@@ -177,18 +126,10 @@ describe('unit:lib/Command', () => {
   })
 
   describe('#addOption', () => {
-    let option: Option
     let subject: TestSubject
 
     beforeAll(() => {
-      option = new Option('-M | --max <n>')
-      subject = new TestSubject()
-
-      // @ts-expect-error testing (2445).
-      subject.info.options = new Map([
-        [option.long!, option],
-        [option.short!, option]
-      ])
+      subject = new TestSubject(clamp)
     })
 
     it('should throw on long flag conflict', () => {
@@ -197,7 +138,7 @@ describe('unit:lib/Command', () => {
 
       // Act
       try {
-        subject.addOption(new Option(`-m | ${option.long}`))
+        subject.addOption(new Option('--max <max>'))
       } catch (e: unknown) {
         error = e as typeof error
       }
@@ -214,7 +155,7 @@ describe('unit:lib/Command', () => {
 
       // Act
       try {
-        subject.addOption(new Option(`${option.short} | --min`))
+        subject.addOption(new Option('-m <m>'))
       } catch (e: unknown) {
         error = e as typeof error
       }
@@ -227,92 +168,26 @@ describe('unit:lib/Command', () => {
   })
 
   describe('#alias', () => {
-    let alias1: string
-    let alias2: string
-    let aliases: Set<string>
-
-    beforeAll(() => {
-      alias1 = 'tz'
-      alias2 = 't'
-      aliases = new Set([alias1, alias2])
-    })
-
-    it('should add command alias and return `this`', () => {
-      // Arrange
-      const subject: TestSubject = new TestSubject('timezone', {
-        aliases: alias2
-      })
-
-      // Act
-      const result = subject.alias(alias1)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property('info.aliases').be.instanceof(Set)
-      expect(result).to.have.nested.property('info.aliases').eql(aliases)
-    })
-
     it('should return `null` if command has no aliases', () => {
       expect(new TestSubject().alias()).to.be.null
     })
 
     it('should return first command alias if command has aliases', () => {
-      // Arrange
-      const subject: TestSubject = new TestSubject('timezone', { aliases })
-
-      // Act + Expect
-      expect(subject.alias()).to.eq([...aliases][0]!)
+      expect(new TestSubject(smallestNum).alias()).to.eq(smallestNum.aliases)
     })
   })
 
-  describe('#aliases', () => {
-    it('should add command aliases and return `this`', () => {
+  describe('#arguments', () => {
+    it('should be able to define arguments with strings', () => {
       // Arrange
-      const a1: string = 't'
-      const a2: string = 'tz'
-      const property: string = 'info.aliases'
-      const subject: TestSubject = new TestSubject('timezone', { aliases: a1 })
+      const subject: TestSubject = new TestSubject()
 
       // Act
-      const result = subject.aliases(a2)
+      const result = subject.arguments(sfmt.required())
 
       // Expect
       expect(result).to.eq(subject)
-      expect(result).to.have.nested.property(property).be.instanceof(Set)
-      expect(result).to.have.nested.property(property).eql(new Set([a1, a2]))
-    })
-
-    it('should return list of command aliases', () => {
-      // Act
-      const result = new TestSubject().aliases()
-
-      // Expect
-      expect(result).to.be.instanceof(Set).and.empty
-      expect(result).to.not.be.frozen
-    })
-  })
-
-  describe('#done', () => {
-    let subject: TestSubject
-
-    beforeEach(() => {
-      subject = new TestSubject()
-    })
-
-    it('should return command done callback', () => {
-      expect(subject.done()).to.eq(noop)
-    })
-
-    it('should set command done callback and return `this`', () => {
-      // Arrange
-      const done: Action = vi.fn().mockName('done')
-
-      // Act
-      const result = subject.done(done)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property('info.done', done)
+      expect(result).to.have.nested.property('info.arguments').be.of.length(1)
     })
   })
 
@@ -323,15 +198,16 @@ describe('unit:lib/Command', () => {
       subject = new TestSubject()
     })
 
-    it.each<[ExampleInfo | string, (string | null | undefined)?]>([
-      ['--to=0ea3bcf737edf29d0a0ad3dc7702f29615e16b29', 'ch'],
-      [{ text: '-s' }]
-    ])('should add example and return `this` (%#)', (info, prefix) => {
+    it.each<[ExampleInfo | readonly string[] | string]>([
+      [['bump', 'recommend']],
+      ['--to=0ea3bcf737edf29d0a0ad3dc7702f29615e16b29'],
+      [{ comment: 'write changelog to `--infile`', text: '-sw' }]
+    ])('should add example and return `this` (%#)', info => {
       // Arrange
       const property: string = 'info.examples'
 
       // Act
-      const result = subject.example(info as never, prefix)
+      const result = subject.example(info)
 
       // Expect
       expect(result).to.eq(subject)
@@ -347,19 +223,20 @@ describe('unit:lib/Command', () => {
       subject = new TestSubject()
     })
 
-    it('should add examples and return `this`', () => {
+    it.each<[ExamplesData]>([
+      ['--json'],
+      [clamp.examples],
+      [factorial.examples]
+    ])('should add examples and return `this` (%#)', examples => {
+      // Arrange
+      const subject: TestSubject = new TestSubject({ ...clamp, examples: [] })
+
       // Act
-      const result = subject.examples([
-        'bump -w 1.0.0',
-        {
-          prefix: 'ch',
-          text: '--releases=0 --to=$(jq .version package.json -r) -sw'
-        }
-      ])
+      const result = subject.examples(examples)
 
       // Expect
       expect(result).to.eq(subject)
-      expect(subject.examples()).toMatchSnapshot()
+      expect(subject.examples()).to.have.property('length').be.gte(1)
     })
 
     it('should return list of command examples', () => {
@@ -367,81 +244,82 @@ describe('unit:lib/Command', () => {
     })
   })
 
-  describe('#error', () => {
-    let exit: MockInstance<TestSubject['exit']>
-    let info: KronkError
+  describe('#exit', () => {
+    let e: KronkError
+    let exiter: MockInstance<Exit>
+    let process: Process
     let subject: TestSubject
 
-    beforeEach(() => {
-      subject = new TestSubject()
-
-      info = new CommandError({
-        code: 112,
-        command: subject,
-        id: eid.argument_after_variadic,
-        reason: 'Cannot have argument after variadic argument'
-      })
-
-      exit = vi.spyOn(subject, 'exit')
+    afterEach(() => {
+      delete process.exitCode
     })
 
-    it('should handle error object', () => {
-      // Arrange
-      let error!: KronkError
+    beforeAll(() => {
+      e = new KronkError('#exit')
+      exiter = vi.fn().mockName('exiter')
+      process = createProcess()
+    })
 
-      // Act
-      try {
-        subject.error(info)
-      } catch (e: unknown) {
-        error = e as typeof error
-      }
+    beforeEach(() => {
+      subject = new TestSubject({ exit: exiter as unknown as Exit, process })
+    })
 
-      // Expect
-      expect(error).to.eq(info)
-      expect(exit).toHaveBeenCalledExactlyOnceWith(info)
+    it('should not throw if `e` is not defined and exiter returns', () => {
+      expect(subject.exit()).to.be.undefined
+      expect(exiter).toHaveBeenCalledExactlyOnceWith(undefined)
+      expect(exiter.mock.contexts[0]).to.eq(subject)
+      expect(process).to.have.property('exitCode').be.undefined
+    })
+
+    it('should throw `e` if defined and `exiter` returns', () => {
+      expect(() => subject.exit(e)).to.throw(e)
+      expect(exiter).toHaveBeenCalledExactlyOnceWith(e)
+      expect(exiter.mock.contexts[0]).to.eq(subject)
+      expect(process).to.have.property('exitCode', e.code)
     })
   })
 
-  describe('#exiter', () => {
+  describe('#findCommand', () => {
     let subject: TestSubject
 
     beforeEach(() => {
-      subject = new TestSubject()
+      subject = new TestSubject(grease)
     })
 
-    it('should return command exit callback', () => {
-      expect(subject.exiter()).to.eq(noop)
+    it('should return `undefined` if command is not found', () => {
+      expect(subject.findCommand('release')).to.be.undefined
+    })
+  })
+
+  describe('#help', () => {
+    let prepare: MockInstance<Help['prepare']>
+    let subject: TestSubject
+
+    beforeEach(() => {
+      prepare = vi.spyOn(Help.prototype, 'prepare')
+      subject = new TestSubject(grease)
     })
 
-    it('should set command exit callback and return `this`', () => {
+    it('should prepare help text utility', () => {
       // Arrange
-      const exit: Exit = vi.fn().mockName('exit')
+      const columns: number = grease.help.columns + 70
+      const options: HelpTextOptions = { columns }
 
       // Act
-      const result = subject.exiter(exit)
+      subject.help(options)
 
       // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property('info.exit', exit)
+      expect(subject).to.have.nested.property('info.help.columns', columns)
+      expect(prepare).toHaveBeenCalledTimes(2)
+      expect(prepare).toHaveBeenCalledWith(grease.help)
+      expect(prepare).toHaveBeenLastCalledWith(options)
     })
   })
 
   describe('#helpCommand', () => {
-    it.each<[CommandInfo?]>([
-      [],
-      [{ helpCommand: false }]
-    ])('should return help subcommand (%#)', info => {
-      expect(new TestSubject(info).helpCommand()).toMatchSnapshot()
-    })
-
-    it.each<[HelpCommandData]>([
-      [false],
-      ['more'],
-      [new TestSubject('info', { action: vi.fn() })],
-      [{ description: 'show help for command', name: 'details' }]
-    ])('should set help subcommand and return `this` (%#)', help => {
+    it('should configure help subcommand with `Command` instance', () => {
       // Arrange
-      const prop: string = 'info.helpCommand'
+      const help: TestSubject = new TestSubject('help')
       const subject: TestSubject = new TestSubject()
 
       // Act
@@ -449,113 +327,48 @@ describe('unit:lib/Command', () => {
 
       // Expect
       expect(result).to.eq(subject)
+      expect(result).to.have.nested.property('info.helpCommand', help)
+    })
 
-      // Expect (conditional)
-      if (help === false) {
-        expect(result).to.have.nested.property(prop, null)
-      } else if (TestSubject.isCommand(help)) {
-        expect(result).to.have.nested.property(prop, help)
-        expect(help).to.have.nested.property('info.action.mock')
-      } else {
-        expect(result).to.have.nested.property(prop).not.eq(help)
-        expect(result).to.have.nested.property(prop).be.instanceof(TestSubject)
-      }
+    it.each<[CommandInfo?]>([
+      [],
+      [grease],
+      [{ helpCommand: false }],
+      [{ helpCommand: 'help' }]
+    ])('should return help subcommand (%#)', info => {
+      // Act
+      const result = new TestSubject(info).helpCommand()
+
+      // Expect
+      expect(result ? result.snapshot() : result).toMatchSnapshot()
     })
   })
 
   describe('#helpOption', () => {
-    it.each<[CommandInfo?]>([
-      [],
-      [{ helpOption: false }]
-    ])('should return help option (%#)', info => {
-      expect(new TestSubject(info).helpOption()).toMatchSnapshot()
-    })
-
-    it.each<[HelpOptionData]>([
-      [false],
-      ['--more'],
-      [new Option('--info')],
-      [{ description: 'show help for command', flags: '--details' }]
-    ])('should set help option and return `this` (%#)', help => {
+    it('should configure help option with `Option` instance', () => {
       // Arrange
-      const property: string = 'info.helpOption'
-      const subject: TestSubject = new TestSubject()
+      const help: Option = new Option('-h --help')
+      const subject: TestSubject = new TestSubject({ helpOption: false })
 
       // Act
       const result = subject.helpOption(help)
 
       // Expect
       expect(result).to.eq(subject)
-
-      // Expect (conditional)
-      if (help === false) {
-        expect(result).to.have.nested.property(property, null)
-      } else if (isOption(help)) {
-        expect(result).to.have.nested.property(property, help)
-      } else {
-        expect(result).to.have.nested.property(property).not.eq(help)
-        expect(result).to.have.nested.property(property).be.instanceof(Option)
-      }
-    })
-  })
-
-  describe('#helpUtility', () => {
-    it('should return help text utility', () => {
-      expect(new TestSubject().helpUtility()).to.be.instanceof(Help)
+      expect(result).to.have.nested.property('info.helpOption', help)
     })
 
-    it.each<[Help | null | undefined]>([
-      [null],
-      [undefined],
-      [new Help()]
-    ])('should set help text utility and return `this` (%#)', util => {
-      // Arrange
-      const subject: TestSubject = new TestSubject()
-      const property: string = 'info.helpUtility'
-
+    it.each<[CommandInfo?]>([
+      [],
+      [grease],
+      [{ helpOption: false }],
+      [{ helpOption: '--help' }]
+    ])('should return help option (%#)', info => {
       // Act
-      const result = subject.helpUtility(util)
+      const result = new TestSubject(info).helpOption()
 
       // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property(property).be.instanceof(Help)
-
-      // Expect (conditional)
-      if (util) {
-        expect(result).to.have.nested.property(property, util)
-      } else {
-        expect(result).to.have.nested.property(property).not.eq(util)
-      }
-    })
-  })
-
-  describe('#id', () => {
-    it.each<[CommandName | undefined]>([
-      [chars.empty],
-      [chars.space],
-      [chars.break],
-      [undefined]
-    ])('should return `null` if command does not have a name (%j)', name => {
-      expect(new TestSubject({ name }).id()).to.be.null
-    })
-
-    it.each<[string]>([
-      ['bump'],
-      ['changelog ']
-    ])('should return non-empty string if command has a name (%j)', name => {
-      expect(new TestSubject({ name }).id()).to.eq(name.trim())
-    })
-
-    it('should set command name and return `this`', () => {
-      // Arrange
-      const name: CommandName = 'grease'
-      const subject: TestSubject = new TestSubject()
-
-      // Act
-      const result = subject.id(name)
-
-      // Expect
-      expect(result).to.eq(subject).and.have.nested.property('info.name', name)
+      expect(result ? String(result) : result).toMatchSnapshot()
     })
   })
 
@@ -625,12 +438,6 @@ describe('unit:lib/Command', () => {
     })
   })
 
-  describe('#unknown', () => {
-    it('should be unknown command-line argument strategy', () => {
-      expect(new TestSubject()).to.have.property('unknown', false)
-    })
-  })
-
   describe('#unknowns', () => {
     it.each<Parameters<TestSubject['unknowns']>>([
       ['arguments'],
@@ -651,9 +458,11 @@ describe('unit:lib/Command', () => {
   })
 
   describe('#usage', () => {
-    it.each<CommandInfo>([
-      average,
-      tribonacci
+    it.each<[CommandInfo]>([
+      [clamp],
+      [factorial],
+      [grease],
+      [tribonacci]
     ])('should return command usage (%#)', info => {
       expect(new TestSubject(info).usage()).toMatchSnapshot()
     })
@@ -661,7 +470,7 @@ describe('unit:lib/Command', () => {
     it('should set command usage and return `this`', () => {
       // Arrange
       const subject: TestSubject = new TestSubject()
-      const usage: UsageData = { options: '[opts]' }
+      const usage: UsageData = { options: '[options]' }
 
       // Act
       const result = subject.usage(usage)
@@ -673,37 +482,39 @@ describe('unit:lib/Command', () => {
   })
 
   describe('#version', () => {
-    it.each<string | null>([
-      null,
-      faker.system.semver()
-    ])('should return command version (%#)', version => {
-      expect(new TestSubject().version(version).version()).to.eq(version)
-    })
-
-    it.each<[VersionData]>([
-      [pkg.version],
-      [new VersionOption(pkg.version)],
-      [{ version: pkg.version }]
-    ])('should set version option and return `this` (%#)', info => {
+    it('should configure version with `VersionOption` instance', () => {
       // Arrange
-      const prop: string = 'info.version'
+      const version: VersionOption = new VersionOption(faker.system.semver())
       const subject: TestSubject = new TestSubject()
 
       // Act
-      const result = subject.version(info)
+      const result = subject.version(version)
+
+      // Expect
+      expect(result).to.eq(subject)
+      expect(result).to.have.nested.property('info.version', version)
+    })
+
+    it('should configure version with `SemVer` instance', () => {
+      // Arrange
+      const prop: string = 'info.version'
+      const version: SemVer = new SemVer(faker.system.semver())
+      const subject: TestSubject = new TestSubject()
+
+      // Act
+      const result = subject.version(version)
 
       // Expect
       expect(result).to.eq(subject)
       expect(result).to.have.nested.property(prop).be.instanceof(VersionOption)
+      expect(result).to.have.nested.property(prop + '.version', version.version)
+    })
 
-      // Expect (conditional)
-      if (isOption(info)) {
-        expect(result).to.have.nested.property(prop, info)
-      } else if (typeof info === 'string') {
-        expect(result).to.have.nested.property(prop + '.version', info)
-      } else {
-        expect(result).to.have.nested.property(prop + '.version', info.version)
-      }
+    it.each<string | null>([
+      null,
+      faker.system.semver()
+    ])('should return command version (%#)', version => {
+      expect(new TestSubject({ version }).version()).to.eq(version)
     })
   })
 })

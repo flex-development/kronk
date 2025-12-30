@@ -45,6 +45,12 @@ describe('unit-d:interfaces/CommandMetadata', () => {
       .toEqualTypeOf<ExampleInfo[]>()
   })
 
+  it('should match [help: Help | null | undefined]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('help')
+      .toEqualTypeOf<Nilable<Help>>()
+  })
+
   it('should match [helpCommand: Command | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('helpCommand')
@@ -55,12 +61,6 @@ describe('unit-d:interfaces/CommandMetadata', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('helpOption')
       .toEqualTypeOf<Nilable<Option>>()
-  })
-
-  it('should match [helpUtility: Help]', () => {
-    expectTypeOf<TestSubject>()
-      .toHaveProperty('helpUtility')
-      .toEqualTypeOf<Help>()
   })
 
   it('should match [options: Map<string, Option>]', () => {

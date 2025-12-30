@@ -4,8 +4,8 @@
  */
 
 import chars from '#enums/chars'
-import digits from '#fixtures/digits'
 import testSubject from '#internal/or-nil'
+import digits from '#utils/digits'
 
 describe('unit:internal/orNIL', () => {
   describe('non-string value', () => {

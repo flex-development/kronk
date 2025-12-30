@@ -1,17 +1,19 @@
 /**
- * @file Fixtures - digits
- * @module fixtures/digits
+ * @file Utilities - digits
+ * @module utils/digits
  */
 
 import chars from '#enums/chars'
-import type { Numeric } from '@flex-development/tutils'
 
 /**
- * List of digits.
+ * A list of digits.
  *
- * @const {Numeric[]} digits
+ * @category
+ *  utils
+ *
+ * @const {Readonly<['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']>} digits
  */
-const digits: Numeric[] = [
+const digits = Object.freeze([
   chars.digit0,
   chars.digit1,
   chars.digit2,
@@ -22,6 +24,6 @@ const digits: Numeric[] = [
   chars.digit7,
   chars.digit8,
   chars.digit9
-]
+] as const)
 
 export default digits

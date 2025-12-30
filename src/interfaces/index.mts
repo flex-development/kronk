@@ -16,6 +16,9 @@ export type {
 export type {
   default as CommandErrorSnapshot
 } from '#interfaces/command-error.snapshot'
+export type {
+  default as CommandEventNameMap
+} from '#interfaces/command-event-name.map'
 export type { default as CommandData } from '#interfaces/command.data'
 export type { default as CommandInfo } from '#interfaces/command.info'
 export type { default as CommandMetadata } from '#interfaces/command.metadata'
@@ -56,3 +59,4 @@ export type { default as UsageInfo } from '#interfaces/usage.info'
 export type {
   default as VersionOptionInfo
 } from '#interfaces/version-option.info'
+export type { default as WriteStream } from '#interfaces/write-stream'

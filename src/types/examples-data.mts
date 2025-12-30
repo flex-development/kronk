@@ -11,6 +11,10 @@ import type { ExampleInfo, List } from '@flex-development/kronk'
  * @see {@linkcode ExampleInfo}
  * @see {@linkcode List}
  */
-type ExamplesData = ExampleInfo | List<ExampleInfo | string> | string
+type ExamplesData =
+  | ExampleInfo
+  | List<ExampleInfo | readonly string[] | string>
+  | readonly string[]
+  | string
 
 export type { ExamplesData as default }

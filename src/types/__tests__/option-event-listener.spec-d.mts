@@ -4,10 +4,10 @@
  */
 
 import type TestSubject from '#types/option-event-listener'
-import type { Option, OptionEvent } from '@flex-development/kronk'
+import type { Command, Option, OptionEvent } from '@flex-development/kronk'
 
 describe('unit-d:types/OptionEventListener', () => {
-  type T = Option & { version: string }
+  type T = Option & { parent?: Command | null }
   type Subject = TestSubject<T>
 
   describe('parameters', () => {

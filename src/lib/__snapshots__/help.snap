@@ -1,3 +1,23 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`unit:lib/Help > #text > should return help text for \`cmd\` (0) 1`] = `""`;
+exports[`unit:lib/Help > #text > should return help text for \`command\` (0) 1`] = `""`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (1) 1`] = `""`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (2) 1`] = `""`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (3) 1`] = `""`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (4) 1`] = `""`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (5) 1`] = `""`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (6) 1`] = `""`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (7) 1`] = `""`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (8) 1`] = `""`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (9) 1`] = `""`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (10) 1`] = `""`;

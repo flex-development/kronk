@@ -4,7 +4,11 @@
  */
 
 import type TestSubject from '#interfaces/command.snapshot'
-import type { CommandName, OptionValues } from '@flex-development/kronk'
+import type {
+  CommandName,
+  OptionValues,
+  UsageInfo
+} from '@flex-development/kronk'
 
 describe('unit-d:interfaces/CommandSnapshot', () => {
   it('should match [ancestors: CommandName[]]', () => {
@@ -37,5 +41,11 @@ describe('unit-d:interfaces/CommandSnapshot', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('optsWithGlobals')
       .toEqualTypeOf<OptionValues>()
+  })
+
+  it('should match [usage: UsageInfo]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('usage')
+      .toEqualTypeOf<UsageInfo>()
   })
 })

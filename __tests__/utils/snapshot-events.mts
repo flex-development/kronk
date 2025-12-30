@@ -3,7 +3,12 @@
  * @module tests/utils/snapshotEvents
  */
 
-import type { Event, EventType, Token } from '@flex-development/fsm-tokenizer'
+import type {
+  Event,
+  EventType,
+  Token,
+  TokenizeContext
+} from '@flex-development/fsm-tokenizer'
 import { ksort, shake } from '@flex-development/tutils'
 
 /**
@@ -17,10 +22,17 @@ import { ksort, shake } from '@flex-development/tutils'
  *  List of event types and tokens
  */
 function snapshotEvents(this: void, events: Event[]): [EventType, Token][] {
-  return events.map(event => [
+  /**
+   * The tokenize context.
+   *
+   * @var {TokenizeContext} context
+   */
+  let context: TokenizeContext
+
+  return events.map(event => (context = event[2], [
     event[0],
     Object.defineProperties(event[1], { toJSON: { value: toJSON } })
-  ])
+  ]))
 
   /**
    * @this {Token}
@@ -42,6 +54,7 @@ function snapshotEvents(this: void, events: Event[]): [EventType, Token][] {
       option: this.option ? String(this.option) : this.option,
       previous: this.previous ? toJSON.call(this.previous) : undefined,
       required: this.required,
+      serialized: context.sliceSerialize(this),
       short: this.short,
       start: this.start,
       type: this.type,

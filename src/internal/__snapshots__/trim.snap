@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`unit:internal/trim > should return non-empty trimmed string (" a") 1`] = `"a"`;
+
+exports[`unit:internal/trim > should return non-empty trimmed string ("\\ta") 1`] = `"a"`;
+
+exports[`unit:internal/trim > should return non-empty trimmed string ("a\\n") 1`] = `"a"`;

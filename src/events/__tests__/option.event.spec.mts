@@ -7,6 +7,7 @@ import optionValueSource from '#enums/option-value-source'
 import KronkEvent from '#events/kronk.event'
 import TestSubject from '#events/option.event'
 import Option from '#lib/option'
+import isOptionEvent from '#utils/is-option-event'
 import type {
   Flags,
   OptionValueSource,
@@ -35,6 +36,10 @@ describe('unit:events/OptionEvent', () => {
   describe('constructor', () => {
     it('should be instanceof `KronkEvent`', () => {
       expect(subject).to.be.instanceof(KronkEvent)
+    })
+
+    it('should pass event guard', () => {
+      expect(subject).to.satisfy(isOptionEvent)
     })
 
     it('should set #flag', () => {

@@ -33,9 +33,9 @@ describe('unit-d:interfaces/ParseableInfo', () => {
       .toEqualTypeOf<Nilable<DefaultInfo>>()
   })
 
-  it('should match [parser?: ParseArg<any, string> | ParseArg<any, string[]> | null | undefined]', () => {
+  it('should match [parser?: ParseArg | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('parser')
-      .toEqualTypeOf<Nilable<ParseArg<any, string> | ParseArg<any, string[]>>>()
+      .toEqualTypeOf<Nilable<ParseArg>>()
   })
 })

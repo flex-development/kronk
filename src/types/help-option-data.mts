@@ -3,7 +3,12 @@
  * @module kronk/types/HelpOptionData
  */
 
-import type { Flags, Option, OptionInfo } from '@flex-development/kronk'
+import type {
+  Flags,
+  Option,
+  OptionData,
+  OptionInfo
+} from '@flex-development/kronk'
 
 /**
  * Union of types used to configure the command help option.
@@ -14,7 +19,8 @@ import type { Flags, Option, OptionInfo } from '@flex-development/kronk'
  * @see {@linkcode Flags}
  * @see {@linkcode Option}
  * @see {@linkcode OptionInfo}
+ * @see {@linkcode OptionData}
  */
-type HelpOptionData = Flags | Option | OptionInfo | false
+type HelpOptionData = Flags | Option | OptionInfo | OptionData | boolean
 
 export type { HelpOptionData as default }

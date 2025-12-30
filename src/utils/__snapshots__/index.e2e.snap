@@ -2,12 +2,15 @@
 
 exports[`e2e:utils > should expose public api 1`] = `
 [
+  "digits",
   "isArgument",
+  "isCommand",
   "isCommandError",
+  "isCommandEvent",
   "isKronkError",
   "isKronkEvent",
   "isOption",
-  "isRawParseValue",
+  "isOptionEvent",
   "isSubcommandInfo",
 ]
 `;

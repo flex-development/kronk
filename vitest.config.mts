@@ -112,12 +112,14 @@ function config(this: void, env: ConfigEnv): ViteUserConfig {
           // required to apply custom conditions to external deps.
           inline: [
             '@flex-development/fsm-tokenizer',
-            '@flex-development/log',
             'devlop'
           ]
         }
       },
-      setupFiles: ['./__tests__/setup/chai.mts'],
+      setupFiles: [
+        './__tests__/setup/before-each.mts',
+        './__tests__/setup/chai.mts'
+      ],
       snapshotFormat: {
         callToJSON: true,
         min: false,

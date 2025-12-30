@@ -3,34 +3,41 @@
  * @module kronk/utils/tests/unit/isCommandError
  */
 
-import keid from '#enums/keid'
-import CommandError from '#errors/command.error'
-import KronkError from '#errors/kronk.error'
+import chars from '#enums/chars'
 import date from '#fixtures/date'
+import kCommand from '#internal/k-command'
 import kCommandError from '#internal/k-command-error'
+import kCommandEvent from '#internal/k-command-event'
 import kKronkError from '#internal/k-kronk-error'
+import kKronkEvent from '#internal/k-kronk-event'
+import kOption from '#internal/k-option'
+import kOptionEvent from '#internal/k-option-event'
 import testSubject from '#utils/is-command-error'
+import { codes } from '@flex-development/fsm-tokenizer'
 
 describe('unit:utils/isCommandError', () => {
   it.each<Parameters<typeof testSubject>>([
-    [26],
+    [[]],
+    [codes.eof],
+    [chars.delimiter],
     [date],
-    [new Error('not a command error')],
-    [new KronkError('kronk error, not a command error')],
-    [null]
+    [{ [kCommand]: true }],
+    [{ [kCommandEvent]: true }],
+    [{ [kKronkEvent]: true }],
+    [{ [kOption]: true }],
+    [{ [kOptionEvent]: true }]
   ])('should return `false` if `value` is not `CommandError`-like (%#)', v => {
     expect(testSubject(v)).to.be.false
   })
 
-  it.each<Parameters<typeof testSubject>>([
-    [
-      Object.defineProperties(new Error(), {
-        [kCommandError]: { value: true },
-        [kKronkError]: { value: true }
-      })
-    ],
-    [new CommandError({ id: keid.error, reason: import.meta.url })]
-  ])('should return `true` if `value` looks like `CommandError` (%#)', v => {
-    expect(testSubject(v)).to.be.true
+  it('should return `true` if `value` looks like `CommandError`', () => {
+    // Arrange
+    const value: unknown = Object.defineProperties(new Error(), {
+      [kCommandError]: { value: true },
+      [kKronkError]: { value: true }
+    })
+
+    // Act + Expect
+    expect(testSubject(value)).to.be.true
   })
 })

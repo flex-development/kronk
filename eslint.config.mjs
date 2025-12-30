@@ -10,8 +10,9 @@ import fldv from '@flex-development/eslint-config'
  * eslint configuration.
  *
  * @type {import('eslint').Linter.Config[]}
+ * @const config
  */
-export default [
+const config = [
   ...fldv.configs.node,
   {
     files: ['**/*.spec.mts'],
@@ -32,7 +33,7 @@ export default [
     }
   },
   {
-    files: ['src/constructs/*.mts'],
+    files: ['src/constructs/*.mts', 'src/lib/command.mts'],
     rules: {
       'unicorn/no-this-assignment': 0
     }
@@ -44,9 +45,17 @@ export default [
     }
   },
   {
+    files: ['src/lib/command.mts'],
+    rules: {
+      '@typescript-eslint/no-this-alias': 0
+    }
+  },
+  {
     files: ['src/interfaces/argument.info.mts'],
     rules: {
       '@typescript-eslint/no-redundant-type-constituents': 0
     }
   }
 ]
+
+export default config

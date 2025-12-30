@@ -3,8 +3,12 @@
  * @module kronk/interfaces/Process
  */
 
-import type { ExitCode, ExitProcess, ProcessEnv } from '@flex-development/kronk'
-import type { WriteStream } from '@flex-development/log'
+import type {
+  ExitCode,
+  ExitProcess,
+  ProcessEnv,
+  WriteStream
+} from '@flex-development/kronk'
 
 /**
  * Information about the current process.

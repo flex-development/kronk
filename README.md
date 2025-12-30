@@ -50,18 +50,18 @@
     - [`Command#done([done])`](#commanddonedone)
     - [`Command#emit(event)`](#commandemitevent)
     - [`Command#emitOption(option, value, source[, flags])`](#commandemitoptionoption-value-source-flag)
-    - [`Command#example(info[, prefix])`](#commandexampleinfo-prefix)
-    - [`Command#examples([examples])`](#commandexamplesexamples)
     - [`Command#error(info)`](#commanderrorinfo)
+    - [`Command#event`](#commandevent)
+    - [`Command#example(info)`](#commandexampleinfo)
+    - [`Command#examples([examples])`](#commandexamplesexamples)
     - [`Command#exit([e])`](#commandexite)
     - [`Command#exiter([exit])`](#commandexiterexit)
     - [`Command#findCommand(ref)`](#commandfindcommandref)
     - [`Command#findOption(flag[, direction])`](#commandfindoptionflag-direction)
+    - [`Command#help([help])`](#commandhelphelp)
     - [`Command#helpCommand([help])`](#commandhelpcommandhelp)
     - [`Command#helpOption([help])`](#commandhelpoptionhelp)
-    - [`Command#helpUtility([util])`](#commandhelputilityutil)
     - [`Command#id([name])`](#commandidname)
-    - [`Command#logger`](#commandlogger)
     - [`Command#on<T>(event, listener[, options])`](#commandontevent-listener-options)
     - [`Command#option(info[, data])`](#commandoptioninfo-data)
     - [`Command#optionPriority([priority])`](#commandoptionprioritypriority)
@@ -81,6 +81,9 @@
     - [`Command#unknowns([strategy])`](#commandunknownsstrategy)
     - [`Command#usage([usage])`](#commandusageusage)
     - [`Command#version([version])`](#commandversionversion)
+  - [`CommandEvent<T>(command)`](#commandeventtcommand)
+    - [`CommandEvent#command`](#commandeventcommand)
+    - [`CommandEvent#id`](#commandeventid)
   - [`CommandError(info)`](#commanderrorinfo-1)
     - [`CommandError#command`](#commanderrorcommand)
     - [`CommandError#snapshot()`](#commanderrorsnapshot)
@@ -135,7 +138,7 @@
   - [`keid`](#keid)
   - [`optionValueSource`](#optionvaluesource)
 - [Types](#types)
-  - [`Action`](#action)
+  - [`Action<[Opts][, Args]>`](#actionopts-args)
   - [`ArgumentData`](#argumentdata)
   - [`ArgumentInfo`](#argumentinfo-1)
   - [`ArgumentMetadata`](#argumentmetadata)
@@ -144,15 +147,19 @@
   - [`ArgumentsData`](#argumentsdata)
   - [`ArgvSourceMap`](#argvsourcemap)
   - [`ArgvSource`](#argvsource)
-  - [`Awaitable`](#awaitable)
+  - [`Awaitable<[T]>`](#awaitablet)
   - [`CommandData`](#commanddata)
   - [`CommandErrorInfo`](#commanderrorinfo-2)
   - [`CommandErrorSnapshot`](#commanderrorsnapshot-1)
+  - [`CommandEventNameMap`](#commandeventnamemap)
+  - [`CommandEventName`](#commandeventname)
+  - [`CommandEventListener<[T]>`](#commandeventlistenert)
   - [`CommandInfo`](#commandinfo-1)
   - [`CommandMetadata`](#commandmetadata)
   - [`CommandName`](#commandname)
   - [`CommandSnapshot`](#commandsnapshot-1)
   - [`DefaultInfo`](#defaultinfo)
+  - [`EmptyObject`](#emptyobject)
   - [`EmptyString`](#emptystring)
   - [`ExampleInfo`](#exampleinfo)
   - [`ExamplesData`](#examplesdata)
@@ -169,11 +176,12 @@
   - [`KronkErrorInfo`](#kronkerrorinfo-1)
   - [`KronkErrorJson`](#kronkerrorjson)
   - [`KronkErrorMap`](#kronkerrormap)
-  - [`KronkEventListener`](#kronkeventlistener)
+  - [`KronkEventListener<[T]>`](#kronkeventlistenert)
   - [`KronkEventNameMap`](#kronkeventnamemap)
   - [`List`](#list)
+  - [`Numeric`](#numeric)
   - [`OptionData`](#optiondata)
-  - [`OptionEventListener`](#optioneventlistener)
+  - [`OptionEventListener<[T]>`](#optioneventlistenert)
   - [`OptionEventNameMap`](#optioneventnamemap)
   - [`OptionEventName`](#optioneventname)
   - [`OptionInfo`](#optioninfo-1)
@@ -182,8 +190,9 @@
   - [`OptionValueSourceMap`](#optionvaluesourcemap)
   - [`OptionValueSource`](#optionvaluesource-1)
   - [`OptionValueSources`](#optionvaluesources)
+  - [`OptionValues<[T]>`](#optionvaluest)
   - [`OptionsData`](#optionsdata)
-  - [`ParseArg`](#parsearg)
+  - [`ParseArg<[T]>`](#parseargt)
   - [`ParseOptions`](#parseoptions)
   - [`ParseUnknownResult`](#parseunknownresult)
   - [`ParseableInfo`](#parseableinfo-1)
@@ -191,7 +200,6 @@
   - [`ProcessEnv`](#processenv)
   - [`Process`](#process)
   - [`RawOptionValue`](#rawoptionvalue)
-  - [`RawParseValue`](#rawparsevalue)
   - [`SubcommandInfo`](#subcommandinfo)
   - [`SubcommandsData`](#subcommandsdata)
   - [`SubcommandsInfo`](#subcommandsinfo)
@@ -201,6 +209,8 @@
   - [`VersionData`](#versiondata)
   - [`VersionOptionInfo`](#versionoptioninfo-1)
   - [`Version`](#version)
+  - [`WriteStream`](#writestream)
+  - [`Write`](#write)
 - [Contribute](#contribute)
 
 ![run-the-command-kronk](./run-the-command-kronk.jpg)
@@ -373,19 +383,19 @@ Get or set the command action callback.
 
 ##### Type Parameters
 
-- `Opts` ([`OptionValues`](#optionvalues), optional)
+- `Opts` ([`OptionValues`](#optionvaluest), optional)
   — parsed command options
 - `Args` (`any[]`, optional)
   — parsed command arguments
 
 ##### Parameters
 
-- `action` ([`Action<any>`](#action) | `null` | `undefined`)
+- `action` ([`Action<any>`](#actionopts-args) | `null` | `undefined`)
   — the callback to fire when the command is ran
 
 ##### Returns
 
-([`Action<Opts, Args>`](#action) | [`this`](#commandinfo)) The command action callback or `this` command
+([`Action<Opts, Args>`](#actionopts-args) | [`this`](#commandinfo)) The command action callback or `this` command
 
 #### `Command#addArgument(argument)`
 
@@ -678,19 +688,19 @@ Get or set the command done callback.
 
 ##### Type Parameters
 
-- `Opts` ([`OptionValues`](#optionvalues), optional)
+- `Opts` ([`OptionValues`](#optionvaluest), optional)
   — parsed command options with globals
 - `Args` (`any[]`, optional)
   — parsed command arguments
 
 ##### Parameters
 
-- `done` ([`Action<any>`](#action) | `null` | `undefined`)
+- `done` ([`Action<any>`](#actionopts-args) | `null` | `undefined`)
   — the callback to fire after the command is ran
 
 ##### Returns
 
-([`Action<Opts, Args>`](#action) | [`this`](#commandinfo)) The command done callback or `this` command
+([`Action<Opts, Args>`](#actionopts-args) | [`this`](#commandinfo)) The command done callback or `this` command
 
 #### `Command#emit(event)`
 
@@ -737,23 +747,22 @@ Display an error message and exit.
 
 (`never`) Never, exits erroneously
 
-#### `Command#example(info[, prefix])`
+#### `Command#event`
+
+[`CommandEventName`](#commandeventname)
+
+The event name for the command.
+
+#### `Command#example(info)`
 
 Add an example for the command.
 
 > 👉 **Note**: This method can be called more than once to add multiple examples.
 
-##### Overloads
-
-- `example(info: ExampleInfo | string): this`
-- `example(info: string, prefix?: string | null | undefined): this`
-
 ##### Parameters
 
 - `info` ([`ExampleInfo`](#exampleinfo) | `string`)
-  — example info or text
-- `prefix` (`string` | `null` | `undefined`)
-  — the example text prefix
+  — the example info or text
 
 ##### Returns
 
@@ -851,6 +860,30 @@ default. Set `direction` to `0` to only search for options known to the current 
 
 ([`Option`](#optioninfo) | `undefined`) Option with the long or short flag `flag`
 
+#### `Command#help([help])`
+
+Get the help text utility, configure the help text, or print the help text.
+
+##### Overloads
+
+- `help(help: Help | HelpTextOptions | null | undefined): this`
+- `help(help: true): undefined`
+- `help<T extends Help>(): T`
+
+##### Type Parameters
+
+- `T` ([`Help`](#helpoptions))
+  — help text utility instance
+
+##### Parameters
+
+- `help` ([`Help`](#helpoptions) | [`HelpTextOptions`](#helptextoptions) | `true` | `null`| `undefined`)
+  — the help text utility, options for formatting help text, or `true` to print the help text
+
+##### Returns
+
+(`T` | [`this`](#commandinfo) | `undefined`) Help text utility, `this` command, or nothing
+
 #### `Command#helpCommand([help])`
 
 Get or configure the help subcommand.
@@ -863,7 +896,7 @@ Get or configure the help subcommand.
 ##### Type Parameters
 
 - `T` ([`Command`](#commandinfo))
-  — help subcommand instance
+  — the help subcommand instance
 
 ##### Parameters
 
@@ -887,7 +920,7 @@ Get or configure the help option.
 ##### Type Parameters
 
 - `T` ([`Option`](#optioninfo))
-  — help option instance
+  — the help option instance
 
 ##### Parameters
 
@@ -898,29 +931,6 @@ Get or configure the help option.
 ##### Returns
 
 (`T` | [`this`](#commandinfo) | `null`) Help option or `this` command
-
-#### `Command#helpUtility([util])`
-
-Get or set the help text utility.
-
-##### Overloads
-
-- `helpUtility(util: Help | null | undefined): this`
-- `helpUtility<T extends Help>(): T`
-
-##### Type Parameters
-
-- `T` ([`Help`](#helpoptions))
-  — help text utility instance
-
-##### Parameters
-
-- `util` ([`Help`](#helpoptions) | `null`| `undefined`)
-  — the help text utility
-
-##### Returns
-
-(`T` | [`this`](#commandinfo)) Help text utility or `this` command
 
 #### `Command#id([name])`
 
@@ -940,12 +950,6 @@ Get or set the name of the command.
 
 ([`CommandName`](#commandname) | [`this`](#commandinfo)) The name of `this` command or `this` command
 
-#### `Command#logger`
-
-[`Logger`][logger]
-
-Logger instance.
-
 #### `Command#on<T>(event, listener[, options])`
 
 Register an `event` listener.
@@ -959,7 +963,7 @@ Register an `event` listener.
 
 - `event` ([`T['id']`](#kronkeventid-1))
   — the name of the event being listened for
-- `listener` ([`KronkEventListener<T>`](#kronkeventlistener))
+- `listener` ([`KronkEventListener<T>`](#kronkeventlistenert))
   — the event listener
 - `options` ([`OnOptions`][onoptions], optional)
   — event listening options
@@ -1078,7 +1082,7 @@ Get a record of local option values.
 
 ##### Type Parameters
 
-- `T` ([`OptionValues`](#optionvalues))
+- `T` ([`OptionValues`](#optionvaluest))
   — local option values type
 
 ##### Returns
@@ -1094,7 +1098,7 @@ Get a record of global and local option values.
 
 ##### Type Parameters
 
-- `T` ([`OptionValues`](#optionvalues))
+- `T` ([`OptionValues`](#optionvaluest))
   — merged option values type
 
 ##### Returns
@@ -1225,7 +1229,7 @@ Get or set the command usage description.
 Get or set the command version.
 
 > 👉 **Note**: When setting the command version, this method auto-registers
-> the version option with the flags `-v | --version`.
+> the version option with the flags `-v, --version`.
 > No cleanup is performed when this method
 > is called with different flags (i.e. `info` as a string or `info.flags`).
 
@@ -1247,6 +1251,41 @@ Get or set the command version.
 ##### Returns
 
 (`T` | [`this`](#commandinfo) | `null`) Command version or `this` command
+
+### `CommandEvent<T>(command)`
+
+A parsed command event (`class`).
+
+#### Extends
+
+- [`KronkEvent`](#kronkeventid)
+
+#### Signatures
+
+- `constructor(option: T, value: RawOptionValue, source: OptionValueSource, flag?: Flags | null | undefined)`
+- `constructor(option: T, value: unknown, source: optionValueSource.implied, flag?: Flags | null | undefined)`
+
+##### Type Parameters
+
+- `T` ([`Command`](#commandinfo), optional)
+  — The command instance
+
+##### Parameters
+
+- `command` (`T`)
+  — the command instance representing the parsed command
+
+#### `CommandEvent#command`
+
+[`Command`](#commandinfo)
+
+The [command](#commandinfo) instance representing the parsed command.
+
+#### `CommandEvent#id`
+
+[`Command['event']`](#commandevent)
+
+The command event name.
 
 ### `CommandError(info)`
 
@@ -1531,12 +1570,12 @@ that are strings and string arrays.
 
 ##### Type Parameters
 
-- `T` ([`OptionValues`](#optionvalues))
+- `T` ([`OptionValues`](#optionvaluest))
   — implied option values
 
 ##### Parameters
 
-- `implies` ([`OptionValues`](#optionvalues) | `string` | `null` | `undefined`)
+- `implies` ([`OptionValues`](#optionvaluest) | `string` | `null` | `undefined`)
   — the key of an implied option, or a map where each key is an implied option key and each value is the value to use
   when the option is set but the implied option is not
 
@@ -1645,12 +1684,12 @@ A parsed option event (`class`).
 ##### Type Parameters
 
 - `T` ([`Option`](#optioninfo), optional)
-  — Parsed command option
+  — The option instance
 
 ##### Parameters
 
 - `option` (`T`)
-  — the command option instance
+  — the option instance representing the parsed option
 - `value` ([`RawOptionValue`](#rawoptionvalue))
   — the `option` value
 - `source` ([`OptionValueSource`](#optionvaluesource-1))
@@ -1674,7 +1713,7 @@ The option event name.
 
 `T`
 
-The command [`option`](#optioninfo) instance.
+The [option](#optioninfo) instance representing the parsed option.
 
 #### `OptionEvent#source`
 
@@ -1758,24 +1797,22 @@ Get or set the handler used to parse candidate-arguments.
 
 ##### Overloads
 
-- `parser(parser: ParseArg<any, any> | null | undefined): this`
-- `parser<T, Value extends RawParseValue = RawParseValue>(): ParseArg<T, Value>`
+- `parser(parser: ParseArg | null | undefined): this`
+- `parser<T>(): ParseArg<T>`
 
 ##### Type Parameters
 
 - `T` (`any`)
-  — parse result
-- `Value` ([`RawParseValue`](#rawparsevalue), optional)
-  — the argument or arguments to parse
+  — the result of the parse
 
 ##### Parameters
 
-- `parser` ([`ParseArg<any, any>`](#parsearg) | `null` | `undefined`)
+- `parser` ([`ParseArg`](#parseargt) | `null` | `undefined`)
   — the candidate-argument parser
 
 ##### Returns
 
-([`ParseArg<T, Value>`](#parsearg) | [`this`](#parseableinfo)) The candidate-argument parser or `this` candidate
+([`ParseArg<T, Value>`](#parseargt) | [`this`](#parseableinfo)) The candidate-argument parser or `this` candidate
 
 #### `Parseable#required`
 
@@ -1861,7 +1898,7 @@ const enum optionValueSource {
 
 This package is fully typed with [TypeScript][].
 
-### `Action`
+### `Action<[Opts][, Args]>`
 
 The callback to fire when a command is executed (TypeScript type).
 
@@ -1878,7 +1915,7 @@ type Action<
 
 #### Type Parameters
 
-- `Opts` ([`OptionValues`](#optionvalues), optional)
+- `Opts` ([`OptionValues`](#optionvaluest), optional)
   — command options
 - `Args` (`any[]`, optional)
   — command arguments
@@ -1894,7 +1931,7 @@ type Action<
 
 #### Returns
 
-([`Awaitable<null | undefined | void>`](#awaitable)) Nothing
+([`Awaitable<null | undefined | void>`](#awaitablet)) Nothing
 
 ### `ArgumentData`
 
@@ -2004,7 +2041,7 @@ They will be added to this union automatically.
 type ArgvSource = ArgvSourceMap[keyof ArgvSourceMap]
 ```
 
-### `Awaitable`
+### `Awaitable<[T]>`
 
 Create a union of `T` and `T` as a promise (TypeScript type).
 
@@ -2027,7 +2064,7 @@ Data transfer object for commands (TypeScript interface).
 
 #### Properties
 
-- `action?` ([`Action<any>`](#action), optional)
+- `action?` ([`Action<any>`](#actionopts-args), optional)
   — callback to fire when the command is executed
 - `aliases?` ([`List<string>`](#list) | `string`, optional)
   — aliases for the command
@@ -2035,20 +2072,21 @@ Data transfer object for commands (TypeScript interface).
   — arguments for the command
 - `default?` (`boolean`, optional)
   — whether this is the default command
-- `done?` ([`Action<any>`](#action), optional)
+- `done?` ([`Action<any>`](#actionopts-args), optional)
   — callback to fire after the command `action` is executed
 - `exit?` ([`Exit`](#exit), optional)
   — callback to fire when the process is exited
+- `help?` ([`Help`](#helpoptions) | [`HelpTextOptions`](#helptextoptions), optional)
+  — options for formatting help text, or the utility to use when generating help text
 - `helpCommand?` ([`HelpCommandData`](#helpcommanddata), optional)
   — customize the help subcommand, or disable it (`false`)
-  > 👉 **Note**: to configure the help subcommand for `helpCommand`, a [`Command`](#commandinfo) instance must be used.
-  > `helpCommand.helpCommand` is set to `false` when `helpCommand` is not a `Command`.
+  > 👉 **Note**: to configure the help command or option (i.e. `help help`, `help --help`) for `helpCommand`,
+  > a [`Command`](#commandinfo) instance must be used.
+  > both `helpCommand.helpCommand` and `helpCommand.helpOption` are set to `false` when `helpCommand` is not a `Command`
   - default: `{ description: 'show help', name: 'help' }`
 - `helpOption?` ([`HelpOptionData`](#helpoptiondata), optional)
   — customize the help option, or disable it (`false`)
-  - default: `{ description: 'show help', flags: '-h | --help' }`
-- `helpUtility?` ([`Help`](#helpoptions), optional)
-  — the help text utility to use when generating help text
+  - default: `{ description: 'show help', flags: '-h, --help' }`
   - default: `new Help()`
 - `optionPriority?` ([`OptionPriority`](#optionpriority), optional)
   — the strategy to use when merging global and local options
@@ -2098,6 +2136,59 @@ Command error overview (TypeScript interface).
 - `command` ([`CommandSnapshot`](#commandsnapshot) | `null`)
   — an overview of the failed command
 
+### `CommandEventNameMap`
+
+Registry of command event names (TypeScript interface).
+
+```ts
+interface CommandEventNameMap {/* see code */}
+```
+
+When developing extensions that use additional events, augment `CommandEventNameMap` to register custom event names:
+
+```ts
+declare module '@flex-development/kronk' {
+  interface CommandEventNameMap {
+    custom: `command.${string}`
+  }
+}
+```
+
+### `CommandEventName`
+
+Union of registered command event names (TypeScript type).
+
+To register custom event names, augment [`CommandEventNameMap`](#commandeventnamemap).
+They will be added to this union automatically.
+
+```ts
+type CommandEventName = CommandEventNameMap[keyof CommandEventNameMap]
+```
+
+### `CommandEventListener<[T]>`
+
+Handle a parsed command `event` (TypeScript type).
+
+```ts
+type CommandEventListener<T extends Command = Command> = (
+  event: CommandEvent<T>
+) => undefined
+```
+
+#### Type Parameters
+
+- `T` ([`Command`](#commandinfo), optional)
+  — the parsed command
+
+#### Parameters
+
+- `event` ([`CommandEvent<T>`](#commandeventtcommand))
+  — the emitted parsed command event
+
+#### Returns
+
+(`undefined`) Nothing
+
 ### `CommandInfo`
 
 Data used to create commands (TypeScript interface).
@@ -2127,12 +2218,12 @@ Command metadata (TypeScript interface).
   — list of command arguments
 - `examples` ([`ExampleInfo[]`](#exampleinfo))
   — list of command examples
+- `help` ([`Help`](#helpoptions))
+  — the help text utility to use when generating help text
 - `helpCommand` ([`Command`](#commandinfo) | `null` | `undefined`)
   — the help subcommand
 - `helpOption` ([`Option`](#optioninfo) | `null` | `undefined`)
   — the help option
-- `helpUtility` ([`Help`](#helpoptions))
-  — the help text utility to use when generating help text
 - `options` ([`Map<string, Option>`](#optioninfo))
   — map, where each key is a long or short flag and each value is the command option instance registered for that flag
 - `parent?` (`null` | `undefined`)
@@ -2169,10 +2260,12 @@ Object representing a command overview (TypeScript interface).
   — the name of the command
 - `optionValueSources` ([`OptionValueSources`](#optionvaluesources))
   — record, where each key is an option key and each value is the source of the parsed option value
-- `opts` ([`OptionValues`](#optionvalues))
+- `opts` ([`OptionValues`](#optionvaluest))
   — parsed command options
-- `optsWithGlobals` ([`OptionValues`](#optionvalues))
+- `optsWithGlobals` ([`OptionValues`](#optionvaluest))
   — parsed command options (with globals)
+- `usage` ([`UsageInfo`](#usageinfo))
+  — the command usage info
 
 ### `DefaultInfo`
 
@@ -2185,11 +2278,19 @@ Data used to configure the default value of a command argument or option (TypeSc
 
 #### Properties
 
-- `description?` (`URL | string`, optional)
-  — description of the default value
+- `description?` (`URL` | `string`, optional)
+  — a description of the default value
 - `value?` (`T`, optional)
   — the default value
   - default: `undefined`
+
+### `EmptyObject`
+
+An empty object (TypeScript type).
+
+```ts
+type EmptyObject = { [tag]?: never }
+```
 
 ### `EmptyString`
 
@@ -2205,8 +2306,12 @@ Command example info (TypeScript interface).
 
 #### Properties
 
-- `prefix?` (`string`, optional)
-  — the example text prefix
+- `command?` ([`CommandName`](#commandname) | `false`, optional)
+  — the command name to use, with `false` used to omit the command name
+- `comment?` (`string`, optional)
+  — a comment to append to the example text
+- `env?` (`string`, optional)
+  — environment variable usage, to be prepended to the example text
 - `text` (`string`)
   — the example text
 
@@ -2215,7 +2320,11 @@ Command example info (TypeScript interface).
 Union of types used to configure command examples (TypeScript type).
 
 ```ts
-type ExamplesData = ExampleInfo | List<ExampleInfo | string> | string
+type ExamplesData =
+  | ExampleInfo
+  | List<ExampleInfo | readonly string[] | string>
+  | readonly string[]
+  | string
 ```
 
 ### `ExitCode`
@@ -2304,7 +2413,12 @@ a [`Command`](#commandinfo) instance, [subcommand info object](#subcommandinfo),
 It can also be disabled (`false`).
 
 ```ts
-type HelpCommandData = Command | SubcommandInfo | string | false
+type HelpCommandData =
+  | Command
+  | CommandInfo
+  | SubcommandInfo
+  | boolean
+  | string
 ```
 
 ### `HelpOptionData`
@@ -2316,7 +2430,7 @@ an [`Option`](#optioninfo) instance, [flags](#flags), or an [info object](#optio
 It can also be disabled (`false`).
 
 ```ts
-type HelpOptionData = Flags | Option | OptionInfo | false
+type HelpOptionData = Flags | Option | OptionInfo | OptionData | boolean
 ```
 
 ### `HelpTextOptions`
@@ -2331,7 +2445,13 @@ Options for formating help text (TypeScript interface).
 
 - `columns?` (`number`, optional)
   — the maximum number of columns to output
-  - default: `80`
+  - default: `110`
+- `exampleMarker?` (`string` | `null` | `undefined`, optional)
+  — the example marker to use
+  - default: `'$'`
+- `globalOptions?` (`boolean` | `null` | `undefined`, optional)
+  — whether to show global options
+  - default: `true`
 
 ### `HelpableInfo`
 
@@ -2429,7 +2549,7 @@ declare module '@flex-development/kronk' {
 }
 ```
 
-### `KronkEventListener`
+### `KronkEventListener<[T]>`
 
 Handle an `event` (TypeScript type).
 
@@ -2466,7 +2586,7 @@ When developing extensions that use additional events, augment `KronkEventNameMa
 ```ts
 declare module '@flex-development/kronk' {
   interface KronkEventNameMap {
-    custom: 'command:custom'
+    custom: 'kronk:custom'
   }
 }
 ```
@@ -2495,6 +2615,14 @@ A list (TypeScript type).
 type List<T = unknown> = ReadonlySet<T> | readonly T[]
 ```
 
+### `Numeric`
+
+A string that can be parsed to a valid number (TypeScript type).
+
+```ts
+type Numeric = `${number}`
+```
+
 ### `OptionData`
 
 Data transfer object for command options (TypeScript interface).
@@ -2510,7 +2638,7 @@ Data transfer object for command options (TypeScript interface).
   an error will be displayed if conflicting options are found during parsing
 - `env?` ([`List<string>`](#list) | `string`, optional)
   — the name of the environment variable to check for option value, or a list of names, in order of priority, to check
-- `implies?` ([`OptionValues`](#optionvalues) | `string`, optional)
+- `implies?` ([`OptionValues`](#optionvaluest) | `string`, optional)
   — the key of an implied option, or a map where each key is an implied option key and each value is the value to use
   when the option is set but the implied option is not.\
   lone keys imply (string `implies`) `true`, i.e. `{ [implies]: true }`.\
@@ -2526,9 +2654,9 @@ Data transfer object for command options (TypeScript interface).
 - `snakecase?` (`boolean`, optional)
   — whether to use `snake_case` format when converting the option id to an object property key
 
-### `OptionEventListener`
+### `OptionEventListener<[T]>`
 
-Handle a parsed command option `event` (TypeScript type).
+Handle a parsed option `event` (TypeScript type).
 
 ```ts
 type OptionEventListener<T extends Option = Option> = (
@@ -2539,7 +2667,7 @@ type OptionEventListener<T extends Option = Option> = (
 #### Type Parameters
 
 - `T` ([`Option`](#optioninfo), optional)
-  — the parsed command option
+  — the parsed option
 
 #### Parameters
 
@@ -2666,7 +2794,7 @@ type OptionValueSources = {
 }
 ```
 
-### `OptionValues`
+### `OptionValues<[T]>`
 
 Record, where each key is an option key ([`Option.key`](#optioninfo))
 and each value is a parsed option value (TypeScript type).
@@ -2691,37 +2819,29 @@ type OptionsData =
   | OptionInfo
 ```
 
-### `ParseArg`
+### `ParseArg<[T]>`
 
-Parse a command or option argument `value` (TypeScript type).
+Parse a raw argument `value` (TypeScript type).
 
 ```ts
-type ParseArg<T = any, Value extends RawParseValue = RawParseValue> = (
-  this: void,
-  value: Value,
-  previous: T | undefined
-) => T
+type ParseArg<T = any> = (value: string, previous?: T) => T
 ```
 
 #### Type Parameters
 
 - `T` (`any`, optional)
-  — parse result
-- `Value` ([`RawParseValue`](#rawparsevalue), optional)
-  — the argument or arguments to parse
+  — the result of the parse
 
 #### Parameters
 
-- **`this`** ([`Command`](#commandinfo))
-  — the current command or subcommand being executed
-- `value` (`Value`)
-  — the raw argument or arguments to parse
-- `previous` (`T` | `undefined`)
-  — the default argument value
+- `value` (`string`)
+  — the raw argument to parse
+- `previous` (`T`)
+  — the default argument value, or the previous parse result for variadic arguments
 
 #### Returns
 
-(`T`) Parse result
+(`T`) The parse result
 
 ### `ParseOptions`
 
@@ -2758,7 +2878,7 @@ Data used to create parse candidates (TypeScript interface).
 - `default?` ([`DefaultInfo`](#defaultinfo), optional)
   — default value configuration
   > 👉 **note**: the option-argument `parser` will not be called.
-- `parser?` ([`ParseArg<any, string> | ParseArg<any, string[]>`](#parsearg), optional)
+- `parser?` ([`ParseArg<any, string> | ParseArg<any, string[]>`](#parseargt), optional)
   — handler used to parse arguments. the handler receives two parameters, the raw, unparsed argument (or
   *arguments* for variadic candidates), and the default value for the argument.
   it should return the new value for the argument
@@ -2802,9 +2922,9 @@ Information about the current process (TypeScript interface).
   — terminate the process synchronously with an exit status of `code`
 - `exitCode?` ([`ExitCode`](#exitcode), optional)
   — the exit code to use when the process exits gracefully, or is exited via `exit` without specifying a code
-- `stderr` ([`WriteStream`][writestream])
+- `stderr` ([`WriteStream`](#writestream))
   — the writeable stream for standard error output
-- `stdout` ([`WriteStream`][writestream])
+- `stdout` ([`WriteStream`](#writestream))
   — the writeable stream for standard output
 
 ### `RawOptionValue`
@@ -2812,15 +2932,7 @@ Information about the current process (TypeScript interface).
 Union of raw option value types (TypeScript type).
 
 ```ts
-type RawOptionValue = boolean | string | string[] | null
-```
-
-### `RawParseValue`
-
-The argument or arguments passed to an argument [parser](#parseableparserparser) (TypeScript type).
-
-```ts
-type RawParseValue = string | readonly string[]
+type RawOptionValue = boolean | string | null
 ```
 
 ### `SubcommandInfo`
@@ -2833,6 +2945,8 @@ Data used to create subcommands (TypeScript interface).
 
 #### Properties
 
+- `help?` (`null` | `undefined`)
+  — options for formatting help text, or the utility to use when generating help text
 - `name` (`string`)
   — the name of the subcommand
 
@@ -2871,15 +2985,15 @@ An object describing command usage (TypeScript interface).
 
 #### Properties
 
-- `arguments?` (`string`, optional)
-  — command arguments descriptor
+- `arguments?` (`readonly string[]` | `string`, optional)
+  — the parts of the arguments descriptor
   > 👉 **note**: displayed in auto-generated help text **only** when a command has at least one visible argument
   - default: generated using visible command arguments
-- `options?` (`string`, optional)
-  — command options descriptor
+- `options?` (`string` | `null`, optional)
+  — the options descriptor, with `null` used to omit the descriptor completely
   > 👉 **note**: displayed in auto-generated help text **only** when a command has at least one visible option
 - `subcommand?` (`string`, optional)
-  — subcommands descriptor
+  — the subcommands descriptor
   > 👉 **note**: displayed in auto-generated help text **only** when a command has at least one visible subcommand
   - default: `'[command]'`
 
@@ -2893,11 +3007,14 @@ Command usage info (TypeScript interface).
 
 #### Properties
 
-- `options` (`string`)
-  — command options descriptor
+- `arguments` (`readonly string[]`)
+  — the parts of the arguments descriptor
+  > 👉 **note**: displayed in auto-generated help text **only** when a command has at least one visible argument
+- `options` (`string` | `null`)
+  — the options descriptor, with `null` used to omit the descriptor completely
   > 👉 **note**: displayed in auto-generated help text **only** when a command has at least one visible option
 - `subcommand` (`string`)
-  — subcommands descriptor
+  — the descriptor
   > 👉 **note**: displayed in auto-generated help text **only** when a command has at least one visible subcommand
 
 ### `VersionData`
@@ -2910,7 +3027,7 @@ type VersionData = Version | VersionOption | VersionOptionInfo
 
 ### `VersionOptionInfo`
 
-Data used to create command version options (i.e. `-v | --version`) (TypeScript interface).
+Data used to create command version options (i.e. `-v, --version`) (TypeScript interface).
 
 #### Extends
 
@@ -2920,7 +3037,7 @@ Data used to create command version options (i.e. `-v | --version`) (TypeScript 
 
 - `flags?` ([`Flags`](#flags), optional)
   — option flags
-  - default: `'-v | --version'`
+  - default: `'-v, --version'`
 - `version` ([`Version`](#version))
   — the command version
 
@@ -2931,6 +3048,39 @@ Union of command version types (TypeScript type).
 ```ts
 type Version = import('semver').SemVer | string
 ```
+
+### `WriteStream`
+
+The write stream API (TypeScript interface).
+
+#### Properties
+
+- `columns?` (`number`, optional)
+  — the number of columns the tty currently has
+  > 👉 **note**: displayed in auto-generated help text **only** when a command has at least one visible argument
+- `options` (`string` | `null`)
+  — the options descriptor, with `null` used to omit the descriptor completely
+  > 👉 **note**: displayed in auto-generated help text **only** when a command has at least one visible option
+- `write` ([`Write`](#write))
+  — write data to the stream
+
+### `Write`
+
+Write data to the stream (TypeScript type).
+
+```ts
+type Write = (this: void, buffer: string) => boolean | undefined | void
+```
+
+#### Parameters
+
+- `buffer` (`string`)
+  — the data to write
+
+#### Returns
+
+(`boolean` | `undefined` | `void`) `true` if all data was flushed successfully, `false` if all or part of the data was
+queued in user memory, or nothing
 
 ## Contribute
 
@@ -2949,8 +3099,6 @@ community you agree to abide by its terms.
 
 [hyphen]: https://www.fileformat.info/info/unicode/char/002d/index.htm
 
-[logger]: https://github.com/flex-development/log#logger-1
-
 [meanings]: http://www.catb.org/~esr/writings/taoup/html/ch10s05.html
 
 [nodejs]: https://nodejs.org
@@ -2958,7 +3106,5 @@ community you agree to abide by its terms.
 [onoptions]: https://github.com/EventEmitter2/EventEmitter2#emitteronevent-listener-options-objectboolean
 
 [typescript]: https://www.typescriptlang.org
-
-[writestream]: https://github.com/flex-development/log#writestream
 
 [yarn]: https://yarnpkg.com

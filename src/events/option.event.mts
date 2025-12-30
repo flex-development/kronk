@@ -4,6 +4,7 @@
  */
 
 import KronkEvent from '#events/kronk.event'
+import kOptionEvent from '#internal/k-option-event'
 import type {
   Flags,
   Option,
@@ -19,7 +20,7 @@ import type {
  * @see {@linkcode Option}
  *
  * @template {Option} [T=Option]
- *  Parsed command option
+ *  The option instance
  *
  * @category
  *  events
@@ -47,7 +48,7 @@ class OptionEvent<T extends Option = Option> extends KronkEvent {
    * @see {@linkcode RawOptionValue}
    *
    * @param {T} option
-   *  The command option instance
+   *  The option instance representing the parsed option
    * @param {RawOptionValue} value
    *  The raw `option` value
    * @param {OptionValueSource} source
@@ -109,6 +110,13 @@ class OptionEvent<T extends Option = Option> extends KronkEvent {
     public flag?: Flags | null | undefined
   ) {
     super(option.event)
+
+    Object.defineProperty(this, kOptionEvent, {
+      configurable: false,
+      enumerable: false,
+      value: true,
+      writable: false
+    })
   }
 }
 

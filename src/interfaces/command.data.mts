@@ -13,6 +13,7 @@ import type {
   HelpableInfo,
   HelpCommandData,
   HelpOptionData,
+  HelpTextOptions,
   List,
   OptionPriority,
   OptionsData,
@@ -31,7 +32,7 @@ import type {
  */
 interface CommandData extends HelpableInfo {
   /**
-   * Callback to fire when the command is executed.
+   * The callback to fire when the command is executed.
    *
    * @see {@linkcode Action}
    */
@@ -78,10 +79,26 @@ interface CommandData extends HelpableInfo {
   exit?: Exit | null | undefined
 
   /**
+   * Options for formatting help text,
+   * or the utility to use when generating help text.
+   *
+   * @see {@linkcode Help}
+   * @see {@linkcode HelpTextOptions}
+   *
+   * @default
+   *  new Help()
+   */
+  help?: Help | HelpTextOptions | null | undefined
+
+  /**
    * Customize the help subcommand, or disable it (`false`).
    *
-   * > 👉 **Note**: To configure the help subcommand for `helpCommand`,
-   * > a `Command` instance must be used. `helpCommand.helpCommand` is set to
+   * A `help` command is added by default if
+   * the command has {@linkcode subcommands}.
+   *
+   * > 👉 **Note**: To configure the help command or option (i.e. `help help`,
+   * > `help --help`) for `helpCommand`, a `Command` instance must be used.
+   * > Both `helpCommand.helpCommand` and `helpCommand.helpOption` are set to
    * > `false` when `helpCommand` is not a `Command`.
    *
    * @see {@linkcode HelpCommandData}
@@ -97,19 +114,9 @@ interface CommandData extends HelpableInfo {
    * @see {@linkcode HelpOptionData}
    *
    * @default
-   *  { description: 'show help', flags: '-h | --help' }
+   *  { description: 'show help', flags: '-h, --help' }
    */
   helpOption?: HelpOptionData | null | undefined
-
-  /**
-   * The help text utility to use when generating help text.
-   *
-   * @see {@linkcode Help}
-   *
-   * @default
-   *  new Help()
-   */
-  helpUtility?: Help | null | undefined
 
   /**
    * The strategy to use when merging global and local options.
