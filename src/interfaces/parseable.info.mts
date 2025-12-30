@@ -19,16 +19,17 @@ import type {
  */
 interface ParseableInfo extends HelpableInfo {
   /**
-   * List of allowed choices.
+   * The list of allowed choices.
    *
    * @see {@linkcode List}
    */
   choices?: List<string> | null | undefined
 
   /**
-   * Default value configuration.
+   * The default value configuration.
    *
-   * > 👉 **Note**: The argument {@linkcode parser} will not be called.
+   * > 👉 **Note**: The argument {@linkcode parser} is called
+   * > **if the default value is a string**.
    *
    * @see {@linkcode DefaultInfo}
    */

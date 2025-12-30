@@ -3,6 +3,7 @@
  * @module kronk/lib/tests/unit/Command
  */
 
+import keid from '#enums/keid'
 import KronkError from '#errors/kronk.error'
 import clamp from '#fixtures/commands/clamp'
 import factorial from '#fixtures/commands/factorial'
@@ -25,6 +26,7 @@ import type {
   ExamplesData,
   Exit,
   HelpTextOptions,
+  KronkErrorId,
   OptionPriority,
   Process,
   UsageData
@@ -54,6 +56,27 @@ describe('unit:lib/Command', () => {
 
       // Expect
       expect(error).to.be.instanceof(KronkError)
+      expect(error).to.have.property('id', keid.argument_after_variadic)
+      expect(error).to.have.property('stack').match(/addArgument/)
+      expect(errorSnapshot(error)).toMatchSnapshot()
+    })
+
+    it('should throw if required argument is added after optional', () => {
+      // Arrange
+      const id: KronkErrorId = keid.required_argument_after_optional
+      const subject: TestSubject = new TestSubject(grease.subcommands.publish)
+      let error!: KronkError
+
+      // Act
+      try {
+        subject.addArgument(new Argument(sfmt.required({})))
+      } catch (e: unknown) {
+        error = e as typeof error
+      }
+
+      // Expect
+      expect(error).to.be.instanceof(KronkError)
+      expect(error).to.have.property('id', id)
       expect(error).to.have.property('stack').match(/addArgument/)
       expect(errorSnapshot(error)).toMatchSnapshot()
     })
@@ -81,6 +104,7 @@ describe('unit:lib/Command', () => {
 
       // Expect
       expect(error).to.be.instanceof(KronkError)
+      expect(error).to.have.property('id', keid.duplicate_subcommand)
       expect(error).to.have.property('stack').match(/addCommand/)
       expect(errorSnapshot(error)).toMatchSnapshot()
     })
@@ -98,6 +122,7 @@ describe('unit:lib/Command', () => {
 
       // Expect
       expect(error).to.be.instanceof(KronkError)
+      expect(error).to.have.property('id', keid.duplicate_subcommand)
       expect(error).to.have.property('stack').match(/addCommand/)
       expect(errorSnapshot(error)).toMatchSnapshot()
     })
@@ -120,6 +145,7 @@ describe('unit:lib/Command', () => {
 
       // Expect
       expect(error).to.be.instanceof(KronkError)
+      expect(error).to.have.property('id', keid.invalid_subcommand_name)
       expect(error).to.have.property('stack').match(/addCommand/)
       expect(errorSnapshot(error)).toMatchSnapshot()
     })
@@ -145,6 +171,7 @@ describe('unit:lib/Command', () => {
 
       // Expect
       expect(error).to.be.instanceof(KronkError)
+      expect(error).to.have.property('id', keid.duplicate_option)
       expect(error).to.have.property('stack').match(/addOption/)
       expect(errorSnapshot(error)).toMatchSnapshot()
     })
@@ -162,6 +189,7 @@ describe('unit:lib/Command', () => {
 
       // Expect
       expect(error).to.be.instanceof(KronkError)
+      expect(error).to.have.property('id', keid.duplicate_option)
       expect(error).to.have.property('stack').match(/addOption/)
       expect(errorSnapshot(error)).toMatchSnapshot()
     })

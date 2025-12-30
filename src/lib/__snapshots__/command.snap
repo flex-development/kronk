@@ -4,11 +4,24 @@ exports[`unit:lib/Command > #addArgument > should throw if argument is added aft
 {
   "code": 1,
   "id": "kronk/argument-after-variadic",
-  "message": "Cannot have argument after variadic argument (<numbers...>)",
+  "message": "Cannot have argument after variadic argument",
   "additional": [],
   "cause": {
     "argument": "<...>",
     "last": "<numbers...>",
+  },
+}
+`;
+
+exports[`unit:lib/Command > #addArgument > should throw if required argument is added after optional 1`] = `
+{
+  "code": 1,
+  "id": "kronk/required-argument-after-optional",
+  "message": "Cannot have required argument after optional argument",
+  "additional": [],
+  "cause": {
+    "argument": "<>",
+    "last": "[artifact]",
   },
 }
 `;

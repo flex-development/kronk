@@ -193,7 +193,10 @@ exports[`functional:lib/Command > errors > should error on excess command or opt
   "command": {
     "command": "copy",
     "ancestors": [],
-    "args": [],
+    "args": [
+      undefined,
+      ".",
+    ],
     "argv": [
       "./index.mjs",
       "./dist",
@@ -756,7 +759,10 @@ exports[`functional:lib/Command > errors > should error on missing command or op
   "command": {
     "command": "copy",
     "ancestors": [],
-    "args": [],
+    "args": [
+      undefined,
+      ".",
+    ],
     "argv": [],
     "optionValueSources": {},
     "opts": {},
@@ -779,7 +785,10 @@ exports[`functional:lib/Command > errors > should error on missing command or op
   "command": {
     "command": "copy",
     "ancestors": [],
-    "args": [],
+    "args": [
+      undefined,
+      ".",
+    ],
     "argv": [],
     "optionValueSources": {},
     "opts": {},
@@ -1174,7 +1183,10 @@ exports[`functional:lib/Command > errors > should error on unknown option (0) 1`
   "command": {
     "command": "copy",
     "ancestors": [],
-    "args": [],
+    "args": [
+      undefined,
+      ".",
+    ],
     "argv": [
       "./index.mts",
       "--debug",
@@ -1546,6 +1558,7 @@ exports[`functional:lib/Command > parsing > should run command (5) 1`] = `
   "ancestors": [],
   "args": [
     "./dist/index.mjs",
+    ".",
   ],
   "argv": [
     "./dist/index.mjs",
@@ -1590,6 +1603,7 @@ exports[`functional:lib/Command > parsing > should run command (7) 1`] = `
   "ancestors": [],
   "args": [
     "./src/main.mjs",
+    ".",
   ],
   "argv": [
     "./src/main.mjs",
@@ -1632,7 +1646,9 @@ exports[`functional:lib/Command > parsing > should run command (9) 1`] = `
 {
   "command": "distinct",
   "ancestors": [],
-  "args": [],
+  "args": [
+    Set {},
+  ],
   "argv": [],
   "optionValueSources": {},
   "opts": {},
@@ -1649,7 +1665,9 @@ exports[`functional:lib/Command > parsing > should run command (10) 1`] = `
 {
   "command": "distinct",
   "ancestors": [],
-  "args": [],
+  "args": [
+    Set {},
+  ],
   "argv": [],
   "optionValueSources": {},
   "opts": {},

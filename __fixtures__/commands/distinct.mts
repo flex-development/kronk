@@ -15,6 +15,7 @@ import type { SubcommandInfo as CommandInfo } from '@flex-development/kronk'
  */
 export default {
   arguments: {
+    default: { value: new Set() },
     description: 'the list of numbers',
     parser: unique,
     syntax: sfmt.optional({ id: 'numbers', variadic: true })

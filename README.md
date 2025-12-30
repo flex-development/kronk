@@ -2874,14 +2874,13 @@ Data used to create parse candidates (TypeScript interface).
 #### Properties
 
 - `choices?` ([`List<string>`](#list), optional)
-  — list of option choices
+  — the list of allowed choices
 - `default?` ([`DefaultInfo`](#defaultinfo), optional)
-  — default value configuration
-  > 👉 **note**: the option-argument `parser` will not be called.
+  — the default value configuration
+  > 👉 **note**: the argument `parser` is called **if the default value is a string**.
 - `parser?` ([`ParseArg<any, string> | ParseArg<any, string[]>`](#parseargt), optional)
-  — handler used to parse arguments. the handler receives two parameters, the raw, unparsed argument (or
-  *arguments* for variadic candidates), and the default value for the argument.
-  it should return the new value for the argument
+  — the handler used to parse arguments. the handler receives two parameters, the raw, unparsed argument, and the
+  previous value for the argument. it should return the new value for the argument
 
 ### `ParseableMetadata`
 

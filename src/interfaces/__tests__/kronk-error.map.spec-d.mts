@@ -7,10 +7,10 @@ import type TestSubject from '#interfaces/kronk-error.map'
 import type { CommandError, KronkError } from '@flex-development/kronk'
 
 describe('unit-d:interfaces/KronkErrorMap', () => {
-  it('should match ["argument-after-variadic": CommandError]', () => {
+  it('should match ["argument-after-variadic": KronkError]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('argument-after-variadic')
-      .toEqualTypeOf<CommandError>()
+      .toEqualTypeOf<KronkError>()
   })
 
   it('should match ["conflicting-option": CommandError]', () => {
@@ -76,6 +76,12 @@ describe('unit-d:interfaces/KronkErrorMap', () => {
   it('should match ["no-flags": KronkError]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('no-flags')
+      .toEqualTypeOf<KronkError>()
+  })
+
+  it('should match ["required-argument-after-optional": KronkError]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('required-argument-after-optional')
       .toEqualTypeOf<KronkError>()
   })
 

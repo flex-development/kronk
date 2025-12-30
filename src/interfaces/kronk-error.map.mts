@@ -21,7 +21,7 @@ import type { CommandError, KronkError } from '@flex-development/kronk'
  *  }
  */
 interface KronkErrorMap {
-  'argument-after-variadic': CommandError
+  'argument-after-variadic': KronkError
   'conflicting-option': CommandError
   'duplicate-option': CommandError
   'duplicate-subcommand': CommandError
@@ -33,6 +33,7 @@ interface KronkErrorMap {
   'missing-argument': CommandError
   'missing-mandatory-option': CommandError
   'no-flags': KronkError
+  'required-argument-after-optional': KronkError
   'unknown-implied-option': KronkError
   'unknown-option': CommandError
   error: KronkError

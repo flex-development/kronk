@@ -268,144 +268,6 @@ describe('functional:lib/Command', () => {
       vi.spyOn(Help.prototype, 'text').mockImplementation(constant(chars.empty))
     })
 
-    it.each<[version: string, ...ParseCase]>([
-      [clamp.version.version, clamp, ['--version']],
-      [clamp.version.version, clamp, [clamp.name, '-v', chars.digit3]],
-      [copy.version, copy, [copy.aliases, '--version']],
-      [copy.version, copy, [copy.aliases, '-v']],
-      [copy.version, copy, ['--version']],
-      [copy.version, copy, ['-v']],
-      [factorial.version, factorial, [factorial.name, '--version']],
-      [factorial.version, factorial, [factorial.name, '-v']],
-      [factorial.version, factorial, ['--version']],
-      [factorial.version, factorial, ['-v']],
-      [grease.version, grease, ['--version']],
-      [grease.version, grease, ['-v']],
-      [grease.version, grease, ['-vc' + chars.equal + chars.digit2]],
-      [grease.version, grease, [grease.name, '-vj']],
-      [semver.version, semver, ['--version']],
-      [semver.version, semver, [semver.name, '--version']],
-      [smallestNum.version, smallestNum, [smallestNum.name, '--version']],
-      [smallestNum.version, smallestNum, [smallestNum.name, '-v']],
-      [smallestNum.version, smallestNum, [smallestNum.aliases, '--version']],
-      [smallestNum.version, smallestNum, [smallestNum.aliases, '-v']],
-      [smallestNum.version, smallestNum, ['--version']],
-      [smallestNum.version, smallestNum, ['-v']],
-      [tribonacci.version, tribonacci, [tribonacci.name, '--version']],
-      [tribonacci.version, tribonacci, [tribonacci.name, '-v']],
-      [tribonacci.version, tribonacci, ['--version']],
-      [tribonacci.version, tribonacci, ['-v']],
-      [
-        semver.subcommands.parse.version,
-        semver,
-        [semver.name, 'parse', '-v'],
-        /**
-         * @this {void}
-         *
-         * @param {string[]} argv
-         *  The command-line arguments
-         * @return {ParseCaseHooks}
-         *  Test case hooks
-         */
-        function context(this: void, argv: string[]): ParseCaseHooks {
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              subcommand = subject.commands().get(argv[1]!)!
-              return ok(subcommand, 'expected `subcommand`'), void this
-            }
-          }
-        }
-      ],
-      [
-        semver.subcommands.satisfies.subcommands.max.version,
-        semver,
-        ['satisfies', 'max', '--version'],
-        /**
-         * @this {void}
-         *
-         * @param {string[]} argv
-         *  The command-line arguments
-         * @return {ParseCaseHooks}
-         *  Test case hooks
-         */
-        function context(this: void, argv: string[]): ParseCaseHooks {
-          return {
-            /**
-             * @this {void}
-             *
-             * @param {TestSubject} subject
-             *  The command under test
-             * @return {undefined}
-             */
-            before(this: void, subject: TestSubject): undefined {
-              subcommand = subject.commands().get(argv[0]!)!
-              ok(subcommand, 'expected `subcommand`')
-              subcommand = subcommand.commands().get(argv[1]!)!
-              return ok(subcommand, 'expected `subcommand`'), void this
-            }
-          }
-        }
-      ]
-    ])('should print command version (%#)', async (
-      version,
-      info,
-      argv,
-      hooks
-    ) => {
-      const { before } = hooks?.(argv) ?? {}
-      const { async: isAsync, ...rest } = info
-
-      // Arrange
-      const done: MockInstance<Action> = vi.fn().mockName('done')
-      const subject: TestSubject = new TestSubject({ ...rest, process })
-      let command: TestSubject
-      let opts: OptionValues
-      let optsWithGlobals: OptionValues
-      let printVersion: MockInstance<Action>
-      let result: TestSubject
-      let write: MockInstance<WriteStream['write']>
-
-      // Act
-      before?.(subject)
-      command = subcommand ?? subject
-      command.done(done as unknown as Action) // @ts-expect-error [2445] testing
-      printVersion = vi.spyOn(command, 'printVersion')
-      write = vi.spyOn(process.stdout, 'write')
-      result = await subject[isAsync ? 'parseAsync' : 'parse'](argv, options)
-      opts = result.opts()
-      optsWithGlobals = result.optsWithGlobals()
-
-      // Expect
-      expect(result).to.eq(command)
-      expect(opts).to.have.property('version', version)
-      expect(optsWithGlobals).to.have.property('version', version)
-      expect(printVersion).toHaveBeenCalledOnce()
-      expect(printVersion.mock.contexts[0]).to.eq(result)
-      expect(printVersion.mock.lastCall).to.eql([opts, ...result.args])
-      expect(done).toHaveBeenCalledAfter(printVersion)
-      expect(done).toHaveBeenCalledOnce()
-      expect(done.mock.contexts[0]).to.eq(result)
-      expect(done.mock.lastCall).to.eql([optsWithGlobals, ...result.args])
-
-      // Expect (version conditional)
-      if (version) {
-        expect(write).toHaveBeenCalledExactlyOnceWith(version + chars.lf)
-        expect(done).toHaveBeenCalledAfter(write)
-      } else {
-        expect(write).not.toHaveBeenCalled()
-      }
-
-      // Expect (subcommand conditional)
-      if (subcommand) expect(result).to.not.eq(subject)
-    })
-
     it.each<ParseCase>([
       [copy, [copy.aliases, '--help']],
       [copy, [copy.aliases, '-h']],
@@ -1024,7 +886,7 @@ describe('functional:lib/Command', () => {
           }
         }
       ]
-    ])('should print help text for command (%#)', async (
+    ])('should handle command help request (%#)', async (
       info,
       argv,
       hooks
@@ -1065,6 +927,144 @@ describe('functional:lib/Command', () => {
       expect(done).toHaveBeenCalledOnce()
       expect(done.mock.contexts[0]).to.eq(result)
       expect(done.mock.lastCall).to.eql([optsWithGlobals, ...result.args])
+
+      // Expect (subcommand conditional)
+      if (subcommand) expect(result).to.not.eq(subject)
+    })
+
+    it.each<[version: string, ...ParseCase]>([
+      [clamp.version.version, clamp, ['--version']],
+      [clamp.version.version, clamp, [clamp.name, '-v', chars.digit3]],
+      [copy.version, copy, [copy.aliases, '--version']],
+      [copy.version, copy, [copy.aliases, '-v']],
+      [copy.version, copy, ['--version']],
+      [copy.version, copy, ['-v']],
+      [factorial.version, factorial, [factorial.name, '--version']],
+      [factorial.version, factorial, [factorial.name, '-v']],
+      [factorial.version, factorial, ['--version']],
+      [factorial.version, factorial, ['-v']],
+      [grease.version, grease, ['--version']],
+      [grease.version, grease, ['-v']],
+      [grease.version, grease, ['-vc' + chars.equal + chars.digit2]],
+      [grease.version, grease, [grease.name, '-vj']],
+      [semver.version, semver, ['--version']],
+      [semver.version, semver, [semver.name, '--version']],
+      [smallestNum.version, smallestNum, [smallestNum.name, '--version']],
+      [smallestNum.version, smallestNum, [smallestNum.name, '-v']],
+      [smallestNum.version, smallestNum, [smallestNum.aliases, '--version']],
+      [smallestNum.version, smallestNum, [smallestNum.aliases, '-v']],
+      [smallestNum.version, smallestNum, ['--version']],
+      [smallestNum.version, smallestNum, ['-v']],
+      [tribonacci.version, tribonacci, [tribonacci.name, '--version']],
+      [tribonacci.version, tribonacci, [tribonacci.name, '-v']],
+      [tribonacci.version, tribonacci, ['--version']],
+      [tribonacci.version, tribonacci, ['-v']],
+      [
+        semver.subcommands.parse.version,
+        semver,
+        [semver.name, 'parse', '-v'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[1]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ],
+      [
+        semver.subcommands.satisfies.subcommands.max.version,
+        semver,
+        ['satisfies', 'max', '--version'],
+        /**
+         * @this {void}
+         *
+         * @param {string[]} argv
+         *  The command-line arguments
+         * @return {ParseCaseHooks}
+         *  Test case hooks
+         */
+        function context(this: void, argv: string[]): ParseCaseHooks {
+          return {
+            /**
+             * @this {void}
+             *
+             * @param {TestSubject} subject
+             *  The command under test
+             * @return {undefined}
+             */
+            before(this: void, subject: TestSubject): undefined {
+              subcommand = subject.commands().get(argv[0]!)!
+              ok(subcommand, 'expected `subcommand`')
+              subcommand = subcommand.commands().get(argv[1]!)!
+              return ok(subcommand, 'expected `subcommand`'), void this
+            }
+          }
+        }
+      ]
+    ])('should handle command version request (%#)', async (
+      version,
+      info,
+      argv,
+      hooks
+    ) => {
+      const { before } = hooks?.(argv) ?? {}
+      const { async: isAsync, ...rest } = info
+
+      // Arrange
+      const done: MockInstance<Action> = vi.fn().mockName('done')
+      const subject: TestSubject = new TestSubject({ ...rest, process })
+      let command: TestSubject
+      let opts: OptionValues
+      let optsWithGlobals: OptionValues
+      let printVersion: MockInstance<Action>
+      let result: TestSubject
+      let write: MockInstance<WriteStream['write']>
+
+      // Act
+      before?.(subject)
+      command = subcommand ?? subject
+      command.done(done as unknown as Action) // @ts-expect-error [2445] testing
+      printVersion = vi.spyOn(command, 'printVersion')
+      write = vi.spyOn(process.stdout, 'write')
+      result = await subject[isAsync ? 'parseAsync' : 'parse'](argv, options)
+      opts = result.opts()
+      optsWithGlobals = result.optsWithGlobals()
+
+      // Expect
+      expect(result).to.eq(command)
+      expect(opts).to.have.property('version', version)
+      expect(optsWithGlobals).to.have.property('version', version)
+      expect(printVersion).toHaveBeenCalledOnce()
+      expect(printVersion.mock.contexts[0]).to.eq(result)
+      expect(printVersion.mock.lastCall).to.eql([opts, ...result.args])
+      expect(done).toHaveBeenCalledAfter(printVersion)
+      expect(done).toHaveBeenCalledOnce()
+      expect(done.mock.contexts[0]).to.eq(result)
+      expect(done.mock.lastCall).to.eql([optsWithGlobals, ...result.args])
+
+      // Expect (version conditional)
+      if (version) {
+        expect(write).toHaveBeenCalledExactlyOnceWith(version + chars.lf)
+        expect(done).toHaveBeenCalledAfter(write)
+      } else {
+        expect(write).not.toHaveBeenCalled()
+      }
 
       // Expect (subcommand conditional)
       if (subcommand) expect(result).to.not.eq(subject)

@@ -518,14 +518,39 @@ class Command extends Helpable {
      */
     const last: Argument | undefined = this.info.arguments.at(-1)
 
-    if (last?.variadic) {
-      throw new KronkError({
-        cause: { argument: argument.syntax, last: last.syntax },
-        id: keid.argument_after_variadic,
-        reason: `Cannot have argument after variadic argument (${last.syntax})`
-      })
+    if (last) {
+      if (last.variadic) {
+        throw new KronkError({
+          cause: { argument: argument.syntax, last: last.syntax },
+          id: keid.argument_after_variadic,
+          reason: 'Cannot have argument after variadic argument'
+        })
+      }
+
+      if (!last.required && argument.required) {
+        throw new KronkError({
+          cause: { argument: argument.syntax, last: last.syntax },
+          id: keid.required_argument_after_optional,
+          reason: 'Cannot have required argument after optional argument'
+        })
+      }
     }
 
+    /**
+     * The default value configuration.
+     *
+     * @var {DefaultInfo | undefined} def
+     */
+    let def: DefaultInfo | undefined
+
+    // configure default value for optional arguments.
+    if (!argument.required && (def = argument.default()) && 'value' in def) {
+      this.args[this.info.arguments.length] = typeof def.value === 'string'
+        ? argument.parser()(def.value)
+        : def.value
+    }
+
+    // add new argument.
     return this.info.arguments.push(argument), this
   }
 
@@ -662,7 +687,7 @@ class Command extends Helpable {
     if (option.short) this.info.options.set(option.short, option)
 
     /**
-     * Default value info.
+     * The default value configuration.
      *
      * @const {DefaultInfo | undefined} def
      */
@@ -670,7 +695,20 @@ class Command extends Helpable {
 
     // configure default option-argument value.
     if (def && 'value' in def) {
-      this.optionValue(option.key, def.value, optionValueSource.default)
+      /**
+       * The default option value.
+       *
+       * @var {unknown} value
+       */
+      let value: unknown = def.value
+
+      // parse default argument value.
+      if (typeof value === 'string') {
+        value = option.parser()(value, def.value)
+      }
+
+      // set default argument value.
+      this.optionValue(option.key, value, optionValueSource.default)
     }
 
     // add event handler.
@@ -3147,52 +3185,65 @@ class Command extends Helpable {
    *  `this` command
    */
   protected parseCommandArguments(): this {
-    this.args = []
-
     for (const [index, argument] of this.arguments().entries()) {
       /**
-       * Default value configuration.
+       * The default value.
        *
-       * @const {DefaultInfo | undefined} def
+       * @const {unknown} dvalue
        */
-      const def: DefaultInfo | undefined = argument.default()
+      const dvalue: unknown = this.args[index]
 
       /**
-       * Command-argument parser.
+       * The argument parser.
        *
        * @const {ParseArg} parser
        */
       const parser: ParseArg = argument.parser()
 
       /**
-       * Processed argument value.
+       * The parsed argument value.
        *
        * @var {unknown} value
        */
-      let value: unknown = def?.value
+      let value: unknown
 
       if (argument.variadic) {
         if (index < this.argv.length) {
+          // value, or values, supplied by user for variadic argument.
+
           /**
            * The previous argument value.
            *
            * @var {unknown} previous
            */
-          let previous: unknown = def?.value
+          let previous: unknown = dvalue
 
           for (const val of this.argv.slice(index)) {
+            // check raw argument value against allowed argument choices.
             this.checkChoices(val, argument)
+
+            // parse raw argument value.
             value = parser(val, previous)
+
+            // reset previous value to new parse result.
             previous = value
           }
 
-          this.args.push(value)
+          this.args[index] = value // store final parse result.
           break
         }
       } else if (index < this.argv.length) {
+        // value supplied by user for optional or required argument.
+
+        // check value against allowed argument choices.
         this.checkChoices(value = this.argv[index]!, argument)
+
+        // parse raw argument value and store parse result.
         ok(typeof value === 'string', 'expected command-argument `value`')
-        this.args[index] = parser(value, def?.value)
+        this.args[index] = parser(value, dvalue)
+      } else {
+        // value not supplied by user for optional argument, use default value.
+        ok(!argument.required, 'expected optional argument')
       }
     }
 

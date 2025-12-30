@@ -26,6 +26,7 @@ const enum keid {
   missing_argument = 'kronk/missing-argument',
   missing_mandatory_option = 'kronk/missing-mandatory-option',
   no_flags = 'kronk/no-flags',
+  required_argument_after_optional = 'kronk/required-argument-after-optional',
   unknown_implied_option = 'kronk/unknown-implied-option',
   unknown_option = 'kronk/unknown-option'
 }

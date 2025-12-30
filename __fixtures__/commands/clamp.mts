@@ -32,10 +32,7 @@ export default {
       parser: bool()
     },
     {
-      default: {
-        description: 'Number.MAX_SAFE_INTEGER',
-        value: Number.MAX_SAFE_INTEGER
-      },
+      default: { value: 'MAX_SAFE_INTEGER' },
       description: 'upper bound (inclusive)',
       flags: '-M --max <n>',
       parser: number
