@@ -85,7 +85,7 @@ import {
   reduceRight
 } from '@flex-development/tutils'
 import { ok } from 'devlop'
-import EventEmitter, { type OnOptions } from 'eventemitter2'
+import EventEmitter, { type ListenerFn, type OnOptions } from 'eventemitter2'
 import plur from 'plur'
 
 /**
@@ -2544,7 +2544,7 @@ class Command extends Helpable {
     listener: KronkEventListener<T>,
     options?: OnOptions | boolean | undefined
   ): undefined {
-    return void this.events.on(event, listener, options)
+    return void this.events.on(event, listener as ListenerFn, options)
   }
 
   /**

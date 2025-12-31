@@ -4,7 +4,7 @@
  */
 
 import type TestSubject from '#types/kronk-event-listener'
-import type { OptionEvent } from '@flex-development/kronk'
+import type { Awaitable, OptionEvent } from '@flex-development/kronk'
 
 describe('unit-d:types/KronkEventListener', () => {
   type T = OptionEvent
@@ -17,8 +17,8 @@ describe('unit-d:types/KronkEventListener', () => {
   })
 
   describe('returns', () => {
-    it('should return undefined', () => {
-      expectTypeOf<Subject>().returns.toEqualTypeOf<undefined>()
+    it('should return Awaitable<undefined>', () => {
+      expectTypeOf<Subject>().returns.toEqualTypeOf<Awaitable<undefined>>()
     })
   })
 })

@@ -2556,7 +2556,7 @@ Handle an `event` (TypeScript type).
 ```ts
 type KronkEventListener<T extends KronkEvent = KronkEvent> = (
   event: T
-) => undefined
+) => Awaitable<undefined>
 ```
 
 #### Type Parameters

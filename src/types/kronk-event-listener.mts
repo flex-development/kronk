@@ -3,11 +3,12 @@
  * @module kronk/types/KronkEventListener
  */
 
-import type { KronkEvent } from '@flex-development/kronk'
+import type { Awaitable, KronkEvent } from '@flex-development/kronk'
 
 /**
  * Handle an `event`.
  *
+ * @see {@linkcode Awaitable}
  * @see {@linkcode KronkEvent}
  *
  * @template {KronkEvent} [T=KronkEvent]
@@ -15,10 +16,10 @@ import type { KronkEvent } from '@flex-development/kronk'
  *
  * @param {KronkEvent} event
  *  The emitted event
- * @return {undefined}
+ * @return {Awaitable<undefined>}
  */
 type KronkEventListener<T extends KronkEvent = KronkEvent> = (
   event: T
-) => undefined
+) => Awaitable<undefined>
 
 export type { KronkEventListener as default }
