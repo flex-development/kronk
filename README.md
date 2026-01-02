@@ -47,9 +47,9 @@
     - [`Command#createOption(info[, data])`](#commandcreateoptioninfo-data)
     - [`Command#default`](#commanddefault)
     - [`Command#defaultCommand`](#commanddefaultcommand)
-    - [`Command#done([done])`](#commanddonedone)
     - [`Command#emit(event)`](#commandemitevent)
-    - [`Command#emitOption(option, value, source[, flags])`](#commandemitoptionoption-value-source-flag)
+    - [`Command#emitCommand<T>(command)`](#commandemitcommandtcommand)
+    - [`Command#emitOption<T>(option, value, source[, flags])`](#commandemitoptiontoption-value-source-flag)
     - [`Command#error(info)`](#commanderrorinfo)
     - [`Command#event`](#commandevent)
     - [`Command#example(info)`](#commandexampleinfo)
@@ -61,6 +61,8 @@
     - [`Command#help([help])`](#commandhelphelp)
     - [`Command#helpCommand([help])`](#commandhelpcommandhelp)
     - [`Command#helpOption([help])`](#commandhelpoptionhelp)
+    - [`Command#hook(hook[, fn])`](#commandhookhook-fn)
+    - [`Command#hooks([hooks])`](#commandhookshooks)
     - [`Command#id([name])`](#commandidname)
     - [`Command#on<T>(event, listener[, options])`](#commandontevent-listener-options)
     - [`Command#option(info[, data])`](#commandoptioninfo-data)
@@ -151,9 +153,9 @@
   - [`CommandData`](#commanddata)
   - [`CommandErrorInfo`](#commanderrorinfo-2)
   - [`CommandErrorSnapshot`](#commanderrorsnapshot-1)
+  - [`CommandEventListener<[T]>`](#commandeventlistenert)
   - [`CommandEventNameMap`](#commandeventnamemap)
   - [`CommandEventName`](#commandeventname)
-  - [`CommandEventListener<[T]>`](#commandeventlistenert)
   - [`CommandInfo`](#commandinfo-1)
   - [`CommandMetadata`](#commandmetadata)
   - [`CommandName`](#commandname)
@@ -171,6 +173,9 @@
   - [`HelpOptionData`](#helpoptiondata)
   - [`HelpTextOptions`](#helptextoptions)
   - [`HelpableInfo`](#helpableinfo-1)
+  - [`Hook<[This][, Runner]>`](#hookthis-runner)
+  - [`HooksData`](#hooksdata)
+  - [`HooksInfo`](#hooksinfo)
   - [`KronkErrorCause`](#kronkerrorcause-1)
   - [`KronkErrorId`](#kronkerrorid-1)
   - [`KronkErrorInfo`](#kronkerrorinfo-1)
@@ -178,6 +183,9 @@
   - [`KronkErrorMap`](#kronkerrormap)
   - [`KronkEventListener<[T]>`](#kronkeventlistenert)
   - [`KronkEventNameMap`](#kronkeventnamemap)
+  - [`KronkHookMap`](#kronkhookmap)
+  - [`KronkHookName`](#kronkhookname)
+  - [`KronkHook`](#kronkhook)
   - [`List`](#list)
   - [`Numeric`](#numeric)
   - [`OptionData`](#optiondata)
@@ -197,6 +205,9 @@
   - [`ParseUnknownResult`](#parseunknownresult)
   - [`ParseableInfo`](#parseableinfo-1)
   - [`ParseableMetadata`](#parseablemetadata)
+  - [`PostActionHook`](#postactionhook)
+  - [`PreActionHook`](#preactionhook)
+  - [`PreCommandHook`](#precommandhook)
   - [`ProcessEnv`](#processenv)
   - [`Process`](#process)
   - [`RawOptionValue`](#rawoptionvalue)
@@ -362,19 +373,20 @@ A command (`class`).
 
 #### Signatures
 
-- `constructor(info: CommandInfo | string)`
+- `constructor(info: CommandInfo | SubcommandInfo | string)`
+- `constructor(info?: CommandInfo | string | null | undefined)`
 - `constructor(info: string, data?: CommandData | null | undefined)`
 
 #### Parameters
 
 - `info` ([`CommandInfo`](#commandinfo-1) | `string`)
-  — command info or name
+  — the command info or name
 - `data` ([`CommandData`](#commanddata))
   — additional command info
 
 #### `Command#action([action])`
 
-Get or set the command action callback.
+Get or set the action callback.
 
 ##### Overloads
 
@@ -384,9 +396,9 @@ Get or set the command action callback.
 ##### Type Parameters
 
 - `Opts` ([`OptionValues`](#optionvaluest), optional)
-  — parsed command options
+  — the parsed command options
 - `Args` (`any[]`, optional)
-  — parsed command arguments
+  — the parsed command arguments
 
 ##### Parameters
 
@@ -395,7 +407,7 @@ Get or set the command action callback.
 
 ##### Returns
 
-([`Action<Opts, Args>`](#actionopts-args) | [`this`](#commandinfo)) The command action callback or `this` command
+([`Action<Opts, Args>`](#actionopts-args) | [`this`](#commandinfo)) The action callback or `this` command
 
 #### `Command#addArgument(argument)`
 
@@ -677,31 +689,6 @@ Whether the command is the default subcommand of its [`parent`](#commandparent).
 
 The default command.
 
-#### `Command#done([done])`
-
-Get or set the command done callback.
-
-##### Overloads
-
-- `done(done: Action<any> | null | undefined): this`
-- `done<Opts extends OptionValues = OptionValues, Args extends any[] = any[]>(): Action<Opts, Args>`
-
-##### Type Parameters
-
-- `Opts` ([`OptionValues`](#optionvaluest), optional)
-  — parsed command options with globals
-- `Args` (`any[]`, optional)
-  — parsed command arguments
-
-##### Parameters
-
-- `done` ([`Action<any>`](#actionopts-args) | `null` | `undefined`)
-  — the callback to fire after the command is ran
-
-##### Returns
-
-([`Action<Opts, Args>`](#actionopts-args) | [`this`](#commandinfo)) The command done callback or `this` command
-
 #### `Command#emit(event)`
 
 Emit an `event`.
@@ -715,19 +702,47 @@ Emit an `event`.
 
 (`boolean`) `true` if event has listeners, `false` otherwise
 
-#### `Command#emitOption(option, value, source[, flag])`
+#### `Command#emitCommand<T>(command)`
 
-Emit a parsed `option` event.
+Emit a parsed `command` event.
+
+##### Type Parameters
+
+- `T` ([`Command`](#commandinfo))
+  — The command instance
 
 ##### Parameters
 
-- `option` ([`Option`](#optioninfo))
-  — the command option instance
+- `command` (`T`)
+  — the command instance representing the parsed command
+
+##### Returns
+
+(`boolean`) `true` if event has listeners, `false` otherwise
+
+#### `Command#emitOption<T>(option, value, source[, flag])`
+
+Emit a parsed `option` event.
+
+##### Signatures
+
+- `emitOption<T extends Option>(option: T, value: RawOptionValue, source: OptionValueSource, flag?: Flags | null | undefined): boolean`
+- `emitOption<T extends Option>(option: T, value: unknown, source: optionValueSource.implied, flag?: Flags | null | undefined): boolean`
+
+##### Type Parameters
+
+- `T` ([`Option`](#optioninfo))
+  — The option instance
+
+##### Parameters
+
+- `option` (`T`)
+  — the option instance representing the parsed option
 - `value` ([`RawOptionValue`](#rawoptionvalue))
-  — the raw `option` value
+  — the `option` value
 - `source` ([`OptionValueSource`](#optionvaluesource-1))
-  — the source of the raw option `value`
-- `flag?` ([`Flags`](#flags), optional)
+  — the source of the option `value`
+- `flag` ([`Flags`](#flags), optional)
   — the parsed `option` flag
 
 ##### Returns
@@ -891,7 +906,7 @@ Get or configure the help subcommand.
 ##### Overloads
 
 - `helpCommand(help: HelpCommandData | null | undefined): this`
-- `helpCommand<T extends Command = Command>(): T | null`
+- `helpCommand<T extends Command>(): T | null`
 
 ##### Type Parameters
 
@@ -915,7 +930,7 @@ Get or configure the help option.
 ##### Overloads
 
 - `helpOption(help: HelpOptionData | null | undefined): this`
-- `helpOption<T extends Option = Option>(): T | null`
+- `helpOption<T extends Option>(): T | null`
 
 ##### Type Parameters
 
@@ -931,6 +946,49 @@ Get or configure the help option.
 ##### Returns
 
 (`T` | [`this`](#commandinfo) | `null`) Help option or `this` command
+
+#### `Command#hook(hook[, fn])`
+
+Manage a `hook` or get a list of callbacks for the hooks.
+
+##### Overloads
+
+- `hook<H extends KronkHookName>(hook: H, fn: HooksData[H] | false): this`
+- `hook<H extends KronkHookName>(hook: H): HooksInfo[H]`
+
+##### Type Parameters
+
+- `H` ([`KronkHookName`](#kronkhookname))
+  — the hook name
+
+##### Parameters
+
+- `hook` (`H`)
+  — the hook name
+- `fn` (`H`)
+  — the callback or callbacks to add, with falsy values used to remove all callbacks
+
+##### Returns
+
+([`HooksInfo[H]`](#hooksinfo) | [`this`](#commandinfo)) The list of hook callbacks or `this` command
+
+#### `Command#hooks([hooks])`
+
+Manage hooks or get the hooks record.
+
+##### Overloads
+
+- `hooks(hooks: HooksData | false | null | undefined): this`
+- `hooks(): HooksInfo`
+
+##### Parameters
+
+- `hooks` ([`HooksData`](#hooksdata) | `false` | `null` | `undefined`)
+  — the hooks configuration, with falsy values used to remove hooks
+
+##### Returns
+
+([`HooksInfo`](#hooksinfo) | [`this`](#commandinfo)) The hooks record or `this` command
 
 #### `Command#id([name])`
 
@@ -1236,21 +1294,22 @@ Get or set the command version.
 ##### Overloads
 
 - `version(version: VersionData | null | undefined): this`
-- `version<T extends string = string>(): T | null`
+- `version(version: true): undefined`
+- `version<T extends string>(): T | null`
 
 ##### Type Parameters
 
-- `T` (`string`, optional)
-  — command version type
+- `T` (`string`)
+  — the command version
 
 ##### Parameters
 
-- `version` ([`VersionData`](#versiondata) | `null`| `undefined`)
-  — command version, version option instance, or version option info
+- `version` ([`VersionData`](#versiondata) | `true` | `null`| `undefined`)
+  — the command version, version option instance, version option info, or `true` to print the command version
 
 ##### Returns
 
-(`T` | [`this`](#commandinfo) | `null`) Command version or `this` command
+(`T` | [`this`](#commandinfo) | `null`) The command version or `this` command
 
 ### `CommandEvent<T>(command)`
 
@@ -1900,7 +1959,7 @@ This package is fully typed with [TypeScript][].
 
 ### `Action<[Opts][, Args]>`
 
-The callback to fire when a command is executed (TypeScript type).
+The callback to fire when a command is ran (TypeScript type).
 
 ```ts
 type Action<
@@ -1923,11 +1982,11 @@ type Action<
 #### Parameters
 
 - **`this`** ([`Command`](#commandinfo))
-  — the command or subcommand being executed
+  — the command to be ran
 - `options` (`Opts`)
-  — parsed command options
+  — the parsed command options
 - `...args` (`Args`)
-  — parsed command arguments
+  — the parsed command arguments
 
 #### Returns
 
@@ -2065,19 +2124,18 @@ Data transfer object for commands (TypeScript interface).
 #### Properties
 
 - `action?` ([`Action<any>`](#actionopts-args), optional)
-  — callback to fire when the command is executed
+  — the callback to fire when the command is ran
 - `aliases?` ([`List<string>`](#list) | `string`, optional)
   — aliases for the command
 - `arguments?` ([`List<string>`](#list), optional)
   — arguments for the command
 - `default?` (`boolean`, optional)
   — whether this is the default command
-- `done?` ([`Action<any>`](#actionopts-args), optional)
-  — callback to fire after the command `action` is executed
 - `exit?` ([`Exit`](#exit), optional)
   — callback to fire when the process is exited
 - `help?` ([`Help`](#helpoptions) | [`HelpTextOptions`](#helptextoptions), optional)
   — options for formatting help text, or the utility to use when generating help text
+  - default: `new Help()`
 - `helpCommand?` ([`HelpCommandData`](#helpcommanddata), optional)
   — customize the help subcommand, or disable it (`false`)
   > 👉 **Note**: to configure the help command or option (i.e. `help help`, `help --help`) for `helpCommand`,
@@ -2087,7 +2145,8 @@ Data transfer object for commands (TypeScript interface).
 - `helpOption?` ([`HelpOptionData`](#helpoptiondata), optional)
   — customize the help option, or disable it (`false`)
   - default: `{ description: 'show help', flags: '-h, --help' }`
-  - default: `new Help()`
+- `hooks?` ([`HooksData`](#hooksdata), optional)
+  — the hooks configuration
 - `optionPriority?` ([`OptionPriority`](#optionpriority), optional)
   — the strategy to use when merging global and local options
   - default: `'local'`
@@ -2136,6 +2195,30 @@ Command error overview (TypeScript interface).
 - `command` ([`CommandSnapshot`](#commandsnapshot) | `null`)
   — an overview of the failed command
 
+### `CommandEventListener<[T]>`
+
+Handle a parsed command `event` (TypeScript type).
+
+```ts
+type CommandEventListener<T extends Command = Command> = (
+  event: CommandEvent<T>
+) => undefined
+```
+
+#### Type Parameters
+
+- `T` ([`Command`](#commandinfo), optional)
+  — the parsed command
+
+#### Parameters
+
+- `event` ([`CommandEvent<T>`](#commandeventtcommand))
+  — the emitted parsed command event
+
+#### Returns
+
+(`undefined`) Nothing
+
 ### `CommandEventNameMap`
 
 Registry of command event names (TypeScript interface).
@@ -2165,30 +2248,6 @@ They will be added to this union automatically.
 type CommandEventName = CommandEventNameMap[keyof CommandEventNameMap]
 ```
 
-### `CommandEventListener<[T]>`
-
-Handle a parsed command `event` (TypeScript type).
-
-```ts
-type CommandEventListener<T extends Command = Command> = (
-  event: CommandEvent<T>
-) => undefined
-```
-
-#### Type Parameters
-
-- `T` ([`Command`](#commandinfo), optional)
-  — the parsed command
-
-#### Parameters
-
-- `event` ([`CommandEvent<T>`](#commandeventtcommand))
-  — the emitted parsed command event
-
-#### Returns
-
-(`undefined`) Nothing
-
 ### `CommandInfo`
 
 Data used to create commands (TypeScript interface).
@@ -2212,6 +2271,8 @@ Command metadata (TypeScript interface).
 
 #### Properties
 
+- `action` ([`Action<any>`](#actionopts-args))
+  — the callback to fire when the command is ran
 - `aliases` (`Set<string>`)
   — list of command aliases
 - `arguments` ([`Argument[]`](#argumentinfo))
@@ -2224,6 +2285,8 @@ Command metadata (TypeScript interface).
   — the help subcommand
 - `helpOption` ([`Option`](#optioninfo) | `null` | `undefined`)
   — the help option
+- `hooks` ([`HooksInfo`](#hooksinfo))
+  — the hooks configuration
 - `options` ([`Map<string, Option>`](#optioninfo))
   — map, where each key is a long or short flag and each value is the command option instance registered for that flag
 - `parent?` (`null` | `undefined`)
@@ -2479,6 +2542,71 @@ interface KronkErrorCause {
 }
 ```
 
+### `Hook<[This][, Runner]>`
+
+The callback to fire immediately before or after
+the running command's [action](#actionopts-args) (TypeScript type).
+
+```ts
+type Hook<
+  This extends Command = Command,
+  Runner extends Command = Command
+> = (
+  this: This,
+  command: Runner
+) => Awaitable<null | undefined | void>
+```
+
+#### Type Parameters
+
+- `This` ([`Command`](#commandinfo), optional)
+  — the `this` context of the hook
+- `Runner` ([`Command`](#commandinfo), optional)
+  — the running command
+
+#### Parameters
+
+- **`this`** ([`Command`](#commandinfo))
+  — the current command
+- `command` (`Runner`)
+  — the running command
+
+#### Returns
+
+([`Awaitable<null | undefined | void>`](#awaitablet)) Nothing
+
+### `HooksData`
+
+Data transfer object for hooks (TypeScript interface).
+
+#### Properties
+
+- `postAction?` ([`PostActionHook`](#postactionhook) | [`List<PostActionHook>`](#postactionhook), optional)
+  — the callback, or callbacks, to fire immediately after the running command's [action](#commandactionaction)
+- `preAction?` ([`PreActionHook`](#preactionhook) | [`List<PreActionHook>`](#preactionhook), optional)
+  — the callback, or callbacks, to fire immediately before the running command's [action](#commandactionaction)
+- `preCommand?` ([`PreCommandHook`](#precommandhook) | [`List<PreCommandHook>`](#precommandhook), optional)
+  — the callback, or callbacks, to fire before a subcommand is ran
+
+### `HooksInfo`
+
+Command hooks info (TypeScript interface).
+
+Each key is the name of a hook and each value is a hook function list.
+
+#### Extends
+
+- [`HooksData`](#hooksdata)
+
+#### Properties
+
+- `postAction` ([`PostActionHook[]`](#postactionhook))
+  — the callbacks to fire immediately after the running command's [action](#commandactionaction)
+- `preAction` ([`PreActionHook[]`](#preactionhook))
+  — the callbacks to fire immediately before the running command's [action](#commandactionaction)
+- `preCommand` ([`PreCommandHook[]`](#precommandhook))
+  — the callbacks to fire before a subcommand is ran
+
 ### `KronkErrorId`
 
 Union of registered error ids (TypeScript type).
@@ -2600,6 +2728,48 @@ They will be added to this union automatically.
 
 ```ts
 type KronkEventName = KronkEventNameMap[keyof KronkEventNameMap]
+```
+
+### `KronkHookMap`
+
+Registry of hooks (TypeScript interface).
+
+Each key is the name of a hook and each value is a hook function.
+
+```ts
+interface KronkHookMap {/* see code */}
+```
+
+When developing extensions that use additional hooks, augment `KronkHookMap` to register custom hooks:
+
+```ts
+declare module '@flex-development/kronk' {
+  interface KronkErrorMap {
+    custom: CustomHook
+  }
+}
+```
+
+### `KronkHookName`
+
+Union of registered hook names (TypeScript type).
+
+To register custom hook names, augment [`KronkHookMap`](#kronkhookmap).
+They will be added to this union automatically.
+
+```ts
+type KronkHookName = Extract<keyof KronkHookMap, string>
+```
+
+### `KronkHook`
+
+Union of registered hooks (TypeScript type).
+
+To register custom hooks, augment [`KronkHookMap`](#kronkhookmap).
+They will be added to this union automatically.
+
+```ts
+type KronkHook = KronkHookMap[keyof KronkHookMap]
 ```
 
 ### `List`
@@ -2896,6 +3066,39 @@ Parse candidate metadata (TypeScript interface).
   — whether required syntax was used when defining the candidate
 - `variadic?` (`boolean`, optional)
   — whether variadic syntax was used when defining the candidate.
+
+### `PostActionHook`
+
+Union of registered `postAction` hooks (TypeScript type).
+
+To register custom hooks, augment [`KronkHookMap`](#kronkhookmap).
+They will be added to this union automatically.
+
+```ts
+type PostActionHook = KronkHookMap['postAction']
+```
+
+### `PreActionHook`
+
+Union of registered `preAction` hooks (TypeScript type).
+
+To register custom hooks, augment [`KronkHookMap`](#kronkhookmap).
+They will be added to this union automatically.
+
+```ts
+type PreActionHook = KronkHookMap['preAction']
+```
+
+### `PreCommandHook`
+
+Union of registered `preCommand` hooks (TypeScript type).
+
+To register custom hooks, augment [`KronkHookMap`](#kronkhookmap).
+They will be added to this union automatically.
+
+```ts
+type PreCommandHook = KronkHookMap['preCommand']
+```
 
 ### `ProcessEnv`
 

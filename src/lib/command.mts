@@ -5,12 +5,14 @@
 
 import initialCommand from '#constructs/initial-command'
 import chars from '#enums/chars'
+import hooks from '#enums/hooks'
 import keid from '#enums/keid'
 import optionValueSource from '#enums/option-value-source'
 import tt from '#enums/tt'
 import CommandEvent from '#events/command.event'
 import formatList from '#internal/format-list'
 import isList from '#internal/is-list'
+import isPromise from '#internal/is-promise'
 import kCommand from '#internal/k-command'
 import noop from '#internal/noop'
 import toChunks from '#internal/to-chunks'
@@ -49,7 +51,12 @@ import type {
   HelpCommandData,
   HelpOptionData,
   HelpTextOptions,
+  HooksData,
+  HooksInfo,
   KronkEventListener,
+  KronkHook,
+  KronkHookMap,
+  KronkHookName,
   List,
   OptionData,
   OptionInfo,
@@ -79,8 +86,10 @@ import {
   isSubcommandInfo
 } from '@flex-development/kronk/utils'
 import {
+  entries,
   fallback,
   isNIL,
+  keys,
   reduce,
   reduceRight
 } from '@flex-development/tutils'
@@ -226,12 +235,23 @@ class Command extends Helpable {
   protected versionRequested: boolean
 
   /**
+   * Create a new parent command or subcommand.
+   *
+   * @see {@linkcode CommandInfo}
+   * @see {@linkcode SubcommandInfo}
+   *
+   * @param {CommandInfo | SubcommandInfo} info
+   *  The command info or name
+   */
+  constructor(info: CommandInfo | SubcommandInfo | string)
+
+  /**
    * Create a new command.
    *
    * @see {@linkcode CommandInfo}
    *
    * @param {CommandInfo | string | null | undefined} [info]
-   *  Command info or name
+   *  The command info or name
    */
   constructor(info?: CommandInfo | string | null | undefined)
 
@@ -241,7 +261,7 @@ class Command extends Helpable {
    * @see {@linkcode CommandData}
    *
    * @param {string | null | undefined} [name]
-   *  Command name
+   *  The command name
    * @param {CommandData | null | undefined} [info]
    *  Additional command info
    */
@@ -255,14 +275,15 @@ class Command extends Helpable {
    *
    * @see {@linkcode CommandData}
    * @see {@linkcode CommandInfo}
+   * @see {@linkcode SubcommandInfo}
    *
-   * @param {CommandInfo | string | null | undefined} [info]
-   *  Command info or name
+   * @param {CommandInfo | SubcommandInfo | string | null | undefined} [info]
+   *  The command info or name
    * @param {CommandData | null | undefined} [data]
    *  Additional command info
    */
   constructor(
-    info?: CommandInfo | string | null | undefined,
+    info?: CommandInfo | SubcommandInfo | string | null | undefined,
     data?: CommandData | null | undefined
   ) {
     if (typeof info === 'object' && info !== null) {
@@ -278,6 +299,7 @@ class Command extends Helpable {
       aliases: new Set(),
       arguments: [],
       examples: [],
+      hooks: {} as HooksInfo,
       options: new Map(),
       parent: undefined,
       subcommands: new Map(),
@@ -316,11 +338,11 @@ class Command extends Helpable {
 
     this.action(this.info.action)
     this.aliases(data.aliases)
-    this.done(this.info.done)
     this.exiter(this.info.exit)
     this.examples(data.examples)
     this.help(this.info.help)
     this.helpOption(this.info.helpOption)
+    this.hooks(data.hooks)
     this.id(this.info.name)
     this.optionPriority(this.info.optionPriority)
     this.summary(this.info.summary)
@@ -428,7 +450,7 @@ class Command extends Helpable {
   }
 
   /**
-   * Set the command action callback.
+   * Set the action callback.
    *
    * @see {@linkcode Action}
    *
@@ -443,7 +465,7 @@ class Command extends Helpable {
   public action(action: Action<any> | null | undefined): this
 
   /**
-   * Get the command action callback.
+   * Get the action callback.
    *
    * For structural commands, and commands where help was requested (via option
    * or subcommand), the action callback prints the help text.
@@ -455,9 +477,9 @@ class Command extends Helpable {
    * @instance
    *
    * @template {OptionValues} [Opts=OptionValues]
-   *  Parsed command options
+   *  The parsed command options
    * @template {any[]} [Args=any[]]
-   *  Parsed command arguments
+   *  The parsed command arguments
    *
    * @return {Action<Opts, Args>}
    *  The callback to fire when the command is ran
@@ -468,7 +490,7 @@ class Command extends Helpable {
   >(): Action<Opts, Args>
 
   /**
-   * Get or set the command action callback.
+   * Get or set the action callback.
    *
    * @see {@linkcode Action}
    *
@@ -478,7 +500,7 @@ class Command extends Helpable {
    * @param {Action | null | undefined} [action]
    *  The callback to fire when the command is ran
    * @return {Action | this}
-   *  The command action callback or `this` command
+   *  The action callback or `this` command
    */
   public action(action?: Action | null | undefined): Action | this {
     if (arguments.length) return this.info.action = action ?? noop, this
@@ -947,6 +969,133 @@ class Command extends Helpable {
     if (typeof infos === 'string') infos = toChunks(infos.trim(), kCommand)
     for (const info of infos) void this.argument(info)
     return this
+  }
+
+  /**
+   * Chain a callback, calling the function after `promise` is resolved,
+   * otherwise synchronously call `fn`.
+   *
+   * @see {@linkcode Awaitable}
+   *
+   * @protected
+   * @instance
+   *
+   * @template {any} T
+   *  The resolved value of `fn`
+   * @template {Awaitable<T>} [Return=Awaitable<T>]
+   *  The return value of `fn`
+   * @template {(...args: any[]) => Return} [Fn=(...args: any[]) => Return]
+   *  The function
+   *
+   * @param {Awaitable} promise
+   *  The promise to chain
+   * @param {Fn} fn
+   *  The function to call
+   * @param {ThisParameterType<Fn>} self
+   *  The `this` context of `fn`
+   * @param {Parameters<Fn>} params
+   *  The arguments to pass to `fn`
+   * @return {Awaitable<T>}
+   *  A new promise to resolve or the result of the `fn`
+   */
+  protected chainOrCall<
+    T,
+    Return extends Awaitable<T> = Awaitable<T>,
+    Fn extends (...args: any[]) => Return = (...args: any[]) => Return
+  >(
+    promise: Awaitable,
+    fn: Fn,
+    self: ThisParameterType<Fn>,
+    ...params: Parameters<Fn>
+  ): Awaitable<T> {
+    return isPromise(promise)
+      // already have a promise, chain callback.
+      // eslint-disable-next-line promise/prefer-await-to-then
+      ? promise.then((): Awaitable<T> => fn.call(self, ...params))
+      : fn.call(self, ...params)
+  }
+
+  /**
+   * Chain or call a hook for a command and its ancestors.
+   *
+   * @see {@linkcode KronkHookMap}
+   * @see {@linkcode KronkHookName}
+   *
+   * @protected
+   * @instance
+   *
+   * @template {KronkHookName} H
+   *  The hook name
+   * @template {Command} T
+   *  The running command
+   *
+   * @param {H} hook
+   *  The hook name
+   * @param {Command} command
+   *  The running command
+   * @param {ReturnType<KronkHookMap[H]>} [promise]
+   *  The promise to chain
+   * @return {ReturnType<KronkHookMap[H]>}
+   *  Nothing
+   */
+  protected chainOrCallHook<H extends KronkHookName, T extends Command>(
+    hook: H,
+    command: T,
+    promise?: ReturnType<KronkHookMap[H]>
+  ): ReturnType<KronkHookMap[H]>
+
+  /**
+   * Chain or call a hook for a command and its ancestors.
+   *
+   * > 👉 **Note**: `hook` is expected to be a `Command` method.
+   *
+   * @see {@linkcode KronkHook}
+   * @see {@linkcode KronkHookName}
+   *
+   * @protected
+   * @instance
+   *
+   * @param {KronkHookName} hook
+   *  The hook name
+   * @param {Command} command
+   *  The running command
+   * @param {ReturnType<KronkHook>} [promise]
+   *  The promise to chain
+   * @return {ReturnType<KronkHook>}
+   *  Nothing
+   */
+  protected chainOrCallHook(
+    hook: KronkHookName,
+    command: Command,
+    promise?: ReturnType<KronkHook>
+  ): ReturnType<KronkHook> {
+    /**
+     * The list of commands.
+     *
+     * @const {Command[]} commands
+     */
+    const commands: Command[] = hook === hooks.preCommand
+      ? [this]
+      : [command, ...command.ancestors()]
+
+    /**
+     * The result of the hook chain.
+     *
+     * @var {ReturnType<KronkHook>} result
+     */
+    let result: ReturnType<KronkHook> = promise
+
+    // call hooks in initial order for `post` hooks, but in reverse otherwise.
+    if (!hook.startsWith('post')) commands.reverse()
+
+    // call hooks for each command.
+    for (const self of commands) {
+      for (const callback of self.hook(hook)) {
+        result = this.chainOrCall(result, callback, self, command)
+      }
+    }
+
+    return result
   }
 
   /**
@@ -1556,61 +1705,6 @@ class Command extends Helpable {
   }
 
   /**
-   * Set the command done callback.
-   *
-   * @see {@linkcode Action}
-   *
-   * @public
-   * @instance
-   *
-   * @param {Action<any> | null | undefined} done
-   *  The callback to fire after the command is ran
-   * @return {this}
-   *  `this` command
-   */
-  public done(done: Action<any> | null | undefined): this
-
-  /**
-   * Get the command done callback.
-   *
-   * @see {@linkcode Action}
-   * @see {@linkcode OptionValues}
-   *
-   * @public
-   * @instance
-   *
-   * @template {OptionValues} [Opts=OptionValues]
-   *  Parsed command options with globals
-   * @template {any[]} [Args=any[]]
-   *  Parsed command arguments
-   *
-   * @return {Action<Opts, Args>}
-   *  The callback to fire after the command is ran
-   */
-  public done<
-    Opts extends OptionValues = OptionValues,
-    Args extends any[] = any[]
-  >(): Action<Opts, Args>
-
-  /**
-   * Get or set the command done callback.
-   *
-   * @see {@linkcode Action}
-   *
-   * @public
-   * @instance
-   *
-   * @param {Action | null | undefined} [done]
-   *  The callback to fire after the command is ran
-   * @return {Action | this}
-   *  Command done callback or `this` command
-   */
-  public done(done?: Action | null | undefined): Action | this {
-    if (arguments.length) return this.info.done = done ?? noop, this
-    return ok(this.info.done, 'expected `info.done`'), this.info.done
-  }
-
-  /**
    * Emit an `event`.
    *
    * @see {@linkcode KronkEvent}
@@ -1628,17 +1722,20 @@ class Command extends Helpable {
   }
 
   /**
-   * Emit a `command` event.
+   * Emit a parsed `command` event.
    *
    * @public
    * @instance
    *
-   * @param {Command} command
+   * @template {Command} T
    *  The command instance
+   *
+   * @param {T} command
+   *  The command instance representing the parsed command
    * @return {boolean}
    *  `true` if event has listeners, `false` otherwise
    */
-  public emitCommand(command: Command): boolean {
+  public emitCommand<T extends Command>(command: T): boolean {
     return this.emit(new CommandEvent(command))
   }
 
@@ -1846,8 +1943,11 @@ class Command extends Helpable {
    * @public
    * @instance
    *
-   * @param {Option} option
-   *  The command option instance
+   * @template {Option} T
+   *  The option instance
+   *
+   * @param {T} option
+   *  The option instance representing the parsed option
    * @param {unknown} value
    *  The raw `option` value
    * @param {OptionValueSource} source
@@ -1857,8 +1957,8 @@ class Command extends Helpable {
    * @return {boolean}
    *  `true` if event has listeners, `false` otherwise
    */
-  public emitOption(
-    option: Option,
+  public emitOption<T extends Option>(
+    option: T,
     value: RawOptionValue,
     source: OptionValueSource,
     flag?: Flags | null | undefined
@@ -1874,8 +1974,11 @@ class Command extends Helpable {
    * @public
    * @instance
    *
-   * @param {Option} option
-   *  The command option instance
+   * @template {Option} T
+   *  The option instance
+   *
+   * @param {T} option
+   *  The option instance representing the parsed option
    * @param {unknown} value
    *  The `option` value
    * @param {optionValueSource.implied} source
@@ -1885,8 +1988,8 @@ class Command extends Helpable {
    * @return {boolean}
    *  `true` if event has listeners, `false` otherwise
    */
-  public emitOption(
-    option: Option,
+  public emitOption<T extends Option>(
+    option: T,
     value: unknown,
     source: optionValueSource.implied,
     flag?: Flags | null | undefined
@@ -1903,7 +2006,7 @@ class Command extends Helpable {
    * @instance
    *
    * @param {Option} option
-   *  The command option instance
+   *  The option instance representing the parsed option
    * @param {unknown} value
    *  The raw or implied `option` value
    * @param {OptionValueSource} source
@@ -2247,7 +2350,7 @@ class Command extends Helpable {
    *
    * @see {@linkcode Help}
    *
-   * @template {Help} [T=Help]
+   * @template {Help} T
    *  Help text utility instance
    *
    * @public
@@ -2323,7 +2426,7 @@ class Command extends Helpable {
    *
    * @see {@linkcode Command}
    *
-   * @template {Command} [T=Command]
+   * @template {Command} T
    *  The help subcommand instance
    *
    * @public
@@ -2332,7 +2435,7 @@ class Command extends Helpable {
    * @return {Command | null}
    *  Help subcommand
    */
-  public helpCommand<T extends Command = Command>(): T | null
+  public helpCommand<T extends Command>(): T | null
 
   /**
    * Get or configure the help subcommand.
@@ -2413,7 +2516,7 @@ class Command extends Helpable {
    *
    * @see {@linkcode Option}
    *
-   * @template {Option} [T=Option]
+   * @template {Option} T
    *  The help option instance
    *
    * @public
@@ -2422,7 +2525,7 @@ class Command extends Helpable {
    * @return {Option | null}
    *  Help option
    */
-  public helpOption<T extends Option = Option>(): T | null
+  public helpOption<T extends Option>(): T | null
 
   /**
    * Get or configure the help option.
@@ -2472,6 +2575,139 @@ class Command extends Helpable {
     }
 
     return fallback(this.info.helpOption, null, isNIL)
+  }
+
+  /**
+   * Add or remove callbacks for a `hook`.
+   *
+   * @see {@linkcode HooksData}
+   * @see {@linkcode KronkHookName}
+   *
+   * @public
+   * @instance
+   *
+   * @template {KronkHookName} H
+   *  The hook name
+   *
+   * @param {H} hook
+   *  The hook name
+   * @param {HooksData[H] | false} fn
+   *  The callback or callbacks to add,
+   *  with falsy values used to remove all callbacks
+   * @return {this}
+   *  `this` command
+   */
+  public hook<H extends KronkHookName>(hook: H, fn: HooksData[H] | false): this
+
+  /**
+   * Get a list of callbacks for `hook`.
+   *
+   * @see {@linkcode HooksInfo}
+   * @see {@linkcode KronkHookName}
+   *
+   * @public
+   * @instance
+   *
+   * @template {KronkHookName} H
+   *  The hook name
+   *
+   * @param {H} hook
+   *  The hook name
+   * @return {HooksInfo[H]}
+   *  The list of hook callbacks
+   */
+  public hook<H extends KronkHookName>(hook: H): HooksInfo[H]
+
+  /**
+   * Manage a `hook` or get a list of callbacks for the hook.
+   *
+   * @see {@linkcode HooksData}
+   * @see {@linkcode KronkHook}
+   * @see {@linkcode KronkHookName}
+   *
+   * @public
+   * @instance
+   *
+   * @param {KronkHookName} hook
+   *  The hook name
+   * @param {HooksData[KronkHookName] | false | null | undefined} [fn]
+   *  The callback or callbacks to add,
+   *  with falsy values used to remove all callbacks
+   * @return {KronkHook[] | this}
+   *  The list of hook callbacks or `this` command
+   */
+  public hook(
+    hook: KronkHookName,
+    fn?: HooksData[KronkHookName] | false | null | undefined
+  ): KronkHook[] | this {
+    ;(this.info.hooks[hook] as KronkHook[] | null) ??= []
+
+    /**
+     * The list of hook callbacks.
+     *
+     * @const {KronkHook[]}
+     */
+    const hooks: KronkHook[] = this.info.hooks[hook]
+
+    if (arguments.length === 1) return hooks
+    if (fn) return hooks.push(...toList(fn)), this
+    return this.info.hooks[hook] = [], this
+  }
+
+  /**
+   * Add or remove hooks.
+   *
+   * @see {@linkcode HooksData}
+   *
+   * @public
+   * @instance
+   *
+   * @param {HooksData | false | null | undefined} hooks
+   *  The hooks configuration, with falsy values used to remove hooks
+   * @return {this}
+   *  `this` command
+   */
+  public hooks(hooks: HooksData | false | null | undefined): this
+
+  /**
+   * Get a record of registered hooks.
+   *
+   * @see {@linkcode HooksInfo}
+   *
+   * @public
+   * @instance
+   *
+   * @return {HooksInfo}
+   *  The hooks record
+   */
+  public hooks(): HooksInfo
+
+  /**
+   * Manage hooks or get the hooks record.
+   *
+   * @see {@linkcode HooksData}
+   * @see {@linkcode HooksInfo}
+   *
+   * @public
+   * @instance
+   *
+   * @param {HooksData | false | null | undefined} [hooks]
+   *  The hooks configuration
+   * @return {HooksInfo | this}
+   *  The hooks record or `this` command
+   */
+  public hooks(hooks?: HooksData | false | null | undefined): HooksInfo | this {
+    if (arguments.length) {
+      if (hooks) {
+        for (const [hook, fn] of entries(hooks)) this.hook(hook, fn)
+      } else {
+        for (const hook of keys(this.info.hooks)) this.hook(hook, false)
+      }
+
+      return this
+    }
+
+    return this.info.hooks
   }
 
   /**
@@ -2585,10 +2821,10 @@ class Command extends Helpable {
       cmd.helpRequested = true // propagate help request to all commands.
     }
 
-    // configure `this` help command to print the help text for `this` command.
+    // configure help command (`event.command`) to print the help text
+    // for `this` command rather than the help text for itself.
     if (isCommandEvent(event) && event.command.info.action === noop) {
       event.command.action(this.action())
-      event.command.done(this.done())
     }
 
     return void event
@@ -2613,7 +2849,7 @@ class Command extends Helpable {
    * @instance
    *
    * @template {Option} T
-   *  Parsed command option
+   *  The parsed option instance
    *
    * @param {OptionEvent<T>} event
    *  The emitted parsed option event
@@ -3100,22 +3336,23 @@ class Command extends Helpable {
     /**
      * The command to run.
      *
-     * @const {Command} cmd
+     * @const {Command} command
      */
-    const cmd: Command = this.prepareCommand([], unknown)
+    const command: Command = this.prepareCommand([], unknown) as Command
 
     /**
      * The parsed arguments.
      *
      * @const {unknown[]} args
      */
-    const args: unknown[] = cmd.args
+    const args: unknown[] = command.args
 
-    // run action and done callbacks.
-    void cmd.action().call(cmd, cmd.opts(), ...args)
-    void cmd.done().call(cmd, cmd.optsWithGlobals(), ...args)
+    // run callbacks.
+    void this.chainOrCallHook(hooks.preAction, command)
+    void command.action().call(command, command.opts(), ...args)
+    void this.chainOrCallHook(hooks.postAction, command)
 
-    return cmd
+    return command
   }
 
   /**
@@ -3157,22 +3394,23 @@ class Command extends Helpable {
     /**
      * The command to run.
      *
-     * @const {Command} cmd
+     * @const {Command} command
      */
-    const cmd: Command = this.prepareCommand([], unknown)
+    const command: Command = await this.prepareCommand([], unknown)
 
     /**
      * The parsed arguments.
      *
      * @const {unknown[]} args
      */
-    const args: unknown[] = cmd.args
+    const args: unknown[] = command.args
 
-    // run action and done callbacks.
-    await cmd.action().call(cmd, cmd.opts(), ...args)
-    await cmd.done().call(cmd, cmd.optsWithGlobals(), ...args)
+    // run callbacks.
+    await this.chainOrCallHook(hooks.preAction, command)
+    await command.action().call(command, command.opts(), ...args)
+    await this.chainOrCallHook(hooks.postAction, command)
 
-    return cmd
+    return command
   }
 
   /**
@@ -3475,6 +3713,8 @@ class Command extends Helpable {
    * > 👉 **Note**: Modifies `this` command by storing options. Does not reset
    * > state if called again.
    *
+   * @see {@linkcode Awaitable}
+   *
    * @protected
    * @instance
    *
@@ -3482,13 +3722,13 @@ class Command extends Helpable {
    *  List of operands (not options or values)
    * @param {string[]} unknown
    *  List of unknown arguments
-   * @return {Command | this}
+   * @return {Awaitable<Command | this>}
    *  The command to run
    */
   protected prepareCommand(
     operands: string[],
     unknown: string[]
-  ): Command | this {
+  ): Awaitable<Command | this> {
     /**
      * Parse result.
      *
@@ -3514,14 +3754,42 @@ class Command extends Helpable {
 
     // prepare subcommand.
     if (subcommand) {
-      return subcommand.prepareCommand(operands.slice(1), unknown)
+      return this.chainOrCall(
+        this.chainOrCallHook(hooks.preCommand, subcommand),
+        prepareSubcommand,
+        undefined
+      )
+
+      /**
+       * @this {void}
+       *
+       * @return {Awaitable<Command>}
+       *  The command to run
+       */
+      function prepareSubcommand(this: void): Awaitable<Command> {
+        return subcommand!.prepareCommand(operands.slice(1), unknown)
+      }
     }
 
     // prepare default command,
     // then check for errors and parse command arguments.
     if (!this.interrupter) {
       if (this.defaultCommand) {
-        return this.defaultCommand.prepareCommand(operands, unknown)
+        return this.chainOrCall(
+          this.chainOrCallHook(hooks.preCommand, this.defaultCommand),
+          prepareDefaultCommand,
+          this
+        )
+
+        /**
+         * @this {Command}
+         *
+         * @return {Awaitable<Command>}
+         *  The command to run
+         */
+        function prepareDefaultCommand(this: Command): Awaitable<Command> {
+          return this.defaultCommand!.prepareCommand(operands, unknown)
+        }
       }
 
       this.checkForMissingMandatoryOptions()
@@ -3822,13 +4090,13 @@ class Command extends Helpable {
    * @public
    * @instance
    *
-   * @template {string} [T=string]
-   *  Command version type
+   * @template {string} T
+   *  The command version
    *
    * @return {T | null}
    *  Command version
    */
-  public version<T extends string = string>(): T | null
+  public version<T extends string>(): T | null
 
   /**
    * Get, set, or print the command version.
@@ -3839,10 +4107,10 @@ class Command extends Helpable {
    * @instance
    *
    * @param {VersionData | true | null | undefined} [version]
-   *  Version, version option instance, version option info,
-   *  or whether to print the command version
+   *  The command version, version option instance, version option info,
+   *  or `true` to print the command version
    * @return {string | this | null | undefined}
-   *  Command version or `this` command
+   *  The command version or `this` command
    */
   public version(
     version?: VersionData | true | null | undefined

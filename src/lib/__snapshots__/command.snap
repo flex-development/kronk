@@ -169,6 +169,28 @@ exports[`unit:lib/Command > #helpOption > should return help option (2) 1`] = `n
 
 exports[`unit:lib/Command > #helpOption > should return help option (3) 1`] = `"Option(--help)"`;
 
+exports[`unit:lib/Command > #hooks > should reinitialize hooks w/ falsy \`hooks\` and return \`this\` 1`] = `
+{
+  "postAction": [],
+  "preAction": [],
+  "preCommand": [],
+}
+`;
+
+exports[`unit:lib/Command > #hooks > should return hooks record 1`] = `
+{
+  "postAction": [
+    [Function Mock],
+  ],
+  "preAction": [
+    [Function Mock],
+  ],
+  "preCommand": [
+    [Function Mock],
+  ],
+}
+`;
+
 exports[`unit:lib/Command > #usage > should return command usage (0) 1`] = `
 {
   "arguments": [

@@ -5,11 +5,15 @@
 
 import type TestSubject from '#interfaces/usage.info'
 import type { UsageData } from '@flex-development/kronk'
-import type { Nullable } from '@flex-development/tutils'
+import type { Nullable, RequiredKeys } from '@flex-development/tutils'
 
 describe('unit-d:interfaces/UsageInfo', () => {
   it('should extend UsageData', () => {
     expectTypeOf<TestSubject>().toExtend<UsageData>()
+  })
+
+  it('should have all required keys', () => {
+    expectTypeOf<RequiredKeys<TestSubject>>().toEqualTypeOf<keyof TestSubject>()
   })
 
   it('should match [arguments: readonly string[]]', () => {

@@ -14,6 +14,7 @@ import type {
   HelpCommandData,
   HelpOptionData,
   HelpTextOptions,
+  HooksData,
   List,
   OptionPriority,
   OptionsData,
@@ -32,7 +33,7 @@ import type {
  */
 interface CommandData extends HelpableInfo {
   /**
-   * The callback to fire when the command is executed.
+   * The callback to fire when the command is ran.
    *
    * @see {@linkcode Action}
    */
@@ -56,13 +57,6 @@ interface CommandData extends HelpableInfo {
    * Whether this is the default command.
    */
   default?: boolean | null | undefined
-
-  /**
-   * The callback to fire after the command {@linkcode action} is executed.
-   *
-   * @see {@linkcode Action}
-   */
-  done?: Action<any> | null | undefined
 
   /**
    * An example of the command, or a list of examples.
@@ -117,6 +111,13 @@ interface CommandData extends HelpableInfo {
    *  { description: 'show help', flags: '-h, --help' }
    */
   helpOption?: HelpOptionData | null | undefined
+
+  /**
+   * The hooks configuration.
+   *
+   * @see {@linkcode HooksData}
+   */
+  hooks?: HooksData | null | undefined
 
   /**
    * The strategy to use when merging global and local options.

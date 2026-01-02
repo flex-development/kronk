@@ -8,8 +8,8 @@
  *
  * @internal
  *
- * @template {any} [T=unknown]
- *  Unique list item type
+ * @template {any} T
+ *  The unique list item type
  *
  * @this {void}
  *

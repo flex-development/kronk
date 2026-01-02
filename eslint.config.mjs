@@ -45,6 +45,12 @@ const config = [
     }
   },
   {
+    files: ['src/internal/__tests__/is-promise.spec.mts'],
+    rules: {
+      'unicorn/no-thenable': 0
+    }
+  },
+  {
     files: ['src/lib/command.mts'],
     rules: {
       '@typescript-eslint/no-this-alias': 0

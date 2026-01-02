@@ -8,11 +8,13 @@ import type {
   default as TestSubject
 } from '#interfaces/command.metadata'
 import type {
+  Action,
   Argument,
   Command,
   CommandInfo,
   ExampleInfo,
   Help,
+  HooksInfo,
   Option,
   VersionOption
 } from '@flex-development/kronk'
@@ -25,6 +27,12 @@ describe('unit-d:interfaces/CommandMetadata', () => {
 
     // Expect
     expectTypeOf<TestSubject>().toExtend<Expect>()
+  })
+
+  it('should match [action: Action<any>]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('action')
+      .toEqualTypeOf<Action<any>>()
   })
 
   it('should match [aliases: Set<string>]', () => {
@@ -61,6 +69,12 @@ describe('unit-d:interfaces/CommandMetadata', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('helpOption')
       .toEqualTypeOf<Nilable<Option>>()
+  })
+
+  it('should match [hooks: HooksInfo]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('hooks')
+      .toEqualTypeOf<HooksInfo>()
   })
 
   it('should match [options: Map<string, Option>]', () => {

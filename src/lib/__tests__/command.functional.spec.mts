@@ -4,6 +4,7 @@
  */
 
 import chars from '#enums/chars'
+import kh from '#enums/hooks'
 import eid from '#enums/keid'
 import CommandError from '#errors/command.error'
 import KronkError from '#errors/kronk.error'
@@ -26,6 +27,7 @@ import type {
   Action,
   CommandInfo,
   Exit,
+  Hook,
   List,
   OptionValues,
   ParseOptions,
@@ -33,7 +35,7 @@ import type {
   WriteStream
 } from '@flex-development/kronk'
 import pathe from '@flex-development/pathe'
-import { constant, type Constructor } from '@flex-development/tutils'
+import { cast, constant, type Constructor } from '@flex-development/tutils'
 import { ok } from 'devlop'
 import type { MockInstance } from 'vitest'
 
@@ -895,41 +897,67 @@ describe('functional:lib/Command', () => {
       const { async: isAsync, ...rest } = info
 
       // Arrange
-      const done: MockInstance<Action> = vi.fn().mockName('done')
+      const postAction: MockInstance<Hook> = vi.fn().mockName(kh.postAction)
+      const preAction: MockInstance<Hook> = vi.fn().mockName(kh.preAction)
+      const preCommand: MockInstance<Hook> = vi.fn().mockName(kh.preCommand)
       const subject: TestSubject = new TestSubject({ ...rest, process })
+      let ancestors: TestSubject[]
       let command: TestSubject
+      let commands: TestSubject[]
       let help: Help
+      let lastCommand: TestSubject
       let opts: OptionValues
-      let optsWithGlobals: OptionValues
       let printHelp: MockInstance<Action>
       let result: TestSubject
       let write: MockInstance<WriteStream['write']>
 
       // Act
       before?.(subject)
-      command = subcommand ?? subject
-      command.done(done as unknown as Action)
+      ancestors = (command = subcommand ?? subject).ancestors()
+      commands = [command, ...ancestors]
+      isAsync && postAction.mockResolvedValue(undefined)
+      isAsync && preAction.mockResolvedValue(undefined)
+      isAsync && preCommand.mockResolvedValue(undefined)
+      for (const cmd of commands) cmd.hook(kh.postAction, cast(postAction))
+      for (const cmd of commands) cmd.hook(kh.preAction, cast(preAction))
+      for (const cmd of ancestors) cmd.hook(kh.preCommand, cast(preCommand))
+      // if (helpCommand) commands.unshift(helpCommand)
       help = command.help() // @ts-expect-error [2445] testing.
-      printHelp = vi.spyOn(command, 'printHelp')
-      write = vi.spyOn(process.stdout, 'write')
+      printHelp = vi.spyOn(command, 'printHelp').mockName('printHelp')
+      write = vi.spyOn(process.stdout, 'write').mockName('write')
       result = await subject[isAsync ? 'parseAsync' : 'parse'](argv, options)
+      lastCommand = commands.at(-1)!
       opts = result.opts()
-      optsWithGlobals = result.optsWithGlobals()
 
       // Expect
       expect(result).to.eq(helpCommand ?? command)
+      expect(preAction).toHaveBeenCalledTimes(commands.length)
+      expect(preAction).toHaveBeenCalledBefore(printHelp)
+      expect(preAction).toHaveBeenCalledBefore(write)
+      expect(preAction).toHaveBeenCalledBefore(postAction)
+      expect(preAction.mock.contexts[0]).to.eq(lastCommand)
+      expect(preAction.mock.calls[0]).to.eql([result])
+      expect(preAction.mock.contexts.at(-1)).to.eq(command)
+      expect(preAction.mock.lastCall).to.eql([result])
       expect(printHelp).toHaveBeenCalledOnce()
       expect(printHelp.mock.contexts[0]).to.eq(helpCommand ? command : result)
       expect(printHelp.mock.lastCall).to.eql([opts, ...result.args])
       expect(write).toHaveBeenCalledExactlyOnceWith(help.text(command))
-      expect(done).toHaveBeenCalledAfter(printHelp)
-      expect(done).toHaveBeenCalledAfter(write)
-      expect(done).toHaveBeenCalledOnce()
-      expect(done.mock.contexts[0]).to.eq(result)
-      expect(done.mock.lastCall).to.eql([optsWithGlobals, ...result.args])
+      expect(postAction).toHaveBeenCalledTimes(commands.length)
+      expect(postAction).toHaveBeenCalledAfter(printHelp)
+      expect(postAction).toHaveBeenCalledAfter(write)
+      expect(postAction.mock.contexts[0]).to.eq(command)
+      expect(postAction.mock.calls[0]).to.eql([result])
+      expect(postAction.mock.contexts.at(-1)).to.eq(lastCommand)
+      expect(postAction.mock.lastCall).to.eql([result])
 
       // Expect (subcommand conditional)
-      if (subcommand) expect(result).to.not.eq(subject)
+      if (subcommand) {
+        expect(result).to.not.eq(subject)
+        expect(preCommand.mock.calls.length).gte(ancestors.length)
+      } else {
+        expect(preCommand).toHaveBeenCalledTimes(0)
+      }
     })
 
     it.each<[version: string, ...ParseCase]>([
@@ -1027,47 +1055,73 @@ describe('functional:lib/Command', () => {
       const { async: isAsync, ...rest } = info
 
       // Arrange
-      const done: MockInstance<Action> = vi.fn().mockName('done')
+      const postAction: MockInstance<Hook> = vi.fn().mockName(kh.postAction)
+      const preAction: MockInstance<Hook> = vi.fn().mockName(kh.preAction)
+      const preCommand: MockInstance<Hook> = vi.fn().mockName(kh.preCommand)
       const subject: TestSubject = new TestSubject({ ...rest, process })
+      let ancestors: TestSubject[]
       let command: TestSubject
+      let commands: TestSubject[]
+      let lastCommand: TestSubject
       let opts: OptionValues
-      let optsWithGlobals: OptionValues
       let printVersion: MockInstance<Action>
       let result: TestSubject
       let write: MockInstance<WriteStream['write']>
 
       // Act
       before?.(subject)
-      command = subcommand ?? subject
-      command.done(done as unknown as Action) // @ts-expect-error [2445] testing
-      printVersion = vi.spyOn(command, 'printVersion')
-      write = vi.spyOn(process.stdout, 'write')
+      ancestors = (command = subcommand ?? subject).ancestors()
+      commands = [command, ...ancestors]
+      isAsync && postAction.mockResolvedValue(undefined)
+      isAsync && preAction.mockResolvedValue(undefined)
+      isAsync && preCommand.mockResolvedValue(undefined)
+      for (const cmd of commands) cmd.hook(kh.postAction, cast(postAction))
+      for (const cmd of commands) cmd.hook(kh.preAction, cast(preAction))
+      for (const cmd of ancestors) cmd.hook(kh.preCommand, cast(preCommand))
+      // @ts-expect-error [2445] testing
+      printVersion = vi.spyOn(command, 'printVersion').mockName('printVersion')
+      write = vi.spyOn(process.stdout, 'write').mockName('write')
       result = await subject[isAsync ? 'parseAsync' : 'parse'](argv, options)
+      lastCommand = commands.at(-1)!
       opts = result.opts()
-      optsWithGlobals = result.optsWithGlobals()
 
       // Expect
       expect(result).to.eq(command)
       expect(opts).to.have.property('version', version)
-      expect(optsWithGlobals).to.have.property('version', version)
+      expect(result.optsWithGlobals()).to.have.property('version', version)
+      expect(preAction).toHaveBeenCalledTimes(commands.length)
+      expect(preAction).toHaveBeenCalledBefore(printVersion)
+      expect(preAction).toHaveBeenCalledBefore(postAction)
+      expect(preAction.mock.contexts[0]).to.eq(lastCommand)
+      expect(preAction.mock.calls[0]).to.eql([result])
+      expect(preAction.mock.contexts.at(-1)).to.eq(result)
+      expect(preAction.mock.lastCall).to.eql([result])
       expect(printVersion).toHaveBeenCalledOnce()
       expect(printVersion.mock.contexts[0]).to.eq(result)
       expect(printVersion.mock.lastCall).to.eql([opts, ...result.args])
-      expect(done).toHaveBeenCalledAfter(printVersion)
-      expect(done).toHaveBeenCalledOnce()
-      expect(done.mock.contexts[0]).to.eq(result)
-      expect(done.mock.lastCall).to.eql([optsWithGlobals, ...result.args])
+      expect(postAction).toHaveBeenCalledTimes(commands.length)
+      expect(postAction).toHaveBeenCalledAfter(printVersion)
+      expect(postAction.mock.contexts[0]).to.eq(result)
+      expect(postAction.mock.calls[0]).to.eql([result])
+      expect(postAction.mock.contexts.at(-1)).to.eq(lastCommand)
+      expect(postAction.mock.lastCall).to.eql([result])
 
       // Expect (version conditional)
       if (version) {
         expect(write).toHaveBeenCalledExactlyOnceWith(version + chars.lf)
-        expect(done).toHaveBeenCalledAfter(write)
+        expect(preAction).toHaveBeenCalledBefore(write)
+        expect(postAction).toHaveBeenCalledAfter(write)
       } else {
         expect(write).not.toHaveBeenCalled()
       }
 
       // Expect (subcommand conditional)
-      if (subcommand) expect(result).to.not.eq(subject)
+      if (subcommand) {
+        expect(result).to.not.eq(subject)
+        expect(preCommand.mock.calls.length).gte(ancestors.length)
+      } else {
+        expect(preCommand).toHaveBeenCalledTimes(0)
+      }
     })
 
     it.each<ParseCase>([
@@ -1867,39 +1921,63 @@ describe('functional:lib/Command', () => {
 
       // Arrange
       const action: MockInstance<Action> = vi.fn().mockName('action')
-      const done: MockInstance<Action> = vi.fn().mockName('done')
+      const postAction: MockInstance<Hook> = vi.fn().mockName(kh.postAction)
+      const preAction: MockInstance<Hook> = vi.fn().mockName(kh.preAction)
+      const preCommand: MockInstance<Hook> = vi.fn().mockName(kh.preCommand)
       const subject: TestSubject = new TestSubject(rest)
+      let ancestors: TestSubject[]
       let command: TestSubject
+      let commands: TestSubject[]
+      let lastCommand: TestSubject
       let opts: OptionValues
-      let optsWithGlobals: OptionValues
       let result: TestSubject
 
       // Act
       before?.(subject)
-      command = subcommand ?? subject
+      ancestors = (command = subcommand ?? subject).ancestors()
+      commands = [command, ...ancestors]
+      isAsync && action.mockResolvedValue(undefined)
+      isAsync && postAction.mockResolvedValue(undefined)
+      isAsync && preAction.mockResolvedValue(undefined)
+      isAsync && preCommand.mockResolvedValue(undefined)
+      for (const cmd of commands) cmd.hook(kh.postAction, cast(postAction))
+      for (const cmd of commands) cmd.hook(kh.preAction, cast(preAction))
+      for (const cmd of ancestors) cmd.hook(kh.preCommand, cast(preCommand))
       command.action(action as unknown as Action)
-      command.done(done as unknown as Action)
       result = await subject[isAsync ? 'parseAsync' : 'parse'](argv, options)
+      lastCommand = commands.at(-1)!
       opts = result.opts()
-      optsWithGlobals = result.optsWithGlobals()
 
       // Expect
       expect(action).toHaveBeenCalledOnce()
       expect(action.mock.contexts[0]).to.eq(result)
       expect(action.mock.lastCall).to.eql([opts, ...result.args])
-      expect(done).toHaveBeenCalledAfter(action)
-      expect(done).toHaveBeenCalledOnce()
-      expect(done.mock.contexts[0]).to.eq(result)
-      expect(done.mock.lastCall).to.eql([optsWithGlobals, ...result.args])
+      expect(preAction).toHaveBeenCalledTimes(commands.length)
+      expect(preAction).toHaveBeenCalledBefore(action)
+      expect(preAction.mock.calls[0]).to.eql([result])
+      expect(preAction.mock.contexts[0]).to.eq(lastCommand)
+      expect(preAction.mock.contexts.at(-1)).to.eq(result)
+      expect(preAction.mock.lastCall).to.eql([result])
+      expect(postAction).toHaveBeenCalledAfter(action)
+      expect(postAction).toHaveBeenCalledAfter(preAction)
+      expect(postAction).toHaveBeenCalledTimes(commands.length)
+      expect(postAction.mock.contexts[0]).to.eq(result)
+      expect(postAction.mock.calls[0]).to.eql([result])
+      expect(postAction.mock.contexts.at(-1)).to.eq(lastCommand)
+      expect(postAction.mock.lastCall).to.eql([result])
 
-      // Expect (conditional)
-      if (after) {
-        expect.hasAssertions(), after(subject, result)
-      } else if (subcommand) {
+      // Expect (subcommand conditional)
+      if (subcommand) {
         expect(result).to.eq(subcommand).and.not.eq(subject)
+        expect(preCommand).toHaveBeenCalledBefore(preAction)
+        expect(preCommand.mock.calls.length).gte(ancestors.length)
       } else {
         expect(result).to.eq(subject)
+        expect(preCommand).toHaveBeenCalledTimes(0)
       }
+
+      // Expect (after)
+      if (after) expect.hasAssertions(), after(subject, result)
 
       // Expect (snapshot)
       expect(result.snapshot()).toMatchSnapshot()

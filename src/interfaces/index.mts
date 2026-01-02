@@ -27,6 +27,8 @@ export type { default as DefaultInfo } from '#interfaces/default.info'
 export type { default as ExampleInfo } from '#interfaces/example.info'
 export type { default as HelpTextOptions } from '#interfaces/help-text.options'
 export type { default as HelpableInfo } from '#interfaces/helpable.info'
+export type { default as HooksData } from '#interfaces/hooks.data'
+export type { default as HooksInfo } from '#interfaces/hooks.info'
 export type { default as KronkErrorCause } from '#interfaces/kronk-error.cause'
 export type { default as KronkErrorInfo } from '#interfaces/kronk-error.info'
 export type { default as KronkErrorJson } from '#interfaces/kronk-error.json'
@@ -34,6 +36,7 @@ export type { default as KronkErrorMap } from '#interfaces/kronk-error.map'
 export type {
   default as KronkEventNameMap
 } from '#interfaces/kronk-event-name.map'
+export type { default as KronkHookMap } from '#interfaces/kronk-hook.map'
 export type {
   default as OptionEventNameMap
 } from '#interfaces/option-event-name.map'

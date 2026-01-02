@@ -10,6 +10,7 @@ import type {
   CommandInfo,
   ExampleInfo,
   Help,
+  HooksInfo,
   Option,
   VersionOption
 } from '@flex-development/kronk'
@@ -30,7 +31,7 @@ type Skip = 'arguments' | 'options' | 'subcommands'
  */
 interface CommandMetadata extends Omit<CommandInfo, Skip> {
   /**
-   * The callback to fire when the command is executed.
+   * The callback to fire when the command is ran.
    *
    * @see {@linkcode Action}
    *
@@ -49,15 +50,6 @@ interface CommandMetadata extends Omit<CommandInfo, Skip> {
    * @see {@linkcode Argument}
    */
   arguments: Argument[]
-
-  /**
-   * The callback to fire after the command {@linkcode action} is executed.
-   *
-   * @see {@linkcode Action}
-   *
-   * @override
-   */
-  done: Action<any>
 
   /**
    * A list of command examples.
@@ -94,6 +86,15 @@ interface CommandMetadata extends Omit<CommandInfo, Skip> {
    * @override
    */
   helpOption: Option | null | undefined
+
+  /**
+   * The hooks configuration.
+   *
+   * @see {@linkcode HooksInfo}
+   *
+   * @override
+   */
+  hooks: HooksInfo
 
   /**
    * Map, where each key is a long or short flag and each value is the command

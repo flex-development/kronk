@@ -4,9 +4,13 @@
  */
 
 import type TestSubject from '#interfaces/usage.data'
-import type { Nilable } from '@flex-development/tutils'
+import type { Nilable, OptionalKeys } from '@flex-development/tutils'
 
 describe('unit-d:interfaces/UsageData', () => {
+  it('should have all optional keys', () => {
+    expectTypeOf<OptionalKeys<TestSubject>>().toEqualTypeOf<keyof TestSubject>()
+  })
+
   it('should match [arguments?: readonly string[] | string | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('arguments')

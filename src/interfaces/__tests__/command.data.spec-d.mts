@@ -15,6 +15,7 @@ import type {
   HelpCommandData,
   HelpOptionData,
   HelpTextOptions,
+  HooksData,
   List,
   OptionPriority,
   OptionsData,
@@ -59,12 +60,6 @@ describe('unit-d:interfaces/CommandData', () => {
       .toEqualTypeOf<Nilable<boolean>>()
   })
 
-  it('should match [done?: Action<any> | null | undefined]', () => {
-    expectTypeOf<TestSubject>()
-      .toHaveProperty('done')
-      .toEqualTypeOf<Nilable<Action<any>>>()
-  })
-
   it('should match [examples?: ExamplesData | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('examples')
@@ -93,6 +88,12 @@ describe('unit-d:interfaces/CommandData', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('helpOption')
       .toEqualTypeOf<Nilable<HelpOptionData>>()
+  })
+
+  it('should match [hooks?: HooksData | null | undefined]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('hooks')
+      .toEqualTypeOf<Nilable<HooksData>>()
   })
 
   it('should match [optionPriority?: OptionPriority | null | undefined]', () => {

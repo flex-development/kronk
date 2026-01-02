@@ -6,7 +6,7 @@
 import type { Awaitable, Command, OptionValues } from '@flex-development/kronk'
 
 /**
- * Callback to fire when a command is executed.
+ * The callback to fire when a command is ran.
  *
  * @see {@linkcode Awaitable}
  * @see {@linkcode Command}
@@ -17,14 +17,13 @@ import type { Awaitable, Command, OptionValues } from '@flex-development/kronk'
  *  Command arguments
  *
  * @this {Command}
- *  The command or subcommand being executed
+ *  The command to be ran
  *
- * @param {Opts} options
- *  Parsed command options
+ * @param {Opts} opts
+ *  The parsed command options
  * @param {Args} args
- *  Parsed command arguments
+ *  The parsed command arguments
  * @return {Awaitable<null | undefined | void>}
- *  Nothing
  */
 type Action<
   Opts extends OptionValues = OptionValues,

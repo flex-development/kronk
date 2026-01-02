@@ -3,6 +3,7 @@
  * @module kronk/lib/tests/unit/Command
  */
 
+import hooks from '#enums/hooks'
 import keid from '#enums/keid'
 import KronkError from '#errors/kronk.error'
 import clamp from '#fixtures/commands/clamp'
@@ -27,10 +28,12 @@ import type {
   Exit,
   HelpTextOptions,
   KronkErrorId,
+  KronkHookName,
   OptionPriority,
   Process,
   UsageData
 } from '@flex-development/kronk'
+import { cast } from '@flex-development/tutils'
 import { SemVer } from 'semver'
 import type { MockInstance } from 'vitest'
 
@@ -402,6 +405,55 @@ describe('unit:lib/Command', () => {
 
       // Expect
       expect(result ? String(result) : result).toMatchSnapshot()
+    })
+  })
+
+  describe('#hook', () => {
+    let subject: TestSubject
+
+    beforeEach(() => {
+      subject = new TestSubject({
+        hooks: {
+          [hooks.postAction]: cast(vi.fn().mockName(hooks.postAction)),
+          [hooks.preAction]: cast(vi.fn().mockName(hooks.preAction)),
+          [hooks.preCommand]: cast(vi.fn().mockName(hooks.preCommand))
+        }
+      })
+    })
+
+    it.each<[KronkHookName, fn: false | null | undefined]>([
+      [hooks.postAction, false],
+      [hooks.preAction, null],
+      [hooks.preCommand, undefined]
+    ])('should remove `hook` callbacks w/ falsy `fn` and return `this` (%#)', (
+      hook,
+      fn
+    ) => {
+      expect(subject.hook(hook, fn)).to.eq(subject)
+      expect(subject.hook(hook)).to.be.an('array').of.length(0)
+    })
+  })
+
+  describe('#hooks', () => {
+    let subject: TestSubject
+
+    beforeEach(() => {
+      subject = new TestSubject({
+        hooks: {
+          [hooks.postAction]: cast(vi.fn().mockName(hooks.postAction)),
+          [hooks.preAction]: cast(vi.fn().mockName(hooks.preAction)),
+          [hooks.preCommand]: cast(vi.fn().mockName(hooks.preCommand))
+        }
+      })
+    })
+
+    it('should reinitialize hooks w/ falsy `hooks` and return `this`', () => {
+      expect(subject.hooks(null)).to.eq(subject)
+      expect(subject.hooks()).toMatchSnapshot()
+    })
+
+    it('should return hooks record', () => {
+      expect(subject.hooks()).toMatchSnapshot()
     })
   })
 
