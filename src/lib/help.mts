@@ -19,8 +19,7 @@ import type {
   Numeric,
   Option,
   Parseable,
-  UsageInfo,
-  VersionOption
+  UsageInfo
 } from '@flex-development/kronk'
 import { number } from '@flex-development/kronk/parsers'
 import { isArgument } from '@flex-development/kronk/utils'
@@ -379,22 +378,18 @@ class Help {
    * Compare two options.
    *
    * @see {@linkcode Option}
-   * @see {@linkcode VersionOption}
    *
    * @protected
    * @instance
    *
-   * @param {Option | VersionOption} a
+   * @param {Option} a
    *  The first option
-   * @param {Option | VersionOption} b
+   * @param {Option} b
    *  The option to compare to `a`
    * @return {number}
    *  The comparison result
    */
-  protected compareOption(
-    a: Option | VersionOption,
-    b: Option | VersionOption
-  ): number {
+  protected compareOption(a: Option, b: Option): number {
     return this.compare(a.id, b.id)
   }
 
@@ -705,17 +700,16 @@ class Help {
    * Get the description to show in the list of global options.
    *
    * @see {@linkcode Option}
-   * @see {@linkcode VersionOption}
    *
    * @protected
    * @instance
    *
-   * @param {Option | VersionOption} option
+   * @param {Option} option
    *  The option
    * @return {string}
    *  The formatted description
    */
-  protected globalOptionDescription(option: Option | VersionOption): string {
+  protected globalOptionDescription(option: Option): string {
     return this.optionDescription(option)
   }
 
@@ -1119,17 +1113,16 @@ class Help {
    * Get the description to show in the list of options.
    *
    * @see {@linkcode Option}
-   * @see {@linkcode VersionOption}
    *
    * @protected
    * @instance
    *
-   * @param {Option | VersionOption} option
+   * @param {Option} option
    *  The option
    * @return {string}
    *  The formatted description
    */
-  protected optionDescription(option: Option | VersionOption): string {
+  protected optionDescription(option: Option): string {
     return this.ansi.italic(option.description() || chars.minus)
   }
 
@@ -1712,10 +1705,9 @@ class Help {
      *  `true` if `option` is not help or version option, `false` otherwise
      */
     function forker(this: void, option: Option): boolean {
-      return (
-        !('version' in option) &&
-        [command, ...command.ancestors()].every(c => option !== c.helpOption())
-      )
+      return [command, ...command.ancestors()].every(cmd => {
+        return option !== cmd.helpOption() && option !== cmd.versionOption()
+      })
     }
   }
 

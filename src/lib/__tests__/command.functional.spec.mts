@@ -18,6 +18,7 @@ import mlly from '#fixtures/commands/mlly'
 import semver from '#fixtures/commands/semver'
 import smallestNum from '#fixtures/commands/smallest-num'
 import tribonacci from '#fixtures/commands/tribonacci'
+import trim from '#internal/trim'
 import TestSubject from '#lib/command'
 import Help from '#lib/help'
 import createProcess from '#tests/utils/create-process'
@@ -961,8 +962,8 @@ describe('functional:lib/Command', () => {
     })
 
     it.each<[version: string, ...ParseCase]>([
-      [clamp.version.version, clamp, ['--version']],
-      [clamp.version.version, clamp, [clamp.name, '-v', chars.digit3]],
+      [clamp.version, clamp, ['--version']],
+      [clamp.version, clamp, [clamp.name, '-v', chars.digit3]],
       [copy.version, copy, [copy.aliases, '--version']],
       [copy.version, copy, [copy.aliases, '-v']],
       [copy.version, copy, ['--version']],
@@ -1064,6 +1065,7 @@ describe('functional:lib/Command', () => {
       let commands: TestSubject[]
       let lastCommand: TestSubject
       let opts: OptionValues
+      let optsWithGlobals: OptionValues
       let printVersion: MockInstance<Action>
       let result: TestSubject
       let write: MockInstance<WriteStream['write']>
@@ -1084,11 +1086,12 @@ describe('functional:lib/Command', () => {
       result = await subject[isAsync ? 'parseAsync' : 'parse'](argv, options)
       lastCommand = commands.at(-1)!
       opts = result.opts()
+      optsWithGlobals = result.optsWithGlobals()
 
       // Expect
       expect(result).to.eq(command)
-      expect(opts).to.have.property('version', version)
-      expect(result.optsWithGlobals()).to.have.property('version', version)
+      expect(opts).to.have.property('version', trim(version))
+      expect(optsWithGlobals).to.have.property('version', trim(version))
       expect(preAction).toHaveBeenCalledTimes(commands.length)
       expect(preAction).toHaveBeenCalledBefore(printVersion)
       expect(preAction).toHaveBeenCalledBefore(postAction)

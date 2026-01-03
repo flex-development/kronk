@@ -83,6 +83,7 @@
     - [`Command#unknowns([strategy])`](#commandunknownsstrategy)
     - [`Command#usage([usage])`](#commandusageusage)
     - [`Command#version([version])`](#commandversionversion)
+    - [`Command#versionOption([version])`](#commandversionoptionversion)
   - [`CommandEvent<T>(command)`](#commandeventtcommand)
     - [`CommandEvent#command`](#commandeventcommand)
     - [`CommandEvent#id`](#commandeventid)
@@ -135,8 +136,6 @@
     - [`Parseable#required`](#parseablerequired)
     - [`Parseable#toString()`](#parseabletostring)
     - [`Parseable#variadic`](#parseablevariadic)
-  - [`VersionOption(info)`](#versionoptioninfo)
-    - [`VersionOption#version`](#versionoptionversion)
   - [`keid`](#keid)
   - [`optionValueSource`](#optionvaluesource)
 - [Types](#types)
@@ -217,8 +216,7 @@
   - [`UnknownStrategy`](#unknownstrategy)
   - [`UsageData`](#usagedata)
   - [`UsageInfo`](#usageinfo)
-  - [`VersionData`](#versiondata)
-  - [`VersionOptionInfo`](#versionoptioninfo-1)
+  - [`VersionOptionData`](#versionoptiondata)
   - [`Version`](#version)
   - [`WriteStream`](#writestream)
   - [`Write`](#write)
@@ -663,19 +661,18 @@ Create a new unattached option.
 ##### Overloads
 
 - `createOption(info: Flags | OptionInfo): Option`
-- `createOption(info: VersionOptionInfo): VersionOption`
 - `createOption(info: Flags, data?: OptionData | null | undefined): Option`
 
 ##### Parameters
 
-- `info` ([`Flags`](#flags) | [`OptionInfo`](#optioninfo-1) | [`VersionOptionInfo`](#versionoptioninfo-1))
+- `info` ([`Flags`](#flags) | [`OptionInfo`](#optioninfo-1))
   — option info or flags
 - `data` ([`OptionData`](#optiondata))
   — additional option info
 
 ##### Returns
 
-([`Option`](#optioninfo) | [`VersionOption`](#versionoptioninfo)) New option instance
+([`Option`](#optioninfo)) New option instance
 
 #### `Command#default`
 
@@ -903,6 +900,9 @@ Get the help text utility, configure the help text, or print the help text.
 
 Get or configure the help subcommand.
 
+> 👉 **Note**: No cleanup is performed when this method is called
+> with a different name (i.e. `help` as a string or `help.name`).
+
 ##### Overloads
 
 - `helpCommand(help: HelpCommandData | null | undefined): this`
@@ -926,6 +926,9 @@ Get or configure the help subcommand.
 #### `Command#helpOption([help])`
 
 Get or configure the help option.
+
+> 👉 **Note**: No cleanup is performed when this method is called
+> with different flags (i.e. `help` as a string or `help.flags`).
 
 ##### Overloads
 
@@ -1284,32 +1287,54 @@ Get or set the command usage description.
 
 #### `Command#version([version])`
 
-Get or set the command version.
-
-> 👉 **Note**: When setting the command version, this method auto-registers
-> the version option with the flags `-v, --version`.
-> No cleanup is performed when this method
-> is called with different flags (i.e. `info` as a string or `info.flags`).
+Get, set, or print the command version.
 
 ##### Overloads
 
-- `version(version: VersionData | null | undefined): this`
+- `version(version: Version | null | undefined): this`
 - `version(version: true): undefined`
-- `version<T extends string>(): T | null`
+- `version<T extends Version>(): T | null`
 
 ##### Type Parameters
 
-- `T` (`string`)
+- `T` ([`Version`](#version))
   — the command version
 
 ##### Parameters
 
-- `version` ([`VersionData`](#versiondata) | `true` | `null`| `undefined`)
-  — the command version, version option instance, version option info, or `true` to print the command version
+- `version` ([`Version`](#version) | `true` | `null`| `undefined`)
+  — the command version or `true` to print the command version
 
 ##### Returns
 
 (`T` | [`this`](#commandinfo) | `null`) The command version or `this` command
+
+#### `Command#versionOption([version])`
+
+Get or configure the version option.
+
+> 👉 **Note**: No cleanup is performed when this method is called
+> with different flags (i.e. `version` as a string or `version.flags`).
+
+##### Overloads
+
+- `versionOption(version: VersionOptionData | null | undefined): this`
+- `versionOption<T extends Option>(): T | null`
+
+##### Type Parameters
+
+- `T` ([`Option`](#optioninfo))
+  — the version option instance
+
+##### Parameters
+
+- `version` ([`VersionOptionData`](#versionoptiondata) | `null`| `undefined`)
+  — option flags, option instance, option info, `false` to disable the version option,
+  or any other allowed value to use the default configuration
+
+##### Returns
+
+(`T` | [`this`](#commandinfo) | `null`) Version option or `this` command
 
 ### `CommandEvent<T>(command)`
 
@@ -1896,25 +1921,6 @@ Get the candidate as a human-readable string (`abstract`).
 
 Whether the candidate can be specified multiple times.
 
-### `VersionOption(info)`
-
-A command version option (`class`).
-
-#### Extends
-
-- [`Option`](#optioninfo)
-
-#### Parameters
-
-- `info` ([`Version`](#version) | [`VersionOptionInfo`](#versionoptioninfo-1))
-  — command version or option info
-
-#### `VersionOption#version`
-
-`string`
-
-The version of the command.
-
 ### `keid`
 
 Default error ids (`const enum`).
@@ -1934,6 +1940,7 @@ const enum keid {
   missing_argument = 'kronk/missing-argument',
   missing_mandatory_option = 'kronk/missing-mandatory-option',
   no_flags = 'kronk/no-flags',
+  required_argument_after_optional = 'kronk/required-argument-after-optional',
   unknown_implied_option = 'kronk/unknown-implied-option',
   unknown_option = 'kronk/unknown-option'
 }
@@ -2164,8 +2171,11 @@ Data transfer object for commands (TypeScript interface).
 - `usage?` ([`UsageData`](#usagedata), optional)
   — an object describing how the command is used
   - default: `{ arguments: null, options: '[options]', subcommand: '[command]' }`
-- `version?` ([`VersionData`](#versiondata), optional)
-  — command version configuration
+- `version?` ([`Version`](#version), optional)
+  — the command version
+- `versionOption?` ([`VersionOptionData`](#versionoptiondata), optional)
+  — customize the version option
+  - default: `{ description: 'print version number', flags: '-v, --version' }`
 
 ### `CommandErrorInfo`
 
@@ -2293,7 +2303,7 @@ Command metadata (TypeScript interface).
   — the parent command
 - `subcommands` ([`Map<string, Command>`](#commandinfo))
   — map, where each key is the name of a subcommand each value is a subcommand
-- `version` ([`VersionOption`](#versionoptioninfo) | `null` | `undefined`)
+- `versionOption` ([`Option`](#optioninfo) | `null` | `undefined`)
   — the version option
 
 ### `CommandName`
@@ -2486,14 +2496,13 @@ type HelpCommandData =
 
 ### `HelpOptionData`
 
-Union of types used to configure the help option (TypeScript type).
+Union of types used to configure the command help option (TypeScript type).
 
-The command help option can be customized with
-an [`Option`](#optioninfo) instance, [flags](#flags), or an [info object](#optioninfo-1).
-It can also be disabled (`false`).
+The help option can be customized with an [`Option`](#optioninfo) instance, [flags](#flags),
+or an [info object](#optioninfo-1). It can also be disabled (`false`).
 
 ```ts
-type HelpOptionData = Flags | Option | OptionInfo | OptionData | boolean
+type HelpOptionData = Flags | Option | OptionData | OptionInfo | boolean
 ```
 
 ### `HelpTextOptions`
@@ -3219,29 +3228,16 @@ Command usage info (TypeScript interface).
   — the descriptor
   > 👉 **note**: displayed in auto-generated help text **only** when a command has at least one visible subcommand
 
-### `VersionData`
+### `VersionOptionData`
 
-Union of types used to configure the version of a [`Command`](#commandinfo) (TypeScript type).
+Union of types used to configure the command version option (TypeScript type).
+
+The version option can be customized with an [`Option`](#optioninfo) instance, [flags](#flags),
+or an [info object](#optioninfo-1). It can also be disabled (`false`).
 
 ```ts
-type VersionData = Version | VersionOption | VersionOptionInfo
+type VersionOptionData = Flags | Option | OptionData | OptionInfo | boolean
 ```
-
-### `VersionOptionInfo`
-
-Data used to create command version options (i.e. `-v, --version`) (TypeScript interface).
-
-#### Extends
-
-- [`OptionData`](#optiondata)
-
-#### Properties
-
-- `flags?` ([`Flags`](#flags), optional)
-  — option flags
-  - default: `'-v, --version'`
-- `version` ([`Version`](#version))
-  — the command version
 
 ### `Version`
 

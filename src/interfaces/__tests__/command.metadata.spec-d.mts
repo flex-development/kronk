@@ -15,8 +15,7 @@ import type {
   ExampleInfo,
   Help,
   HooksInfo,
-  Option,
-  VersionOption
+  Option
 } from '@flex-development/kronk'
 import type { Nilable } from '@flex-development/tutils'
 
@@ -95,9 +94,9 @@ describe('unit-d:interfaces/CommandMetadata', () => {
       .toEqualTypeOf<Map<string, Command>>()
   })
 
-  it('should match [version: VersionOption | null | undefined]', () => {
+  it('should match [versionOption: Option | null | undefined]', () => {
     expectTypeOf<TestSubject>()
-      .toHaveProperty('version')
-      .toEqualTypeOf<Nilable<VersionOption>>()
+      .toHaveProperty('versionOption')
+      .toEqualTypeOf<Nilable<Option>>()
   })
 })

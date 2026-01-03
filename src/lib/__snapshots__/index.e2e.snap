@@ -8,6 +8,5 @@ exports[`e2e:lib > should expose public api 1`] = `
   "Helpable",
   "Option",
   "Parseable",
-  "VersionOption",
 ]
 `;

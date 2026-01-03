@@ -22,7 +22,6 @@ import Argument from '#lib/argument'
 import Help from '#lib/help'
 import Helpable from '#lib/helpable.abstract'
 import Option from '#lib/option'
-import VersionOption from '#lib/version.option'
 import isCommandEvent from '#utils/is-command-event'
 import {
   ev,
@@ -74,8 +73,8 @@ import type {
   UnknownStrategy,
   UsageData,
   UsageInfo,
-  VersionData,
-  VersionOptionInfo
+  Version,
+  VersionOptionData
 } from '@flex-development/kronk'
 import { CommandError, KronkError } from '@flex-development/kronk/errors'
 import { KronkEvent, OptionEvent } from '@flex-development/kronk/events'
@@ -177,9 +176,9 @@ class Command extends Helpable {
    *
    * @protected
    * @instance
-   * @member {KronkEvent | null} interrupter
+   * @member {KronkEvent | null | undefined} interrupter
    */
-  protected interrupter: KronkEvent | null
+  protected interrupter: KronkEvent | null | undefined
 
   /**
    * Record, where each key is an option key and each value is the source of an
@@ -303,7 +302,7 @@ class Command extends Helpable {
       options: new Map(),
       parent: undefined,
       subcommands: new Map(),
-      version: null
+      versionOption: null
     }
 
     this.args = []
@@ -348,7 +347,8 @@ class Command extends Helpable {
     this.summary(this.info.summary)
     this.unknowns(this.info.unknown)
     this.usage(this.info.usage)
-    this.version(data.version)
+    this.version(this.info.version)
+    !isNIL(this.info.version) && this.versionOption(data.versionOption)
 
     if (this.parent) this.copyInheritedSettings(this.parent)
 
@@ -1638,22 +1638,6 @@ class Command extends Helpable {
   public createOption(info: Flags | OptionInfo): Option
 
   /**
-   * Create a new unattached version option.
-   *
-   * @see {@linkcode VersionOption}
-   * @see {@linkcode VersionOptionInfo}
-   *
-   * @public
-   * @instance
-   *
-   * @param {VersionOptionInfo} info
-   *  Option info
-   * @return {VersionOption}
-   *  New version option instance
-   */
-  public createOption(info: VersionOptionInfo): VersionOption
-
-  /**
    * Create a new unattached option.
    *
    * @see {@linkcode Flags}
@@ -1682,26 +1666,22 @@ class Command extends Helpable {
    * @see {@linkcode Option}
    * @see {@linkcode OptionInfo}
    * @see {@linkcode OptionData}
-   * @see {@linkcode VersionOption}
-   * @see {@linkcode VersionOptionInfo}
    *
    * @public
    * @instance
    *
-   * @param {Flags | OptionInfo | VersionOptionInfo} info
+   * @param {Flags | OptionInfo} info
    *  Option info or flags
    * @param {OptionData | null | undefined} [data]
    *  Additional option info
-   * @return {Option | VersionOption}
+   * @return {Option}
    *  New option instance
    */
   public createOption(
-    info: Flags | OptionInfo | VersionOptionInfo,
+    info: Flags | OptionInfo,
     data?: OptionData | null | undefined
-  ): Option | VersionOption {
-    return typeof info === 'object' && 'version' in info
-      ? new VersionOption(info)
-      : new Option(info as never, data)
+  ): Option {
+    return new Option(info as never, data)
   }
 
   /**
@@ -2404,9 +2384,8 @@ class Command extends Helpable {
   /**
    * Configure the help subcommand.
    *
-   * > 👉 **Note**: This method auto-registers the subcommand with
-   * > the name `help`. No cleanup is performed when this method is
-   * > called with a different name (i.e. `help` as a string or `help.name`).
+   * > 👉 **Note**: No cleanup is performed when this method is called
+   * > with a different name (i.e. `help` as a string or `help.name`).
    *
    * @see {@linkcode HelpCommandData}
    *
@@ -2494,9 +2473,8 @@ class Command extends Helpable {
   /**
    * Configure the help option.
    *
-   * > 👉 **Note**: This method auto-registers the help option with the flags
-   * > `-h, --help`. No cleanup is performed when this method is called with
-   * > different flags (i.e. `help` as a string or `help.flags`).
+   * > 👉 **Note**: No cleanup is performed when this method is called
+   * > with different flags (i.e. `help` as a string or `help.flags`).
    *
    * @see {@linkcode HelpOptionData}
    *
@@ -2504,7 +2482,7 @@ class Command extends Helpable {
    * @instance
    *
    * @param {HelpOptionData | null | undefined} help
-   *  Option flags, option instance, option info, `false` to disable the help
+   *  Option flags, option info, option instance, `false` to disable the help
    *  option, or any other allowed value to use the default configuration
    * @return {this}
    *  `this` command
@@ -2537,8 +2515,8 @@ class Command extends Helpable {
    * @instance
    *
    * @param {HelpOptionData | null | undefined} [help]
-   *  Option flags, option instance, option info, `false` to disable automated
-   *  help, or any other allowed value to use the default help configuration
+   *  Option flags, option info, option instance, `false` to disable the help
+   *  option, or any other allowed value to use the default configuration
    * @return {Option | null | this}
    *  Help option or `this` command
    */
@@ -2856,11 +2834,10 @@ class Command extends Helpable {
    * @return {undefined}
    */
   protected onOption<T extends Option>(event: OptionEvent<T>): undefined {
-    if (this.info.helpOption === event.option) {
+    if (event.option === this.versionOption()) event.value = this.version()
+
+    if (event.option === this.helpOption()) {
       this.optionValue(event.option.key, true, event.source)
-    } else if (this.info.version === event.option as Option) {
-      ok('version' in event.option, 'expected `event.option.version`')
-      this.optionValue(event.option.key, event.option.version, event.source)
     } else if (typeof event.value !== 'string') {
       this.optionValue(event.option.key, event.value, event.source)
     } else {
@@ -4056,21 +4033,17 @@ class Command extends Helpable {
   /**
    * Set the command version.
    *
-   * > 👉 **Note**: This method auto-registers the version command option with
-   * > the flags `-v, --version`. No cleanup is performed when this method is
-   * > called with different flags (i.e. `info` as a string or `info.flags`).
-   *
-   * @see {@linkcode VersionData}
+   * @see {@linkcode Version}
    *
    * @public
    * @instance
    *
-   * @param {VersionData | null | undefined} version
-   *  Version, version option instance, or version option info
+   * @param {Version | null | undefined} version
+   *  The command version
    * @return {this}
    *  `this` command
    */
-  public version(version: VersionData | null | undefined): this
+  public version(version: Version | null | undefined): this
 
   /**
    * Print the command version.
@@ -4090,62 +4063,132 @@ class Command extends Helpable {
    * @public
    * @instance
    *
-   * @template {string} T
+   * @template {Version} T
    *  The command version
    *
    * @return {T | null}
-   *  Command version
+   *  The command version
    */
-  public version<T extends string>(): T | null
+  public version<T extends Version>(): T | null
 
   /**
    * Get, set, or print the command version.
    *
-   * @see {@linkcode VersionData}
+   * @see {@linkcode Version}
+   * @see {@linkcode VersionOptionData}
    *
    * @public
    * @instance
    *
-   * @param {VersionData | true | null | undefined} [version]
-   *  The command version, version option instance, version option info,
-   *  or `true` to print the command version
-   * @return {string | this | null | undefined}
+   * @param {Version | true | null | undefined} [version]
+   *  The command version or `true` to print the command version
+   * @return {Version | this | null | undefined}
    *  The command version or `this` command
    */
   public version(
-    version?: VersionData | true | null | undefined
-  ): string | this | null | undefined {
+    version?: Version | true | null | undefined
+  ): Version | this | null | undefined {
     if (arguments.length) {
       if (version === true) {
-        if (!this.info.version?.version) return void this.info.version
-
-        /**
-         * The command version.
-         *
-         * @const {string} version
-         */
-        const version: string = this.info.version.version
-
-        return void this.process.stdout.write(version + chars.lf)
-      } else if (!isNIL(version)) {
-        if (typeof version === 'string' || 'compare' in version) {
-          version = { version }
-        }
-
-        // create version option.
-        this.info.version = isOption(version)
-          ? version
-          : this.createOption(version)
-
-        // add version option and register event listener.
-        this.addOption(this.info.version)
-        this.on(this.info.version.event, this.onVersion.bind(this))
+        if (!(version = this.version())) return void version
+        return void this.process.stdout.write(String(version) + chars.lf)
+      } else {
+        this.info.version = version
       }
 
       return this
     }
 
-    return this.info.version ? this.info.version.version : null
+    return this.info.version
+      ? typeof this.info.version === 'string'
+        ? trim(this.info.version)
+        : this.info.version
+      : null
+  }
+
+  /**
+   * Configure the version option.
+   *
+   * > 👉 **Note**: No cleanup is performed when this method is called with
+   * > different flags (i.e. `version` as a string or `version.flags`).
+   *
+   * @see {@linkcode VersionOptionData}
+   *
+   * @public
+   * @instance
+   *
+   * @param {VersionOptionData | null | undefined} version
+   *  Option flags, option info, option instance, `false` to disable the version
+   *  option, or any other allowed value to use the default configuration
+   * @return {this}
+   *  `this` command
+   */
+  public versionOption(version: VersionOptionData | null | undefined): this
+
+  /**
+   * Get the version option.
+   *
+   * @see {@linkcode Option}
+   *
+   * @template {Option} T
+   *  The version option instance
+   *
+   * @public
+   * @instance
+   *
+   * @return {Option | null}
+   *  Version option
+   */
+  public versionOption<T extends Option>(): T | null
+
+  /**
+   * Get or configure the version option.
+   *
+   * @see {@linkcode Option}
+   * @see {@linkcode VersionOptionData}
+   *
+   * @public
+   * @instance
+   *
+   * @param {VersionOptionData | null | undefined} [version]
+   *  Option flags, option info, option instance, `false` to disable the version
+   *  option, or any other allowed value to use the default configuration
+   * @return {Option | null | this}
+   *  Version option or `this` command
+   */
+  public versionOption(
+    version?: VersionOptionData | null | undefined
+  ): Option | null | this {
+    if (arguments.length) {
+      if (version === false) {
+        this.info.versionOption = null
+      } else {
+        if (typeof version === 'string') version = { flags: version }
+        if (!version || typeof version !== 'object') version = {}
+
+        // set version option.
+        if (isOption(version)) {
+          this.info.versionOption = version
+        } else {
+          version.description ||= 'print version number'
+
+          if ('flags' in version) {
+            this.info.versionOption = this.createOption(version)
+          } else {
+            version = { ...version, flags: '-v, --version' }
+            this.info.versionOption = this.createOption(version)
+          }
+        }
+
+        // add version option and register version event listener.
+        this.addOption(this.info.versionOption)
+        this.on(this.info.versionOption.event, this.onVersion.bind(this))
+      }
+
+      return this
+    }
+
+    return this.info.versionOption ?? null
   }
 }
 

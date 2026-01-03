@@ -16,7 +16,6 @@ import TestSubject from '#lib/command'
 import Help from '#lib/help'
 import Helpable from '#lib/helpable.abstract'
 import Option from '#lib/option'
-import VersionOption from '#lib/version.option'
 import createProcess from '#tests/utils/create-process'
 import errorSnapshot from '#tests/utils/error-snapshot'
 import sfmt from '#tests/utils/sfmt'
@@ -31,7 +30,8 @@ import type {
   KronkHookName,
   OptionPriority,
   Process,
-  UsageData
+  UsageData,
+  Version
 } from '@flex-development/kronk'
 import { cast } from '@flex-development/tutils'
 import { SemVer } from 'semver'
@@ -394,17 +394,16 @@ describe('unit:lib/Command', () => {
       expect(result).to.have.nested.property('info.helpOption', help)
     })
 
-    it.each<[CommandInfo?]>([
-      [],
-      [grease],
-      [{ helpOption: false }],
-      [{ helpOption: '--help' }]
-    ])('should return help option (%#)', info => {
+    it('should disable help option with `false`', () => {
+      // Arrange
+      const subject: TestSubject = new TestSubject()
+
       // Act
-      const result = new TestSubject(info).helpOption()
+      const result = subject.helpOption(false)
 
       // Expect
-      expect(result ? String(result) : result).toMatchSnapshot()
+      expect(result).to.eq(subject)
+      expect(result).to.have.nested.property('info.helpOption').be.null
     })
   })
 
@@ -567,39 +566,39 @@ describe('unit:lib/Command', () => {
   })
 
   describe('#version', () => {
-    it('should configure version with `VersionOption` instance', () => {
-      // Arrange
-      const version: VersionOption = new VersionOption(faker.system.semver())
-      const subject: TestSubject = new TestSubject()
-
-      // Act
-      const result = subject.version(version)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property('info.version', version)
-    })
-
-    it('should configure version with `SemVer` instance', () => {
-      // Arrange
-      const prop: string = 'info.version'
-      const version: SemVer = new SemVer(faker.system.semver())
-      const subject: TestSubject = new TestSubject()
-
-      // Act
-      const result = subject.version(version)
-
-      // Expect
-      expect(result).to.eq(subject)
-      expect(result).to.have.nested.property(prop).be.instanceof(VersionOption)
-      expect(result).to.have.nested.property(prop + '.version', version.version)
-    })
-
-    it.each<string | null>([
-      null,
-      faker.system.semver()
+    it.each<[Version | null]>([
+      [null],
+      [faker.system.semver()],
+      [new SemVer(faker.system.semver())]
     ])('should return command version (%#)', version => {
       expect(new TestSubject({ version }).version()).to.eq(version)
+    })
+  })
+
+  describe('#versionOption', () => {
+    it('should configure version option with `Option` instance', () => {
+      // Arrange
+      const subject: TestSubject = new TestSubject()
+      const version: Option = new Option('-v --version')
+
+      // Act
+      const result = subject.versionOption(version)
+
+      // Expect
+      expect(result).to.eq(subject)
+      expect(result).to.have.nested.property('info.versionOption', version)
+    })
+
+    it('should disable version option with `false`', () => {
+      // Arrange
+      const subject: TestSubject = new TestSubject(clamp)
+
+      // Act
+      const result = subject.versionOption(false)
+
+      // Expect
+      expect(result).to.eq(subject)
+      expect(result).to.have.nested.property('info.versionOption').be.null
     })
   })
 })

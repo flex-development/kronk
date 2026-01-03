@@ -11,8 +11,7 @@ import type {
   ExampleInfo,
   Help,
   HooksInfo,
-  Option,
-  VersionOption
+  Option
 } from '@flex-development/kronk'
 
 /**
@@ -40,19 +39,19 @@ interface CommandMetadata extends Omit<CommandInfo, Skip> {
   action: Action<any>
 
   /**
-   * List of command aliases.
+   * The list of command aliases.
    */
   aliases: Set<string>
 
   /**
-   * List of command arguments.
+   * The list of command arguments.
    *
    * @see {@linkcode Argument}
    */
   arguments: Argument[]
 
   /**
-   * A list of command examples.
+   * The list of command examples.
    *
    * @see {@linkcode ExampleInfo}
    *
@@ -97,8 +96,8 @@ interface CommandMetadata extends Omit<CommandInfo, Skip> {
   hooks: HooksInfo
 
   /**
-   * Map, where each key is a long or short flag and each value is the command
-   * option instance registered for that flag.
+   * Map, where each key is a long or short flag and each value is the option
+   * instance registered for that flag.
    *
    * @see {@linkcode Option}
    */
@@ -121,11 +120,11 @@ interface CommandMetadata extends Omit<CommandInfo, Skip> {
   /**
    * The version option.
    *
-   * @see {@linkcode VersionOption}
+   * @see {@linkcode Option}
    *
    * @override
    */
-  version: VersionOption | null | undefined
+  versionOption: Option | null | undefined
 }
 
 export type { CommandMetadata as default, Skip }

@@ -23,7 +23,8 @@ import type {
   SubcommandsData,
   UnknownStrategy,
   UsageData,
-  VersionData
+  Version,
+  VersionOptionData
 } from '@flex-development/kronk'
 import type { Nilable, OptionalKeys } from '@flex-development/tutils'
 
@@ -144,9 +145,15 @@ describe('unit-d:interfaces/CommandData', () => {
       .toEqualTypeOf<Nilable<UsageData>>()
   })
 
-  it('should match [version?: VersionData | null | undefined]', () => {
+  it('should match [version?: Version | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('version')
-      .toEqualTypeOf<Nilable<VersionData>>()
+      .toEqualTypeOf<Nilable<Version>>()
+  })
+
+  it('should match [versionOption?: VersionOptionData | null | undefined]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('versionOption')
+      .toEqualTypeOf<Nilable<VersionOptionData>>()
   })
 })

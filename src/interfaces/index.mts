@@ -59,7 +59,4 @@ export type { default as ProcessEnv } from '#interfaces/process-env'
 export type { default as SubcommandInfo } from '#interfaces/subcommand.info'
 export type { default as UsageData } from '#interfaces/usage.data'
 export type { default as UsageInfo } from '#interfaces/usage.info'
-export type {
-  default as VersionOptionInfo
-} from '#interfaces/version-option.info'
 export type { default as WriteStream } from '#interfaces/write-stream'

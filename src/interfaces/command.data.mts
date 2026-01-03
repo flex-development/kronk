@@ -21,7 +21,8 @@ import type {
   SubcommandsData,
   UnknownStrategy,
   UsageData,
-  VersionData
+  Version,
+  VersionOptionData
 } from '@flex-development/kronk'
 
 /**
@@ -174,11 +175,21 @@ interface CommandData extends HelpableInfo {
   usage?: UsageData | null | undefined
 
   /**
-   * Command version configuration.
+   * The command version.
    *
-   * @see {@linkcode VersionData}
+   * @see {@linkcode Version}
    */
-  version?: VersionData | null | undefined
+  version?: Version | null | undefined
+
+  /**
+   * Customize the version option.
+   *
+   * @see {@linkcode VersionOptionData}
+   *
+   * @default
+   *  { description: 'print version number', flags: '-v, --version' }
+   */
+  versionOption?: VersionOptionData | null | undefined
 }
 
 export type { CommandData as default }

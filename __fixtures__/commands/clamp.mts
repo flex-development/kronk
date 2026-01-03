@@ -47,8 +47,6 @@ export default {
   usage: {
     arguments: sfmt.required({ id: 'number' })
   },
-  version: {
-    flags: '-v --version',
-    version: '1.0.0'
-  }
+  version: '1.0.0',
+  versionOption: '-v --version'
 }

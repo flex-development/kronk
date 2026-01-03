@@ -1,9 +1,9 @@
 /**
- * @file Type Tests - HelpOptionData
- * @module kronk/types/tests/unit-d/HelpOptionData
+ * @file Type Tests - VersionOptionData
+ * @module kronk/types/tests/unit-d/VersionOptionData
  */
 
-import type TestSubject from '#types/help-option-data'
+import type TestSubject from '#types/version-option-data'
 import type {
   Flags,
   Option,
@@ -11,7 +11,7 @@ import type {
   OptionInfo
 } from '@flex-development/kronk'
 
-describe('unit-d:types/HelpOptionData', () => {
+describe('unit-d:types/VersionOptionData', () => {
   it('should extract Flags', () => {
     expectTypeOf<TestSubject>().extract<Flags>().not.toBeNever()
   })
