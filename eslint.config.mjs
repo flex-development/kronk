@@ -53,7 +53,14 @@ const config = [
   {
     files: ['src/lib/command.mts'],
     rules: {
-      '@typescript-eslint/no-this-alias': 0
+      '@typescript-eslint/no-this-alias': 0,
+      '@typescript-eslint/promise-function-async': [
+        2,
+        {
+          checkArrowFunctions: false
+        }
+      ],
+      'promise/prefer-await-to-then': 0
     }
   },
   {

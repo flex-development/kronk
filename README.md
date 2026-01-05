@@ -37,6 +37,7 @@
     - [`Command#ancestors()`](#commandancestors)
     - [`Command#args`](#commandargs)
     - [`Command#argument(info[, data])`](#commandargumentinfo-data)
+    - [`Command#argumentValue(index[, value])`](#commandargumentvalueindex-value)
     - [`Command#arguments([infos])`](#commandargumentsinfos)
     - [`Command#argv`](#commandargv)
     - [`Command#command(info[, data])`](#commandcommandinfo-data)
@@ -199,7 +200,7 @@
   - [`OptionValueSources`](#optionvaluesources)
   - [`OptionValues<[T]>`](#optionvaluest)
   - [`OptionsData`](#optionsdata)
-  - [`ParseArg<[T]>`](#parseargt)
+  - [`ParseArg<[T][, Previous]>`](#parseargt-previous)
   - [`ParseOptions`](#parseoptions)
   - [`ParseUnknownResult`](#parseunknownresult)
   - [`ParseableInfo`](#parseableinfo-1)
@@ -535,6 +536,31 @@ Define an argument for the command.
 ##### Returns
 
 ([`this`](#commandinfo)) `this` command
+
+#### `Command#argumentValue(index[, value])`
+
+Get or set an argument value.
+
+##### Overloads
+
+- `argumentValue(index: Numeric | number, value: unknown): this`
+- `argumentValue<T>(index: Numeric | number): T`
+
+##### Type Parameters
+
+- `T` (`any`)
+  — the parsed argument value
+
+##### Parameters
+
+- `index` ([`Numeric`](#numeric) | `number`)
+  — the index of the argument. a negative index will count back from the last argument
+- `value` (`unknown`)
+  — the parsed argument value
+
+##### Returns
+
+(`T` | [`this`](#commandinfo)) The stored argument value or `this` command
 
 #### `Command#arguments([infos])`
 
@@ -1083,20 +1109,20 @@ Get or set an option value.
 ##### Type Parameters
 
 - `T` (`any`)
-  — parsed option value type
+  — the parsed option value
 
 ##### Parameters
 
 - `key` ([`Option['key']`](#optionkey))
-  — option key
+  — the option key
 - `value` (`unknown`)
-  — the parsed option value to store
+  — the parsed option value
 - `source` ([`OptionValueSource`](#optionvaluesource-1) | `null` | `undefined`)
-  — the source of the original option value
+  — the source of the raw option value
 
 ##### Returns
 
-(`T` | [`this`](#commandinfo)) Stored option value or `this` command
+(`T` | [`this`](#commandinfo)) The stored option value or `this` command
 
 #### `Command#optionValueSource(key[, source])`
 
@@ -1110,14 +1136,14 @@ Get or set an option value source.
 ##### Parameters
 
 - `key` ([`Option['key']`](#optionkey))
-  — option key
+  — the option key
 - `source` ([`OptionValueSource`](#optionvaluesource-1) | `null` | `undefined`, optional)
   — the source of the option value
 
 ##### Returns
 
 ([`OptionValueSource`](#optionvaluesource-1) | [`this`](#commandinfo) | `null` | `undefined`)
-Option value source for `key` or `this` command
+The option value source or `this` command
 
 #### `Command#options([infos])`
 
@@ -1839,11 +1865,11 @@ Get or set candidate choices.
 ##### Parameters
 
 - `choices` ([`List<string>`](#list) | `null` | `undefined`)
-  — list of allowed candidate choices
+  — the list of allowed candidate choices
 
 ##### Returns
 
-(`Set<T>` | [`this`](#parseableinfo)) List of candidate choices or `this` candidate
+(`Set<T>` | [`this`](#parseableinfo)) The list of candidate choices or `this` candidate
 
 #### `Parseable#default([info])`
 
@@ -1862,12 +1888,12 @@ Get or set the default value configuration.
 ##### Parameters
 
 - `info` ([`DefaultInfo`](#defaultinfo))
-  — default value info
+  — the default value info
 
 ##### Returns
 
 ([`DefaultInfo<T>`](#defaultinfo) | [`this`](#parseableinfo) | `undefined`)
-Default value info or `this` candidate
+The default value info or `this` candidate
 
 #### `Parseable#id`
 
@@ -1882,21 +1908,23 @@ Get or set the handler used to parse candidate-arguments.
 ##### Overloads
 
 - `parser(parser: ParseArg | null | undefined): this`
-- `parser<T>(): ParseArg<T>`
+- `parser<T, Previous = T>(): ParseArg<T, Previous>`
 
 ##### Type Parameters
 
 - `T` (`any`)
   — the result of the parse
+- `Previous` (`any`, optional)
+  — the previous parse result
 
 ##### Parameters
 
-- `parser` ([`ParseArg`](#parseargt) | `null` | `undefined`)
-  — the candidate-argument parser
+- `parser` ([`ParseArg`](#parseargt-previous) | `null` | `undefined`)
+  — the argument parser
 
 ##### Returns
 
-([`ParseArg<T, Value>`](#parseargt) | [`this`](#parseableinfo)) The candidate-argument parser or `this` candidate
+([`ParseArg<T, Previous>`](#parseargt-previous) | [`this`](#parseableinfo)) The argument parser or `this` candidate
 
 #### `Parseable#required`
 
@@ -1989,7 +2017,7 @@ type Action<
 #### Parameters
 
 - **`this`** ([`Command`](#commandinfo))
-  — the command to be ran
+  — the running command
 - `options` (`Opts`)
   — the parsed command options
 - `...args` (`Args`)
@@ -2998,24 +3026,26 @@ type OptionsData =
   | OptionInfo
 ```
 
-### `ParseArg<[T]>`
+### `ParseArg<[T][, Previous]>`
 
 Parse a raw argument `value` (TypeScript type).
 
 ```ts
-type ParseArg<T = any> = (value: string, previous?: T) => T
+type ParseArg<T = any, Previous = T> = (value: string, previous?: Previous) => T
 ```
 
 #### Type Parameters
 
 - `T` (`any`, optional)
   — the result of the parse
+- `Previous` (`any`, optional)
+  — the previous parse result
 
 #### Parameters
 
 - `value` (`string`)
   — the raw argument to parse
-- `previous` (`T`)
+- `previous` (`Previous`)
   — the default argument value, or the previous parse result for variadic arguments
 
 #### Returns
@@ -3057,7 +3087,7 @@ Data used to create parse candidates (TypeScript interface).
 - `default?` ([`DefaultInfo`](#defaultinfo), optional)
   — the default value configuration
   > 👉 **note**: the argument `parser` is called **if the default value is a string**.
-- `parser?` ([`ParseArg<any, string> | ParseArg<any, string[]>`](#parseargt), optional)
+- `parser?` ([`ParseArg`](#parseargt-previous), optional)
   — the handler used to parse arguments. the handler receives two parameters, the raw, unparsed argument, and the
   previous value for the argument. it should return the new value for the argument
 

@@ -17,7 +17,7 @@ import type { Awaitable, Command, OptionValues } from '@flex-development/kronk'
  *  Command arguments
  *
  * @this {Command}
- *  The command to be ran
+ *  The running command
  *
  * @param {Opts} opts
  *  The parsed command options

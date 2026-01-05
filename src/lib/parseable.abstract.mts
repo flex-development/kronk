@@ -110,7 +110,7 @@ abstract class Parseable extends Helpable {
    * @instance
    *
    * @param {List<string> | null | undefined} choices
-   *  List of allowed candidate choices
+   *  The list of allowed candidate choices
    * @return {this}
    *  `this` candidate
    */
@@ -126,7 +126,7 @@ abstract class Parseable extends Helpable {
    *  Candidate choice
    *
    * @return {Set<T>}
-   *  List of candidate choices
+   *  The list of candidate choices
    */
   public choices<T extends string>(): Set<T>
 
@@ -139,9 +139,9 @@ abstract class Parseable extends Helpable {
    * @instance
    *
    * @param {List<string> | null | undefined} [choices]
-   *  List of candidate choices
+   *  The list of candidate choices
    * @return {Set<string> | this}
-   *  List of candidate choices or `this` candidate
+   *  The list of candidate choices or `this` candidate
    */
   public choices(
     choices?: List<string> | null | undefined
@@ -159,7 +159,7 @@ abstract class Parseable extends Helpable {
    * @instance
    *
    * @param {DefaultInfo | null | undefined} info
-   *  Default value info
+   *  The default value info
    * @return {this}
    *  `this` candidate
    */
@@ -174,10 +174,10 @@ abstract class Parseable extends Helpable {
    * @instance
    *
    * @template {any} T
-   *  Default value
+   *  The default value
    *
    * @return {DefaultInfo<T> | undefined}
-   *  Default value info
+   *  The default value info
    */
   public default<T>(): DefaultInfo<T> | undefined
 
@@ -190,9 +190,9 @@ abstract class Parseable extends Helpable {
    * @instance
    *
    * @param {DefaultInfo | null | undefined} [info]
-   *  Default value info
+   *  The default value info
    * @return {DefaultInfo | this | undefined}
-   *  Default value info or `this` candidate
+   *  The default value info or `this` candidate
    */
   public default(
     info?: DefaultInfo | null | undefined
@@ -210,7 +210,7 @@ abstract class Parseable extends Helpable {
    * @instance
    *
    * @param {ParseArg | null | undefined} parser
-   *  The candidate-argument parser
+   *  The argument parser
    * @return {this}
    *  `this` candidate
    */
@@ -224,13 +224,15 @@ abstract class Parseable extends Helpable {
    * @public
    * @instance
    *
-   * @template {any} [T=any]
+   * @template {any} T
    *  The result of the parse
+   * @template {any} [Previous=T]
+   *  The previous parse result
    *
    * @return {ParseArg<T>}
-   *  The candidate-argument parser
+   *  The argument parser
    */
-  public parser<T>(): ParseArg<T>
+  public parser<T, Previous = T>(): ParseArg<T, Previous>
 
   /**
    * Get or set the handler used to parse candidate-arguments.
@@ -241,9 +243,9 @@ abstract class Parseable extends Helpable {
    * @instance
    *
    * @param {ParseArg | null | undefined} [parser]
-   *  The candidate-argument parser
+   *  The argument parser
    * @return {ParseArg | this}
-   *  The candidate-argument parser or `this` candidate
+   *  The argument parser or `this` candidate
    */
   public parser(parser?: ParseArg | null | undefined): ParseArg | this {
     if (arguments.length) return this.info.parser = parser, this

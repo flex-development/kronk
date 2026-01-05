@@ -195,7 +195,7 @@ exports[`functional:lib/Command > errors > should error on excess command or opt
     "ancestors": [],
     "args": [
       undefined,
-      ".",
+      Promise {},
     ],
     "argv": [
       "./index.mjs",
@@ -761,7 +761,7 @@ exports[`functional:lib/Command > errors > should error on missing command or op
     "ancestors": [],
     "args": [
       undefined,
-      ".",
+      Promise {},
     ],
     "argv": [],
     "optionValueSources": {},
@@ -787,7 +787,7 @@ exports[`functional:lib/Command > errors > should error on missing command or op
     "ancestors": [],
     "args": [
       undefined,
-      ".",
+      Promise {},
     ],
     "argv": [],
     "optionValueSources": {},
@@ -1185,7 +1185,7 @@ exports[`functional:lib/Command > errors > should error on unknown option (0) 1`
     "ancestors": [],
     "args": [
       undefined,
-      ".",
+      Promise {},
     ],
     "argv": [
       "./index.mts",

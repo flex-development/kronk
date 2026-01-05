@@ -7,6 +7,8 @@ import chars from '#enums/chars'
 import bool from '#parsers/bool'
 import number from '#parsers/number'
 import unique from '#parsers/unique'
+import file from '#tests/parsers/file'
+import files from '#tests/parsers/files'
 import sfmt from '#tests/utils/sfmt'
 import digits from '#utils/digits'
 import c from '@flex-development/colors'
@@ -136,7 +138,7 @@ export default {
         },
         {
           description: 'the bump files',
-          parser: unique,
+          parser: files,
           syntax: sfmt.optional({ id: 'files', variadic: true })
         }
       ],
@@ -179,12 +181,14 @@ export default {
           default: { description: 'CHANGELOG.md given --samefile' },
           description: 'read the changelog from this file',
           env: 'GREASE_CHANGELOG_INFILE',
-          flags: '-i, --infile <path>'
+          flags: '-i, --infile <path>',
+          parser: file
         },
         {
           description: 'write the changelog to this file',
           env: 'GREASE_CHANGELOG_OUTFILE',
-          flags: '-o, --outfile <path>'
+          flags: '-o, --outfile <path>',
+          parser: file
         },
         {
           default: { value: +chars.digit1 }, // dprint-ignore-next
@@ -262,7 +266,8 @@ export default {
       options: {
         description: 'the manifest path or url',
         env: ['GREASE_MANIFEST_PATH', 'npm_package_json'],
-        flags: '-M, --manifest <manifest>'
+        flags: '-M, --manifest <manifest>',
+        parser: file
       },
       subcommands: {
         delete: {
@@ -301,7 +306,7 @@ export default {
       arguments: {
         default: { description: 'based on `files` property in manifest' },
         description: 'the files to pack',
-        parser: unique,
+        parser: files,
         syntax: sfmt.optional({ id: 'files', variadic: true })
       },
       description: 'Generate a tarball from the current project.',
@@ -325,6 +330,7 @@ export default {
     publish: {
       arguments: {
         description: 'the package artifact path',
+        parser: file,
         syntax: sfmt.optional({ id: 'artifact' })
       },
       description:

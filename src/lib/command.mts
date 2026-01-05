@@ -57,6 +57,7 @@ import type {
   KronkHookMap,
   KronkHookName,
   List,
+  Numeric,
   OptionData,
   OptionInfo,
   OptionPriority,
@@ -85,6 +86,7 @@ import {
   isSubcommandInfo
 } from '@flex-development/kronk/utils'
 import {
+  constant,
   entries,
   fallback,
   isNIL,
@@ -193,8 +195,8 @@ class Command extends Helpable {
   protected optionValueSources: OptionValueSources
 
   /**
-   * Record, where each key is an option key and each value is a parsed option
-   * value.
+   * Record, where each key is an option key
+   * and each value is a parsed option value.
    *
    * @see {@linkcode OptionValues}
    *
@@ -411,6 +413,19 @@ class Command extends Helpable {
   }
 
   /**
+   * Get a function that returns `this` command.
+   *
+   * @protected
+   * @instance
+   *
+   * @return {() => this}
+   *  This context function
+   */
+  protected get self(): () => this {
+    return constant(this)
+  }
+
+  /**
    * Whether the command has subcommands, but no {@linkcode action}.
    *
    * @public
@@ -567,9 +582,10 @@ class Command extends Helpable {
 
     // configure default value for optional arguments.
     if (!argument.required && (def = argument.default()) && 'value' in def) {
-      this.args[this.info.arguments.length] = typeof def.value === 'string'
-        ? argument.parser()(def.value)
-        : def.value
+      this.argumentValue(
+        this.info.arguments.length,
+        typeof def.value === 'string' ? argument.parser()(def.value) : def.value
+      )
     }
 
     // add new argument.
@@ -917,6 +933,67 @@ class Command extends Helpable {
   }
 
   /**
+   * Set an argument value.
+   *
+   * @see {@linkcode Numeric}
+   *
+   * @public
+   * @instance
+   *
+   * @param {Numeric | number} index
+   *  The index of the argument
+   * @param {unknown} value
+   *  The parsed argument value
+   * @return {this}
+   *  `this` command
+   */
+  public argumentValue(index: Numeric | number, value: unknown): this
+
+  /**
+   * Get an argument value.
+   *
+   * @see {@linkcode Numeric}
+   *
+   * @public
+   * @instance
+   *
+   * @template {any} T
+   *  The parsed argument value
+   *
+   * @param {Numeric | number} index
+   *  The index of the argument.
+   *  A negative index will count back from the last argument
+   * @return {T}
+   *  The parsed argument value
+   */
+  public argumentValue<T>(index: Numeric | number): T
+
+  /**
+   * Get or set an argument value.
+   *
+   * @see {@linkcode Numeric}
+   *
+   * @public
+   * @instance
+   *
+   * @template {any} T
+   *  The parsed argument value
+   *
+   * @param {Numeric | number} index
+   *  The index of the argument.
+   *  When retrieving a value, negative indices will count back
+   *  from the last argument
+   * @param {T} [value]
+   *  The parsed argument value to store
+   * @return {T | this}
+   *  The stored argument value or `this` command
+   */
+  public argumentValue<T>(index: Numeric | number, value?: unknown): T | this {
+    if (arguments.length === 1) return this.args.at(+index) as T
+    return this.args[index] = value, this
+  }
+
+  /**
    * Batch define arguments for the command.
    *
    * @see {@linkcode ArgumentInfo}
@@ -991,7 +1068,7 @@ class Command extends Helpable {
    *  The promise to chain
    * @param {Fn} fn
    *  The function to call
-   * @param {ThisParameterType<Fn>} self
+   * @param {ThisParameterType<Fn> | null | undefined} [self]
    *  The `this` context of `fn`
    * @param {Parameters<Fn>} params
    *  The arguments to pass to `fn`
@@ -1005,12 +1082,11 @@ class Command extends Helpable {
   >(
     promise: Awaitable,
     fn: Fn,
-    self: ThisParameterType<Fn>,
+    self?: ThisParameterType<Fn> | null | undefined,
     ...params: Parameters<Fn>
   ): Awaitable<T> {
     return isPromise(promise)
       // already have a promise, chain callback.
-      // eslint-disable-next-line promise/prefer-await-to-then
       ? promise.then((): Awaitable<T> => fn.call(self, ...params))
       : fn.call(self, ...params)
   }
@@ -3037,11 +3113,11 @@ class Command extends Helpable {
    * @instance
    *
    * @param {Option['key']} key
-   *  Option key
+   *  The option key
    * @param {unknown} value
-   *  The parsed option value to store
+   *  The parsed option value
    * @param {OptionValueSource | null | undefined} [source]
-   *  The source of the original option value
+   *  The source of the raw option value
    * @return {this}
    *  `this` command
    */
@@ -3060,12 +3136,12 @@ class Command extends Helpable {
    * @instance
    *
    * @template {any} T
-   *  Parsed option value type
+   *  The parsed option value
    *
    * @param {Option['key']} key
-   *  Option key
+   *  The option key
    * @return {T}
-   *  Parsed option value
+   *  The parsed option value
    */
   public optionValue<T>(key: Option['key']): T
 
@@ -3078,21 +3154,24 @@ class Command extends Helpable {
    * @public
    * @instance
    *
+   * @template {any} T
+   *  The parsed option value
+   *
    * @param {Option['key']} key
-   *  Option key
+   *  The option key
    * @param {unknown} [value]
-   *  The parsed option value to store
+   *  The parsed option value
    * @param {OptionValueSource | null | undefined} [source]
-   *  The source of the original option value
-   * @return {this | any}
-   *  Stored option value or `this` command
+   *  The source of the raw option value
+   * @return {T | this}
+   *  The stored option value or `this` command
    */
-  public optionValue(
+  public optionValue<T>(
     key: Option['key'],
     value?: unknown,
     source?: OptionValueSource | null | undefined
-  ): any {
-    if (arguments.length === 1) return this.optionValues[key] as unknown
+  ): T | this {
+    if (arguments.length === 1) return this.optionValues[key] as T
     return this.optionValueSource(key, source).optionValues[key] = value, this
   }
 
@@ -3106,7 +3185,7 @@ class Command extends Helpable {
    * @instance
    *
    * @param {Option['key']} key
-   *  Option key
+   *  The option key
    * @param {OptionValueSource | null | undefined} source
    *  The source of the option value
    * @return {this}
@@ -3127,9 +3206,9 @@ class Command extends Helpable {
    * @instance
    *
    * @param {Option['key']} key
-   *  Option key
+   *  The option key
    * @return {OptionValueSource | null | undefined}
-   *  The source of the option value for `key`
+   *  The option value source
    */
   public optionValueSource(
     key: Option['key']
@@ -3145,11 +3224,11 @@ class Command extends Helpable {
    * @instance
    *
    * @param {Option['key']} key
-   *  Option key
+   *  The option key
    * @param {OptionValueSource | null | undefined} [source]
    *  The source of the option value
    * @return {OptionValueSource | this | null | undefined}
-   *  Option value source for `key` or `this` command
+   *  The option value source or `this` command
    */
   public optionValueSource(
     key: Option['key'],
@@ -3393,20 +3472,22 @@ class Command extends Helpable {
   /**
    * Process command arguments and store parsed arguments.
    *
+   * @see {@linkcode Awaitable}
+   *
    * @protected
    * @instance
    *
-   * @return {this}
+   * @return {Awaitable<this>}
    *  `this` command
    */
-  protected parseCommandArguments(): this {
+  protected parseCommandArguments(): Awaitable<this> {
     for (const [index, argument] of this.arguments().entries()) {
       /**
        * The default value.
        *
        * @const {unknown} dvalue
        */
-      const dvalue: unknown = this.args[index]
+      const dvalue: unknown = this.argumentValue(index)
 
       /**
        * The argument parser.
@@ -3444,7 +3525,7 @@ class Command extends Helpable {
             previous = value
           }
 
-          this.args[index] = value // store final parse result.
+          this.argumentValue(index, value) // store final parse result.
           break
         }
       } else if (index < this.argv.length) {
@@ -3455,14 +3536,30 @@ class Command extends Helpable {
 
         // parse raw argument value and store parse result.
         ok(typeof value === 'string', 'expected command-argument `value`')
-        this.args[index] = parser(value, dvalue)
+        this.argumentValue(index, parser(value, dvalue))
       } else {
         // value not supplied by user for optional argument, use default value.
         ok(!argument.required, 'expected optional argument')
       }
     }
 
-    return this
+    /**
+     * The result of the promise chain.
+     *
+     * @var {Awaitable<this>} result
+     */
+    let result: Awaitable<this> = this
+
+    // resolve parsed arguments.
+    for (const [index, arg] of this.args.entries()) {
+      if (isPromise(arg)) {
+        result = this.chainOrCall(arg.then(resolved => {
+          return this.argumentValue(index, resolved)
+        }), this.self)
+      }
+    }
+
+    return result
   }
 
   /**
@@ -3733,19 +3830,16 @@ class Command extends Helpable {
     if (subcommand) {
       return this.chainOrCall(
         this.chainOrCallHook(hooks.preCommand, subcommand),
-        prepareSubcommand,
-        undefined
+        /**
+         * @this {void}
+         *
+         * @return {Awaitable<Command>}
+         *  The command to run
+         */
+        function prepareSubcommand(this: void): Awaitable<Command> {
+          return subcommand.prepareCommand(operands.slice(1), unknown)
+        }
       )
-
-      /**
-       * @this {void}
-       *
-       * @return {Awaitable<Command>}
-       *  The command to run
-       */
-      function prepareSubcommand(this: void): Awaitable<Command> {
-        return subcommand!.prepareCommand(operands.slice(1), unknown)
-      }
     }
 
     // prepare default command,
@@ -3773,7 +3867,36 @@ class Command extends Helpable {
       this.checkForConflictingOptions()
       this.checkForUnknownOptions(unknown)
       this.checkCommandArguments()
-      this.parseCommandArguments()
+
+      return this.chainOrCall(this.parseCommandArguments(), () => {
+        /**
+         * The result of the promise chain.
+         *
+         * @var {Awaitable<this>} result
+         */
+        let result: Awaitable<this> = this
+
+        // resolve parsed option values.
+        for (const cmd of [this, ...this.ancestors()]) {
+          for (const [key, source] of Object.entries(cmd.optionValueSources)) {
+            /**
+             * The parsed option value.
+             *
+             * @const {unknown} value
+             */
+            const value: unknown = cmd.optionValue(key)
+
+            if (isPromise(value)) {
+              result = this.chainOrCall(
+                value.then(resolved => cmd.optionValue(key, resolved, source)),
+                this.self
+              )
+            }
+          }
+        }
+
+        return result
+      })
     }
 
     return this
