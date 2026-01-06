@@ -20,7 +20,6 @@
 # - https://github.com/actions/upload-artifact
 # - https://github.com/andstor/file-existence-action
 # - https://github.com/codecov/codecov-action
-# - https://github.com/codecov/test-results-action
 # - https://github.com/dprint/check
 # - https://github.com/flex-development/grease
 # - https://github.com/flex-development/jq-action
@@ -299,7 +298,7 @@ jobs:
       - id: codecov-results
         if: ${{ !cancelled() }}
         name: Upload test results to Codecov
-        uses: codecov/test-results-action@v1.2.1
+        uses: codecov/codecov-action@v5.5.2
         with:
           disable_search: true
           env_vars: GITHUB_JOB,GITHUB_REF_TYPE
@@ -308,6 +307,7 @@ jobs:
           flags: ${{ format('node{0}', matrix.node-version) }}
           name: ${{ format('{0}.node{1}', env.SHA, matrix.node-version) }}
           override_branch: ${{ env.REF_NAME }}
+          report_type: test_results
           verbose: true
       - id: codecov-coverage
         name: Upload coverage report to Codecov
@@ -377,7 +377,7 @@ jobs:
       - id: codecov-results
         if: ${{ !cancelled() }}
         name: Upload test results to Codecov
-        uses: codecov/test-results-action@v1.2.1
+        uses: codecov/codecov-action@v5.5.2
         with:
           disable_search: true
           env_vars: GITHUB_JOB,GITHUB_REF_TYPE
@@ -386,6 +386,7 @@ jobs:
           flags: ${{ format('bun-{0}', matrix.bun-version) }}
           name: ${{ format('{0}.bun-{1}', env.SHA, matrix.bun-version) }}
           override_branch: ${{ env.REF_NAME }}
+          report_type: test_results
           verbose: true
       - id: codecov-coverage
         name: Upload coverage report to Codecov
