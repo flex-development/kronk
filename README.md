@@ -37,7 +37,8 @@
     - [`Command#ancestors()`](#commandancestors)
     - [`Command#args`](#commandargs)
     - [`Command#argument(info[, data])`](#commandargumentinfo-data)
-    - [`Command#argumentValue(index[, value])`](#commandargumentvalueindex-value)
+    - [`Command#argumentValue(index[, value][, source])`](#commandargumentvalueindex-value-source)
+    - [`Command#argumentValueSource(index[, source])`](#commandoptionvaluesourcekey-source)
     - [`Command#arguments([infos])`](#commandargumentsinfos)
     - [`Command#argv`](#commandargv)
     - [`Command#command(info[, data])`](#commandcommandinfo-data)
@@ -77,6 +78,7 @@
     - [`Command#parse([argv][, options])`](#commandparseargv-options)
     - [`Command#parseAsync([argv][, options])`](#commandparseasyncargv-options)
     - [`Command#process`](#commandprocess)
+    - [`Command#restore<T>()`](#commandrestoret)
     - [`Command#snapshot()`](#commandsnapshot)
     - [`Command#summary([summary])`](#commandsummarysummary)
     - [`Command#toString()`](#commandtostring)
@@ -137,6 +139,7 @@
     - [`Parseable#required`](#parseablerequired)
     - [`Parseable#toString()`](#parseabletostring)
     - [`Parseable#variadic`](#parseablevariadic)
+  - [`argumentValueSource`](#argumentvaluesource)
   - [`keid`](#keid)
   - [`optionValueSource`](#optionvaluesource)
 - [Types](#types)
@@ -146,6 +149,9 @@
   - [`ArgumentMetadata`](#argumentmetadata)
   - [`ArgumentSyntaxMap`](#argumentsyntaxmap)
   - [`ArgumentSyntax`](#argumentsyntax-1)
+  - [`ArgumentValueSourceMap`](#argumentvaluesourcemap)
+  - [`ArgumentValueSource`](#argumentvaluesource-1)
+  - [`ArgumentValueSources`](#argumentvaluesources)
   - [`ArgumentsData`](#argumentsdata)
   - [`ArgvSourceMap`](#argvsourcemap)
   - [`ArgvSource`](#argvsource)
@@ -211,6 +217,7 @@
   - [`ProcessEnv`](#processenv)
   - [`Process`](#process)
   - [`RawOptionValue`](#rawoptionvalue)
+  - [`RestoreParser`](#restoreparser)
   - [`SubcommandInfo`](#subcommandinfo)
   - [`SubcommandsData`](#subcommandsdata)
   - [`SubcommandsInfo`](#subcommandsinfo)
@@ -295,7 +302,7 @@ serve -p80
 serve -p=80
 ```
 
-Options on the command line are not positional, and can be specified before or after command-arguments.
+Options on the command line are not positional, and can be specified before or after other arguments.
 
 ```sh
 serve --port=80 ./server.mts
@@ -537,13 +544,13 @@ Define an argument for the command.
 
 ([`this`](#commandinfo)) `this` command
 
-#### `Command#argumentValue(index[, value])`
+#### `Command#argumentValue(index[, value][, source])`
 
 Get or set an argument value.
 
 ##### Overloads
 
-- `argumentValue(index: Numeric | number, value: unknown): this`
+- `argumentValue(index: Numeric | number, value: unknown, source?: ArgumentValueSource | null | undefined): this`
 - `argumentValue<T>(index: Numeric | number): T`
 
 ##### Type Parameters
@@ -554,13 +561,36 @@ Get or set an argument value.
 ##### Parameters
 
 - `index` ([`Numeric`](#numeric) | `number`)
-  — the index of the argument. a negative index will count back from the last argument
+  — the position of the argument. a negative index will count back from the last argument when retrieving a value
 - `value` (`unknown`)
   — the parsed argument value
+- `source` ([`ArgumentValueSource`](#argumentvaluesource-1) | `null` | `undefined`, optional)
+  — the source of the argument value
 
 ##### Returns
 
 (`T` | [`this`](#commandinfo)) The stored argument value or `this` command
+
+#### `Command#argumentValueSource(index[, source])`
+
+Get or set an argument value source.
+
+##### Overloads
+
+- `argumentValueSource(index: Numeric | number, source: ArgumentValueSource | null | undefined): this`
+- `argumentValueSource(index: Numeric | number): ArgumentValueSource | undefined`
+
+##### Parameters
+
+- `index` ([`Numeric`](#numeric) | `number`)
+  — the position of the argument. a negative index will count back from the last argument when retrieving a source
+- `source` ([`ArgumentValueSource`](#argumentvaluesource-1) | `null` | `undefined`)
+  — the source of the argument value
+
+##### Returns
+
+([`ArgumentValueSource`](#argumentvaluesource-1) | [`this`](#commandinfo) | `undefined`)
+The argument value source or `this` command
 
 #### `Command#arguments([infos])`
 
@@ -1118,7 +1148,7 @@ Get or set an option value.
 - `value` (`unknown`)
   — the parsed option value
 - `source` ([`OptionValueSource`](#optionvaluesource-1) | `null` | `undefined`)
-  — the source of the raw option value
+  — the source of the option value
 
 ##### Returns
 
@@ -1131,7 +1161,7 @@ Get or set an option value source.
 ##### Overloads
 
 - `optionValueSource(key: Option['key'], source: OptionValueSource | null | undefined): this`
-- `optionValueSource(key: Option['key']): OptionValueSource | null | undefined`
+- `optionValueSource(key: Option['key']): OptionValueSource | undefined`
 
 ##### Parameters
 
@@ -1142,7 +1172,7 @@ Get or set an option value source.
 
 ##### Returns
 
-([`OptionValueSource`](#optionvaluesource-1) | [`this`](#commandinfo) | `null` | `undefined`)
+([`OptionValueSource`](#optionvaluesource-1) | [`this`](#commandinfo) | `undefined`)
 The option value source or `this` command
 
 #### `Command#options([infos])`
@@ -1233,6 +1263,24 @@ Otherwise the same as [`parse`](#commandparseargv-options).
 [`Process`](#process)
 
 Information about the current process.
+
+#### `Command#restore<T>()`
+
+Restore the state of the command and its ancestors.
+
+Resets parsed values, and calls any [`restore`](#restoreparser) functions defined on argument and option parsers.
+Arguments, options, and subcommands will **not** be reset.
+
+A promise is returned if any `restore` functions are async.
+
+##### Type Parameters
+
+- `T` ([`Awaitable<this>`](#awaitablet))
+  — the current command
+
+##### Returns
+
+(`T`) [`this`](#commandinfo) command
 
 #### `Command#snapshot()`
 
@@ -1829,7 +1877,7 @@ The [option](#optioninfo) instance representing the parsed option.
 
 [`OptionValueSource`](#optionvaluesource-1)
 
-The source of the raw option [`value`](#optioneventvalue).
+The source of the option [`value`](#optioneventvalue).
 
 #### `OptionEvent#value`
 
@@ -1948,6 +1996,17 @@ Get the candidate as a human-readable string (`abstract`).
 `boolean`
 
 Whether the candidate can be specified multiple times.
+
+### `argumentValueSource`
+
+Default argument value sources (`const enum`).
+
+```ts
+const enum argumentValueSource {
+  cli = 'cli',
+  default = 'default'
+}
+```
 
 ### `keid`
 
@@ -2095,6 +2154,44 @@ They will be added to this union automatically.
 type ArgumentSyntax = ArgumentSyntaxMap[keyof ArgumentSyntaxMap]
 ```
 
+### `ArgumentValueSourceMap`
+
+Registry of command-argument value sources (TypeScript interface).
+
+```ts
+interface ArgumentValueSourceMap {/* see code */}
+```
+
+When developing extensions that use additional sources, augment `ArgumentValueSourceMap` to register custom sources:
+
+```ts
+declare module '@flex-development/kronk' {
+  interface ArgumentValueSourceMap {
+    builder: 'builder'
+  }
+}
+```
+
+### `ArgumentValueSource`
+
+Union of registered command-argument value sources (TypeScript type).
+
+To register custom sources, augment [`ArgumentValueSourceMap`](#argumentvaluesourcemap).
+They will be added to this union automatically.
+
+```ts
+type ArgumentValueSource = ArgumentValueSourceMap[keyof ArgumentValueSourceMap]
+```
+
+### `ArgumentValueSources`
+
+List, where each index is the position of a command-argument
+and each value is the source of the argument value (TypeScript type).
+
+```ts
+type ArgumentValueSources = (ArgumentValueSource | undefined)[]
+```
+
 ### `ArgumentsData`
 
 Union of types used to create command arguments (TypeScript type).
@@ -2137,16 +2234,16 @@ type ArgvSource = ArgvSourceMap[keyof ArgvSourceMap]
 
 ### `Awaitable<[T]>`
 
-Create a union of `T` and `T` as a promise (TypeScript type).
+Create a union of `T` and `T` as a promise-like object (TypeScript type).
+
+```ts
+type Awaitable<T = unknown> = PromiseLike<T> | T
+```
 
 #### Type Parameters
 
 - `T` (`any`, optional)
   - the value
-
-```ts
-type Awaitable<T = unknown> = Promise<T> | T
-```
 
 ### `CommandData`
 
@@ -2355,6 +2452,8 @@ Object representing a command overview (TypeScript interface).
   — list of ancestor command names
 - `args` (`string[]`)
   — list of parsed command arguments
+- `argumentValueSources` ([`ArgumentValueSources`](#argumentvaluesources))
+  — list, where each index is the position of a command-argument and each value is the source of the argument value
 - `argv` (`string[]`)
   — list of raw command arguments
 - `name` ([`CommandName`](#commandname))
@@ -2996,20 +3095,18 @@ Record, where each key is an option key ([`Option.key`](#optioninfo))
 and each value is an [`OptionValueSource`](#optionvaluesource-1) (TypeScript type).
 
 ```ts
-type OptionValueSources = {
-  [x: Option['key']]: OptionValueSource | null | undefined
-}
+type OptionValueSources = { [x: Option['key']]: OptionValueSource }
 ```
 
 ### `OptionValues<[T]>`
 
 Record, where each key is an option key ([`Option.key`](#optioninfo))
-and each value is a parsed option value (TypeScript type).
+and each value is the parsed option value (TypeScript type).
 
 #### Type Parameters
 
 - `T` (`any`, optional)
-  — parsed option value type
+  — the parsed option value
 
 ```ts
 type OptionValues<T = any> = { [x: Option['key']]: T }
@@ -3028,10 +3125,12 @@ type OptionsData =
 
 ### `ParseArg<[T][, Previous]>`
 
-Parse a raw argument `value` (TypeScript type).
+Parse a raw argument `value` (TypeScript interface).
 
 ```ts
-type ParseArg<T = any, Previous = T> = (value: string, previous?: Previous) => T
+interface ParseArg<T = any, Previous = T> {
+  (value: string, previous?: Previous): T
+}
 ```
 
 #### Type Parameters
@@ -3051,6 +3150,11 @@ type ParseArg<T = any, Previous = T> = (value: string, previous?: Previous) => T
 #### Returns
 
 (`T`) The parse result
+
+#### Properties
+
+- `restore?` ([`RestoreParser`](#restoreparser), optional)
+  — restore the state of the parser
 
 ### `ParseOptions`
 
@@ -3175,6 +3279,18 @@ Union of raw option value types (TypeScript type).
 ```ts
 type RawOptionValue = boolean | string | null
 ```
+
+### `RestoreParser`
+
+Restore parser state (TypeScript type).
+
+```ts
+type RestoreParser = (this: void) => Awaitable<null | undefined | void>
+```
+
+#### Returns
+
+([`Awaitable<null | undefined | void>`](#awaitablet)) Nothing
 
 ### `SubcommandInfo`
 

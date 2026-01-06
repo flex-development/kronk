@@ -4,6 +4,6 @@ exports[`e2e:parsers > should expose public api 1`] = `
 [
   "bool",
   "number",
-  "unique",
+  "uniq",
 ]
 `;

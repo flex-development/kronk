@@ -2,6 +2,7 @@
 
 exports[`e2e:kronk > should expose public api 1`] = `
 [
+  "argumentValueSource",
   "keid",
   "optionValueSource",
   "program",
@@ -18,6 +19,6 @@ exports[`e2e:kronk > should expose public api 1`] = `
   "OptionEvent",
   "bool",
   "number",
-  "unique",
+  "uniq",
 ]
 `;

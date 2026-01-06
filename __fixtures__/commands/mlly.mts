@@ -3,7 +3,7 @@
  * @module fixtures/commands/mlly
  */
 
-import unique from '#parsers/unique'
+import uniq from '#parsers/uniq'
 import sfmt from '#tests/utils/sfmt'
 import type { SubcommandInfo as CommandInfo } from '@flex-development/kronk'
 import { canParseUrl, defaultConditions, toUrl } from '@flex-development/mlly'
@@ -42,7 +42,7 @@ export default {
           default: { description: 'node,import', value: defaultConditions },
           description: 'list of export/import conditions',
           flags: '-c | --conditions <...>',
-          parser: unique
+          parser: uniq()
         },
         {
           description: 'whether to keep symlinks instead of resolving them',

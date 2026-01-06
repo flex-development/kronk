@@ -6,7 +6,7 @@
 import chars from '#enums/chars'
 import bool from '#parsers/bool'
 import number from '#parsers/number'
-import unique from '#parsers/unique'
+import uniq from '#parsers/uniq'
 import file from '#tests/parsers/file'
 import files from '#tests/parsers/files'
 import sfmt from '#tests/utils/sfmt'
@@ -290,7 +290,7 @@ export default {
         set: {
           arguments: {
             description: 'the list of field-value pairs',
-            parser: unique,
+            parser: uniq(),
             syntax: sfmt.required({ id: 'fieldValue', variadic: true })
           },
           description: 'Set the `value` at `field` in the manifest.',

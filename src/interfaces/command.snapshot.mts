@@ -4,6 +4,7 @@
  */
 
 import type {
+  ArgumentValueSources,
   CommandName,
   OptionValues,
   OptionValueSources,
@@ -25,6 +26,14 @@ interface CommandSnapshot {
    * List of parsed command arguments.
    */
   args: any[]
+
+  /**
+   * List, where each index is the position of a command-argument
+   * and each value is the source of the argument.
+   *
+   * @see {@linkcode ArgumentValueSources}
+   */
+  argumentValueSources: ArgumentValueSources
 
   /**
    * List of raw command arguments.

@@ -4,7 +4,7 @@
  */
 
 import chars from '#enums/chars'
-import unique from '#parsers/unique'
+import uniq from '#parsers/uniq'
 import sfmt from '#tests/utils/sfmt'
 import c from '@flex-development/colors'
 import type { SubcommandInfo as CommandInfo } from '@flex-development/kronk'
@@ -21,7 +21,7 @@ export default {
       value: new Set()
     },
     description: 'the list of numbers',
-    parser: unique,
+    parser: uniq(),
     syntax: sfmt.optional({ id: 'numbers', variadic: true })
   },
   description: 'print a list of numbers with all duplicates removed.\n' +

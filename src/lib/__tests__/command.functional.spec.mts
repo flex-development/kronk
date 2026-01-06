@@ -1984,6 +1984,10 @@ describe('functional:lib/Command', () => {
 
       // Expect (snapshot)
       expect(result.snapshot()).toMatchSnapshot()
+
+      // Cleanup
+      await subject.restore()
+      await result.restore()
     })
   })
 })

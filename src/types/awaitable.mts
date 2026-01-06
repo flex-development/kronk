@@ -4,11 +4,11 @@
  */
 
 /**
- * Create a union of `T` and `T` as a promise.
+ * Create a union of `T` and `T` as a promise-like object.
  *
  * @template {any} [T=unknown]
- *  Value
+ *  The value
  */
-type Awaitable<T = unknown> = Promise<T> | T
+type Awaitable<T = unknown> = PromiseLike<T> | T
 
 export type { Awaitable as default }

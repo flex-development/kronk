@@ -9,8 +9,8 @@ describe('unit-d:types/Awaitable', () => {
   type T = string | null
   type Subject = TestSubject<T>
 
-  it('should extract Promise<T>', () => {
-    expectTypeOf<Subject>().extract<Promise<T>>().not.toBeNever()
+  it('should extract PromiseLike<T>', () => {
+    expectTypeOf<Subject>().extract<PromiseLike<T>>().not.toBeNever()
   })
 
   it('should extract T', () => {

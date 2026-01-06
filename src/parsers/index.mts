@@ -5,4 +5,4 @@
 
 export { default as bool } from '#parsers/bool'
 export { default as number } from '#parsers/number'
-export { default as unique } from '#parsers/unique'
+export { default as uniq } from '#parsers/uniq'

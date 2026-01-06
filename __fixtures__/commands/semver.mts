@@ -3,7 +3,7 @@
  * @module fixtures/commands/semver
  */
 
-import unique from '#parsers/unique'
+import uniq from '#parsers/uniq'
 import sfmt from '#tests/utils/sfmt'
 import type { SubcommandInfo as CommandInfo } from '@flex-development/kronk'
 
@@ -53,7 +53,7 @@ export default {
             },
             {
               description: 'the versions to check',
-              parser: unique,
+              parser: uniq(),
               syntax: sfmt.required({ id: 'versions', variadic: true })
             }
           ],

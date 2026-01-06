@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`unit:parsers/uniq > unique > should store values in unique list 1`] = `
+Set {
+  1,
+}
+`;
+
+exports[`unit:parsers/uniq > unique > should store values in unique list 2`] = `
+Set {
+  3,
+}
+`;

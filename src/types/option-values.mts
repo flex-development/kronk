@@ -6,11 +6,13 @@
 import type { Option } from '@flex-development/kronk'
 
 /**
- * Record, where each key is an option key ({@linkcode Option.key}) and each
- * value is a parsed option value.
+ * Record, where each key is an option key
+ * and each value is the parsed option value.
+ *
+ * @see {@linkcode Option.key}
  *
  * @template {any} [T=any]
- *  Parsed option value type
+ *  The parsed option value
  */
 type OptionValues<T = any> = { [x: Option['key']]: T }
 

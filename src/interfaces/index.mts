@@ -6,6 +6,9 @@
 export type {
   default as ArgumentSyntaxMap
 } from '#interfaces/argument-syntax.map'
+export type {
+  default as ArgumentValueSourceMap
+} from '#interfaces/argument-value-source.map'
 export type { default as ArgumentData } from '#interfaces/argument.data'
 export type { default as ArgumentInfo } from '#interfaces/argument.info'
 export type { default as ArgumentMetadata } from '#interfaces/argument.metadata'
@@ -46,6 +49,7 @@ export type {
 export type { default as OptionData } from '#interfaces/option.data'
 export type { default as OptionInfo } from '#interfaces/option.info'
 export type { default as OptionMetadata } from '#interfaces/option.metadata'
+export type { default as ParseArg } from '#interfaces/parse-arg'
 export type { default as ParseOptions } from '#interfaces/parse-options'
 export type {
   default as ParseUnknownResult

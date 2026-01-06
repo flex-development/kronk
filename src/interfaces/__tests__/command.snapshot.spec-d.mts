@@ -5,6 +5,7 @@
 
 import type TestSubject from '#interfaces/command.snapshot'
 import type {
+  ArgumentValueSources,
   CommandName,
   OptionValues,
   UsageInfo
@@ -19,6 +20,12 @@ describe('unit-d:interfaces/CommandSnapshot', () => {
 
   it('should match [args: any[]]', () => {
     expectTypeOf<TestSubject>().toHaveProperty('args').toEqualTypeOf<any[]>()
+  })
+
+  it('should match [argumentValueSources: ArgumentValueSources]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('argumentValueSources')
+      .toEqualTypeOf<ArgumentValueSources>()
   })
 
   it('should match [argv: string[]]', () => {

@@ -10,7 +10,7 @@
  */
 const list: Set<string> = new Set()
 
-files.list = list
+files.restore = restore
 export default files
 
 /**
@@ -34,4 +34,15 @@ async function files(
 ): Promise<Set<string>> {
   if (previous) await previous
   return new Promise(resolve => resolve((list.add(value), list)))
+}
+
+/**
+ * Restore the state of the parser.
+ *
+ * @this {void}
+ *
+ * @return {Promise<undefined>}
+ */
+async function restore(): Promise<undefined> {
+  return void list.clear()
 }
