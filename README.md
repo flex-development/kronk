@@ -75,8 +75,7 @@
     - [`Command#opts<T>()`](#commandoptst)
     - [`Command#optsWithGlobals<T>()`](#commandoptswithglobalst)
     - [`Command#parent`](#commandparent)
-    - [`Command#parse([argv][, options])`](#commandparseargv-options)
-    - [`Command#parseAsync([argv][, options])`](#commandparseasyncargv-options)
+    - [`Command#parse<T>([argv][, options])`](#commandparsetargv-options)
     - [`Command#process`](#commandprocess)
     - [`Command#restore<T>()`](#commandrestoret)
     - [`Command#snapshot()`](#commandsnapshot)
@@ -1228,35 +1227,30 @@ Get a record of global and local option values.
 
 The parent command.
 
-#### `Command#parse([argv][, options])`
+#### `Command#parse<T>([argv][, options])`
 
 Parse `argv`, setting options and invoking commands when defined.
 
 The default expectation is that the arguments are from node and have the application as `argv[0]` and the script being
 run in `argv[1]`, with user parameters after that.
 
-> 👉 **Note**: If the [`action`](#commandactionaction) handler is async,
-> [`parseAsync`](#commandparseasyncargv-options) should be used instead.
+> 👉 **Note**: If any parsers or [`action`](#commandactionaction) handlers are async, the parse needs to be awaited.
+
+##### Type Parameters
+
+- `T` ([`Awaitable<Command>`](#awaitablet) | [`this`](#commandinfo))
+  — the running command
 
 ##### Parameters
 
 - `argv` ([`List<string>`](#list) | `null` | `undefined`, optional)
-  — list of command-line arguments
+  — the command-line arguments
 - `options` ([`ParseOptions`](#parseoptions) | `null` | `undefined`, optional)
   — options for parsing `argv`
 
 ##### Returns
 
-([`Command`](#commandinfo) | [`this`](#commandinfo)) The command that was run
-
-#### `Command#parseAsync([argv][, options])`
-
-Asynchronously parse `argv`, setting options and invoking commands when defined.
-
-Otherwise the same as [`parse`](#commandparseargv-options).
-
-> 👉 **Note**: If the [`action`](#commandactionaction) handler is async,
-> this method should be used instead of [`parse`](#commandparseargv-options).
+(`T`) The running command
 
 #### `Command#process`
 

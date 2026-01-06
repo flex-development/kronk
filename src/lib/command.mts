@@ -1183,8 +1183,7 @@ class Command extends Helpable {
     self?: ThisParameterType<Fn> | null | undefined,
     ...params: Parameters<Fn>
   ): Awaitable<T> {
-    return isPromise(promise)
-      // already have a promise, chain callback.
+    return isPromise(promise) // already have a promise, chain callback.
       ? promise.then((): Awaitable<T> => fn.call(self, ...params))
       : fn.call(self, ...params)
   }
@@ -3460,28 +3459,32 @@ class Command extends Helpable {
    * application as `argv[0]` and the script being run in `argv[1]`, with user
    * parameters after that.
    *
-   * > 👉 **Note**: If the {@linkcode action} handler is async,
-   * > {@linkcode parseAsync} should be used instead.
+   * > 👉 **Note**: If any parsers or {@linkcode action} handlers are async,
+   * > the parse needs to be awaited.
    *
+   * @see {@linkcode Awaitable}
    * @see {@linkcode List}
    * @see {@linkcode ParseOptions}
    *
    * @public
    * @instance
    *
+   * @template {Awaitable<Command | this>} T
+   *  The running command
+   *
    * @param {List<string> | null | undefined} [argv]
-   *  List of command-line arguments
+   *  The command-line arguments
    * @param {ParseOptions | null | undefined} [options]
    *  Options for parsing `argv`
-   * @return {Command | this}
-   *  The command that was run
+   * @return {T}
+   *  The running command
    */
-  public parse(
+  public parse<T extends Awaitable<Command | this>>(
     argv?: List<string> | null | undefined,
     options?: ParseOptions | null | undefined
-  ): Command | this {
+  ): T {
     /**
-     * User arguments.
+     * The prepared user arguments.
      *
      * @const {string[]} unknown
      */
@@ -3490,81 +3493,49 @@ class Command extends Helpable {
     /**
      * The command to run.
      *
-     * @const {Command} command
+     * @var {T} command
      */
-    const command: Command = this.prepareCommand([], unknown)
+    let command: T = this.prepareCommand([], unknown)
 
-    /**
-     * The parsed arguments.
-     *
-     * @const {unknown[]} args
-     */
-    const args: unknown[] = command.args
+    // capture resolved command.
+    if (isPromise(command)) {
+      void command.then(resolved => (command = resolved as T))
+    }
 
-    // run callbacks.
-    void this.chainOrCallHook(hooks.preAction, command)
-    void command.action().call(command, command.opts(), ...args)
-    void this.chainOrCallHook(hooks.postAction, command)
+    // chain prepared command result, then run hooks and command action.
+    return this.chainOrCall(command, () => {
+      ok(isCommand(command), 'expected `Command` instance')
 
-    return command
-  }
+      /**
+       * The result of the promise chain.
+       *
+       * @var {Awaitable} result
+       */
+      let result: Awaitable
 
-  /**
-   * Parse `argv`, setting options and invoking commands when defined.
-   *
-   * The default expectation is that the arguments are from node and have the
-   * application as `argv[0]` and the script being run in `argv[1]`, with user
-   * parameters after that.
-   *
-   * > 👉 **Note**: If the {@linkcode action} handler is async, this method
-   * > should be used instead of {@linkcode parse}.
-   *
-   * @see {@linkcode List}
-   * @see {@linkcode ParseOptions}
-   *
-   * @public
-   * @instance
-   *
-   * @async
-   *
-   * @param {List<string> | null | undefined} [argv]
-   *  List of command-line arguments
-   * @param {ParseOptions | null | undefined} [options]
-   *  Options for parsing `argv`
-   * @return {Promise<Command | this>}
-   *  The command that was run
-   */
-  public async parseAsync(
-    argv?: List<string> | null | undefined,
-    options?: ParseOptions | null | undefined
-  ): Promise<Command | this> {
-    /**
-     * User arguments.
-     *
-     * @const {string[]} unknown
-     */
-    const unknown: string[] = this.prepareUserArgs(argv, options)
+      // call preaction hooks.
+      result = command.chainOrCallHook(hooks.preAction, command)
 
-    /**
-     * The command to run.
-     *
-     * @const {Command} command
-     */
-    const command: Command = await this.prepareCommand([], unknown)
+      // chain hook result, then run action callback and postaction hooks.
+      return command.chainOrCall(result, () => {
+        ok(isCommand(command), 'expected `Command` instance')
 
-    /**
-     * The parsed arguments.
-     *
-     * @const {unknown[]} args
-     */
-    const args: unknown[] = command.args
+        // run action callback.
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        result = command.action().call(command, command.opts(), ...command.args)
 
-    // run callbacks.
-    await this.chainOrCallHook(hooks.preAction, command)
-    await command.action().call(command, command.opts(), ...args)
-    await this.chainOrCallHook(hooks.postAction, command)
+        // chain action callback result, then call postaction hooks.
+        return command.chainOrCall(result, () => {
+          ok(isCommand(command), 'expected `Command` instance')
 
-    return command
+          // call postaction hooks.
+          result = command.chainOrCallHook(hooks.postAction, command)
+
+          // chain hook result and return running command.
+          return command.chainOrCall(result, constant(command))
+        })
+      })
+    }) as T
   }
 
   /**

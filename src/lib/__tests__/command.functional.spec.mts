@@ -26,6 +26,7 @@ import errorSnapshot from '#tests/utils/error-snapshot'
 import digits from '#utils/digits'
 import type {
   Action,
+  Awaitable,
   CommandInfo,
   Exit,
   Hook,
@@ -225,13 +226,14 @@ describe('functional:lib/Command', () => {
       info.process ??= createProcess()
 
       // Arrange
-      const method: 'parse' | 'parseAsync' = info.async ? 'parseAsync' : 'parse'
       const subject: TestSubject = new TestSubject(info)
       let error!: KronkError
+      let result: Awaitable<TestSubject>
 
       // Act
       try {
-        await subject[method]([...nodeArgv, ...argv])
+        result = subject.parse([...nodeArgv, ...argv])
+        if (info.async) await result
       } catch (e: unknown) {
         error = e as typeof error
       }
@@ -926,7 +928,8 @@ describe('functional:lib/Command', () => {
       help = command.help() // @ts-expect-error [2445] testing.
       printHelp = vi.spyOn(command, 'printHelp').mockName('printHelp')
       write = vi.spyOn(process.stdout, 'write').mockName('write')
-      result = await subject[isAsync ? 'parseAsync' : 'parse'](argv, options)
+      result = subject.parse(argv, options)
+      if (isAsync) result = await (result as unknown as Promise<TestSubject>)
       lastCommand = commands.at(-1)!
       opts = result.opts()
 
@@ -1083,7 +1086,8 @@ describe('functional:lib/Command', () => {
       // @ts-expect-error [2445] testing
       printVersion = vi.spyOn(command, 'printVersion').mockName('printVersion')
       write = vi.spyOn(process.stdout, 'write').mockName('write')
-      result = await subject[isAsync ? 'parseAsync' : 'parse'](argv, options)
+      result = subject.parse(argv, options)
+      if (isAsync) result = await (result as unknown as Promise<TestSubject>)
       lastCommand = commands.at(-1)!
       opts = result.opts()
       optsWithGlobals = result.optsWithGlobals()
@@ -1947,7 +1951,8 @@ describe('functional:lib/Command', () => {
       for (const cmd of commands) cmd.hook(kh.preAction, cast(preAction))
       for (const cmd of ancestors) cmd.hook(kh.preCommand, cast(preCommand))
       command.action(action as unknown as Action)
-      result = await subject[isAsync ? 'parseAsync' : 'parse'](argv, options)
+      result = subject.parse(argv, options)
+      if (isAsync) result = await (result as unknown as Promise<TestSubject>)
       lastCommand = commands.at(-1)!
       opts = result.opts()
 

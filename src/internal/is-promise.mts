@@ -4,7 +4,7 @@
  */
 
 /**
- * Check if `value` is a {@linkcode Promise}.
+ * Check if `value` is a {@linkcode PromiseLike} object.
  *
  * @internal
  *
@@ -15,10 +15,10 @@
  *
  * @param {unknown} value
  *  The thing to check
- * @return {value is Promise<T>}
- *  `true` if `value` is {@linkcode Promise}, `false` otherwise
+ * @return {value is PromiseLike<T>}
+ *  `true` if `value` is {@linkcode PromiseLike}, `false` otherwise
  */
-function isPromise<T>(this: void, value: unknown): value is Promise<T> {
+function isPromise<T>(this: void, value: unknown): value is PromiseLike<T> {
   return (
     typeof value === 'object' &&
     value !== null &&
