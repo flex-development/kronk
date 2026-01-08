@@ -419,11 +419,11 @@ class Help {
    * @param {Option} option
    *  The option
    * @return {string | null}
-   *  The formatted list of conflicting option names
+   *  The formatted list of conflicting options
    */
   protected conflicts(option: Option): string | null {
     /**
-     * The list of conflicting option names.
+     * The list of conflicting options.
      *
      * @const {string[]} conflicts
      */
@@ -495,6 +495,58 @@ class Help {
    */
   protected defaultValue(value: unknown): string {
     return typeof value === 'string' ? this.quote(value) : String(value)
+  }
+
+  /**
+   * Format a dependee option.
+   *
+   * @protected
+   * @instance
+   *
+   * @param {string} dependee
+   *  The option reference
+   * @return {string}
+   *  The formatted dependee option
+   */
+  protected dependee(dependee: string): string {
+    return dependee
+  }
+
+  /**
+   * Get the list of dependee options to show in an option description.
+   *
+   * @see {@linkcode Option}
+   *
+   * @protected
+   * @instance
+   *
+   * @param {Option} option
+   *  The option
+   * @return {string | null}
+   *  The formatted list of dependee options
+   */
+  protected depends(option: Option): string | null {
+    /**
+     * The list of dependee option.
+     *
+     * @const {string[]} depends
+     */
+    const depends: string[] = [...option.depends()]
+
+    /**
+     * The formatted list.
+     *
+     * @var {string | null} list
+     */
+    let list: string | null = null
+
+    if (depends.length) {
+      list = 'requires' + chars.colon + chars.space + depends
+        .map(this.dependee.bind(this))
+        .join(chars.comma + chars.space)
+    }
+
+    return list
   }
 
   /**
@@ -643,8 +695,6 @@ class Help {
   /**
    * Filter and join a `list`.
    *
-   * @todo update documentation
-   *
    * @see {@linkcode List}
    *
    * @protected
@@ -692,7 +742,8 @@ class Help {
       this.default(option),
       option.optional && this.preset(option),
       this.env(option),
-      this.conflicts(option)
+      this.conflicts(option),
+      this.depends(option)
     )
   }
 
@@ -1105,7 +1156,8 @@ class Help {
       this.default(option),
       option.optional && this.preset(option),
       this.env(option),
-      this.conflicts(option)
+      this.conflicts(option),
+      this.depends(option)
     )
   }
 
@@ -1577,7 +1629,7 @@ class Help {
      *
      * @var {Command[]} list
      */
-    let list: Command[] = [...new Set(command.commands().values())]
+    let list: Command[] = [...command.uniqueCommands()]
 
     // filter subcommands by visibility.
     list = list.filter(this.visible.bind(this))
@@ -1645,7 +1697,7 @@ class Help {
         let helpOption: Option | null = ancestor.helpOption()
 
         // remove all help options except the first.
-        return ancestor.options().filter(option => {
+        return [...ancestor.uniqueOptions()].filter(option => {
           if (option !== helpOption) return true
           if (!help) return help = option, true
           return false
@@ -1663,22 +1715,20 @@ class Help {
    * > be the last two options.
    *
    * @see {@linkcode Command}
+   * @see {@linkcode List}
    * @see {@linkcode Option}
    *
    * @private
    * @instance
    *
-   * @param {ReadonlyArray<Option>} options
+   * @param {List<Option>} options
    *  The list of options
    * @param {Command} command
    *  The command
    * @return {ReadonlyArray<Option>}
    *  List of visible command options
    */
-  #visibleOptions(
-    options: readonly Option[],
-    command: Command
-  ): readonly Option[] {
+  #visibleOptions(options: List<Option>, command: Command): readonly Option[] {
     /**
      * The list of visible options.
      *
@@ -1729,7 +1779,7 @@ class Help {
    *  List of visible command options
    */
   protected visibleOptions(command: Command): readonly Option[] {
-    return this.#visibleOptions(command.options(), command)
+    return this.#visibleOptions(command.uniqueOptions(), command)
   }
 
   /**

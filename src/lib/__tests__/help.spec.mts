@@ -3,8 +3,10 @@
  * @module kronk/lib/tests/unit/Help
  */
 
+import auth from '#fixtures/commands/auth'
 import clamp from '#fixtures/commands/clamp'
 import copy from '#fixtures/commands/copy'
+import deploy from '#fixtures/commands/deploy'
 import distinct from '#fixtures/commands/distinct'
 import factorial from '#fixtures/commands/factorial'
 import grease from '#fixtures/commands/grease'
@@ -70,9 +72,11 @@ describe('unit:lib/Help', () => {
     })
 
     it.each<[info: CommandInfo, subcommand?: CommandName]>([
+      [auth, 'login'],
       [clamp],
       [Object.assign({}, clamp, { name: null })],
       [copy],
+      [deploy],
       [distinct],
       [factorial],
       [grease],

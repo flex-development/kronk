@@ -131,6 +131,7 @@ class Option extends Parseable {
     void this.tokenizeFlags()
 
     this.conflicts(this.info.conflicts)
+    this.depends(this.info.depends)
     this.env(this.info.env)
     this.implies(this.info.implies)
     this.preset(this.info.preset)
@@ -311,6 +312,54 @@ class Option extends Parseable {
   ): Set<string> | this {
     if (arguments.length) return this.info.conflicts = conflicts, this
     return new Set(toList(this.info.conflicts))
+  }
+
+  /**
+   * Set required options.
+   *
+   * @see {@linkcode List}
+   *
+   * @public
+   * @instance
+   *
+   * @param {List<string> | string | null | undefined} depends
+   *  An option reference, or list of option references,
+   *  that the option depends on
+   * @return {this}
+   *  `this` option
+   */
+  public depends(depends: List<string> | string | null | undefined): this
+
+  /**
+   * Get a list of required options.
+   *
+   * @public
+   * @instance
+   *
+   * @return {Set<string>}
+   *  The list of required options
+   */
+  public depends(): Set<string>
+
+  /**
+   * Get or set required options.
+   *
+   * @see {@linkcode List}
+   *
+   * @public
+   * @instance
+   *
+   * @param {List<string> | string | null | undefined} [depends]
+   *  An option reference, or list of option references,
+   *  that the option depends on
+   * @return {Set<string> | this}
+   *  The list of required options or `this` option
+   */
+  public depends(
+    depends?: List<string> | string | null | undefined
+  ): Set<string> | this {
+    if (arguments.length) return this.info.depends = depends, this
+    return new Set(toList(this.info.depends))
   }
 
   /**

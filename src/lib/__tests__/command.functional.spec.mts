@@ -8,12 +8,13 @@ import kh from '#enums/hooks'
 import eid from '#enums/keid'
 import CommandError from '#errors/command.error'
 import KronkError from '#errors/kronk.error'
+import auth from '#fixtures/commands/auth'
 import clamp from '#fixtures/commands/clamp'
 import copy from '#fixtures/commands/copy'
+import deploy from '#fixtures/commands/deploy'
 import distinct from '#fixtures/commands/distinct'
 import factorial from '#fixtures/commands/factorial'
 import grease from '#fixtures/commands/grease'
-import greaseBad from '#fixtures/commands/grease-bad'
 import mlly from '#fixtures/commands/mlly'
 import semver from '#fixtures/commands/semver'
 import smallestNum from '#fixtures/commands/smallest-num'
@@ -90,13 +91,21 @@ describe('functional:lib/Command', () => {
     })
 
     it.each<ParseCase>([
+      [
+        auth,
+        [
+          auth.name,
+          '-U=unicornware',
+          'login',
+          '--password=***',
+          '--token',
+          '***********'
+        ]
+      ],
       [grease, [grease.name, 'changelog', '-nsw']],
       [grease, [grease.name, '-j', 'info', '--markdown']],
       [grease, ['info', '--yaml', '--markdown']]
-    ])('should error on conflicting option (%#)', async (
-      info,
-      argv
-    ) => {
+    ])('should error on conflicting option (%#)', async (info, argv) => {
       void test(eid.conflicting_option, info, argv)
     })
 
@@ -170,23 +179,19 @@ describe('functional:lib/Command', () => {
     })
 
     it.each<ParseCase>([
+      [auth, [auth.name, 'login', '--password=***']],
+      [deploy, ['-g', 'deploy.yml', '--tag=latest']]
+    ])('should error on missing dependee option (%#)', async (info, argv) => {
+      void test(eid.missing_dependee_option, info, argv)
+    })
+
+    it.each<ParseCase>([
+      [deploy, []],
       [grease, ['publish', '@flex-development-kronk-1.0.0.tgz']],
       [mlly, [mlly.name, 'resolve', '#lib/command']],
       [tribonacci, [chars.digit1, chars.digit2, chars.digit3]]
     ])('should error on missing mandatory option (%#)', async (info, argv) => {
       void test(eid.missing_mandatory_option, info, argv)
-    })
-
-    it.each<ParseCase>([
-      [greaseBad, [greaseBad.name, '--json']],
-      [greaseBad, [greaseBad.name, '-j']],
-      [greaseBad, ['info', '--markdown']],
-      [greaseBad, ['info', '-m']]
-    ])('should error on unknown implied option (%#)', async (
-      info,
-      argv
-    ) => {
-      void test(eid.unknown_implied_option, info, argv, KronkError)
     })
 
     it.each<ParseCase>([

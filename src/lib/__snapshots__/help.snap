@@ -1,6 +1,24 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`unit:lib/Help > #text > should return help text for \`command\` (0) 1`] = `
+"login
+[1musage[22m: auth login [flags...]
+  Authenticate using one of several supported methods.
+
+[4mOptions[24m
+  --password <password>     [3mauthenticate using a password[23m
+                              conflicts: token
+                              requires: access, username
+  --token <token>           [3mauthenticate using an api token[23m
+  -h, --help                [3mshow help[23m
+
+[4mGlobal Options[24m
+  -U --username <user>      [3mthe unique user id[23m
+  -h --help                 [3mshow help[23m
+"
+`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (1) 1`] = `
 "clamp[2m@[22m1.0.0
 [1musage[22m: clamp [flags...] <number>
   clamp a number within a given range
@@ -25,7 +43,7 @@ exports[`unit:lib/Help > #text > should return help text for \`command\` (0) 1`]
 "
 `;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (1) 1`] = `
+exports[`unit:lib/Help > #text > should return help text for \`command\` (2) 1`] = `
 "[2mv1.0.0[22m
 [1musage[22m: [flags...] <number>
   clamp a number within a given range
@@ -50,7 +68,7 @@ exports[`unit:lib/Help > #text > should return help text for \`command\` (1) 1`]
 "
 `;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (2) 1`] = `
+exports[`unit:lib/Help > #text > should return help text for \`command\` (3) 1`] = `
 "copy[2m@[22m0.0.1
 [1musage[22m: copy [flags...] <source> [dest]
   copy a file.
@@ -69,7 +87,23 @@ exports[`unit:lib/Help > #text > should return help text for \`command\` (2) 1`]
 "
 `;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (3) 1`] = `
+exports[`unit:lib/Help > #text > should return help text for \`command\` (4) 1`] = `
+"deploy
+[1musage[22m: deploy [flags...]
+  Deploy the current application build to the specified environment.
+  Some options require additional context to be provided explicitly.
+
+[4mOptions[24m
+  -g, --config <config!>     [3mthe config file path[23m
+                               env: DEPLOY_CONFIG
+  -e, --env <env>            [3mthe deployment environment[23m
+  -t, --tag <tag>            [3mthe deployment tag[23m
+                               requires: env, token
+  -h, --help                 [3mshow help[23m
+"
+`;
+
+exports[`unit:lib/Help > #text > should return help text for \`command\` (5) 1`] = `
 "distinct
 [1musage[22m: distinct [numbers...]
   print a list of numbers with all duplicates removed.
@@ -90,7 +124,7 @@ exports[`unit:lib/Help > #text > should return help text for \`command\` (3) 1`]
 "
 `;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (4) 1`] = `
+exports[`unit:lib/Help > #text > should return help text for \`command\` (6) 1`] = `
 "factorial
 [1musage[22m: factorial <n>
   Given an integer, [36mn[39m, print [36mn![39m.
@@ -113,7 +147,7 @@ exports[`unit:lib/Help > #text > should return help text for \`command\` (4) 1`]
 "
 `;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (5) 1`] = `
+exports[`unit:lib/Help > #text > should return help text for \`command\` (7) 1`] = `
 "grease[2m@[22m3.0.0-alpha.10
 [1musage[22m: grease [flags...] <command>
   A release workflow tool.
@@ -184,7 +218,7 @@ exports[`unit:lib/Help > #text > should return help text for \`command\` (5) 1`]
 "
 `;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (6) 1`] = `
+exports[`unit:lib/Help > #text > should return help text for \`command\` (8) 1`] = `
 "bump
 [1musage[22m: grease bump [flags...] [command] <type|version> [files...]
   Execute a version bump.
@@ -256,7 +290,7 @@ exports[`unit:lib/Help > #text > should return help text for \`command\` (6) 1`]
 "
 `;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (7) 1`] = `
+exports[`unit:lib/Help > #text > should return help text for \`command\` (9) 1`] = `
 "recommend
 [1musage[22m: grease bump recommend [flags...] [candidate]
   Get a version bump recommendation.
@@ -325,7 +359,7 @@ exports[`unit:lib/Help > #text > should return help text for \`command\` (7) 1`]
 "
 `;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (8) 1`] = `
+exports[`unit:lib/Help > #text > should return help text for \`command\` (10) 1`] = `
 "changelog
 [1musage[22m: grease changelog [flags...]
   Generate a changelog from Git metadata.
@@ -398,7 +432,7 @@ exports[`unit:lib/Help > #text > should return help text for \`command\` (8) 1`]
 "
 `;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (9) 1`] = `
+exports[`unit:lib/Help > #text > should return help text for \`command\` (11) 1`] = `
 "dist-tag
 [1musage[22m: grease dist-tag [flags...] <target>
   Get a distribution tag from a release type or version.
@@ -460,7 +494,7 @@ exports[`unit:lib/Help > #text > should return help text for \`command\` (9) 1`]
 "
 `;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (10) 1`] = `
+exports[`unit:lib/Help > #text > should return help text for \`command\` (12) 1`] = `
 "info
 [1musage[22m: grease info [flags...]
   Get an environment report.
@@ -526,7 +560,7 @@ exports[`unit:lib/Help > #text > should return help text for \`command\` (10) 1`
 "
 `;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (11) 1`] = `
+exports[`unit:lib/Help > #text > should return help text for \`command\` (13) 1`] = `
 "manifest
 [1musage[22m: grease manifest [flags...] <command>
   Manage the package manifest.
@@ -543,7 +577,7 @@ exports[`unit:lib/Help > #text > should return help text for \`command\` (11) 1`
 "
 `;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (12) 1`] = `
+exports[`unit:lib/Help > #text > should return help text for \`command\` (14) 1`] = `
 "delete
 [1musage[22m: grease manifest delete [flags...] <field>
   Remove the value at [36mfield[39m from the manifest.
@@ -556,7 +590,7 @@ exports[`unit:lib/Help > #text > should return help text for \`command\` (12) 1`
 "
 `;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (13) 1`] = `
+exports[`unit:lib/Help > #text > should return help text for \`command\` (15) 1`] = `
 "get
 [1musage[22m: grease manifest get [flags...] <field>
   Get the value at [36mfield[39m from the manifest.
@@ -570,7 +604,7 @@ exports[`unit:lib/Help > #text > should return help text for \`command\` (13) 1`
 "
 `;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (14) 1`] = `
+exports[`unit:lib/Help > #text > should return help text for \`command\` (16) 1`] = `
 "set
 [1musage[22m: grease manifest set [flags...] <field=value...>
   Set the [36mvalue[39m at [36mfield[39m in the manifest.
@@ -583,7 +617,7 @@ exports[`unit:lib/Help > #text > should return help text for \`command\` (14) 1`
 "
 `;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (15) 1`] = `
+exports[`unit:lib/Help > #text > should return help text for \`command\` (17) 1`] = `
 "pack
 [1musage[22m: grease pack [flags...] [files...]
   Generate a tarball from the current project.
@@ -649,7 +683,7 @@ exports[`unit:lib/Help > #text > should return help text for \`command\` (15) 1`
 "
 `;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (16) 1`] = `
+exports[`unit:lib/Help > #text > should return help text for \`command\` (18) 1`] = `
 "publish
 [1musage[22m: grease publish --registry <url!> [flags...] [artifact]
   Publish a package to a registry so it can be installed by name.
@@ -726,7 +760,7 @@ exports[`unit:lib/Help > #text > should return help text for \`command\` (16) 1`
 "
 `;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (17) 1`] = `
+exports[`unit:lib/Help > #text > should return help text for \`command\` (19) 1`] = `
 "tag
 [1musage[22m: grease tag [flags...] <command>
   Manage release tags.
@@ -786,7 +820,7 @@ exports[`unit:lib/Help > #text > should return help text for \`command\` (17) 1`
 "
 `;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (18) 1`] = `
+exports[`unit:lib/Help > #text > should return help text for \`command\` (20) 1`] = `
 "create
 [1musage[22m: grease tag create [flags...] <tag>
   Create a release tag.
@@ -823,7 +857,7 @@ exports[`unit:lib/Help > #text > should return help text for \`command\` (18) 1`
 "
 `;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (19) 1`] = `
+exports[`unit:lib/Help > #text > should return help text for \`command\` (21) 1`] = `
 "list
 [1musage[22m: grease tag list [flags...]
   List release tags.
@@ -885,7 +919,7 @@ exports[`unit:lib/Help > #text > should return help text for \`command\` (19) 1`
 "
 `;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (20) 1`] = `
+exports[`unit:lib/Help > #text > should return help text for \`command\` (22) 1`] = `
 "semver[2m@[22m3.4.5
 [1musage[22m: semver [flags...] [command]
   Utilities for semantic versioning.
@@ -901,7 +935,7 @@ exports[`unit:lib/Help > #text > should return help text for \`command\` (20) 1`
 "
 `;
 
-exports[`unit:lib/Help > #text > should return help text for \`command\` (21) 1`] = `
+exports[`unit:lib/Help > #text > should return help text for \`command\` (23) 1`] = `
 "tribonacci[2m@[22m1.0.0
 [1musage[22m: tribonacci [flags...] <a> <b> <c>
   Given the starting sequence [36m[a, b, c][39m,

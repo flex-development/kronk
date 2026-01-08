@@ -18,12 +18,28 @@ import type {
  */
 interface OptionData extends ParseableInfo {
   /**
-   * An option name, or list of option names, that conflict with the option.\
-   * An error will be displayed if conflicting options are found during parsing.
+   * An option reference, or list of references,
+   * representing conflicting options.
+   *
+   * An error will be displayed if any conflicts are found during parsing.
+   *
+   * > 👉 **Note**: Local options can conflict with global options and other
+   * > local options, but global options cannot conflict with local options.
    *
    * @see {@linkcode List}
    */
   conflicts?: List<string> | string | null | undefined
+
+  /**
+   * An option reference, or list of references,
+   * representing options that are required by this option.
+   *
+   * > 👉 **Note**: Local options can depend on global options and other
+   * > local options, but global options cannot depend on local options.
+   *
+   * @see {@linkcode List}
+   */
+  depends?: List<string> | string | null | undefined
 
   /**
    * The name of the environment variable to check for option value, or a list
@@ -34,13 +50,16 @@ interface OptionData extends ParseableInfo {
   env?: List<string> | string | null | undefined
 
   /**
-   * The key of an implied option, or a map where each key is an implied option
-   * key and each value is the value to use when the option is set but the
-   * implied option is not.\
+   * An implied option reference, or a map where each key is an implied
+   * option reference and each value is the value to use when the option
+   * is set but the implied option is not.\
    * Lone keys imply (string `implies`) `true`, i.e. `{ [implies]: true }`.
    *
    * The option-argument {@linkcode parser} will be called for implied values
-   * that are strings and string arrays.
+   * that are strings.
+   *
+   * > 👉 **Note**: Local options can imply global options and other
+   * > local options, but global options cannot imply local options.
    *
    * @see {@linkcode OptionValues}
    */

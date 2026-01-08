@@ -222,15 +222,6 @@ class Command extends Helpable {
   protected optionValues: OptionValues
 
   /**
-   * The parent command.
-   *
-   * @public
-   * @instance
-   * @member {Command | null | undefined} parent
-   */
-  public parent: Command | null | undefined
-
-  /**
    * Information about the current process.
    *
    * @see {@linkcode Process}
@@ -608,7 +599,7 @@ class Command extends Helpable {
     }
 
     // add new argument.
-    return this.info.arguments.push(argument), this
+    return argument.parent = this, this.info.arguments.push(argument), this
   }
 
   /**
@@ -739,6 +730,9 @@ class Command extends Helpable {
       }
     }
 
+    // set parent command.
+    option.parent = this
+
     // add new command option.
     if (option.long) this.info.options.set(option.long, option)
     if (option.short) this.info.options.set(option.short, option)
@@ -867,33 +861,6 @@ class Command extends Helpable {
     if (!arguments.length) return this.info.aliases
     for (const alias of toList(aliases)) this.alias(alias)
     return this
-  }
-
-  /**
-   * Get a list of ancestor commands.
-   *
-   * The first command is the parent of `this` command, and the last is the
-   * greatest grandparent of `this` command.
-   *
-   * @public
-   * @instance
-   *
-   * @return {Command[]}
-   *  List of ancestor commands
-   */
-  public ancestors(): Command[] {
-    /**
-     * List of ancestor commands.
-     *
-     * @const {Command[]} ancestors
-     */
-    const ancestors: Command[] = []
-
-    for (let command = this.parent; command; command = command.parent) {
-      ancestors.push(command)
-    }
-
-    return ancestors
   }
 
   /**
@@ -1368,7 +1335,72 @@ class Command extends Helpable {
   }
 
   /**
+   * Check dependent options and error if any required options are missing.
+   *
+   * > 👉 **Note**: Local options can depend on global options and other
+   * > local options, but global options cannot depend on local options.
+   *
+   * @protected
+   * @instance
+   *
+   * @return {never | this}
+   *  `this` command
+   */
+  protected checkDependentOptions(): never | this {
+    /**
+     * The list of commands.
+     *
+     * @const {Command[]} commands
+     */
+    const commands: Command[] = [this, ...this.ancestors()]
+
+    /**
+     * The list of user options.
+     *
+     * @const {Option[]} options
+     */
+    const options: Option[] = commands.flatMap(cmd => cmd.userOptions())
+
+    // for each user option with dependencies,
+    // check if the dependee options were also passed by the user.
+    for (const dependent of options) {
+      for (const depend of dependent.depends()) {
+        /**
+         * The option the current option depends on.
+         *
+         * @var {Option | undefined} dependee
+         */
+        let dependee: Option | undefined = options.find(opt => {
+          return this.matchOption(opt, depend)
+        })
+
+        // error if dependee option was not found.
+        if (!dependee) {
+          dependee = commands
+            .flatMap(cmd => [...cmd.uniqueOptions()])
+            .find(opt => this.matchOption(opt, depend))
+
+          // dependee option does not exist.
+          if (!dependee) continue
+
+          // dependee option not passed by user.
+          this.error({
+            cause: { dependee: dependee.flags, dependent: dependent.flags },
+            id: keid.missing_dependee_option,
+            reason: `${String(dependent)} requires ${String(dependee)}`
+          })
+        }
+      }
+    }
+
+    return this
+  }
+
+  /**
    * Check for conflicting options and error if any are found.
+   *
+   * > 👉 **Note**: Local options can conflict with global options and other
+   * > local options, but global options cannot conflict with local options.
    *
    * @protected
    * @instance
@@ -1377,45 +1409,51 @@ class Command extends Helpable {
    *  `this` command
    */
   protected checkForConflictingOptions(): never | this {
-    /**
-     * List of commands.
-     *
-     * @const {Command[]} commands
-     */
-    const commands: Command[] = [this, ...this.ancestors()]
-
-    /**
-     * List of user options.
-     *
-     * > 👉 **Note**: User options are defined, non-default options.
-     *
-     * @const {Option[]} options
-     */
-    const options: Option[] = commands
-      // collect local and global options
-      .flatMap(command => command.options())
-      // remove non-user options
-      .filter(option => commands.some(command => isUserOption(option, command)))
-
-    // for each user option, check if the user also passed a conflicting option.
-    for (const option of options) {
+    for (const command of [this, ...this.ancestors()]) {
       /**
-       * List of conflicting option names.
+       * The list of commands.
        *
-       * @const {Set<string>} conflicts
+       * @const {Command[]} commands
        */
-      const conflicts: Set<string> = option.conflicts()
+      const commands: Command[] = [command, ...command.ancestors()]
 
-      // if there are possible conflicts, loop through `options` again to
-      // check `defined.key` against the current list of conflicting options.
-      // any conflicting options passed by the user are in `options` too.
-      if (conflicts.size) {
-        for (const defined of options) {
-          if (conflicts.has(defined.key)) {
+      /**
+       * The list of user options.
+       *
+       * @const {Option[]} options
+       */
+      const options: Option[] = commands.flatMap(cmd => cmd.userOptions())
+
+      // for each user option,
+      // check if the user also passed a conflicting option.
+      for (const option of command.userOptions()) {
+        for (const conflict of option.conflicts()) {
+          /**
+           * The conflicting option.
+           *
+           * @const {Option | undefined} conflicting
+           */
+          const conflicting: Option | undefined = options.find(opt => {
+            return this.matchOption(opt, conflict)
+          })
+
+          // error if a conflicting option was found.
+          if (conflicting) {
+            /**
+             * The reason for the error.
+             *
+             * @var {string} reason
+             */
+            let reason: string = chars.empty
+
+            reason += String(conflicting)
+            reason += chars.space + 'cannot be used with'
+            reason += chars.space + String(option)
+
             this.error({
-              cause: { conflict: defined.key, option: option.key },
+              cause: { conflict: conflicting.flags, option: option.flags },
               id: keid.conflicting_option,
-              reason: `${String(defined)} cannot be used with ${String(option)}`
+              reason
             })
           }
         }
@@ -1423,48 +1461,6 @@ class Command extends Helpable {
     }
 
     return this
-
-    /**
-     * Check if `option` is an option passed by the user.
-     *
-     * > 👉 **Note**: If `option` is a global option,
-     * > `command.optionValueSource(option.key)` will return `null` or
-     * > `undefined`.
-     *
-     * @this {void}
-     *
-     * @param {Option} option
-     *  The possible user option
-     * @param {Command} command
-     *  The parent or child command
-     * @return {boolean}
-     *  `true` if `option` is a defined, non-default option, `false` otherwise
-     */
-    function isUserOption(
-      this: void,
-      option: Option,
-      command: Command
-    ): boolean {
-      /**
-       * The source of the option value.
-       *
-       * @var {OptionValueSource | null | undefined} source
-       */
-      let source: OptionValueSource | null | undefined
-
-      // get option value source, with `null` or `undefined`
-      // meaning the option is an ancestor (global) option.
-      source = command.optionValueSource(option.key)
-
-      return (
-        // option value is defined by user
-        command.optionValue(option.key) !== undefined &&
-        // option value was actually passed by user
-        source !== optionValueSource.default &&
-        // option is a local option
-        !!source
-      )
-    }
   }
 
   /**
@@ -1478,7 +1474,7 @@ class Command extends Helpable {
    */
   protected checkForMissingMandatoryOptions(): never | this {
     for (const cmd of [this, ...this.ancestors()]) {
-      for (const option of cmd.options()) {
+      for (const option of cmd.uniqueOptions()) {
         if (option.mandatory && cmd.optionValue(option.key) === undefined) {
           this.error({
             id: keid.missing_mandatory_option,
@@ -1609,18 +1605,22 @@ class Command extends Helpable {
   public commands(infos: SubcommandsInfo): this
 
   /**
-   * Get a subcommand map.
+   * Get a subcommands map.
+   *
+   * Each key is a subcommand name or alias and each value is a command.
    *
    * @public
    * @instance
    *
    * @return {Map<string, Command>}
-   *  Subcommands map
+   *  The subcommands map
    */
   public commands(): Map<string, Command>
 
   /**
-   * Get a subcommand map or batch define subcommands for the command.
+   * Batch define subcommands for the command or get a subcommands map.
+   *
+   * Each key is a subcommand name or alias and each value is a command.
    *
    * @see {@linkcode SubcommandsInfo}
    *
@@ -1630,19 +1630,17 @@ class Command extends Helpable {
    * @param {SubcommandsInfo} [infos]
    *  Subcommands info
    * @return {Map<string, Command> | this}
-   *  Subcommand map or `this` command
+   *  The subcommands map or `this` command
    */
   public commands(infos?: SubcommandsInfo): Map<string, Command> | this {
-    if (infos) {
-      for (const [name, info] of Object.entries(infos)) {
-        info.name ||= name
-        this.command(info as SubcommandInfo)
-      }
+    if (!infos) return this.info.subcommands
 
-      return this
+    for (const [name, info] of Object.entries(infos)) {
+      info.name ||= name
+      this.command(info as SubcommandInfo)
     }
 
-    return this.info.subcommands
+    return this
   }
 
   /**
@@ -1907,15 +1905,15 @@ class Command extends Helpable {
    */
   protected emitEnvironmentOptions(): this {
     for (const cmd of [...this.ancestors().reverse(), this]) {
-      for (const option of cmd.options()) {
+      for (const option of cmd.uniqueOptions()) {
         for (const env of option.env()) {
           if (env && env in cmd.process.env) {
             /**
              * The source of the option value.
              *
-             * @var {OptionValueSource | null | undefined} source
+             * @var {OptionValueSource | undefined} source
              */
-            let source: OptionValueSource | null | undefined
+            let source: OptionValueSource | undefined
 
             // get option value source.
             source = cmd.optionValueSource(option.key)
@@ -1951,6 +1949,9 @@ class Command extends Helpable {
   /**
    * Emit implied options.
    *
+   * > 👉 **Note**: Local options can imply global options and other
+   * > local options, but global options cannot imply local options.
+   *
    * @protected
    * @instance
    *
@@ -1958,132 +1959,78 @@ class Command extends Helpable {
    *  `this` command
    */
   protected emitImpliedOptions(): this {
-    /**
-     * List of commands, where the first command is `this` command, and the last
-     * command is the greatest grandparent of `this` command.
-     *
-     * @const {Command[]} commands
-     */
-    const commands: Command[] = [this, ...this.ancestors()]
-
-    /**
-     * List of custom user options.
-     *
-     * > 👉 **Note**: User options are defined, non-default options.
-     * > Custom user options are options that are not implied.
-     *
-     * @const {Option[]} options
-     */
-    const options: Option[] = commands
-      // collect local and global options
-      .flatMap(command => command.options())
-      // custom user options only
-      .filter(option => commands.some(cmd => isCustomOption(option.key, cmd)))
-
-    // for each custom user option, check if it has implied values.
-    // for each option with implied values, match the implied option key
-    // to the option instance and emit the implied options.
-    for (const option of options) {
+    for (const command of [this, ...this.ancestors()]) {
       /**
-       * Implied values.
+       * The list of commands.
        *
-       * @const {OptionValues} implies
+       * @const {Command[]} commands
        */
-      const implies: OptionValues = option.implies()
+      const commands: Command[] = [command, ...command.ancestors()]
 
-      // for each implied option key-value pair, ensure the implied option
-      // was not specified by the user then find the matching option instance
-      // and emit the implied option.
-      for (const [key, value] of Object.entries(implies)) {
+      /**
+       * The list of options.
+       *
+       * @const {Option[]} options
+       */
+      const options: Option[] = commands.flatMap(cmd => {
+        return [...cmd.uniqueOptions()]
+      })
+
+      /**
+       * The list of custom user options.
+       *
+       * > 👉 **Note**: User options are defined, non-default options.
+       * > Custom user options are user options that are not implied.
+       *
+       * @const {Set<Option>} user
+       */
+      const user: Set<Option> = new Set(commands.flatMap(cmd => {
+        return cmd.userOptions(optionValueSource.implied)
+      }))
+
+      // for each custom user option, check if it has implied values.
+      // for each option with implied values, match the implied option key
+      // to the option instance and emit the implied options.
+      for (const option of command.userOptions(optionValueSource.implied)) {
         /**
-         * The parent command of the {@linkcode implied} option.
+         * The implied values.
          *
-         * @const {Command | undefined} command
+         * @const {OptionValues} implies
          */
-        let command: Command | undefined
+        const implies: OptionValues = option.implies()
 
-        /**
-         * The implied option.
-         *
-         * @var {Option | undefined} implied
-         */
-        let implied: Option | undefined
+        // for each implied option key-value pair,
+        // find the implied option and then emit the option
+        // if it was not specified by the user.
+        for (const [key, value] of Object.entries(implies)) {
+          /**
+           * The implied option.
+           *
+           * @const {Option | undefined} implied
+           */
+          const implied: Option | undefined = options.find(opt => {
+            return this.matchOption(opt, key)
+          })
 
-        // find implied option instance and its parent command.
-        for (const cmd of commands) {
-          for (const opt of cmd.options()) {
-            if (opt.key === key) {
-              command = cmd
-              implied = opt
-              break
-            }
+          // implied option was not found.
+          if (!implied) continue
+
+          // emit implied option if it is not a custom user option.
+          if (!user.has(implied)) {
+            ok(implied.parent, 'expected parent command for implied option')
+
+            implied.parent.emitOption(
+              implied,
+              value,
+              optionValueSource.implied,
+              null
+            )
           }
-        }
-
-        // if a parent command could not be found,
-        // assume the developer made a mistake and error accordingly.
-        if (!command) {
-          this.error(new KronkError({
-            cause: {
-              commands: commands.map(command => command.id()),
-              implies,
-              key,
-              option: String(option)
-            },
-            id: keid.unknown_implied_option,
-            reason: `Implied option for \`${key}\` not found`
-          }))
-        }
-
-        // a `command` means `implied` is defined.
-        ok(implied, 'expected `implied` option')
-
-        // emit implied option if it is not a custom user option.
-        if (!isCustomOption(implied.key, command)) {
-          command.emitOption(implied, value, optionValueSource.implied, null)
         }
       }
     }
 
     return this
-
-    /**
-     * Check if `option` is a custom option passed by the user.
-     *
-     * @this {void}
-     *
-     * @param {Option['key']} option
-     *  The key of the possible custom user option
-     * @param {Command} command
-     *  The parent or child command
-     * @return {boolean}
-     *  `true` if `option` is custom user option, `false` otherwise
-     */
-    function isCustomOption(
-      this: void,
-      option: Option['key'],
-      command: Command
-    ): boolean {
-      /**
-       * The source of the option value.
-       *
-       * @var {OptionValueSource | null | undefined} source
-       */
-      let source: OptionValueSource | null | undefined
-
-      // get option value source, with `null` or `undefined`
-      // meaning the option is an ancestor (global) option.
-      source = command.optionValueSource(option)
-
-      return (
-        // option value is defined
-        command.optionValue(option) !== undefined &&
-        // option flag passed by user
-        source !== optionValueSource.default &&
-        // option value is not implied
-        source !== optionValueSource.implied
-      )
-    }
   }
 
   /**
@@ -2200,7 +2147,7 @@ class Command extends Helpable {
      */
     let error: KronkError = info as KronkError
 
-    if (!isKronkError(info)) {
+    /* v8 ignore else -- @preserve */ if (!isKronkError(info)) {
       error = new CommandError({ ...info, command: this })
     }
 
@@ -2892,6 +2839,8 @@ class Command extends Helpable {
   /**
    * Get or set the name of the command.
    *
+   * @see {@linkcode CommandName}
+   *
    * @public
    * @instance
    *
@@ -2903,6 +2852,32 @@ class Command extends Helpable {
   public id(name?: CommandName | undefined): CommandName | this {
     if (!arguments.length) return this.info.name?.trim() || null
     return this.info.name = name?.trim(), this
+  }
+
+  /**
+   * Check if the given option `reference` is a match for `option`.
+   *
+   * @see {@linkcode Option}
+   *
+   * @protected
+   * @instance
+   *
+   * @param {Option} option
+   *  The option instance
+   * @param {string} reference
+   *  The option reference
+   * @return {boolean}
+   *  `true` if `reference` is a match for `option`, `false` otherwise
+   */
+  protected matchOption(option: Option, reference: string): boolean {
+    return reference = reference.trim(), !!reference && [
+      option.id,
+      option.key,
+      option.long,
+      option.long?.replace(/^--/, chars.empty),
+      option.short,
+      option.short?.replace(/^--?/, chars.empty)
+    ].includes(reference)
   }
 
   /**
@@ -3037,9 +3012,9 @@ class Command extends Helpable {
       /**
        * The source of the option value.
        *
-       * @var {OptionValueSource | null | undefined} src
+       * @var {OptionValueSource | undefined} src
        */
-      let src: OptionValueSource | null | undefined
+      let src: OptionValueSource | undefined
 
       // get the source of the option value.
       // this is used to determine if a variadic option has already been seen.
@@ -3354,20 +3329,24 @@ class Command extends Helpable {
   public options(infos: List<Flags | OptionInfo>): this
 
   /**
-   * Get a list of command options.
+   * Get an options map.
+   *
+   * Each key is a long or short flag and each value is an option.
    *
    * @see {@linkcode Option}
    *
    * @public
    * @instance
    *
-   * @return {Option[]}
-   *  List of command options
+   * @return {Map<string, Option>}
+   *  The options map
    */
-  public options(): Option[]
+  public options(): Map<string, Option>
 
   /**
-   * Get a list of command options or batch define options for the command.
+   * Batch define options for the command or get an options map.
+   *
+   * Each key is a long or short flag and each value is an option.
    *
    * @see {@linkcode Flags}
    * @see {@linkcode List}
@@ -3379,11 +3358,11 @@ class Command extends Helpable {
    *
    * @param {List<Flags | OptionInfo>} [infos]
    *  List of option flags and/or info
-   * @return {Option[] | this}
-   *  List of command options or `this` command
+   * @return {Map<string, Option> | this}
+   *  The options map or `this` command
    */
-  public options(infos?: List<Flags | OptionInfo>): Option[] | this {
-    if (!infos) return [...new Set(this.info.options.values())]
+  public options(infos?: List<Flags | OptionInfo>): Map<string, Option> | this {
+    if (!infos) return this.info.options
     for (const info of infos) void this.option(info)
     return this
   }
@@ -3940,6 +3919,7 @@ class Command extends Helpable {
       }
 
       this.checkForMissingMandatoryOptions()
+      this.checkDependentOptions()
       this.checkForConflictingOptions()
       this.checkForUnknownOptions(unknown)
       this.checkCommandArguments()
@@ -4124,7 +4104,7 @@ class Command extends Helpable {
       }
 
       // restore option parser states and reset non-default values.
-      for (const option of cmd.options()) {
+      for (const option of cmd.uniqueOptions()) {
         // restore parser state.
         if (typeof (parser = option.parser()).restore === 'function') {
           result = this.chainOrCall(parser.restore(), this.self) // restore.
@@ -4221,6 +4201,40 @@ class Command extends Helpable {
   }
 
   /**
+   * Get a list of unique subcommands.
+   *
+   * @public
+   * @instance
+   *
+   * @template {Command} T
+   *  The command instance
+   *
+   * @return {Set<T>}
+   *  The list of subcommands
+   */
+  public uniqueCommands<T extends Command>(): Set<T> {
+    return new Set(this.commands().values()) as Set<T>
+  }
+
+  /**
+   * Get a list of unique options.
+   *
+   * @see {@linkcode Option}
+   *
+   * @public
+   * @instance
+   *
+   * @template {Option} T
+   *  The option instance
+   *
+   * @return {Set<T>}
+   *  The list of options
+   */
+  public uniqueOptions<T extends Option>(): Set<T> {
+    return new Set(this.options().values()) as Set<T>
+  }
+
+  /**
    * Set the strategy for handling unknown command-line arguments.
    *
    * @see {@linkcode UnknownStrategy}
@@ -4299,6 +4313,46 @@ class Command extends Helpable {
         ? '<command>'
         : '[command]'
     }
+  }
+
+  /**
+   * Get a list of options passed by the user.
+   *
+   * User options are have a value that is not `undefined`
+   * and a source that is not `default`.
+   *
+   * @see {@linkcode Option}
+   * @see {@linkcode OptionValueSource}
+   *
+   * @template {Option} T
+   *  The option instance
+   *
+   * @public
+   * @instance
+   *
+   * @param {OptionValueSource | null | undefined} [filter]
+   *  An additional option value source filter
+   * @return {T[]}
+   *  The list of user options
+   */
+  public userOptions<T extends Option>(
+    filter?: OptionValueSource | null | undefined
+  ): T[] {
+    return [...this.uniqueOptions<T>()].filter(option => {
+      /**
+       * The source of the option value.
+       *
+       * @var {OptionValueSource | undefined} source
+       */
+      let source: OptionValueSource | undefined
+
+      return (
+        this.optionValue(option.key) !== undefined &&
+        !!(source = this.optionValueSource(option.key)) &&
+        source !== optionValueSource.default &&
+        (!filter || source !== filter)
+      )
+    })
   }
 
   /**

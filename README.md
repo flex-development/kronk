@@ -34,7 +34,6 @@
     - [`Command#addOption(option)`](#commandaddoptionoption)
     - [`Command#alias([alias])`](#commandaliasalias)
     - [`Command#aliases([aliases])`](#commandaliasesaliases)
-    - [`Command#ancestors()`](#commandancestors)
     - [`Command#args`](#commandargs)
     - [`Command#argument(info[, data])`](#commandargumentinfo-data)
     - [`Command#argumentValue(index[, value][, source])`](#commandargumentvalueindex-value-source)
@@ -74,7 +73,6 @@
     - [`Command#options([infos])`](#commandoptionsinfos)
     - [`Command#opts<T>()`](#commandoptst)
     - [`Command#optsWithGlobals<T>()`](#commandoptswithglobalst)
-    - [`Command#parent`](#commandparent)
     - [`Command#parse<T>([argv][, options])`](#commandparsetargv-options)
     - [`Command#process`](#commandprocess)
     - [`Command#restore<T>()`](#commandrestoret)
@@ -83,7 +81,10 @@
     - [`Command#toString()`](#commandtostring)
     - [`Command#unknown`](#commandunknown)
     - [`Command#unknowns([strategy])`](#commandunknownsstrategy)
+    - [`Command#uniqueCommands<T>()`](#commanduniquecommandst)
+    - [`Command#uniqueOptions<T>()`](#commanduniqueoptionst)
     - [`Command#usage([usage])`](#commandusageusage)
+    - [`Command#userOptions<T>([filter])`](#commanduseroptionstfilter)
     - [`Command#version([version])`](#commandversionversion)
     - [`Command#versionOption([version])`](#commandversionoptionversion)
   - [`CommandEvent<T>(command)`](#commandeventtcommand)
@@ -95,9 +96,11 @@
   - [`Help([options])`](#helpoptions)
     - [`Help#text(cmd)`](#helptextcmd)
   - [`Helpable([info])`](#helpableinfo)
+    - [`Helpable#ancestors()`](#helpableancestors)
     - [`Helpable#description([description])`](#helpabledescriptiondescription)
     - [`Helpable#hidden`](#helpablehidden)
     - [`Helpable#hide([hidden])`](#helpablehidehidden)
+    - [`Helpable#parent`](#helpableparent)
   - [`KronkError(info)`](#kronkerrorinfo)
     - [`KronkError#additional`](#kronkerroradditional)
     - [`KronkError#cause`](#kronkerrorcause)
@@ -111,6 +114,7 @@
   - [`Option(info)`](#optioninfo)
     - [`Option#boolean`](#optionboolean)
     - [`Option#conflicts([conflicts])`](#optionconflictsconflicts)
+    - [`Option#depends([depends])`](#optiondependsdepends)
     - [`Option#env([env])`](#optionenvenv)
     - [`Option#event`](#optionevent)
     - [`Option#flags`](#optionflags)
@@ -166,6 +170,7 @@
   - [`CommandName`](#commandname)
   - [`CommandSnapshot`](#commandsnapshot-1)
   - [`DefaultInfo`](#defaultinfo)
+  - [`EmptyArray`](#emptyarray)
   - [`EmptyObject`](#emptyobject)
   - [`EmptyString`](#emptystring)
   - [`ExampleInfo`](#exampleinfo)
@@ -436,7 +441,7 @@ Add a prepared `argument`.
 Add a prepared `subcommand`.
 
 > 👉 **Note**: See [`command`](#commandcommandinfo-data) for creating an attached subcommand
-> that inherits settings from its [`parent`](#commandparent).
+> that inherits settings from its [`parent`](#helpableparent).
 
 ##### Parameters
 
@@ -506,16 +511,6 @@ Get or add aliases for the command.
 ##### Returns
 
 (`Set<string>` | [`this`](#commandinfo)) List of command aliases or `this` command
-
-#### `Command#ancestors()`
-
-Get a list of ancestor commands.
-
-The first command is the parent of `this` command, and the last is the greatest grandparent of `this` command.
-
-##### Returns
-
-([`Command[]`](#commandinfo)) List of ancestor commands
 
 #### `Command#args`
 
@@ -637,7 +632,9 @@ Define a subcommand.
 
 #### `Command#commands([infos])`
 
-Get a subcommand map or batch define subcommands for the command.
+Batch define subcommands for the command or get a subcommands map.
+
+Each key in the map is a subcommand name or alias and each value is a command.
 
 ##### Overloads
 
@@ -651,7 +648,7 @@ Get a subcommand map or batch define subcommands for the command.
 
 ##### Returns
 
-([`Map<string, Command> | this`](#commandinfo)) Subcommand map or `this` command
+([`Map<string, Command> | this`](#commandinfo)) The subcommands map or `this` command
 
 #### `Command#copyInheritedSettings(parent)`
 
@@ -733,7 +730,7 @@ Create a new unattached option.
 
 `boolean`
 
-Whether the command is the default subcommand of its [`parent`](#commandparent).
+Whether the command is the default subcommand of its [`parent`](#helpableparent).
 
 #### `Command#defaultCommand`
 
@@ -1176,12 +1173,14 @@ The option value source or `this` command
 
 #### `Command#options([infos])`
 
-Get a list of command options or batch define options for the command.
+Batch define options for the command or get an options map.
+
+Each key is a long or short flag and each value is an option.
 
 ##### Overloads
 
 - `options(infos: List<Flags | OptionInfo>): this`
-- `options(): Option[]`
+- `options(): Map<string, Option>`
 
 ##### Parameters
 
@@ -1190,7 +1189,7 @@ Get a list of command options or batch define options for the command.
 
 ##### Returns
 
-([`Option[]`](#optioninfo) | [`this`](#commandinfo)) List of command options or `this` command
+([`Map<string, Option>`](#optioninfo) | [`this`](#commandinfo)) The options map or `this` command
 
 #### `Command#opts<T>()`
 
@@ -1220,12 +1219,6 @@ Get a record of global and local option values.
 ##### Returns
 
 (`T`) Merged option values
-
-#### `Command#parent`
-
-[`Command`](#commandinfo) | `null` | `undefined`
-
-The parent command.
 
 #### `Command#parse<T>([argv][, options])`
 
@@ -1335,6 +1328,32 @@ Get or set the strategy for handling unknown command-line arguments.
 ([`UnknownStrategy`](#unknownstrategy) | [`this`](#commandinfo))
 Unknown command-line argument strategy or `this` command
 
+#### `Command#uniqueCommands<T>()`
+
+Get a list of unique subcommands.
+
+##### Type Parameters
+
+- `T` ([`Command`](#commandinfo))
+  — the command instance
+
+##### Returns
+
+([`Set<T>`](#commandinfo)) The list of subcommands
+
+#### `Command#uniqueOptions<T>()`
+
+Get a list of unique options.
+
+##### Type Parameters
+
+- `T` ([`Option`](#optioninfo))
+  — the option instance
+
+##### Returns
+
+([`Set<T>`](#optioninfo)) The list of options
+
 #### `Command#usage([usage])`
 
 Get or set the command usage description.
@@ -1352,6 +1371,26 @@ Get or set the command usage description.
 ##### Returns
 
 ([`UsageInfo`](#usageinfo) | [`this`](#commandinfo)) Command usage info or `this` command
+
+#### `Command#userOptions<T>([filter])`
+
+Get a list of options passed by the user.
+
+User options are have a value that is not `undefined` and a source that is not `default`.
+
+##### Type Parameters
+
+- `T` ([`Option`](#optioninfo))
+  — the option instance
+
+##### Parameters
+
+- `filter` ([`OptionValueSource`](#optionvaluesource-1) | `null`| `undefined`, optional)
+  — an additional option value source filter
+
+##### Returns
+
+([`Set<T>`](#optioninfo)) The list of user options
 
 #### `Command#version([version])`
 
@@ -1497,6 +1536,16 @@ A help text candidate (`abstract class`).
 - `info` ([`HelpableInfo`](#helpableinfo-1))
   — candidate info
 
+#### `Helpable#ancestors()`
+
+Get a list of ancestor commands.
+
+The first command is the parent of `this` command, and the last is the greatest grandparent of `this` command.
+
+##### Returns
+
+([`Command[]`](#commandinfo)) The list of ancestor commands
+
 #### `Helpable#description([description])`
 
 Get or set the candidate description.
@@ -1536,6 +1585,12 @@ Remove the candidate from the help text.
 ##### Returns
 
 ([`this`](#helpableinfo)) `this` candidate
+
+#### `Helpable#parent`
+
+[`Command`](#commandinfo) | `null` | `undefined`
+
+The parent command.
 
 ### `KronkError(info)`
 
@@ -1666,6 +1721,24 @@ Get or set option names that conflict with the option.
 ##### Returns
 
 (`Set<string>` | [`this`](#optioninfo)) List of conflicting option names or `this` option
+
+#### `Option#depends([depends])`
+
+Get or set required options.
+
+##### Overloads
+
+- `depends(depends: List<string> | string | null | undefined): this`
+- `depends(): Set<string>`
+
+##### Parameters
+
+- `depends` ([`List<string>`](#list) | `string` | `null` | `undefined`)
+  — an option reference, or list of option references, that the option depends on
+
+##### Returns
+
+(`Set<string>` | [`this`](#optioninfo)) The list of dependent options or `this` option
 
 #### `Option#env([env])`
 
@@ -2019,10 +2092,10 @@ const enum keid {
   invalid_flags = 'kronk/invalid-flags',
   invalid_subcommand_name = 'kronk/invalid-subcommand-name',
   missing_argument = 'kronk/missing-argument',
+  missing_dependee_option = 'kronk/missing-dependee-option',
   missing_mandatory_option = 'kronk/missing-mandatory-option',
   no_flags = 'kronk/no-flags',
   required_argument_after_optional = 'kronk/required-argument-after-optional',
-  unknown_implied_option = 'kronk/unknown-implied-option',
   unknown_option = 'kronk/unknown-option'
 }
 ```
@@ -2476,7 +2549,14 @@ Data used to configure the default value of a command argument or option (TypeSc
   — a description of the default value
 - `value?` (`T`, optional)
   — the default value
-  - default: `undefined`
+
+### `EmptyArray`
+
+An empty array (TypeScript type).
+
+```ts
+type EmptyArray = []
+```
 
 ### `EmptyObject`
 
@@ -2934,16 +3014,24 @@ Data transfer object for command options (TypeScript interface).
 #### Properties
 
 - `conflicts?` ([`List<string>`](#list) | `string`, optional)
-  — an option name, or list of option names, that conflict with the option.\
+  — an option reference, or list of references, representing conflicting options.\
   an error will be displayed if conflicting options are found during parsing
+  > 👉 **note**: local options can conflict with global options and other
+  > local options, but global options cannot conflict with local options.
+- `depends?` ([`List<string>`](#list) | `string`, optional)
+  — an option reference, or list of references, representing required options.\
+  an error will be displayed if any required options are missing.
+  > 👉 **note**: local options can depend on global options and other
+  > local options, but global options cannot depend on local options.
 - `env?` ([`List<string>`](#list) | `string`, optional)
   — the name of the environment variable to check for option value, or a list of names, in order of priority, to check
 - `implies?` ([`OptionValues`](#optionvaluest) | `string`, optional)
-  — the key of an implied option, or a map where each key is an implied option key and each value is the value to use
-  when the option is set but the implied option is not.\
+  — an implied option reference, or a map where each key is an implied option reference and each value is the value to
+  use when the option is set but the implied option is not.\
   lone keys imply (string `implies`) `true`, i.e. `{ [implies]: true }`.\
-  the option-argument [`parser`](#parseableparserparser) will be called for implied values
-  that are strings and string arrays
+  the option-argument [`parser`](#parseableparserparser) will be called for implied values that are strings
+  > 👉 **note**: local options can imply global options and other
+  > local options, but global options cannot imply local options.
 - `mandatory?` (`boolean`, optional)
   — whether the option is mandatory. mandatory options must have a value after parsing, which usually means the option
   must be specified on the command line

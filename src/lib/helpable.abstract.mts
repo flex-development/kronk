@@ -5,7 +5,7 @@
 
 import chars from '#enums/chars'
 import orNIL from '#internal/or-nil'
-import type { HelpableInfo } from '@flex-development/kronk'
+import type { Command, HelpableInfo } from '@flex-development/kronk'
 import { fallback, isNIL } from '@flex-development/tutils'
 import { ok } from 'devlop'
 
@@ -26,6 +26,15 @@ abstract class Helpable {
    * @member {HelpableInfo} info
    */
   protected info: HelpableInfo
+
+  /**
+   * The parent command.
+   *
+   * @public
+   * @instance
+   * @member {Command | null | undefined} parent
+   */
+  public parent: Command | null | undefined
 
   /**
    * Create a new help text candidate.
@@ -51,6 +60,33 @@ abstract class Helpable {
   public get hidden(): boolean {
     ok(typeof this.info.hidden === 'boolean', 'expected `info.hidden`')
     return this.info.hidden
+  }
+
+  /**
+   * Get a list of ancestor commands.
+   *
+   * The first command is the parent of `this` candidate, and the last is the
+   * greatest grandparent of `this` candidate.
+   *
+   * @public
+   * @instance
+   *
+   * @return {Command[]}
+   *  The list of ancestor commands
+   */
+  public ancestors(): Command[] {
+    /**
+     * The ancestors.
+     *
+     * @const {Command[]} ancestors
+     */
+    const ancestors: Command[] = []
+
+    for (let ancestor = this.parent; ancestor; ancestor = ancestor.parent) {
+      ancestors.push(ancestor)
+    }
+
+    return ancestors
   }
 
   /**

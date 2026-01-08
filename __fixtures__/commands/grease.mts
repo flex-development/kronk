@@ -97,7 +97,7 @@ export default {
       description: 'whether to enable json output',
       env: 'GREASE_JSON',
       flags: '-j, --json',
-      implies: { color: false, logLevel: 'log' }
+      implies: { color: false, logLevel: 'log', silent: false }
     },
     {
       choices: ['debug', 'error', 'info', 'log', 'silent', 'warn', 'verbose'],
@@ -238,7 +238,7 @@ export default {
           conflicts: ['json', 'yaml'],
           description: 'whether to enable markdown output',
           flags: '-m, --markdown []',
-          implies: { logLevel: 'log' },
+          implies: { L: 'log', silent: false },
           parser: bool(),
           preset: chars.digit1
         },
@@ -252,7 +252,7 @@ export default {
           conflicts: ['json', 'markdown'],
           description: 'whether to enable yaml output',
           flags: '-y, --yaml []',
-          implies: { logLevel: 'log' },
+          implies: { '--log-level': 'log', silent: false },
           parser: bool(),
           preset: chars.digit1
         }

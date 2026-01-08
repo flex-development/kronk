@@ -3,6 +3,7 @@ cefc
 commitish
 commitlintrc
 dedupe
+dependee
 devlop
 exiter
 fbca

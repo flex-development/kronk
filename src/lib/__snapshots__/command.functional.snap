@@ -4,11 +4,51 @@ exports[`functional:lib/Command > errors > should error on conflicting option (0
 {
   "code": 1,
   "id": "kronk/conflicting-option",
+  "message": "Option(--token <token>) cannot be used with Option(--password <password>)",
+  "additional": [],
+  "cause": {
+    "conflict": "--token <token>",
+    "option": "--password <password>",
+  },
+  "command": {
+    "command": "login",
+    "ancestors": [
+      "auth",
+    ],
+    "args": [],
+    "argumentValueSources": [],
+    "argv": [],
+    "optionValueSources": {
+      "password": "cli",
+      "token": "cli",
+    },
+    "opts": {
+      "password": "***",
+      "token": "***********",
+    },
+    "optsWithGlobals": {
+      "username": "unicornware",
+      "password": "***",
+      "token": "***********",
+    },
+    "usage": {
+      "arguments": [],
+      "options": "[flags...]",
+      "subcommand": "[command]",
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on conflicting option (1) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/conflicting-option",
   "message": "Option(-w, --write) cannot be used with Option(-n, --dry [choice])",
   "additional": [],
   "cause": {
-    "conflict": "write",
-    "option": "dry",
+    "conflict": "-w, --write",
+    "option": "-n, --dry [choice]",
   },
   "command": {
     "command": "changelog",
@@ -48,15 +88,15 @@ exports[`functional:lib/Command > errors > should error on conflicting option (0
 }
 `;
 
-exports[`functional:lib/Command > errors > should error on conflicting option (1) 1`] = `
+exports[`functional:lib/Command > errors > should error on conflicting option (2) 1`] = `
 {
   "code": 1,
   "id": "kronk/conflicting-option",
   "message": "Option(-j, --json) cannot be used with Option(-m, --markdown [])",
   "additional": [],
   "cause": {
-    "conflict": "json",
-    "option": "markdown",
+    "conflict": "-j, --json",
+    "option": "-m, --markdown []",
   },
   "command": {
     "command": "info",
@@ -91,15 +131,15 @@ exports[`functional:lib/Command > errors > should error on conflicting option (1
 }
 `;
 
-exports[`functional:lib/Command > errors > should error on conflicting option (2) 1`] = `
+exports[`functional:lib/Command > errors > should error on conflicting option (3) 1`] = `
 {
   "code": 1,
   "id": "kronk/conflicting-option",
   "message": "Option(-y, --yaml []) cannot be used with Option(-m, --markdown [])",
   "additional": [],
   "cause": {
-    "conflict": "yaml",
-    "option": "markdown",
+    "conflict": "-y, --yaml []",
+    "option": "-m, --markdown []",
   },
   "command": {
     "command": "info",
@@ -1024,7 +1064,104 @@ exports[`functional:lib/Command > errors > should error on missing command or op
 }
 `;
 
+exports[`functional:lib/Command > errors > should error on missing dependee option (0) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/missing-dependee-option",
+  "message": "Option(--password <password>) requires Option(-U --username <user>)",
+  "additional": [],
+  "cause": {
+    "dependee": "-U --username <user>",
+    "dependent": "--password <password>",
+  },
+  "command": {
+    "command": "login",
+    "ancestors": [
+      "auth",
+    ],
+    "args": [],
+    "argumentValueSources": [],
+    "argv": [],
+    "optionValueSources": {
+      "password": "cli",
+    },
+    "opts": {
+      "password": "***",
+    },
+    "optsWithGlobals": {
+      "password": "***",
+    },
+    "usage": {
+      "arguments": [],
+      "options": "[flags...]",
+      "subcommand": "[command]",
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on missing dependee option (1) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/missing-dependee-option",
+  "message": "Option(-t, --tag <tag>) requires Option(-e, --env <env>)",
+  "additional": [],
+  "cause": {
+    "dependee": "-e, --env <env>",
+    "dependent": "-t, --tag <tag>",
+  },
+  "command": {
+    "command": "deploy",
+    "ancestors": [],
+    "args": [],
+    "argumentValueSources": [],
+    "argv": [],
+    "optionValueSources": {
+      "config": "cli",
+      "tag": "cli",
+    },
+    "opts": {
+      "config": "deploy.yml",
+      "tag": "latest",
+    },
+    "optsWithGlobals": {
+      "config": "deploy.yml",
+      "tag": "latest",
+    },
+    "usage": {
+      "arguments": [],
+      "options": "[flags...]",
+      "subcommand": "[command]",
+    },
+  },
+}
+`;
+
 exports[`functional:lib/Command > errors > should error on missing mandatory option (0) 1`] = `
+{
+  "code": 1,
+  "id": "kronk/missing-mandatory-option",
+  "message": "Option(-g, --config <config!>) is required",
+  "additional": [],
+  "command": {
+    "command": "deploy",
+    "ancestors": [],
+    "args": [],
+    "argumentValueSources": [],
+    "argv": [],
+    "optionValueSources": {},
+    "opts": {},
+    "optsWithGlobals": {},
+    "usage": {
+      "arguments": [],
+      "options": "[flags...]",
+      "subcommand": "[command]",
+    },
+  },
+}
+`;
+
+exports[`functional:lib/Command > errors > should error on missing mandatory option (1) 1`] = `
 {
   "code": 1,
   "id": "kronk/missing-mandatory-option",
@@ -1063,7 +1200,7 @@ exports[`functional:lib/Command > errors > should error on missing mandatory opt
 }
 `;
 
-exports[`functional:lib/Command > errors > should error on missing mandatory option (1) 1`] = `
+exports[`functional:lib/Command > errors > should error on missing mandatory option (2) 1`] = `
 {
   "code": 1,
   "id": "kronk/missing-mandatory-option",
@@ -1103,7 +1240,7 @@ exports[`functional:lib/Command > errors > should error on missing mandatory opt
 }
 `;
 
-exports[`functional:lib/Command > errors > should error on missing mandatory option (2) 1`] = `
+exports[`functional:lib/Command > errors > should error on missing mandatory option (3) 1`] = `
 {
   "code": 1,
   "id": "kronk/missing-mandatory-option",
@@ -1127,84 +1264,6 @@ exports[`functional:lib/Command > errors > should error on missing mandatory opt
       "options": "[flags...]",
       "subcommand": "[command]",
     },
-  },
-}
-`;
-
-exports[`functional:lib/Command > errors > should error on unknown implied option (0) 1`] = `
-{
-  "code": 1,
-  "id": "kronk/unknown-implied-option",
-  "message": "Implied option for \`LEVEL\` not found",
-  "additional": [],
-  "cause": {
-    "commands": [
-      "grease",
-    ],
-    "implies": {
-      "LEVEL": "log",
-    },
-    "key": "LEVEL",
-    "option": "Option(-j, --json)",
-  },
-}
-`;
-
-exports[`functional:lib/Command > errors > should error on unknown implied option (1) 1`] = `
-{
-  "code": 1,
-  "id": "kronk/unknown-implied-option",
-  "message": "Implied option for \`LEVEL\` not found",
-  "additional": [],
-  "cause": {
-    "commands": [
-      "grease",
-    ],
-    "implies": {
-      "LEVEL": "log",
-    },
-    "key": "LEVEL",
-    "option": "Option(-j, --json)",
-  },
-}
-`;
-
-exports[`functional:lib/Command > errors > should error on unknown implied option (2) 1`] = `
-{
-  "code": 1,
-  "id": "kronk/unknown-implied-option",
-  "message": "Implied option for \`level\` not found",
-  "additional": [],
-  "cause": {
-    "commands": [
-      "info",
-      "grease",
-    ],
-    "implies": {
-      "level": "log",
-    },
-    "key": "level",
-    "option": "Option(-m, --markdown [])",
-  },
-}
-`;
-
-exports[`functional:lib/Command > errors > should error on unknown implied option (3) 1`] = `
-{
-  "code": 1,
-  "id": "kronk/unknown-implied-option",
-  "message": "Implied option for \`level\` not found",
-  "additional": [],
-  "cause": {
-    "commands": [
-      "info",
-      "grease",
-    ],
-    "implies": {
-      "level": "log",
-    },
-    "key": "level",
-    "option": "Option(-m, --markdown [])",
   },
 }
 `;

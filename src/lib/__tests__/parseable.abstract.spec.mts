@@ -4,10 +4,11 @@
  */
 
 import chars from '#enums/chars'
+import emptyArray from '#fixtures/empty-array'
+import emptySet from '#fixtures/empty-set'
 import identity from '#internal/identity'
 import Helpable from '#lib/helpable.abstract'
 import TestSubject from '#lib/parseable.abstract'
-import digits from '#utils/digits'
 import type {
   DefaultInfo,
   List,
@@ -41,15 +42,21 @@ describe('unit:lib/Parseable', () => {
   })
 
   describe('constructor', () => {
-    let info: ParseableInfo
+    let keys: string[]
     let subject: TestSubject
 
     beforeAll(() => {
-      info = { choices: null, default: null, parser: null }
+      keys = [
+        'choices',
+        'default',
+        'description',
+        'hidden',
+        'parser'
+      ]
     })
 
     beforeEach(() => {
-      subject = new Subject(info)
+      subject = new Subject({})
     })
 
     it('should be help text candidate', () => {
@@ -57,9 +64,10 @@ describe('unit:lib/Parseable', () => {
     })
 
     it('should set candidate metadata', () => {
-      expect(subject).to.have.nested.property('info.choices').be.null
-      expect(subject).to.have.nested.property('info.default').be.null
-      expect(subject).to.have.nested.property('info.parser').be.null
+      expect(subject).to.have.property('info').with.keys(keys)
+      expect(subject).to.have.nested.property('info.choices').be.undefined
+      expect(subject).to.have.nested.property('info.default').be.undefined
+      expect(subject).to.have.nested.property('info.parser').be.undefined
     })
   })
 
@@ -79,9 +87,11 @@ describe('unit:lib/Parseable', () => {
       expect(result).to.not.be.frozen
     })
 
-    it.each<[List<string>]>([
-      [digits],
-      [new Set(digits)]
+    it.each<[List<string> | null | undefined]>([
+      [null],
+      [undefined],
+      [emptyArray],
+      [emptySet]
     ])('should set candidate choices and return `this` (%#)', choices => {
       // Act
       const result = subject.choices(choices)
@@ -129,17 +139,13 @@ describe('unit:lib/Parseable', () => {
     })
 
     it('should return argument parser', () => {
-      // Act
-      const result = subject.parser()
-
-      // Expect
-      expect(result).to.be.a('function').with.property('name', identity.name)
+      expect(subject.parser()).to.eq(identity)
     })
 
     it.each<[ParseArg | null | undefined]>([
       [null],
       [undefined],
-      [vi.fn(Number.parseInt).mockName('parser')]
+      [vi.fn().mockName('parser')]
     ])('should set argument parser and return `this` (%#)', parser => {
       // Act
       const result = subject.parser(parser)

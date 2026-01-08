@@ -22,12 +22,14 @@ Option {
     "variadic": false,
     "mandatory": false,
     "conflicts": undefined,
+    "depends": undefined,
     "env": undefined,
     "implies": {
       "dairy": true,
     },
     "preset": undefined,
   },
+  "parent": undefined,
 }
 `;
 
@@ -42,12 +44,14 @@ Option {
     "parser": undefined,
     "long": "--verbose",
     "conflicts": undefined,
+    "depends": undefined,
     "env": undefined,
     "implies": {
       "log_level": "verbose",
     },
     "preset": undefined,
   },
+  "parent": undefined,
 }
 `;
 

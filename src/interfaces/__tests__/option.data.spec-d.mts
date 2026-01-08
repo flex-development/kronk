@@ -26,6 +26,12 @@ describe('unit-d:interfaces/OptionData', () => {
       .toEqualTypeOf<Nilable<List<string> | string>>()
   })
 
+  it('should match [depends?: List<string> | string | null | undefined]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('depends')
+      .toEqualTypeOf<Nilable<List<string> | string>>()
+  })
+
   it('should match [env?: List<string> | string | null | undefined]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('env')

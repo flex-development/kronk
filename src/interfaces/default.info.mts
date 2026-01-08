@@ -17,8 +17,6 @@ interface DefaultInfo<T = any> {
 
   /**
    * The default value.
-   *
-   * @default undefined
    */
   value?: T
 }

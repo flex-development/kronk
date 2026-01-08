@@ -31,10 +31,10 @@ interface KronkErrorMap {
   'invalid-flags': KronkError
   'invalid-subcommand-name': CommandError
   'missing-argument': CommandError
+  'missing-dependee-option': CommandError
   'missing-mandatory-option': CommandError
   'no-flags': KronkError
   'required-argument-after-optional': KronkError
-  'unknown-implied-option': KronkError
   'unknown-option': CommandError
   error: KronkError
 }

@@ -24,10 +24,10 @@ const enum keid {
   invalid_flags = 'kronk/invalid-flags',
   invalid_subcommand_name = 'kronk/invalid-subcommand-name',
   missing_argument = 'kronk/missing-argument',
+  missing_dependee_option = 'kronk/missing-dependee-option',
   missing_mandatory_option = 'kronk/missing-mandatory-option',
   no_flags = 'kronk/no-flags',
   required_argument_after_optional = 'kronk/required-argument-after-optional',
-  unknown_implied_option = 'kronk/unknown-implied-option',
   unknown_option = 'kronk/unknown-option'
 }
 

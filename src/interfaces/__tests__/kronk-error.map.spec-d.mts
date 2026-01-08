@@ -67,6 +67,12 @@ describe('unit-d:interfaces/KronkErrorMap', () => {
       .toEqualTypeOf<CommandError>()
   })
 
+  it('should match ["missing-dependee-option": CommandError]', () => {
+    expectTypeOf<TestSubject>()
+      .toHaveProperty('missing-dependee-option')
+      .toEqualTypeOf<CommandError>()
+  })
+
   it('should match ["missing-mandatory-option": CommandError]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('missing-mandatory-option')
@@ -82,12 +88,6 @@ describe('unit-d:interfaces/KronkErrorMap', () => {
   it('should match ["required-argument-after-optional": KronkError]', () => {
     expectTypeOf<TestSubject>()
       .toHaveProperty('required-argument-after-optional')
-      .toEqualTypeOf<KronkError>()
-  })
-
-  it('should match ["unknown-implied-option": KronkError]', () => {
-    expectTypeOf<TestSubject>()
-      .toHaveProperty('unknown-implied-option')
       .toEqualTypeOf<KronkError>()
   })
 
