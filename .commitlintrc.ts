@@ -16,10 +16,11 @@ const config: UserConfig = {
   extends: ['@flex-development'],
   rules: {
     'scope-enum': [RuleConfigSeverity.Error, 'always', scopes([
-      'chore',
-      'constructs',
+      'examples',
+      'events',
       'errors',
-      'events'
+      'constructs',
+      'chore'
     ])]
   }
 }

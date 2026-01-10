@@ -42,17 +42,17 @@ interface OptionData extends ParseableInfo {
   depends?: List<string> | string | null | undefined
 
   /**
-   * The name of the environment variable to check for option value, or a list
-   * of names, in order of priority, to check.
+   * The name of the environment variable to check for the option value,
+   * or a list of names, in order of priority, to check.
    *
    * @see {@linkcode List}
    */
   env?: List<string> | string | null | undefined
 
   /**
-   * An implied option reference, or a map where each key is an implied
-   * option reference and each value is the value to use when the option
-   * is set but the implied option is not.\
+   * A reference to an implied option, or a map where each key is a reference
+   * and each value is the value to use when the option is set but the implied
+   * option is not.\
    * Lone keys imply (string `implies`) `true`, i.e. `{ [implies]: true }`.
    *
    * The option-argument {@linkcode parser} will be called for implied values
@@ -70,8 +70,6 @@ interface OptionData extends ParseableInfo {
    *
    * Mandatory options must have a value after parsing, which usually means the
    * option must be specified on the command line.
-   *
-   * @default false
    */
   mandatory?: boolean | null | undefined
 

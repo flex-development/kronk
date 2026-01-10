@@ -273,6 +273,13 @@ bun add @flex-development/kronk
 
 **TODO**: use
 
+<blockquote>
+  <small>
+    See <a href='./__fixtures__/commands/'><code>__fixtures__/commands/</code></a>
+    and <a href='./examples/'><code>examples/</code></a> for current usage examples.
+  </small>
+</blockquote>
+
 ### Creating a *program*
 
 kronk exports a global `program` object convenient for quick programs.
@@ -2996,10 +3003,11 @@ Data transfer object for command options (TypeScript interface).
   > 👉 **note**: local options can depend on global options and other
   > local options, but global options cannot depend on local options.
 - `env?` ([`List<string>`](#list) | `string`, optional)
-  — the name of the environment variable to check for option value, or a list of names, in order of priority, to check
+  — the name of the environment variable to check for the option value,
+  or a list of names, in order of priority, to check
 - `implies?` ([`OptionValues`](#optionvaluest) | `string`, optional)
-  — an implied option reference, or a map where each key is an implied option reference and each value is the value to
-  use when the option is set but the implied option is not.\
+  — a reference to an implied option, or a map where each key is a reference and each value is the value to use
+  when the option is set but the implied option is not.\
   lone keys imply (string `implies`) `true`, i.e. `{ [implies]: true }`.\
   the option-argument [`parser`](#parseableparserparser) will be called for implied values that are strings
   > 👉 **note**: local options can imply global options and other
