@@ -1,3 +1,9 @@
+## [1.0.0-alpha.2](https://github.com/flex-development/kronk/compare/1.0.0-alpha.1...1.0.0-alpha.2) (2026-01-10)
+
+### :robot: Continuous Integration
+
+- [[`35f5f46`](https://github.com/flex-development/kronk/commit/35f5f46574c6a24fa7904382eee371288b612e14)] **workflows:** [`publish`] fix npm auth
+
 ## 1.0.0-alpha.1 (2026-01-10)
 
 ### :package: Build
@@ -284,5 +290,6 @@
 
 - [[`cda6f98`](https://github.com/flex-development/kronk/commit/cda6f98829d47ce70c9bb7adb274ffe499d25209)] [`Command`] help option
 - [[`3d22eb8`](https://github.com/flex-development/kronk/commit/3d22eb8c1074d9517f53bd0d7f75a22fe4b0284d)] **errors:** [`KronkError`] stabilize unit test snapshots
+
 
 
