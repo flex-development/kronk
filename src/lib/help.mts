@@ -1229,7 +1229,7 @@ class Help {
    * @param {HelpTextOptions | null | undefined} [options]
    *  Options for formating help text
    * @return {this}
-   *  The help text utility
+   *  `this` help text utility
    */
   public prepare(options?: HelpTextOptions | null | undefined): this {
     this.ansi = createColors(options)

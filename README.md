@@ -93,6 +93,7 @@
     - [`CommandError#command`](#commanderrorcommand)
     - [`CommandError#snapshot()`](#commanderrorsnapshot)
   - [`Help([options])`](#helpoptions)
+    - [`Help#prepare([options])`](#helpprepareoptions)
     - [`Help#text(cmd)`](#helptextcmd)
   - [`Helpable([info])`](#helpableinfo)
     - [`Helpable#ancestors()`](#helpableancestors)
@@ -1471,6 +1472,19 @@ Help text utility (`class`).
 
 - `options` ([`HelpTextOptions`](#helptextoptions) | `null` | `undefined`)
   — options for formating help text
+
+#### `Help#prepare([options])`
+
+Prepare the help text context.
+
+##### Parameters
+
+- `options` ([`HelpTextOptions`](#helptextoptions) | `null` | `undefined`)
+  — options for formating help text
+
+##### Returns
+
+([`this`](#helpoptions)) `this` help text utility
 
 #### `Help#text(cmd)`
 
