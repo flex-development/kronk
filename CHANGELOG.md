@@ -1,0 +1,288 @@
+## 1.0.0-alpha.1 (2026-01-10)
+
+### :package: Build
+
+- [[`7a0c39c`](https://github.com/flex-development/kronk/commit/7a0c39c820d2766a7d3acb7c98b796276cd70265)] **deps-dev:** Bump @arethetypeswrong/cli from 0.17.3 to 0.17.4 ([#30](https://github.com/flex-development/kronk/issues/30))
+- [[`21cb318`](https://github.com/flex-development/kronk/commit/21cb3184ff7d711145a9ac387e411148dc848936)] **deps-dev:** Bump @commitlint/cli from 20.0.0 to 20.1.0 in the commitlint group ([#155](https://github.com/flex-development/kronk/issues/155))
+- [[`7929aac`](https://github.com/flex-development/kronk/commit/7929aaca8ede3455b7c2fe4476669f56b7529110)] **deps-dev:** Bump @commitlint/cli from 20.2.0 to 20.3.0 in the commitlint group ([#227](https://github.com/flex-development/kronk/issues/227))
+- [[`750c098`](https://github.com/flex-development/kronk/commit/750c09804d602be3809fb2dc065939ec95c10be2)] **deps-dev:** Bump @faker-js/faker from 10.0.0 to 10.1.0 ([#166](https://github.com/flex-development/kronk/issues/166))
+- [[`06f3288`](https://github.com/flex-development/kronk/commit/06f3288463062ae489b937c3fd79eb8669e4421b)] **deps-dev:** Bump @faker-js/faker from 10.1.0 to 10.2.0 ([#229](https://github.com/flex-development/kronk/issues/229))
+- [[`5d46d24`](https://github.com/flex-development/kronk/commit/5d46d24dc06a4a48fc6ccf0df7d7ce8592f18198)] **deps-dev:** Bump @faker-js/faker from 9.8.0 to 9.9.0 ([#101](https://github.com/flex-development/kronk/issues/101))
+- [[`5452b48`](https://github.com/flex-development/kronk/commit/5452b48e1002a6fd9228ea1b7b4e1e5dc1ee3781)] **deps-dev:** Bump @faker-js/faker from 9.9.0 to 10.0.0 ([#128](https://github.com/flex-development/kronk/issues/128))
+- [[`169194d`](https://github.com/flex-development/kronk/commit/169194deeb8594edcbce376da6057400413ed947)] **deps-dev:** Bump @stylistic/eslint-plugin from 3.1.0 to 4.0.1 ([#22](https://github.com/flex-development/kronk/issues/22))
+- [[`360281b`](https://github.com/flex-development/kronk/commit/360281b859160fb745482f6b60670473b89cef47)] **deps-dev:** Bump @stylistic/eslint-plugin from 4.0.1 to 4.1.0 ([#36](https://github.com/flex-development/kronk/issues/36))
+- [[`2aa8eee`](https://github.com/flex-development/kronk/commit/2aa8eeed3f1c8fc18daac7eb7829f2ffa5a4edac)] **deps-dev:** Bump @tsconfig/strictest from 2.0.5 to 2.0.6 ([#148](https://github.com/flex-development/kronk/issues/148))
+- [[`7188c64`](https://github.com/flex-development/kronk/commit/7188c64dc0941f280e62542f41479518114a7f1e)] **deps-dev:** Bump @tsconfig/strictest from 2.0.6 to 2.0.7 ([#179](https://github.com/flex-development/kronk/issues/179))
+- [[`6e933f0`](https://github.com/flex-development/kronk/commit/6e933f0f065a2df4d35587e5d8310708d0a682e9)] **deps-dev:** Bump @tsconfig/strictest from 2.0.7 to 2.0.8 ([#192](https://github.com/flex-development/kronk/issues/192))
+- [[`9f9a0a2`](https://github.com/flex-development/kronk/commit/9f9a0a2a011b272eb39dc9ffd79847d7d8279281)] **deps-dev:** Bump @types/chai from 5.2.2 to 5.2.3 ([#169](https://github.com/flex-development/kronk/issues/169))
+- [[`61d3fb2`](https://github.com/flex-development/kronk/commit/61d3fb26b46273083f56658a4d2a0688688acf8c)] **deps-dev:** Bump @types/node from 24.0.0 to 24.0.1 ([#86](https://github.com/flex-development/kronk/issues/86))
+- [[`c78b5c0`](https://github.com/flex-development/kronk/commit/c78b5c0346fdcae81d3f19973efd8ed2408acd61)] **deps-dev:** Bump @types/node from 24.0.1 to 24.0.10 ([#97](https://github.com/flex-development/kronk/issues/97))
+- [[`c36ff8c`](https://github.com/flex-development/kronk/commit/c36ff8c011dfa3f9c9f957637ea5cfcfbc2667e3)] **deps-dev:** Bump @types/node from 24.0.10 to 24.0.12 ([#105](https://github.com/flex-development/kronk/issues/105))
+- [[`ecc551f`](https://github.com/flex-development/kronk/commit/ecc551f89eccbb0f9fd1cfa3562a454177603846)] **deps-dev:** Bump @types/node from 24.0.12 to 24.0.13 ([#106](https://github.com/flex-development/kronk/issues/106))
+- [[`08dc8fc`](https://github.com/flex-development/kronk/commit/08dc8fc2cbb0c58f04b0991f6140cb0cde9dfafb)] **deps-dev:** Bump @types/node from 24.0.13 to 24.0.14 ([#109](https://github.com/flex-development/kronk/issues/109))
+- [[`660dbc4`](https://github.com/flex-development/kronk/commit/660dbc447171eb7d978efaa15b5042bd3443771f)] **deps-dev:** Bump @types/node from 24.0.14 to 24.1.0 ([#112](https://github.com/flex-development/kronk/issues/112))
+- [[`e5e5339`](https://github.com/flex-development/kronk/commit/e5e53392ae84ccf3a8ff2a085de8a4329045695e)] **deps-dev:** Bump @types/node from 24.1.0 to 24.2.0 ([#117](https://github.com/flex-development/kronk/issues/117))
+- [[`a58f2ef`](https://github.com/flex-development/kronk/commit/a58f2ef6dc6cdfce9539e4949beb146e1fcd36e9)] **deps-dev:** Bump @types/node from 24.10.0 to 24.10.1 ([#189](https://github.com/flex-development/kronk/issues/189))
+- [[`1f42125`](https://github.com/flex-development/kronk/commit/1f421258d3b02c3b275bacd6c0d4d32c3c17a70e)] **deps-dev:** Bump @types/node from 24.10.1 to 24.10.2 ([#212](https://github.com/flex-development/kronk/issues/212))
+- [[`6cb1bb6`](https://github.com/flex-development/kronk/commit/6cb1bb6a9a76d61e629762a015c831a81d364b03)] **deps-dev:** Bump @types/node from 24.10.2 to 25.0.3 ([#224](https://github.com/flex-development/kronk/issues/224))
+- [[`3794539`](https://github.com/flex-development/kronk/commit/3794539796000d63b387e17db4122e4fd96985a0)] **deps-dev:** Bump @types/node from 24.2.0 to 24.2.1 ([#121](https://github.com/flex-development/kronk/issues/121))
+- [[`51c664e`](https://github.com/flex-development/kronk/commit/51c664eb067da553a88ea06194aabb77d853a99c)] **deps-dev:** Bump @types/node from 24.2.1 to 24.3.0 ([#125](https://github.com/flex-development/kronk/issues/125))
+- [[`73e90d5`](https://github.com/flex-development/kronk/commit/73e90d51717a6e988b193040eab9bb885a42ac78)] **deps-dev:** Bump @types/node from 24.3.0 to 24.5.2 ([#145](https://github.com/flex-development/kronk/issues/145))
+- [[`d4f2c15`](https://github.com/flex-development/kronk/commit/d4f2c15f2d5319d3ef5c9528403c00779f5046b6)] **deps-dev:** Bump @types/node from 24.5.2 to 24.6.0 ([#154](https://github.com/flex-development/kronk/issues/154))
+- [[`bb5a4c6`](https://github.com/flex-development/kronk/commit/bb5a4c64ca436c2e960a153eb46e98c1dcebf867)] **deps-dev:** Bump @types/node from 24.6.0 to 24.6.1 ([#156](https://github.com/flex-development/kronk/issues/156))
+- [[`03fce9b`](https://github.com/flex-development/kronk/commit/03fce9b3507abd3d59e29a078b3a4538414538a7)] **deps-dev:** Bump @types/node from 24.6.1 to 24.6.2 ([#158](https://github.com/flex-development/kronk/issues/158))
+- [[`fcd0d1c`](https://github.com/flex-development/kronk/commit/fcd0d1c3b0c293908ba5620c9f97911f24ae3b3d)] **deps-dev:** Bump @types/node from 24.6.2 to 24.7.0 ([#160](https://github.com/flex-development/kronk/issues/160))
+- [[`04e5e86`](https://github.com/flex-development/kronk/commit/04e5e86a433e4c56a53ffed351429d06cf29e2e9)] **deps-dev:** Bump @types/node from 24.7.0 to 24.7.1 ([#163](https://github.com/flex-development/kronk/issues/163))
+- [[`1a0a912`](https://github.com/flex-development/kronk/commit/1a0a9121d954e9951c215bc56e37c56bad974371)] **deps-dev:** Bump @types/node from 24.7.1 to 24.7.2 ([#164](https://github.com/flex-development/kronk/issues/164))
+- [[`19cd7b8`](https://github.com/flex-development/kronk/commit/19cd7b82f4caf4d73c38a50104b3321967042737)] **deps-dev:** Bump @types/node from 24.7.2 to 24.8.1 ([#167](https://github.com/flex-development/kronk/issues/167))
+- [[`3e4929c`](https://github.com/flex-development/kronk/commit/3e4929c045e384912621238f5e4cd8172438c542)] **deps-dev:** Bump @types/node from 24.8.1 to 24.9.1 ([#170](https://github.com/flex-development/kronk/issues/170))
+- [[`5503fc4`](https://github.com/flex-development/kronk/commit/5503fc41dd0cb7acaeb5283891cc03724d5c9fb1)] **deps-dev:** Bump @types/node from 24.9.1 to 24.9.2 ([#177](https://github.com/flex-development/kronk/issues/177))
+- [[`cc1a9d7`](https://github.com/flex-development/kronk/commit/cc1a9d71c2cbda19c424c5e1611c5fbcb3ac9f12)] **deps-dev:** Bump @types/node from 24.9.2 to 24.10.0 ([#181](https://github.com/flex-development/kronk/issues/181))
+- [[`50dafe0`](https://github.com/flex-development/kronk/commit/50dafe018e65da864497b9b7a9d30ce4927eb586)] **deps-dev:** Bump chai from 5.1.2 to 5.2.0 ([#15](https://github.com/flex-development/kronk/issues/15))
+- [[`334b60c`](https://github.com/flex-development/kronk/commit/334b60cda1af9f8c4ce4ce1df8f8e3a179d0e18f)] **deps-dev:** Bump chai from 5.2.0 to 5.2.1 ([#104](https://github.com/flex-development/kronk/issues/104))
+- [[`082a5df`](https://github.com/flex-development/kronk/commit/082a5dfbd375184f0a65e8a335e6a3d8f9b10aa7)] **deps-dev:** Bump chai from 5.2.1 to 5.3.1 ([#126](https://github.com/flex-development/kronk/issues/126))
+- [[`9e867ee`](https://github.com/flex-development/kronk/commit/9e867ee052f4e600b02b45d7b43ad5c6e5392776)] **deps-dev:** Bump chai from 5.3.1 to 6.0.1 ([#129](https://github.com/flex-development/kronk/issues/129))
+- [[`02f2345`](https://github.com/flex-development/kronk/commit/02f2345aa48caf37080a829be6779dc70ce920df)] **deps-dev:** Bump chai from 6.0.1 to 6.2.0 ([#152](https://github.com/flex-development/kronk/issues/152))
+- [[`8411aef`](https://github.com/flex-development/kronk/commit/8411aef3116a5a56c053c41dca8aa3af079cc126)] **deps-dev:** Bump chai from 6.2.0 to 6.2.1 ([#190](https://github.com/flex-development/kronk/issues/190))
+- [[`e192c19`](https://github.com/flex-development/kronk/commit/e192c19c9af62fec9e2871be22973c23404521e7)] **deps-dev:** Bump chai from 6.2.1 to 6.2.2 ([#225](https://github.com/flex-development/kronk/issues/225))
+- [[`5c0f471`](https://github.com/flex-development/kronk/commit/5c0f4710cf37a70dfeae6fed8a8b7b535db2678d)] **deps-dev:** Bump commander from 14.0.0 to 14.0.1 ([#149](https://github.com/flex-development/kronk/issues/149))
+- [[`16657c4`](https://github.com/flex-development/kronk/commit/16657c4b4c731c7aa3e09d4099e2aed678deb8d3)] **deps-dev:** Bump commander from 14.0.1 to 14.0.2 ([#173](https://github.com/flex-development/kronk/issues/173))
+- [[`0ad9464`](https://github.com/flex-development/kronk/commit/0ad9464b2cf35e35da5d98c5335244d8df7f8f41)] **deps-dev:** Bump cross-env from 10.0.0 to 10.1.0 ([#153](https://github.com/flex-development/kronk/issues/153))
+- [[`eb56136`](https://github.com/flex-development/kronk/commit/eb56136b860ed972bd96174fd5c618660de49654)] **deps-dev:** Bump cross-env from 7.0.3 to 10.0.0 ([#114](https://github.com/flex-development/kronk/issues/114))
+- [[`592490c`](https://github.com/flex-development/kronk/commit/592490c91a408b8f875b87ba94a6331fd6c566be)] **deps-dev:** Bump cspell from 8.17.3 to 8.17.4 ([#24](https://github.com/flex-development/kronk/issues/24))
+- [[`e6f7ee9`](https://github.com/flex-development/kronk/commit/e6f7ee965c2c93231f3e7c1e24224937bd17ac79)] **deps-dev:** Bump cspell from 8.17.4 to 8.17.5 ([#35](https://github.com/flex-development/kronk/issues/35))
+- [[`ae713a0`](https://github.com/flex-development/kronk/commit/ae713a039025606c9b66fce0cfb9f6a5547a6dc7)] **deps-dev:** Bump cspell from 9.0.2 to 9.1.3 ([#100](https://github.com/flex-development/kronk/issues/100))
+- [[`7cb8775`](https://github.com/flex-development/kronk/commit/7cb8775715f71861ee9f63f16ecafba6a73c7235)] **deps-dev:** Bump cspell from 9.1.3 to 9.1.5 ([#108](https://github.com/flex-development/kronk/issues/108))
+- [[`4a21716`](https://github.com/flex-development/kronk/commit/4a21716b19ef8167bc0369278500d14972f57e06)] **deps-dev:** Bump cspell from 9.1.5 to 9.2.0 ([#111](https://github.com/flex-development/kronk/issues/111))
+- [[`09a4fc5`](https://github.com/flex-development/kronk/commit/09a4fc5ad31f2f4fde4d3656fcf21470f6d41d0c)] **deps-dev:** Bump cspell from 9.2.0 to 9.2.1 ([#133](https://github.com/flex-development/kronk/issues/133))
+- [[`5ca7560`](https://github.com/flex-development/kronk/commit/5ca756054d81460347af5bbf321300af4449fb04)] **deps-dev:** Bump cspell from 9.2.1 to 9.2.2 ([#172](https://github.com/flex-development/kronk/issues/172))
+- [[`4b25e01`](https://github.com/flex-development/kronk/commit/4b25e014586ac48cf953c0f85b4356380f084e3c)] **deps-dev:** Bump cspell from 9.2.2 to 9.3.0 ([#186](https://github.com/flex-development/kronk/issues/186))
+- [[`3774b83`](https://github.com/flex-development/kronk/commit/3774b83849efebbeba6ccf63d5941d65d2bf9798)] **deps-dev:** Bump cspell from 9.3.0 to 9.3.1 ([#191](https://github.com/flex-development/kronk/issues/191))
+- [[`8ce6699`](https://github.com/flex-development/kronk/commit/8ce66993cde489d04c5924767d4b897a62497a1f)] **deps-dev:** Bump cspell from 9.3.1 to 9.3.2 ([#196](https://github.com/flex-development/kronk/issues/196))
+- [[`12ab47d`](https://github.com/flex-development/kronk/commit/12ab47da022fedb9e055e9f4e3abfc43458958b9)] **deps-dev:** Bump cspell from 9.3.2 to 9.4.0 ([#204](https://github.com/flex-development/kronk/issues/204))
+- [[`ae251d3`](https://github.com/flex-development/kronk/commit/ae251d3de438cc591caa0f739ad99c3aa9cbfa1c)] **deps-dev:** Bump dprint from 0.49.0 to 0.49.1 ([#59](https://github.com/flex-development/kronk/issues/59))
+- [[`61ad60a`](https://github.com/flex-development/kronk/commit/61ad60adbee7e9994b592ec653d4b7a4b43d9ebb)] **deps-dev:** Bump dprint from 0.50.0 to 0.50.1 ([#102](https://github.com/flex-development/kronk/issues/102))
+- [[`6786d7c`](https://github.com/flex-development/kronk/commit/6786d7cee10cde842d6a6c309a67809609f67b5e)] **deps-dev:** Bump dprint from 0.50.1 to 0.50.2 ([#151](https://github.com/flex-development/kronk/issues/151))
+- [[`ff9eff5`](https://github.com/flex-development/kronk/commit/ff9eff5462fd759a7678ea293f7aebf320370c4a)] **deps-dev:** Bump dprint from 0.50.2 to 0.51.1 ([#226](https://github.com/flex-development/kronk/issues/226))
+- [[`3261d59`](https://github.com/flex-development/kronk/commit/3261d590f6e00a7eb70c3faa650a49d5828ff5bd)] **deps-dev:** bump editorconfig from 2.0.1 to 3.0.1
+- [[`a0a506a`](https://github.com/flex-development/kronk/commit/a0a506a234f677556d24bca374ca150e4909c57e)] **deps-dev:** Bump eslint from 9.20.0 to 9.20.1 in the eslint group ([#11](https://github.com/flex-development/kronk/issues/11))
+- [[`618f560`](https://github.com/flex-development/kronk/commit/618f560b8bc9cf763ae6360a0f89eab3bcbf3144)] **deps-dev:** Bump eslint from 9.28.0 to 9.30.1 ([#98](https://github.com/flex-development/kronk/issues/98))
+- [[`e593b45`](https://github.com/flex-development/kronk/commit/e593b455fe9a9979ff952cf923f5689d211416e1)] **deps-dev:** Bump eslint from 9.30.1 to 9.31.0 ([#107](https://github.com/flex-development/kronk/issues/107))
+- [[`d2a1788`](https://github.com/flex-development/kronk/commit/d2a1788582750680cec0361971d73e0de88def49)] **deps-dev:** Bump eslint from 9.31.0 to 9.32.0 ([#113](https://github.com/flex-development/kronk/issues/113))
+- [[`984da00`](https://github.com/flex-development/kronk/commit/984da00f36f6afeafae1aa95e573b13af52cb97b)] **deps-dev:** Bump eslint from 9.32.0 to 9.33.0 ([#120](https://github.com/flex-development/kronk/issues/120))
+- [[`990a314`](https://github.com/flex-development/kronk/commit/990a3140f6d7be587524139dce917a8a3be96892)] **deps-dev:** Bump eslint from 9.33.0 to 9.34.0 ([#130](https://github.com/flex-development/kronk/issues/130))
+- [[`866077d`](https://github.com/flex-development/kronk/commit/866077d749a358d99c8afa46eae2e756c1ca1259)] **deps-dev:** Bump eslint from 9.34.0 to 9.36.0 ([#146](https://github.com/flex-development/kronk/issues/146))
+- [[`e197ae8`](https://github.com/flex-development/kronk/commit/e197ae8c11ac7d44a3262b018a921fe0c839285d)] **deps-dev:** Bump eslint from 9.36.0 to 9.37.0 ([#159](https://github.com/flex-development/kronk/issues/159))
+- [[`4bf29bb`](https://github.com/flex-development/kronk/commit/4bf29bb466311f05d60d954bf7ea4ce6ce825319)] **deps-dev:** Bump eslint from 9.37.0 to 9.38.0 ([#168](https://github.com/flex-development/kronk/issues/168))
+- [[`aef98c4`](https://github.com/flex-development/kronk/commit/aef98c4c08be00bb449d6708feb3eec22663cf09)] **deps-dev:** Bump eslint from 9.38.0 to 9.39.1 ([#184](https://github.com/flex-development/kronk/issues/184))
+- [[`97a88a3`](https://github.com/flex-development/kronk/commit/97a88a342f6a283325765866bc11faa8165ae195)] **deps-dev:** Bump eslint from 9.39.1 to 9.39.2 ([#221](https://github.com/flex-development/kronk/issues/221))
+- [[`5b7bf98`](https://github.com/flex-development/kronk/commit/5b7bf9896a365cdf72af138d11fcb89fb97be91a)] **deps-dev:** Bump eslint-import-resolver-typescript from 3.7.0 to 3.8.1 ([#20](https://github.com/flex-development/kronk/issues/20))
+- [[`f58f727`](https://github.com/flex-development/kronk/commit/f58f72730bf734d7f55ba5e7aa54cf9bbd793a3a)] **deps-dev:** Bump eslint-import-resolver-typescript from 3.8.1 to 3.8.2 ([#23](https://github.com/flex-development/kronk/issues/23))
+- [[`9567852`](https://github.com/flex-development/kronk/commit/9567852f5d2ad8a010589806f04aa081585a999a)] **deps-dev:** Bump eslint-import-resolver-typescript from 3.8.2 to 3.8.3 ([#26](https://github.com/flex-development/kronk/issues/26))
+- [[`c09ac6a`](https://github.com/flex-development/kronk/commit/c09ac6a0c7494465a580027d8801ab10b5cb9348)] **deps-dev:** Bump eslint-plugin-jsdoc from 50.6.3 to 50.6.9 ([#58](https://github.com/flex-development/kronk/issues/58))
+- [[`b821743`](https://github.com/flex-development/kronk/commit/b821743c6e1e46bfa2f3a53cf997b7ab2341295b)] **deps-dev:** bump eslint-plugin-unicorn from 56.0.1 to 58.0.0
+- [[`8a98060`](https://github.com/flex-development/kronk/commit/8a98060c05ae2000608415015e7a726032f22b89)] **deps-dev:** Bump eslint-plugin-yml from 1.16.0 to 1.17.0 ([#19](https://github.com/flex-development/kronk/issues/19))
+- [[`9cefdde`](https://github.com/flex-development/kronk/commit/9cefdde3ba0f7b001e6aaa7cb51a39847f1bb33a)] **deps-dev:** Bump globals from 15.14.0 to 15.15.0 ([#12](https://github.com/flex-development/kronk/issues/12))
+- [[`6cf6da9`](https://github.com/flex-development/kronk/commit/6cf6da939b521c1df2fdd2285dd0fdf1177472f5)] **deps-dev:** Bump globals from 15.15.0 to 16.0.0 ([#27](https://github.com/flex-development/kronk/issues/27))
+- [[`43e025b`](https://github.com/flex-development/kronk/commit/43e025bfe46ece73eaeef52101355956bf2d4684)] **deps-dev:** Bump prettier from 3.4.2 to 3.5.0 ([#8](https://github.com/flex-development/kronk/issues/8))
+- [[`c82f85a`](https://github.com/flex-development/kronk/commit/c82f85afde4e15c1412dd45b9df3dc68c5e7fe99)] **deps-dev:** Bump prettier from 3.5.0 to 3.5.1 ([#13](https://github.com/flex-development/kronk/issues/13))
+- [[`781f26b`](https://github.com/flex-development/kronk/commit/781f26be6d53d0b518b2c833a981c72704d42727)] **deps-dev:** Bump prettier from 3.5.1 to 3.5.2 ([#31](https://github.com/flex-development/kronk/issues/31))
+- [[`d9f9f2a`](https://github.com/flex-development/kronk/commit/d9f9f2a1d8ee6b85ce73e428e111fc71fe3e7f1f)] **deps-dev:** Bump prettier from 3.5.2 to 3.5.3 ([#42](https://github.com/flex-development/kronk/issues/42))
+- [[`cb2d68e`](https://github.com/flex-development/kronk/commit/cb2d68e59e1d210606ef809023e50caedbf8abbd)] **deps-dev:** Bump prettier from 3.5.3 to 3.6.2 ([#103](https://github.com/flex-development/kronk/issues/103))
+- [[`c42a0d1`](https://github.com/flex-development/kronk/commit/c42a0d1a51c42823d9a764a34f90f5b12c55d0cf)] **deps-dev:** Bump remark-directive from 3.0.1 to 4.0.0 in the remark group ([#38](https://github.com/flex-development/kronk/issues/38))
+- [[`2911b35`](https://github.com/flex-development/kronk/commit/2911b35b4687fd0e5ed8bccbbb96e0391df37dfb)] **deps-dev:** Bump remark-gfm from 4.0.0 to 4.0.1 in the remark group ([#9](https://github.com/flex-development/kronk/issues/9))
+- [[`cd77825`](https://github.com/flex-development/kronk/commit/cd77825c65de711bd591c41c4d8778ef3b96c7e8)] **deps-dev:** Bump remark-validate-links from 13.0.2 to 13.1.0 in the remark group ([#29](https://github.com/flex-development/kronk/issues/29))
+- [[`73f56b8`](https://github.com/flex-development/kronk/commit/73f56b89d1cc19afaf692270b7cf810e8241f65b)] **deps-dev:** Bump semver from 7.7.2 to 7.7.3 ([#161](https://github.com/flex-development/kronk/issues/161))
+- [[`592059a`](https://github.com/flex-development/kronk/commit/592059acae0c0569ea4fe01425575888ec9aa6d4)] **deps-dev:** Bump the commitlint group with 2 updates ([#150](https://github.com/flex-development/kronk/issues/150))
+- [[`380e46c`](https://github.com/flex-development/kronk/commit/380e46c1be93a4df4ab2c9551250cb8f0e57d3fe)] **deps-dev:** Bump the commitlint group with 2 updates ([#209](https://github.com/flex-development/kronk/issues/209))
+- [[`15c5b39`](https://github.com/flex-development/kronk/commit/15c5b39f11d68a7b73e37a4de95ccd9d06993df8)] **deps-dev:** Bump the commitlint group with 2 updates ([#231](https://github.com/flex-development/kronk/issues/231))
+- [[`969d47c`](https://github.com/flex-development/kronk/commit/969d47cabc477954379943c39bdd0906d9360950)] **deps-dev:** Bump the commitlint group with 2 updates ([#52](https://github.com/flex-development/kronk/issues/52))
+- [[`21712d5`](https://github.com/flex-development/kronk/commit/21712d57a7575c0987cc18bb2dea4dbd3a80bdd3)] **deps-dev:** Bump the typescript-eslint group with 3 updates ([#10](https://github.com/flex-development/kronk/issues/10))
+- [[`d2b6ba7`](https://github.com/flex-development/kronk/commit/d2b6ba7b01d357f0ec6719fe3430db90c37b5787)] **deps-dev:** Bump the typescript-eslint group with 3 updates ([#17](https://github.com/flex-development/kronk/issues/17))
+- [[`5c649df`](https://github.com/flex-development/kronk/commit/5c649df7303789e69c6e1deb140111c0cbd929fe)] **deps-dev:** Bump the typescript-eslint group with 3 updates ([#33](https://github.com/flex-development/kronk/issues/33))
+- [[`1cf74dc`](https://github.com/flex-development/kronk/commit/1cf74dc314bdea73934a73a0378733300eb65644)] **deps-dev:** Bump the typescript-eslint group with 3 updates ([#57](https://github.com/flex-development/kronk/issues/57))
+- [[`ba83024`](https://github.com/flex-development/kronk/commit/ba83024f6cbb6ad029e3cdec309a3fac7107aefb)] **deps-dev:** bump the vitest group with 3 updates
+- [[`6697ed8`](https://github.com/flex-development/kronk/commit/6697ed8cac27ce80c3c5ae8749ee04b3a95e43dd)] **deps-dev:** Bump the vitest group with 3 updates ([#171](https://github.com/flex-development/kronk/issues/171))
+- [[`c99d0d9`](https://github.com/flex-development/kronk/commit/c99d0d914a8fc5ad9c80cf3660a0a3698435b846)] **deps-dev:** Bump the vitest group with 3 updates ([#178](https://github.com/flex-development/kronk/issues/178))
+- [[`1cd662a`](https://github.com/flex-development/kronk/commit/1cd662a2a333c4e4dc9aec0d35e3397359229c90)] **deps-dev:** Bump the vitest group with 3 updates ([#180](https://github.com/flex-development/kronk/issues/180))
+- [[`cf5c174`](https://github.com/flex-development/kronk/commit/cf5c174c74570ca7520231f50209ab8b7da1d61e)] **deps-dev:** Bump the vitest group with 3 updates ([#185](https://github.com/flex-development/kronk/issues/185))
+- [[`03429ed`](https://github.com/flex-development/kronk/commit/03429eda47c95e55f0e9e491931f283009ac3dda)] **deps-dev:** Bump the vitest group with 3 updates ([#188](https://github.com/flex-development/kronk/issues/188))
+- [[`ed3f447`](https://github.com/flex-development/kronk/commit/ed3f447963e3da37e508f08b098c1d60c7853a13)] **deps-dev:** Bump the vitest group with 3 updates ([#195](https://github.com/flex-development/kronk/issues/195))
+- [[`c407490`](https://github.com/flex-development/kronk/commit/c407490b004dce37aef1d20deb8114709b7f66d5)] **deps-dev:** Bump the vitest group with 3 updates ([#199](https://github.com/flex-development/kronk/issues/199))
+- [[`d24c2b3`](https://github.com/flex-development/kronk/commit/d24c2b3a949835574086cb4f7c129f5ec94b96f4)] **deps-dev:** Bump the vitest group with 3 updates ([#201](https://github.com/flex-development/kronk/issues/201))
+- [[`24f64ca`](https://github.com/flex-development/kronk/commit/24f64caddf9a588d05480916bc0e241c033d17fb)] **deps-dev:** Bump the vitest group with 3 updates ([#208](https://github.com/flex-development/kronk/issues/208))
+- [[`1267ac7`](https://github.com/flex-development/kronk/commit/1267ac790e94490e2308176d99551dfd8129ed83)] **deps-dev:** Bump the vitest group with 3 updates ([#21](https://github.com/flex-development/kronk/issues/21))
+- [[`516594d`](https://github.com/flex-development/kronk/commit/516594d360ef62cbd1bc155ef7a0ad48dfd421f4)] **deps-dev:** Bump the vitest group with 3 updates ([#223](https://github.com/flex-development/kronk/issues/223))
+- [[`ce20286`](https://github.com/flex-development/kronk/commit/ce202861cc81c79afd83bb63f0b76a0da733570b)] **deps-dev:** Bump the vitest group with 3 updates ([#34](https://github.com/flex-development/kronk/issues/34))
+- [[`15f79d0`](https://github.com/flex-development/kronk/commit/15f79d0f9e6f8317b0bd6f5735d4ec5e69d55644)] **deps-dev:** Bump trash-cli from 6.0.0 to 7.0.0 ([#162](https://github.com/flex-development/kronk/issues/162))
+- [[`363ccbf`](https://github.com/flex-development/kronk/commit/363ccbf8686e1454debcbdfde6ede1f3e65f8b20)] **deps-dev:** Bump typescript from 5.8.3 to 5.9.2 ([#116](https://github.com/flex-development/kronk/issues/116))
+- [[`039b4ed`](https://github.com/flex-development/kronk/commit/039b4ed6b642ce56e6096131ff5fdcaf2a6fd9a8)] **deps-dev:** Bump typescript from 5.9.2 to 5.9.3 ([#157](https://github.com/flex-development/kronk/issues/157))
+- [[`b5768d9`](https://github.com/flex-development/kronk/commit/b5768d925a9c44ec3ed2e17282ebd118b6553527)] **deps-dev:** Bump yaml-eslint-parser from 1.2.3 to 1.3.0 ([#43](https://github.com/flex-development/kronk/issues/43))
+- [[`e89b15f`](https://github.com/flex-development/kronk/commit/e89b15f3b5fcb6a16e17405df78539715fcfe860)] **deps:** @flex-development/fsm-tokenizer@1.0.0-alpha.1
+- [[`bef5f4f`](https://github.com/flex-development/kronk/commit/bef5f4f2b9c49b123a4d15ad174be1ed95a6335d)] **deps:** add `devlop`
+- [[`cefbb9d`](https://github.com/flex-development/kronk/commit/cefbb9d27de715464b634f0721f581f0c235aa55)] **deps:** Bump @flex-development/colors from 1.1.0 to 2.0.0 in the flex-development group ([#200](https://github.com/flex-development/kronk/issues/200))
+- [[`5abc53d`](https://github.com/flex-development/kronk/commit/5abc53db0662027d92ecd2ace810d8c82042b3f4)] **deps:** bump @flex-development/log
+- [[`a67c772`](https://github.com/flex-development/kronk/commit/a67c77253f0f7b94f9b09ae829e7855d1b14d3ac)] **deps:** Bump @flex-development/log from 5.0.0-alpha.3 to 5.0.0-alpha.4 in the flex-development group ([#124](https://github.com/flex-development/kronk/issues/124))
+- [[`a6f41a8`](https://github.com/flex-development/kronk/commit/a6f41a822b3395bf98ae84c4dc1ced1ca820459b)] **deps:** Bump @flex-development/log from 5.0.0-alpha.4 to 5.0.0-alpha.5 in the flex-development group ([#131](https://github.com/flex-development/kronk/issues/131))
+- [[`cc76eda`](https://github.com/flex-development/kronk/commit/cc76eda28348cdb6843e236a7aa504720512bbd1)] **deps:** Bump @flex-development/log from 5.0.0-alpha.5 to 5.0.0 in the flex-development group ([#134](https://github.com/flex-development/kronk/issues/134))
+- [[`b79f083`](https://github.com/flex-development/kronk/commit/b79f08332d3d1060af8fd2e81ed31db136d82a25)] **deps:** bump @flex-development/vfile-tokenizer
+- [[`f141367`](https://github.com/flex-development/kronk/commit/f1413676e42015f5d5205124ed41f5b3e0e829a1)] **deps:** Bump @types/semver from 7.7.0 to 7.7.1 ([#136](https://github.com/flex-development/kronk/issues/136))
+- [[`3905b8e`](https://github.com/flex-development/kronk/commit/3905b8ec6a02ed0ac329999a6a6e2306a2ac01ac)] **deps:** Bump glob from 10.4.5 to 10.5.0 ([#197](https://github.com/flex-development/kronk/issues/197))
+- [[`75413f1`](https://github.com/flex-development/kronk/commit/75413f16427d4e4ecfb151d5a7307bcb54dc087e)] **deps:** Bump js-yaml from 4.1.0 to 4.1.1 ([#193](https://github.com/flex-development/kronk/issues/193))
+- [[`0e42c7a`](https://github.com/flex-development/kronk/commit/0e42c7aeaf3b8bd1fa320318b0ce913187397d3c)] **deps:** Bump mdast-util-to-hast from 13.2.0 to 13.2.1 ([#203](https://github.com/flex-development/kronk/issues/203))
+- [[`ba01214`](https://github.com/flex-development/kronk/commit/ba0121402fa821de22fa814456d8c61a02e7de13)] **deps:** Bump plur from 5.1.0 to 6.0.0 ([#183](https://github.com/flex-development/kronk/issues/183))
+- [[`c785c7e`](https://github.com/flex-development/kronk/commit/c785c7ea0b8bc520e834fedc83f1e009dfc9f2ba)] **deps:** Bump tar from 6.1.15 to 6.2.1 ([#6](https://github.com/flex-development/kronk/issues/6))
+- [[`a75f435`](https://github.com/flex-development/kronk/commit/a75f435eeba5fcdbfe798be68bf2530bded9cd7d)] **deps:** Bump validator from 13.15.15 to 13.15.20 ([#176](https://github.com/flex-development/kronk/issues/176))
+- [[`3fe2b8f`](https://github.com/flex-development/kronk/commit/3fe2b8f11401cdf3444acdad615ab5762ee6b0bc)] **deps:** Bump validator from 13.15.20 to 13.15.23 ([#205](https://github.com/flex-development/kronk/issues/205))
+- [[`502d194`](https://github.com/flex-development/kronk/commit/502d1947b2ce51fb84577f0df6f2512be579e146)] **deps:** Bump vite from 6.0.5 to 6.1.0 ([#7](https://github.com/flex-development/kronk/issues/7))
+- [[`3c32f38`](https://github.com/flex-development/kronk/commit/3c32f3836262db46b3e6953d5af19911dea0d756)] **deps:** Bump vite from 6.1.0 to 6.2.4 ([#61](https://github.com/flex-development/kronk/issues/61))
+- [[`7ca4bbb`](https://github.com/flex-development/kronk/commit/7ca4bbbbd846abd9340557a607f7579f889b545a)] **yarn:** bump yarn from 4.9.2 to 4.12.0
+
+### :robot: Continuous Integration
+
+- [[`ccaabaa`](https://github.com/flex-development/kronk/commit/ccaabaaf70ba658f29392dbce10d681a594095b8)] fix required status check name
+- [[`bb21ed4`](https://github.com/flex-development/kronk/commit/bb21ed421aa6a52c4dff066102e14f75b55610ca)] **deps:** Bump actions/cache from 4.2.0 to 4.2.1 ([#25](https://github.com/flex-development/kronk/issues/25))
+- [[`5b836ba`](https://github.com/flex-development/kronk/commit/5b836ba9cca9e57fdf9c1e82db5262f0c10b9f28)] **deps:** Bump actions/cache from 4.2.1 to 4.2.2 ([#39](https://github.com/flex-development/kronk/issues/39))
+- [[`9f93864`](https://github.com/flex-development/kronk/commit/9f938644a1a09f2409803d4b788b8671f7cbb427)] **deps:** Bump actions/cache from 4.2.2 to 4.2.3 ([#49](https://github.com/flex-development/kronk/issues/49))
+- [[`6d12208`](https://github.com/flex-development/kronk/commit/6d122082845071e5ccb74b53fcac7b91c6b5666d)] **deps:** Bump actions/cache from 4.2.3 to 4.2.4 ([#118](https://github.com/flex-development/kronk/issues/118))
+- [[`e581b40`](https://github.com/flex-development/kronk/commit/e581b4090226d8b2a9c84e2c22be3c506ff68624)] **deps:** Bump actions/cache from 4.2.4 to 4.3.0 ([#147](https://github.com/flex-development/kronk/issues/147))
+- [[`53d9dda`](https://github.com/flex-development/kronk/commit/53d9dda19d1efe6c2f880f7577d2e346f1e2098e)] **deps:** Bump actions/cache from 4.3.0 to 5.0.0 ([#216](https://github.com/flex-development/kronk/issues/216))
+- [[`e12ab15`](https://github.com/flex-development/kronk/commit/e12ab158f12bd0a5c9defdf16e9e74bedfd977b5)] **deps:** Bump actions/cache from 5.0.0 to 5.0.1 ([#219](https://github.com/flex-development/kronk/issues/219))
+- [[`37c0726`](https://github.com/flex-development/kronk/commit/37c0726237b6def7c0456b72e873f02f805f3c2a)] **deps:** Bump actions/checkout from 4.2.2 to 5.0.0 ([#123](https://github.com/flex-development/kronk/issues/123))
+- [[`6d8e604`](https://github.com/flex-development/kronk/commit/6d8e604b214fe4ba44f0699d1e3bc6857506b3e5)] **deps:** Bump actions/checkout from 5.0.0 to 5.0.1 ([#194](https://github.com/flex-development/kronk/issues/194))
+- [[`68f2523`](https://github.com/flex-development/kronk/commit/68f2523327075903063d4e7263634feace37b2b7)] **deps:** Bump actions/checkout from 5.0.1 to 6.0.1 ([#206](https://github.com/flex-development/kronk/issues/206))
+- [[`83611aa`](https://github.com/flex-development/kronk/commit/83611aa3d5fdb2d320cc5cf48557bd3f217d3152)] **deps:** Bump actions/create-github-app-token from 1.11.1 to 1.11.5 ([#14](https://github.com/flex-development/kronk/issues/14))
+- [[`d7fb5e4`](https://github.com/flex-development/kronk/commit/d7fb5e40bcf935c0cb3d12a55e676a058c8de6be)] **deps:** Bump actions/create-github-app-token from 1.11.5 to 1.11.6 ([#40](https://github.com/flex-development/kronk/issues/40))
+- [[`4f320ba`](https://github.com/flex-development/kronk/commit/4f320ba8f17ae57c5cebe3d6b1ef102480e1d9e0)] **deps:** Bump actions/create-github-app-token from 1.11.6 to 1.11.7 ([#50](https://github.com/flex-development/kronk/issues/50))
+- [[`325bd2f`](https://github.com/flex-development/kronk/commit/325bd2fa7e57f754474b07e1d9bad34ac51bc554)] **deps:** Bump actions/create-github-app-token from 1.11.7 to 1.12.0 ([#55](https://github.com/flex-development/kronk/issues/55))
+- [[`7711e45`](https://github.com/flex-development/kronk/commit/7711e45b880eb0c692de38deec6764416acdf9e2)] **deps:** Bump actions/create-github-app-token from 1.12.0 to 2.0.6 ([#76](https://github.com/flex-development/kronk/issues/76))
+- [[`1597770`](https://github.com/flex-development/kronk/commit/15977706f28fe043002ed2a891cff0ba8abd6b8d)] **deps:** Bump actions/create-github-app-token from 2.0.6 to 2.1.1 ([#122](https://github.com/flex-development/kronk/issues/122))
+- [[`3fe4a50`](https://github.com/flex-development/kronk/commit/3fe4a505244f5bcd4cbecf67555488ddc0157a91)] **deps:** Bump actions/create-github-app-token from 2.1.1 to 2.1.4 ([#142](https://github.com/flex-development/kronk/issues/142))
+- [[`5fdf937`](https://github.com/flex-development/kronk/commit/5fdf937928b42b35114ece9be5e448494378c00d)] **deps:** Bump actions/create-github-app-token from 2.1.4 to 2.2.0 ([#202](https://github.com/flex-development/kronk/issues/202))
+- [[`46b3490`](https://github.com/flex-development/kronk/commit/46b3490ad9912c367f68c119a89131332f8b2c18)] **deps:** Bump actions/create-github-app-token from 2.2.0 to 2.2.1 ([#211](https://github.com/flex-development/kronk/issues/211))
+- [[`f967796`](https://github.com/flex-development/kronk/commit/f967796e394fc824380b610326ddb00f60d52c2e)] **deps:** Bump actions/github-script from 7.0.1 to 8.0.0 ([#137](https://github.com/flex-development/kronk/issues/137))
+- [[`823f98b`](https://github.com/flex-development/kronk/commit/823f98b8eede9c87c307a6f49165fa477bfe3703)] **deps:** Bump actions/setup-node from 4.1.0 to 4.2.0 ([#2](https://github.com/flex-development/kronk/issues/2))
+- [[`aea40ef`](https://github.com/flex-development/kronk/commit/aea40efc638eae6a9042adc5ad5d16923b975b88)] **deps:** Bump actions/setup-node from 4.2.0 to 4.3.0 ([#47](https://github.com/flex-development/kronk/issues/47))
+- [[`3280ab1`](https://github.com/flex-development/kronk/commit/3280ab15b43c554547dc0d7788f1d55ac1a65240)] **deps:** Bump actions/setup-node from 4.3.0 to 4.4.0 ([#68](https://github.com/flex-development/kronk/issues/68))
+- [[`679e092`](https://github.com/flex-development/kronk/commit/679e092a22af802bdd8a26335eb998a8aee67d38)] **deps:** Bump actions/setup-node from 4.4.0 to 5.0.0 ([#135](https://github.com/flex-development/kronk/issues/135))
+- [[`ffe36d8`](https://github.com/flex-development/kronk/commit/ffe36d8b7c37ad389926efacebc6ac144382361b)] **deps:** Bump actions/setup-node from 5.0.0 to 6.0.0 ([#165](https://github.com/flex-development/kronk/issues/165))
+- [[`69ebe54`](https://github.com/flex-development/kronk/commit/69ebe546a9449a200edbe212c9eaaa6550c1ec83)] **deps:** Bump actions/setup-node from 6.0.0 to 6.1.0 ([#207](https://github.com/flex-development/kronk/issues/207))
+- [[`fdb7bc6`](https://github.com/flex-development/kronk/commit/fdb7bc633542f251c31dfa212037630c72471fde)] **deps:** Bump actions/upload-artifact from 4.6.0 to 4.6.1 ([#32](https://github.com/flex-development/kronk/issues/32))
+- [[`1b05ee9`](https://github.com/flex-development/kronk/commit/1b05ee9daf30074053d0efc162096997a26cc29f)] **deps:** Bump actions/upload-artifact from 4.6.1 to 4.6.2 ([#48](https://github.com/flex-development/kronk/issues/48))
+- [[`e59ec0c`](https://github.com/flex-development/kronk/commit/e59ec0cf5cc34d9a131cad2ddc3c4b50c67aca2e)] **deps:** Bump actions/upload-artifact from 4.6.2 to 5.0.0 ([#175](https://github.com/flex-development/kronk/issues/175))
+- [[`a48dc03`](https://github.com/flex-development/kronk/commit/a48dc03920ef280109c4813fcc2851af7c71c0b6)] **deps:** Bump actions/upload-artifact from 5.0.0 to 6.0.0 ([#218](https://github.com/flex-development/kronk/issues/218))
+- [[`37052f6`](https://github.com/flex-development/kronk/commit/37052f688823439730eed2f3b3a1488bf04b887d)] **deps:** Bump codecov/codecov-action from 5.1.2 to 5.3.1 ([#4](https://github.com/flex-development/kronk/issues/4))
+- [[`e034e07`](https://github.com/flex-development/kronk/commit/e034e07aec8ebb4bb5a3c73a98444ffd018a2091)] **deps:** Bump codecov/codecov-action from 5.3.1 to 5.4.0 ([#37](https://github.com/flex-development/kronk/issues/37))
+- [[`bb9280f`](https://github.com/flex-development/kronk/commit/bb9280f2d50f63815a2349c34e93a032a26b4f67)] **deps:** Bump codecov/codecov-action from 5.4.0 to 5.4.3 ([#81](https://github.com/flex-development/kronk/issues/81))
+- [[`085a3ce`](https://github.com/flex-development/kronk/commit/085a3cef9d657154f8af188181bc3aedc69e944e)] **deps:** Bump codecov/codecov-action from 5.4.3 to 5.5.0 ([#127](https://github.com/flex-development/kronk/issues/127))
+- [[`5c01aa1`](https://github.com/flex-development/kronk/commit/5c01aa161c1ac8f86888e770ee2ea50eb27acd3b)] **deps:** Bump codecov/codecov-action from 5.5.0 to 5.5.1 ([#138](https://github.com/flex-development/kronk/issues/138))
+- [[`27d5ff1`](https://github.com/flex-development/kronk/commit/27d5ff11f53787da0da8d35a5180bc1eaafaab22)] **deps:** Bump codecov/codecov-action from 5.5.1 to 5.5.2 ([#213](https://github.com/flex-development/kronk/issues/213))
+- [[`d7a6036`](https://github.com/flex-development/kronk/commit/d7a60360580585aaa6fffa9f4f19eef40229b798)] **deps:** Bump codecov/test-results-action from 1.1.1 to 1.2.1 ([#222](https://github.com/flex-development/kronk/issues/222))
+- [[`a606455`](https://github.com/flex-development/kronk/commit/a606455766bfa14489d9d22a42a5f1aaf6223180)] **deps:** Bump crazy-max/ghaction-import-gpg from 6.2.0 to 6.3.0 ([#60](https://github.com/flex-development/kronk/issues/60))
+- [[`f3a4406`](https://github.com/flex-development/kronk/commit/f3a4406336c502a8a929b65f9954d393dc079188)] **deps:** Bump GitGuardian/ggshield-action from 1.35.0 to 1.36.0 ([#3](https://github.com/flex-development/kronk/issues/3))
+- [[`090fec3`](https://github.com/flex-development/kronk/commit/090fec35a7e258d26c14c7c24559b2ca7071777e)] **deps:** Bump GitGuardian/ggshield-action from 1.36.0 to 1.37.0 ([#44](https://github.com/flex-development/kronk/issues/44))
+- [[`5108551`](https://github.com/flex-development/kronk/commit/510855105fbb7559d5b928b44794dce1dc6a71ea)] **deps:** Bump GitGuardian/ggshield-action from 1.37.0 to 1.38.0 ([#56](https://github.com/flex-development/kronk/issues/56))
+- [[`cf77f2f`](https://github.com/flex-development/kronk/commit/cf77f2fb1422feb3f9d183a84925d87d22adf8e0)] **deps:** Bump GitGuardian/ggshield-action from 1.38.0 to 1.40.0 ([#83](https://github.com/flex-development/kronk/issues/83))
+- [[`59efc7f`](https://github.com/flex-development/kronk/commit/59efc7fab1f948d359a18f43587f64143fff5f4b)] **deps:** Bump GitGuardian/ggshield-action from 1.40.0 to 1.42.0 ([#115](https://github.com/flex-development/kronk/issues/115))
+- [[`5d67573`](https://github.com/flex-development/kronk/commit/5d675733aa65875782315dd10baa36a9dbb46ebc)] **deps:** Bump kaisugi/action-regex-match from 1.0.1 to 1.0.2 ([#210](https://github.com/flex-development/kronk/issues/210))
+- [[`9da5ea3`](https://github.com/flex-development/kronk/commit/9da5ea36ad0eec072b0a4b2970e2eb3fd71edd9a)] **deps:** Bump oven-sh/setup-bun from 2.0.2 to 2.1.0 ([#228](https://github.com/flex-development/kronk/issues/228))
+- [[`1691d44`](https://github.com/flex-development/kronk/commit/1691d44d704b82e960ec66f1b16aaddaa0a1725b)] **deps:** Bump streetsidesoftware/cspell-action from 7.2.0 to 7.2.1 ([#174](https://github.com/flex-development/kronk/issues/174))
+- [[`7d74008`](https://github.com/flex-development/kronk/commit/7d7400859c9d76d713f59d46dec9254a3706cc8e)] **deps:** Bump streetsidesoftware/cspell-action from 7.2.1 to 8.0.0 ([#187](https://github.com/flex-development/kronk/issues/187))
+- [[`d7d884c`](https://github.com/flex-development/kronk/commit/d7d884ca35231bca0e50ca61f393138f131b28b9)] **deps:** Bump streetsidesoftware/cspell-action from 8.0.0 to 8.1.1 ([#214](https://github.com/flex-development/kronk/issues/214))
+- [[`3882d28`](https://github.com/flex-development/kronk/commit/3882d28b2b3103c877cc610b9b1b200f240b57bc)] **deps:** Bump streetsidesoftware/cspell-action from 8.1.1 to 8.1.2 ([#230](https://github.com/flex-development/kronk/issues/230))
+- [[`eb6aa58`](https://github.com/flex-development/kronk/commit/eb6aa58e65b142d89866af7c7ba909f0f09fac33)] **workflows:** [`add-to-project`] add project url step
+- [[`55daaac`](https://github.com/flex-development/kronk/commit/55daaac3dd8970f84850c7a6942c47cf7b2771eb)] **workflows:** [`auto-merge`] check for draft pull requests only
+- [[`16f1f8c`](https://github.com/flex-development/kronk/commit/16f1f8cbace68e7637e138005a3f8d67a8651d5b)] **workflows:** [`ci`] bun tests
+- [[`10d844c`](https://github.com/flex-development/kronk/commit/10d844c56d4ad88ab21737c60a4a020a11503a02)] **workflows:** [`ci`] fix test artifact names
+- [[`9492fae`](https://github.com/flex-development/kronk/commit/9492fae02ce6552f49f1b01d4e63c23fe233c292)] **workflows:** [`ci`] replace codecov/test-results-action
+- [[`dedd096`](https://github.com/flex-development/kronk/commit/dedd09604a20d592b95588ea4c784a57bac3724c)] **workflows:** [`ci`] test on node versions in the range `[20, 24]`
+- [[`8784109`](https://github.com/flex-development/kronk/commit/87841095ba7e8a046bd98823a158b01f51ccd22b)] **workflows:** [`ci`] workflow improvements
+- [[`3a627b0`](https://github.com/flex-development/kronk/commit/3a627b0a4fbbbdd0c6f7b351ccd0ffecf7a92ef4)] **workflows:** [`publish`] migrate to oidc trusted publishing
+- [[`9aa7a66`](https://github.com/flex-development/kronk/commit/9aa7a66ea412636c0a84d1e5dcad32f9a16e14a0)] **workflows:** [`publish`] workflow improvements
+- [[`80d542f`](https://github.com/flex-development/kronk/commit/80d542f629b2e4c0a89a44818d2cd62cbb8e51d5)] **workflows:** [`release-chore`] use flex-development/gh-release-url-action
+- [[`4c99da7`](https://github.com/flex-development/kronk/commit/4c99da77fbf9cf6169022e94a287bddb416f20f4)] **workflows:** [`release`] workflow improvements
+- [[`8538159`](https://github.com/flex-development/kronk/commit/8538159d1daf4c64afec076a12fb50e8bab09730)] **workflows:** remove `label-linked-issues`
+
+### :pencil: Documentation
+
+- [[`013138a`](https://github.com/flex-development/kronk/commit/013138a04693beb770497f037721b5674b10b0e3)] `Argument`, `Option`, `VersionOption`
+- [[`f528b8c`](https://github.com/flex-development/kronk/commit/f528b8c4b52cc16be2b2d773d95244889c0e8e8c)] `bun add`
+- [[`210e952`](https://github.com/flex-development/kronk/commit/210e95271043ee7b0adaaaf65e095b1c6eeeeccf)] `Command#parse`, `Command#parseAsync`
+- [[`cfa5229`](https://github.com/flex-development/kronk/commit/cfa52299937b84c27a47cb284657c6f68071f1ef)] `Command` methods
+- [[`ebd6754`](https://github.com/flex-development/kronk/commit/ebd675418e4aeb532007c3b5ad28a8428d3d368e)] `Command` signatures, parameters, and properties
+- [[`208eb04`](https://github.com/flex-development/kronk/commit/208eb0417e64c4ad1393a21e505e7b9d54f125f4)] `CommandError`, `KronkError`
+- [[`57045ff`](https://github.com/flex-development/kronk/commit/57045ffa574f48bd8fa0109916606fc055fe5149)] `Help#prepare`
+- [[`94961ab`](https://github.com/flex-development/kronk/commit/94961ab5b735a82cce5731117a5cd87ef3033def)] `KronkEvent`, `OptionEvent`
+- [[`0e0d4b5`](https://github.com/flex-development/kronk/commit/0e0d4b5366718f7eff10fc545af43bbc4743d86d)] add `ci` workflow status badge
+- [[`7c635ab`](https://github.com/flex-development/kronk/commit/7c635ab0444823b2a2f78c0668e59a4ac598c347)] add badges for monthly downloads and install size
+- [[`ea4055f`](https://github.com/flex-development/kronk/commit/ea4055f24fed44555e357c7f87eb71dd44e039f6)] add kronk image
+- [[`691521d`](https://github.com/flex-development/kronk/commit/691521d65fe59372b02bf76b5a36462d70c6f112)] creating a program
+- [[`6109a3e`](https://github.com/flex-development/kronk/commit/6109a3eb3cd39ea88131caa8b67efd49d38080cd)] options
+- [[`d6228db`](https://github.com/flex-development/kronk/commit/d6228db5e710901442c3add7566e20cbb4295781)] prepare "use" section in `README` for rewrite
+- [[`ff65598`](https://github.com/flex-development/kronk/commit/ff6559887976fa9293b2a589c64fab0253d37c81)] types api
+- [[`569bf5e`](https://github.com/flex-development/kronk/commit/569bf5ead17ca729652c08c524f19ca435313ddb)] **examples:** add `digital-root`, `min`
+
+### :sparkles: Features
+
+- [[`4e593aa`](https://github.com/flex-development/kronk/commit/4e593aa6cbe90a8f4b13ec490feb31108f571f1e)] [`Command`] `example`, `examples`
+- [[`b2ac528`](https://github.com/flex-development/kronk/commit/b2ac52893d536e510f862b33199e79411323bd7b)] [`Command`] `helpCommand`, `helpOption`
+- [[`ae0783f`](https://github.com/flex-development/kronk/commit/ae0783fe03cb098f45712fbad99cf564cab7d1cb)] [`Command`] apply implied options
+- [[`c7b93aa`](https://github.com/flex-development/kronk/commit/c7b93aa6c6cd42a46ba09391d81b1b19833bc5b1)] [`Command`] check for conflicting options
+- [[`f950f42`](https://github.com/flex-development/kronk/commit/f950f42c8b2db6973be58f61437a514b0c7df9ad)] [`Command`] configure help subcommand to print help text
+- [[`9cd6052`](https://github.com/flex-development/kronk/commit/9cd6052f0034176f46426e22804e33abe0b7499f)] [`Command`] format help text
+- [[`0f9577d`](https://github.com/flex-development/kronk/commit/0f9577dbb611b9d5709176de7caba1e5ef5ecd9c)] [`Help`] default help text format
+- [[`da3ab18`](https://github.com/flex-development/kronk/commit/da3ab18448a8d2699da582a40b23a74ec8dfad73)] [`Option`] `conflicts`
+- [[`6261259`](https://github.com/flex-development/kronk/commit/6261259532c03f2306fd856aeb8e465d0b199d03)] [`Option`] `implies`
+- [[`8d07858`](https://github.com/flex-development/kronk/commit/8d07858b85c88f2253f71038bd248a937913f1f7)] [`Option`] `mandate`
+- [[`2b51617`](https://github.com/flex-development/kronk/commit/2b5161783386ea6facd6fcd0e326e953a288f4ff)] `Command#optionPriority`
+- [[`ae6fb4f`](https://github.com/flex-development/kronk/commit/ae6fb4f6a26141d1551534df77fd539909310edd)] `Command#restore`
+- [[`15177e3`](https://github.com/flex-development/kronk/commit/15177e3660c667df55881f3e54dbb5b76aa0d76a)] `Command#versionOption`
+- [[`1bfdd99`](https://github.com/flex-development/kronk/commit/1bfdd991e5a824ff8d24e803f7f47f41a0a1652b)] `Helpable`, `Parseable`
+- [[`a872be5`](https://github.com/flex-development/kronk/commit/a872be5c7fc3d0724ceb06dd49201ca3d637d4d9)] `optionValueSource`
+- [[`ba60740`](https://github.com/flex-development/kronk/commit/ba60740f5884bd769e9e6009e1c778fda5e573db)] async parsers
+- [[`a9ca4bf`](https://github.com/flex-development/kronk/commit/a9ca4bf1457e5be9eb5ceccd18797ee02dac3820)] dependent options
+- [[`5847ae4`](https://github.com/flex-development/kronk/commit/5847ae4b40fefc4391d65d22f7239a1898db06d8)] global program object
+- [[`68a9884`](https://github.com/flex-development/kronk/commit/68a98849a662d8516491a21090af9db46409a7fe)] hooks
+- [[`e1a0d0d`](https://github.com/flex-development/kronk/commit/e1a0d0d2411772572766d13d5140fbed0984dd7c)] mvp
+- [[`1100d31`](https://github.com/flex-development/kronk/commit/1100d3189402d387e03d95400507128dd661ea80)] parse string defaults
+- [[`8946bff`](https://github.com/flex-development/kronk/commit/8946bffd7df67b48155da8e89204633256865b2d)] **lib:** [`Command`] emit option events
+- [[`ce3652b`](https://github.com/flex-development/kronk/commit/ce3652b9a3ebcc42818e2c59552fc06de7168e94)] **lib:** [`Command`] extend `EventEmitter2`
+- [[`d1488d1`](https://github.com/flex-development/kronk/commit/d1488d155cddace0bb528c8aee66d02664acfb56)] **lib:** [`Command`] versioning
+- [[`1a07777`](https://github.com/flex-development/kronk/commit/1a07777b6ccd988d0b1c55d33d2da5d5f3977e86)] **lib:** `Command#summary`
+- [[`fde749f`](https://github.com/flex-development/kronk/commit/fde749f91e4d5642004a445b5a19e11824872d28)] **lib:** `Command#usage`
+- [[`4d8020f`](https://github.com/flex-development/kronk/commit/4d8020f3d30e99fda2d0fb4244ba8b630cdc6406)] **types:** `ArgumentsData`, `OptionsData`, `SubcommandsData`
+- [[`5fc21a3`](https://github.com/flex-development/kronk/commit/5fc21a382b12281220cc5958987968705c05db06)] **types:** `ExitProcess`
+- [[`e923620`](https://github.com/flex-development/kronk/commit/e923620e317457569c7301811f8fc26522a16a38)] **types:** `VersionData`
+
+### :house_with_garden: Housekeeping
+
+- [[`04ce53b`](https://github.com/flex-development/kronk/commit/04ce53b95cea3aafadf9c08cb088ce5f816e64f6)] initial commit
+- [[`4c7ad85`](https://github.com/flex-development/kronk/commit/4c7ad85b75db080f49799e0c1636e76830e25f8c)] update dprint setup
+- [[`aec5476`](https://github.com/flex-development/kronk/commit/aec5476d797403a896a663ef89a6148d4348f2b0)] update project architecture
+- [[`9f86214`](https://github.com/flex-development/kronk/commit/9f8621434fd27963c2ea6061278ed0869a7bd885)] **github:** add label `scope:utils`
+- [[`ae50352`](https://github.com/flex-development/kronk/commit/ae503522d57d36f9119c0452090eca5db0221f5d)] **tests:** bun coverage reports
+- [[`771647e`](https://github.com/flex-development/kronk/commit/771647e997cc49c4e355dcf2d7109128059956c7)] **tests:** configure junit reporter
+- [[`835cc46`](https://github.com/flex-development/kronk/commit/835cc463b41aac395250cb5e96cdf54b1e5393d1)] **tests:** update coverage config (vitest 4.0 prep)
+
+### :mechanical_arm: Refactors
+
+- [[`2e03da9`](https://github.com/flex-development/kronk/commit/2e03da9681c6cb838e7290cdf72b1201353c5c89)] [`Command`] `alias`, `aliases`
+- [[`95ad7b3`](https://github.com/flex-development/kronk/commit/95ad7b3cc236c838feb4cef74459843953209c33)] [`Command`] help option init
+- [[`25f7b3b`](https://github.com/flex-development/kronk/commit/25f7b3b1d29a826e5395dffb770d20ad4042ceee)] [`Parseable`] `default`
+- [[`5b576d3`](https://github.com/flex-development/kronk/commit/5b576d343d7e7b47204fa1007b751e71935ea8e6)] action events and errors
+- [[`97cdd15`](https://github.com/flex-development/kronk/commit/97cdd15394a8b93180e86e69d04246a539dccf60)] allow async event listeners
+- [[`59ba47c`](https://github.com/flex-development/kronk/commit/59ba47ca51059ab5aae57b585cb46ec990b41a35)] event system
+- [[`ba1eac4`](https://github.com/flex-development/kronk/commit/ba1eac4c0799e233bc323d07bc780f0a2ca381a8)] implementation improvements
+- [[`2246eab`](https://github.com/flex-development/kronk/commit/2246eab39d718a4efa50b585f125f6b91e128d5c)] make `Command#parse` awaitable
+- [[`44cdbd0`](https://github.com/flex-development/kronk/commit/44cdbd00eed5e209d4d72517fc3039d54a2a2da8)] **lib:** [`Command`] action event
+- [[`22bf594`](https://github.com/flex-development/kronk/commit/22bf5945da27443ef9f39a6d423c29ae8796f82d)] **lib:** [`Command`] versioning
+- [[`db6272c`](https://github.com/flex-development/kronk/commit/db6272c6ae129a6fc12c6a2cfbbd2c58e5ae16dd)] **lib:** `Argument#description`
+- [[`0cd8b38`](https://github.com/flex-development/kronk/commit/0cd8b38607fdb35f78913ef505acf0973b6de54a)] **lib:** `Command#usage`
+- [[`fceadbc`](https://github.com/flex-development/kronk/commit/fceadbc7a99107101068f2ad373518a91904d90b)] **ts:** `CommandUsage*` -> `Usage*`
+
+### :white_check_mark: Testing
+
+- [[`cda6f98`](https://github.com/flex-development/kronk/commit/cda6f98829d47ce70c9bb7adb274ffe499d25209)] [`Command`] help option
+- [[`3d22eb8`](https://github.com/flex-development/kronk/commit/3d22eb8c1074d9517f53bd0d7f75a22fe4b0284d)] **errors:** [`KronkError`] stabilize unit test snapshots
+
+
