@@ -188,8 +188,8 @@
     "@types/node": "25.0.10",
     "@types/node-notifier": "8.0.5",
     "@vates/toggle-scripts": "1.0.0",
-    "@vitest/coverage-v8": "4.0.17",
-    "@vitest/ui": "4.0.17",
+    "@vitest/coverage-v8": "4.0.18",
+    "@vitest/ui": "4.0.18",
     "chai": "6.2.2",
     "chai-string": "1.6.0",
     "commander": "14.0.2",
@@ -213,7 +213,7 @@
     "typescript": "5.9.3",
     "unified": "11.0.5",
     "vfile": "6.0.3",
-    "vitest": "4.0.17"
+    "vitest": "4.0.18"
   },
   "packageManager": "yarn@4.12.0",
   "sideEffects": false
