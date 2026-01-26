@@ -1765,7 +1765,7 @@ __metadata:
     semver: "npm:7.7.3"
     sh-syntax: "npm:0.5.8"
     string-width: "npm:8.1.0"
-    trash-cli: "npm:7.0.0"
+    trash-cli: "npm:7.1.0"
     ts-dedent: "npm:2.2.0"
     typescript: "npm:5.9.3"
     unified: "npm:11.0.5"
@@ -2654,13 +2654,6 @@ __metadata:
   version: 1.1.0
   resolution: "@rtsao/scc@npm:1.1.0"
   checksum: 10/17d04adf404e04c1e61391ed97bca5117d4c2767a76ae3e879390d6dec7b317fcae68afbf9e98badee075d0b64fa60f287729c4942021b4d19cd01db77385c01
-  languageName: node
-  linkType: hard
-
-"@sindresorhus/chunkify@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@sindresorhus/chunkify@npm:2.0.0"
-  checksum: 10/b163813f69cbe770398ac634dd6f27aa181c36c3a55f4d450622e8a33f712b6f31ea2f5d05ea0e4367339427b77a647203d3edd251b2a97152e29ceddfd3c6e3
   languageName: node
   linkType: hard
 
@@ -4001,6 +3994,13 @@ __metadata:
   version: 3.0.0
   resolution: "chownr@npm:3.0.0"
   checksum: 10/b63cb1f73d171d140a2ed8154ee6566c8ab775d3196b0e03a2a94b5f6a0ce7777ee5685ca56849403c8d17bd457a6540672f9a60696a6137c7a409097495b82c
+  languageName: node
+  linkType: hard
+
+"chunkify@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "chunkify@npm:5.0.0"
+  checksum: 10/eca34bbb4edb1cfc62dc40342464a9a193e5eb0aedf07aaa3e9d08ad58bce8de0e7dd60943f07c4f54bfab974677d8a51de9b5115ba6114ce9036e7669003552
   languageName: node
   linkType: hard
 
@@ -6583,6 +6583,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"is-docker@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "is-docker@npm:3.0.0"
+  bin:
+    is-docker: cli.js
+  checksum: 10/b698118f04feb7eaf3338922bd79cba064ea54a1c3db6ec8c0c8d8ee7613e7e5854d802d3ef646812a8a3ace81182a085dfa0a71cc68b06f3fa794b9783b3c90
+  languageName: node
+  linkType: hard
+
 "is-empty@npm:^1.0.0":
   version: 1.2.0
   resolution: "is-empty@npm:1.2.0"
@@ -6638,6 +6647,17 @@ __metadata:
   version: 2.0.1
   resolution: "is-hexadecimal@npm:2.0.1"
   checksum: 10/66a2ea85994c622858f063f23eda506db29d92b52580709eb6f4c19550552d4dcf3fb81952e52f7cf972097237959e00adc7bb8c9400cd12886e15bf06145321
+  languageName: node
+  linkType: hard
+
+"is-inside-container@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "is-inside-container@npm:1.0.0"
+  dependencies:
+    is-docker: "npm:^3.0.0"
+  bin:
+    is-inside-container: cli.js
+  checksum: 10/c50b75a2ab66ab3e8b92b3bc534e1ea72ca25766832c0623ac22d134116a98bcf012197d1caabe1d1c4bd5f84363d4aa5c36bb4b585fbcaf57be172cd10a1a03
   languageName: node
   linkType: hard
 
@@ -6806,6 +6826,15 @@ __metadata:
   dependencies:
     is-docker: "npm:^2.0.0"
   checksum: 10/20849846ae414997d290b75e16868e5261e86ff5047f104027026fd61d8b5a9b0b3ade16239f35e1a067b3c7cc02f70183cb661010ed16f4b6c7c93dad1b19d8
+  languageName: node
+  linkType: hard
+
+"is-wsl@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "is-wsl@npm:3.1.0"
+  dependencies:
+    is-inside-container: "npm:^1.0.0"
+  checksum: 10/f9734c81f2f9cf9877c5db8356bfe1ff61680f1f4c1011e91278a9c0564b395ae796addb4bf33956871041476ec82c3e5260ed57b22ac91794d4ae70a1d2f0a9
   languageName: node
   linkType: hard
 
@@ -8229,12 +8258,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"move-file@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "move-file@npm:3.1.0"
-  dependencies:
-    path-exists: "npm:^5.0.0"
-  checksum: 10/335bb0295461500f171164ce2cc1c8996c7fb13dc56d71e34e25242fae79006cfeb3b9b3ba22b77309bd95a25df04ec68f57af3f83c189c49d4b6f766de46d7d
+"move-file@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "move-file@npm:4.1.0"
+  checksum: 10/284430103a1754968b63b28326be066f665495ce26513d97c47277f346ea95c4f72c3f4e5b554ad241eb5cc88f156e26c8403628540a21dc890a5c07e5c9db81
   languageName: node
   linkType: hard
 
@@ -8903,6 +8930,20 @@ __metadata:
     picocolors: "npm:^1.1.1"
     source-map-js: "npm:^1.2.1"
   checksum: 10/9e4fbe97574091e9736d0e82a591e29aa100a0bf60276a926308f8c57249698935f35c5d2f4e80de778d0cbb8dcffab4f383d85fd50c5649aca421c3df729b86
+  languageName: node
+  linkType: hard
+
+"powershell-utils@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "powershell-utils@npm:0.1.0"
+  checksum: 10/4cc0846bc903ef9c8ac8cc9d178185d5972160a6c8776d44cf4c27ce31c0b614fc7cd20a53e8fcaf7f5296cdb34087a5d4396bdd863492972c84f76f3cadef67
+  languageName: node
+  linkType: hard
+
+"powershell-utils@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "powershell-utils@npm:0.2.0"
+  checksum: 10/49aa144effed21a03c095d0825455e44051110006fd05cd0e41431e1f09d0e111a62fd14d6d017113cca7ac3a69d37cd5b2ae8f1c4ba2685d5562158ff66836f
   languageName: node
   linkType: hard
 
@@ -11036,30 +11077,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"trash-cli@npm:7.0.0":
-  version: 7.0.0
-  resolution: "trash-cli@npm:7.0.0"
+"trash-cli@npm:7.1.0":
+  version: 7.1.0
+  resolution: "trash-cli@npm:7.1.0"
   dependencies:
+    globby: "npm:^14.1.0"
     meow: "npm:^14.0.0"
-    trash: "npm:^10.0.0"
+    trash: "npm:^10.1.0"
   bin:
     trash: cli.js
-  checksum: 10/b2d45dbd101d8513ce1a820059e383e7aacf71816ec96b2c12d07b76c7f94ac9198978cfe7a3a716a66de065a2441b96f49f6fd8a018228ffae2523cdbf0d553
+  checksum: 10/f15142c6d6effcff307ce5c919f4d3d65a036a0bdbf452caa329a248d039b136c189896b33673e2ec8b4f77c37843467a3cb5bb9319402d52bc8b2330d811381
   languageName: node
   linkType: hard
 
-"trash@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "trash@npm:10.0.0"
+"trash@npm:^10.1.0":
+  version: 10.1.0
+  resolution: "trash@npm:10.1.0"
   dependencies:
-    "@sindresorhus/chunkify": "npm:^2.0.0"
     "@stroncium/procfs": "npm:^1.2.1"
+    chunkify: "npm:^5.0.0"
     globby: "npm:^14.1.0"
     is-path-inside: "npm:^4.0.0"
-    move-file: "npm:^3.1.0"
+    move-file: "npm:^4.1.0"
     p-map: "npm:^7.0.3"
+    powershell-utils: "npm:^0.2.0"
+    wsl-utils: "npm:^0.4.0"
     xdg-trashdir: "npm:^3.1.0"
-  checksum: 10/2fd213856e7f5e68e4f8351dbc8562ea22648833d3ca6b7030f998533a9c79f709a735ff4a2712aa951f8aeb8c82aac5f33bb651782e9ded98eaa791638d58d2
+  checksum: 10/92d6872d9e4d490c4eb1bcdaf0bfb466356e563a4181cd48ededd7dd011c9ff2613883495af0a44e78516807c30341d4f7258b19b41b8149f3705f724952c767
   languageName: node
   linkType: hard
 
@@ -12009,6 +12053,16 @@ __metadata:
   version: 1.0.2
   resolution: "wrappy@npm:1.0.2"
   checksum: 10/159da4805f7e84a3d003d8841557196034155008f817172d4e986bd591f74aa82aa7db55929a54222309e01079a65a92a9e6414da5a6aa4b01ee44a511ac3ee5
+  languageName: node
+  linkType: hard
+
+"wsl-utils@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "wsl-utils@npm:0.4.0"
+  dependencies:
+    is-wsl: "npm:^3.1.0"
+    powershell-utils: "npm:^0.1.0"
+  checksum: 10/aae003eaba6e6a434f2cac650066ebfe80988851f8637c4c91c68a0c8e98392918e2593c7ac3221cf23aaa84d336a8dcc77a03bfd6a8494ab1d47b77670b2e00
   languageName: node
   linkType: hard
 
