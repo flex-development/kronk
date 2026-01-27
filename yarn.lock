@@ -1781,7 +1781,7 @@ __metadata:
     semver: "npm:7.7.3"
     sh-syntax: "npm:0.5.8"
     string-width: "npm:8.1.0"
-    trash-cli: "npm:7.1.0"
+    trash-cli: "npm:7.1.1"
     ts-dedent: "npm:2.2.0"
     typescript: "npm:5.9.3"
     unified: "npm:11.0.5"
@@ -11097,16 +11097,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"trash-cli@npm:7.1.0":
-  version: 7.1.0
-  resolution: "trash-cli@npm:7.1.0"
+"trash-cli@npm:7.1.1":
+  version: 7.1.1
+  resolution: "trash-cli@npm:7.1.1"
   dependencies:
     globby: "npm:^14.1.0"
     meow: "npm:^14.0.0"
     trash: "npm:^10.1.0"
   bin:
     trash: cli.js
-  checksum: 10/f15142c6d6effcff307ce5c919f4d3d65a036a0bdbf452caa329a248d039b136c189896b33673e2ec8b4f77c37843467a3cb5bb9319402d52bc8b2330d811381
+  checksum: 10/011f89cc5fbe0ac75152b845a12e6387c7f935bd7d144f341aab0c2776698e9ceb6abd48ce56c4d4dff103f693177b5700b7049d0c7bd8f70bb8a6a99e61417a
   languageName: node
   linkType: hard
 
