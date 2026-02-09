@@ -1745,7 +1745,7 @@ __metadata:
     "@flex-development/eslint-config": "npm:1.1.1"
     "@flex-development/fsm-tokenizer": "npm:1.0.0-alpha.1"
     "@flex-development/grease": "npm:3.0.0-alpha.9"
-    "@flex-development/mlly": "npm:1.0.0-beta.3"
+    "@flex-development/mlly": "npm:1.0.0-beta.4"
     "@flex-development/pathe": "npm:4.0.2"
     "@flex-development/pkg-types": "npm:4.1.0"
     "@flex-development/remark-preset": "npm:1.0.0"
@@ -1872,16 +1872,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@flex-development/mlly@npm:1.0.0-beta.3":
-  version: 1.0.0-beta.3
-  resolution: "@flex-development/mlly@npm:1.0.0-beta.3"
+"@flex-development/mlly@npm:1.0.0-beta.4":
+  version: 1.0.0-beta.4
+  resolution: "@flex-development/mlly@npm:1.0.0-beta.4"
   dependencies:
     "@flex-development/errnode": "npm:3.1.1"
     "@flex-development/is-builtin": "npm:3.2.0"
     "@flex-development/pathe": "npm:4.0.2"
     "@flex-development/pkg-types": "npm:4.1.0"
     devlop: "npm:1.1.0"
-  checksum: 10/7aaaf842917fe5420c89671193ed416276dd7cdf0ab30e83cced44d6e4c4593d3e113c9e511084da3ee08864d4f594b168944a606ae22b6c18a01508f72e9add
+  checksum: 10/c226aac64760b6a8e90dd8cc51de70a4c758752f72110c4d96d7feefd19cf8ec67f99109aa48a060eb435d24afb5a3e1afd4e733c247786c4f2fe5bdadc9d5f4
   languageName: node
   linkType: hard
 
