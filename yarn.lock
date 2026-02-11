@@ -1758,7 +1758,7 @@ __metadata:
     "@types/concat-stream": "npm:2.0.3"
     "@types/dateformat": "npm:5.0.3"
     "@types/is-ci": "npm:3.0.4"
-    "@types/node": "npm:25.1.0"
+    "@types/node": "npm:25.2.3"
     "@types/node-notifier": "npm:8.0.5"
     "@types/semver": "npm:7.7.1"
     "@vates/toggle-scripts": "npm:1.0.0"
@@ -2940,12 +2940,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:25.1.0":
-  version: 25.1.0
-  resolution: "@types/node@npm:25.1.0"
+"@types/node@npm:*, @types/node@npm:25.2.3":
+  version: 25.2.3
+  resolution: "@types/node@npm:25.2.3"
   dependencies:
     undici-types: "npm:~7.16.0"
-  checksum: 10/ad15db75cfaec9e6311a1db7f3a91799be4c2698e1cfb0f74cc4d6e4398361550d00a4070921e1de7d9a10db83e41fd29f3a640dfacdabbd1c74ae16d8ce943a
+  checksum: 10/46962e3c1c0205da5b637c2e924f4eb03ce16f384af686b69afeb5fd4f8274d9a570375f8a24de2750633b69cb7ac33f0e458d9c3f20a66e12eb3a569499062d
   languageName: node
   linkType: hard
 
