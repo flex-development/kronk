@@ -165,7 +165,7 @@
     "eventemitter2": "6.4.9",
     "micromark-util-character": "2.1.1",
     "plur": "6.0.0",
-    "string-width": "8.1.1"
+    "string-width": "8.2.0"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
